@@ -1,0 +1,186 @@
+<!doctype html>
+
+<html>
+  <head>
+    <script src = "https://d3js.org/d3.v5.min.js"></script>
+    <!--<script src = "d3.min.js"></script>-->
+  </head>
+  <body>
+    <h1>Still Studying</h1>
+    <p>Javascipt</p>
+    <script>
+
+      /////Instantiate Classes/////
+      /*
+Develop animations so that between 10 and 15 at most, but very clearly.
+Done - Robot size shoulds be a ratio to number of bots.
+Done - add a pause
+hover over bots that give info, like start angle to current. and a path that goes from start to current.
+Gather code for a github repository.
+      */
+      class BotAI {
+        constructor(startAng, moveDir) {
+          this.startAng = startAng;
+          //this.startLineX
+          //this.startLineY
+          //this.exitPosX
+          //this.exitPosY
+          this.curAngle = startAng;
+          this.angleCha = Math.sign(moveDir);
+        }
+      }
+      
+      /////Instantiate Variables/////
+      var botArea;			//P element, holds all on screen text.
+      var numBots;
+      var maxTime = 2 * Math.PI + 1;	//Max time to find exit
+      var botExit;			//Angle exit, will be specifiable later
+      var botAngles = [];		//Collected angles from inputs
+      var botDirects = [];		//Collected directions from inputs
+      var botAIs = [];			//Collected angles and directions stored in class
+      var bots = [];			//Instantiated circles
+      var timeSlide;			//Time slider for animation
+      var playButton;			
+      var pauseButton;
+      var automator;			//Holds interval event, currently 60 fps
+
+      /////Instantiate Functions/////
+      //Ask user how many robots, currently unlimited
+      function HowManyBots() {
+        botArea = d3.select("body").append("p");
+        numBots = botArea.append("input")
+                            .attr("type", "number")
+                            .attr("value", "1");
+        botArea.append("input")
+               .attr("type", "button")
+               .attr("value", "Place Order")
+               .attr("onclick", "BotSpecs()");
+      }
+
+      //Inputs about bots, to be collected
+      function BotSpecs() {
+        numBots = numBots.property("value");
+        botArea.selectAll("*").remove();
+        var cSpace = 360 / numBots;
+        for (var i = 0; i < numBots; i++) {
+          var tempArea = botArea.append("p");
+          var holdBotAngle = tempArea.append("input")
+                                 .attr("type", "number")
+                                 .attr("value", cSpace * i);
+          var holdBotDirect = tempArea.append("input")
+                                   .attr("type", "number")
+                                   .attr("value", "0");
+          botAngles.push(holdBotAngle);
+          botDirects.push(holdBotDirect);
+        }
+        botExit = botArea.append("input")
+                         .attr("type", "number")
+                         .attr("value", "0");
+        botArea.append("input")
+               .attr("type", "button")
+               .attr("value", "Submit Data")
+               .attr("onclick", "ProgramBots()");
+      }
+
+      //Take collected input and create bot classes
+      function ProgramBots() {
+        for (var j = 0; j < numBots; j++) {
+          var startAng = botAngles[j].property("value");
+          var moveDir = botDirects[j].property("value");
+          var newBot = new BotAI(startAng, moveDir)
+          botAIs.push(newBot);
+        }
+        botArea.selectAll("*").remove();
+        PrepareBots();
+      }
+
+      //Instantiate bots
+      function PrepareBots() {
+        var playArea = d3.select("body").append("svg")
+                                        .attr("width", "500")
+                                        .attr("height", "500")
+                                        .style("border", "1px solid black");
+        var cRadius = 5 + (20 / numBots);
+        for (var k = 0; k < numBots; k++) {
+          var holdCircle = playArea.append("circle")
+                                   .attr("r", cRadius)
+                                   .attr("cx", 250)
+                                   .attr("cy", 250)
+                                   .style("fill", "red");
+          bots.push(holdCircle);
+        }
+        BotTimeLine();
+      }
+
+      //User Interface
+      function BotTimeLine() {
+        var timeText = botArea.append("text")
+                              .text("Time: ");
+        timeSlide = botArea.append("input")
+                           .attr("type", "range")
+                           .attr("step", "any")
+                           .attr("min", "0")
+                           .attr("max", maxTime)
+                           .attr("value", "0")
+                           .attr("oninput", "BotUpdate()");
+        playButton = botArea.append("input")
+                            .attr("type", "button")
+                            .attr("value", "Play")
+                            .attr("onclick", "startAuto()");
+        pauseButton = botArea.append("input")
+                                .attr("type", "button")
+                                .attr("value", "Pause")
+                                .attr("onclick", "stopAuto()")
+                                .attr("disabled", "true");
+      }
+
+      //playButton function start
+      function startAuto() {
+        playButton.attr("disabled", "true");
+        pauseButton.attr("disabled", null);
+        automator = setInterval(autoUpdate, (1000 / 60));
+      }
+
+      //playButton function updates
+      function autoUpdate() {
+        var curTime = timeSlide.property("value");
+        if (curTime > maxTime) {
+          stopAuto();
+        }
+        curTime = (curTime - 1) + 1 + (1 / 60);
+        timeSlide.property("value", curTime);
+        BotUpdate();
+      }
+
+      //pauseButton function
+      function stopAuto() {
+        playButton.attr("disabled", null);
+        pauseButton.attr("disabled", "true");
+        clearInterval(automator);
+      }
+
+      //Bot Update Function
+      function BotUpdate() {
+        var curTime = timeSlide.property("value");
+        if (curTime > 1) {
+          for (m = 0; m < numBots; m++) {
+            xPos = 250 + 100 * Math.cos((curTime - 1) * botAIs[m].angleCha + botAIs[m].startAng * Math.PI / 180);
+            yPos = 250 + 100 * Math.sin((curTime - 1) * botAIs[m].angleCha + botAIs[m].startAng * Math.PI / 180);
+            bots[m].attr("cx", xPos);
+            bots[m].attr("cy", yPos);
+          }          
+        } else {
+          for (n = 0; n < numBots; n++) {
+            xPos = 250 + 100 * curTime * Math.cos(botAIs[n].startAng * Math.PI / 180);
+            yPos = 250 + 100 * curTime * Math.sin(botAIs[n].startAng * Math.PI / 180);
+            bots[n].attr("cx", xPos);
+            bots[n].attr("cy", yPos);
+          }
+        }
+      }
+
+      /////Main Control/////
+      HowManyBots();
+    </script>
+  </body>
+</html>
