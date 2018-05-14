@@ -2,8 +2,8 @@
 
 <html>
   <head>
-    <script src = "https://d3js.org/d3.v5.min.js"></script>
-    <!--<script src = "d3.min.js"></script>-->
+    <!--<script src = "https://d3js.org/d3.v5.min.js"></script>-->
+    <script src = "d3.min.js"></script>
   </head>
   <body>
     <h1>Still Studying</h1>
@@ -13,38 +13,45 @@
       /////Instantiate Classes/////
       /*
 Develop animations so that between 10 and 15 at most, but very clearly.
-Done - Robot size shoulds be a ratio to number of bots.
-Done - add a pause
 hover over bots that give info, like start angle to current. and a path that goes from start to current.
 Gather code for a github repository.
       */
       class BotAI {
         constructor(startAng, moveDir) {
-          this.startAng = startAng;
-          //this.startLineX
-          //this.startLineY
-          //this.exitPosX
-          //this.exitPosY
-          this.curAngle = startAng;
-          this.angleCha = Math.sign(moveDir);
+          this.startAng = startAng;	//Holds start text, then number from test.
+          this.angleCha = moveDir;	//Holds direction text, then direction.
+
+          this.startLineX = 0;	//Difference of x position at start angle.
+          this.startLineY = 0;	//Difference of y position at start angle.
+
+          this.exitPosX = 0;
+          this.exitPosY = 0;
+
+          this.exitLineX = 0;
+          this.exitLineY = 0;
+          this.exitDis = 0;
         }
       }
       
       /////Instantiate Variables/////
+
       var botArea;			//P element, holds all on screen text.
       var numBots;
       var maxTime = 2 * Math.PI + 1;	//Max time to find exit
-      var botExit;			//Angle exit, will be specifiable later
-      var botAngles = [];		//Collected angles from inputs
-      var botDirects = [];		//Collected directions from inputs
       var botAIs = [];			//Collected angles and directions stored in class
       var bots = [];			//Instantiated circles
       var timeSlide;			//Time slider for animation
       var playButton;			
       var pauseButton;
       var automator;			//Holds interval event, currently 60 fps
+      var exitAng;
+      var exitPosX = 0;
+      var exitPosY = 0;
+      var exitTime = 0;			//Holds time when exit found
 
       /////Instantiate Functions/////
+
+
       //Ask user how many robots, currently unlimited
       function HowManyBots() {
         botArea = d3.select("body").append("p");
@@ -57,6 +64,7 @@ Gather code for a github repository.
                .attr("onclick", "BotSpecs()");
       }
 
+
       //Inputs about bots, to be collected
       function BotSpecs() {
         numBots = numBots.property("value");
@@ -65,41 +73,93 @@ Gather code for a github repository.
         for (var i = 0; i < numBots; i++) {
           var tempArea = botArea.append("p");
           var holdBotAngle = tempArea.append("input")
-                                 .attr("type", "number")
-                                 .attr("value", cSpace * i);
+                                     .attr("type", "range")
+                                     .attr("step", "1")
+                                     .attr("min", "0")
+                                     .attr("max", "360")
+                                     .attr("value", cSpace * i);
           var holdBotDirect = tempArea.append("input")
-                                   .attr("type", "number")
-                                   .attr("value", "0");
-          botAngles.push(holdBotAngle);
-          botDirects.push(holdBotDirect);
+                                      .attr("type", "range")
+                                      .attr("step", "1")
+                                      .attr("min", "-1")
+                                      .attr("max", "1")
+                                      .attr("value", "0");
+          botAIs.push(new BotAI(holdBotAngle, holdBotDirect));
         }
-        botExit = botArea.append("input")
-                         .attr("type", "number")
-                         .attr("value", "0");
+        exitAng = botArea.append("input")
+                         .attr("type", "range")
+                         .attr("step", "1")
+                         .attr("min", "0")
+                         .attr("max", "360")
+                         .attr("value", cSpace / 2);
         botArea.append("input")
                .attr("type", "button")
                .attr("value", "Submit Data")
                .attr("onclick", "ProgramBots()");
       }
 
+
       //Take collected input and create bot classes
       function ProgramBots() {
         for (var j = 0; j < numBots; j++) {
-          var startAng = botAngles[j].property("value");
-          var moveDir = botDirects[j].property("value");
-          var newBot = new BotAI(startAng, moveDir)
-          botAIs.push(newBot);
+          botAIs[j].startAng = botAIs[j].startAng.property("value");
+          botAIs[j].angleCha = Math.sign(botAIs[j].angleCha.property("value"));
+          botAIs[j].startLineX = 100 * Math.cos(botAIs[j].startAng * Math.PI / 180);
+          botAIs[j].startLineY = 100 * Math.sin(botAIs[j].startAng * Math.PI / 180);
         }
         botArea.selectAll("*").remove();
+        CalculateExit();
+        //PrepareBots();
+      }
+
+
+      //Gather time information for when exit reached.
+      function CalculateExit() {
+        exitAng = exitAng.property("value");
+        exitPosX = 250 + 100 * Math.cos(exitAng * Math.PI / 180)
+        exitPosY = 250 + 100 * Math.sin(exitAng * Math.PI / 180)
+        var lowestAng = 360;
+        for (var o = 0; o < numBots; o++) {
+          var holdAng = botAIs[o].startAng;
+          var holdDir = botAIs[o].angleCha;
+          var possLow = 360;
+          if (exitAng == holdAng) {
+            lowestAng = 0;
+            break;
+          } else if (holdDir > 0) {
+            possLow = exitAng - holdAng;
+            if (possLow < 0) {
+              possLow = possLow + 360;
+            }
+          } else if (holdDir < 0) {
+            possLow = exitAng - holdAng;
+            if (possLow > 0) {
+              possLow = possLow - 360;
+            }
+            possLow = Math.abs(possLow);
+          }
+          if (possLow < lowestAng) {
+            lowestAng = possLow;
+          }
+        }
+        exitTime = 1 + lowestAng * Math.PI / 180;
         PrepareBots();
       }
 
-      //Instantiate bots
+
+      //Instantiate area box, circle, exit dot, and bots
       function PrepareBots() {
         var playArea = d3.select("body").append("svg")
                                         .attr("width", "500")
                                         .attr("height", "500")
                                         .style("border", "1px solid black");
+        playArea.append("circle")
+                .attr("r", 100)
+                .attr("cx", 250)
+                .attr("cy", 250)
+                .style("fill", "none")
+                .style("stroke", "black")
+                .style("stroke-width", 2);
         var cRadius = 5 + (20 / numBots);
         for (var k = 0; k < numBots; k++) {
           var holdCircle = playArea.append("circle")
@@ -108,9 +168,21 @@ Gather code for a github repository.
                                    .attr("cy", 250)
                                    .style("fill", "red");
           bots.push(holdCircle);
+          var cAngle = (exitTime - 1) * botAIs[k].angleCha + botAIs[k].startAng * Math.PI / 180;
+          botAIs[k].exitPosX = 250 + 100 * Math.cos(cAngle);
+          botAIs[k].exitPosY = 250 + 100 * Math.sin(cAngle);
+          botAIs[k].exitLineX = exitPosX - botAIs[k].exitPosX;
+          botAIs[k].exitLineY = exitPosY - botAIs[k].exitPosY;
+          botAIs[k].exitDis = Math.sqrt(Math.pow(botAIs[k].exitLineX, 2) + Math.pow(botAIs[k].exitLineY, 2)) / 100;
         }
+        playArea.append("circle")
+                .attr("r", 3)
+                .attr("cx", 250 + 100 * Math.cos(exitAng * Math.PI / 180))
+                .attr("cy", 250 + 100 * Math.sin(exitAng * Math.PI / 180))
+                .style("fill", "black");
         BotTimeLine();
       }
+
 
       //User Interface
       function BotTimeLine() {
@@ -134,6 +206,7 @@ Gather code for a github repository.
                                 .attr("disabled", "true");
       }
 
+
       //playButton function start
       function startAuto() {
         playButton.attr("disabled", "true");
@@ -152,6 +225,7 @@ Gather code for a github repository.
         BotUpdate();
       }
 
+
       //pauseButton function
       function stopAuto() {
         playButton.attr("disabled", null);
@@ -159,25 +233,36 @@ Gather code for a github repository.
         clearInterval(automator);
       }
 
+
       //Bot Update Function
       function BotUpdate() {
         var curTime = timeSlide.property("value");
-        if (curTime > 1) {
-          for (m = 0; m < numBots; m++) {
-            xPos = 250 + 100 * Math.cos((curTime - 1) * botAIs[m].angleCha + botAIs[m].startAng * Math.PI / 180);
-            yPos = 250 + 100 * Math.sin((curTime - 1) * botAIs[m].angleCha + botAIs[m].startAng * Math.PI / 180);
-            bots[m].attr("cx", xPos);
-            bots[m].attr("cy", yPos);
-          }          
-        } else {
-          for (n = 0; n < numBots; n++) {
-            xPos = 250 + 100 * curTime * Math.cos(botAIs[n].startAng * Math.PI / 180);
-            yPos = 250 + 100 * curTime * Math.sin(botAIs[n].startAng * Math.PI / 180);
-            bots[n].attr("cx", xPos);
-            bots[n].attr("cy", yPos);
+        for (p = 0; p < numBots; p++) {
+          if (curTime > (exitTime + botAIs[p].exitDis)) {
+            xPos = exitPosX;
+            yPos = exitPosY;
+            bots[p].attr("cx", xPos);
+            bots[p].attr("cy", yPos);
+          } else if (curTime > exitTime) {
+            xPos = botAIs[p].exitPosX + ((curTime - exitTime) / botAIs[p].exitDis) * botAIs[p].exitLineX;
+            yPos = botAIs[p].exitPosY + ((curTime - exitTime) / botAIs[p].exitDis) * botAIs[p].exitLineY;
+            bots[p].attr("cx", xPos);
+            bots[p].attr("cy", yPos);
+          } else if (curTime > 1) {
+            var cAngle = (curTime - 1) * botAIs[p].angleCha + botAIs[p].startAng * Math.PI / 180;
+            xPos = 250 + 100 * Math.cos(cAngle);
+            yPos = 250 + 100 * Math.sin(cAngle);
+            bots[p].attr("cx", xPos);
+            bots[p].attr("cy", yPos);
+          } else {
+            xPos = 250 + curTime * botAIs[p].startLineX;
+            yPos = 250 + curTime * botAIs[p].startLineY;
+            bots[p].attr("cx", xPos);
+            bots[p].attr("cy", yPos);
           }
         }
       }
+
 
       /////Main Control/////
       HowManyBots();
