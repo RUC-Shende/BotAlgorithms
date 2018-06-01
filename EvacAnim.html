@@ -1,0 +1,350 @@
+<!doctype html>
+
+<html>
+  <head>
+    <script src = "https://d3js.org/d3.v5.min.js"></script>
+    <!--<script src = "d3.min.js"></script>-->
+  </head>
+  <body>
+    <h1>Evacuate Room</h1>
+    <p>Circle Room</p>
+    <script>
+
+      //////////---------- Instantiate Classes ----------//////////
+
+
+      //////////----------Instantiate Variables----------//////////
+      var projectBinder;
+      var projectPages = [null, null, null];
+      var currentPage = 0;
+
+      var evacueeSlider;
+      var exitPosSlider;
+      var createdSliders = [];
+      var createdButtons = [];
+
+      var roomCenter = [250,350];
+
+      var evacueeCircles = [];
+      var graphicalCircles = [];
+
+      var exitMarker;
+      var exitPosition = [200,0];
+
+      var playButton;
+
+      var timeLineSlider;
+      var timeLinePlayer;
+      var timeLineOver = 60 * (2 * Math.PI + 3);
+
+      var startingVector = [];
+      var exitFoundTime;
+      var endingPosition = [];
+      var exitingVector = [];
+      var exitingDistance = [];
+
+
+
+      //////////--------Instantiate Call Functions--------//////////
+      function ActivateSlider() {
+        d3.select(this).style("fill", "orange");
+        d3.select(this).classed("active", true);
+      }
+
+
+      function UpdateSlider(d) {
+        var mousePos = d3.event.x;
+        var lowBound = +d[0].select("line").attr("x1");
+        var uppBound = +d[0].select("line").attr("x2");
+        if (mousePos < lowBound) {mousePos = lowBound;
+        } else if (mousePos > uppBound) {mousePos = uppBound;}
+        var snapRatio = Math.floor((mousePos - lowBound) / (uppBound - lowBound) * d[1]);
+        var snapPos = lowBound + snapRatio * ((uppBound - lowBound) / d[1]);
+        d3.select(this).attr("x", snapPos);
+        d[0].select("text").text(snapRatio);
+        if (d[2] != "null") {
+          d[2]();
+        }
+      }
+
+
+      function DeActivateSlider() {
+        d3.select(this).style("fill", "808080");
+        d3.select(this).classed("active", false);
+      }
+
+
+      function UpdateButton(d) {
+        var currentColor = d3.select(this).style("fill");
+        currentColor = (currentColor == "gray") ? "lime" : (currentColor == "lime") ? "red" : "gray";
+        d3.select(this).style("fill", currentColor);
+      }
+
+
+      //////////----------Instantiate Functions----------//////////
+      function StartProject() {
+        projectBinder = d3.select("body").append("svg").attr("width", 1000).attr("height", 600).style("border", "1px black solid");
+        projectBinder.append("text").text("Previous").attr("x", 50).attr("y", 30).attr("text-anchor", "middle").style("fill", "000000");
+        projectBinder.append("rect").attr("x", 10).attr("y", 10).attr("width", 80).attr("height", 30)
+                                    .attr("fill-opacity", .5).style("fill", "red").on("click", function() {ChangePage(-1);});
+        projectBinder.append("text").text("Next").attr("x", 140).attr("y", 30).attr("text-anchor", "middle").style("fill", "000000");
+        projectBinder.append("rect").attr("x", 100).attr("y", 10).attr("width", 80).attr("height", 30)
+                                    .attr("fill-opacity", .5).style("fill", "green").on("click", function() {ChangePage(1);});
+        InitPage1();
+        InitPage2();
+        InitPage3();
+      }
+
+
+      function InitPage1() {
+        projectPages[0] = projectBinder.append("g").attr("visibility", "visible");
+        projectPages[0].append("text").text("0").attr("x", 975).attr("y", 25).attr("font-size", 25);
+        projectPages[0].append("text").text("Call evacuees 0 to: ").attr("x", 10).attr("y", 70);
+        evacueeSlider = CreateSlider(projectPages[0], 250, 55, 500, 16, "null");
+      }
+
+
+      function UpdatePage1() {
+        for (i = 0; i < 16; i ++) {
+          createdSliders[i].attr("visibility", "hidden");
+          createdButtons[i].attr("visibility", "hidden");
+        }
+      }
+
+      function InitPage2() {
+        projectPages[1] = projectBinder.append("g").attr("visibility", "hidden");
+        projectPages[1].append("text").text("1").attr("x", 975).attr("y", 25).attr("font-size", 25);
+        projectPages[1].append("text").text("Give evacuees an angle and direction.").attr("x", 10).attr("y", 70);
+        projectPages[1].append("text").text("Where is the Exit?:").attr("x", 410).attr("y", 70);
+        exitPosSlider = CreateSlider(projectPages[1], 575, 55, 300, 360, "null");
+        for (i = 0; i < 2; i++) {
+          for (j = 0; j < 8; j++) {
+            projectPages[1].append("text").text(j + 1 + 8 * i).attr("x", 25 + 500 * i).attr("y", 115 + 50 * j);
+            createdSliders.push(CreateSlider(projectPages[1], 75 + 500 * i, 100 + 50 * j, 300, 360, "null").attr("visibility", "hidden"));
+            createdButtons.push(projectPages[1].append("rect").attr("x", 450 + 500 * i).attr("y", 100 + 50 * j).attr("width", 20).attr("height", 20)
+                                               .attr("visibility", "hidden").style("fill", "gray").on("click", UpdateButton));
+          }
+        }
+        projectPages[1].append("text").text("Go Left").attr("x", 250).attr("y", 550).style("fill", "lime");
+        projectPages[1].append("text").text("Go Stay").attr("x", 500).attr("y", 550).style("fill", "gray");
+        projectPages[1].append("text").text("Go Right").attr("x", 750).attr("y", 550).style("fill", "red");
+      }
+
+
+      function UpdatePage2() {
+        var visibleLimit = evacueeSlider.select("text").text();
+        for (i = 0; i < 16; i ++) {
+          if (i <= visibleLimit) {
+            createdSliders[i].attr("visibility", "visible");
+            createdButtons[i].attr("visibility", "visible");
+          }
+          evacueeCircles[i].attr("visibility", "hidden");
+          graphicalCircles[i].attr("visibility", "hidden");
+        }
+        StopReEnactment();
+        playButton.attr("visibility", "hidden");
+        timeLineSlider.select("rect").attr("x", 535);
+        timeLineSlider.select("text").text(0);
+      }
+
+
+      function InitPage3() {
+        projectPages[2] = projectBinder.append("g").attr("visibility", "hidden");
+        projectPages[2].append("text").text("2").attr("x", 975).attr("y", 25).attr("font-size", 25);
+        projectPages[2].append("rect").attr("x", 0).attr("y", 100).attr("width", 500).attr("height", 500).style("fill", "ffffff").style("stroke", "000000");
+        projectPages[2].append("rect").attr("x", 500).attr("y", 100).attr("width", 500).attr("height", 500).style("fill", "ffffff").style("stroke", "000000");
+        projectPages[2].append("circle").attr("r", 200).attr("cx", roomCenter[0]).attr("cy", roomCenter[1]).attr("fill-opacity", 0.0).style("stroke", "000000");
+        for (i = 0; i < 16; i++) {
+          evacueeCircles.push(projectPages[2].append("circle").attr("r", 10).attr("cx", roomCenter[0]).attr("cy", roomCenter[1])
+                                                              .attr("visibility", "hidden").style("fill", "red"));
+          graphicalCircles.push(projectPages[2].append("circle").attr("r", 10).attr("cx", roomCenter[0] + 500).attr("cy", roomCenter[1])
+                                                              .attr("visibility", "hidden").style("fill", "red"));
+          startingVector.push([0,0]);
+          endingPosition.push([0,0]);
+          exitingVector.push([0,0]);
+          exitingDistance.push(0);
+        }
+        exitMarker = projectPages[2].append("circle").attr("r", 5).attr("cx", roomCenter[0] + exitPosition[0]).attr("cy", roomCenter[1] + exitPosition[1]);
+
+        timeLineSlider = CreateSlider(projectPages[2], 510, 550, 400, timeLineOver, UpdateEvacuees);
+        projectPages[2].append("line").attr("x1", 535).attr("y1", 550).attr("x2", 535).attr("y2", 150).style("stroke", "000000");
+        projectPages[2].append("text").text("Play/Pause").attr("x", 250).attr("y", 25);
+        projectPages[2].append("rect").attr("x", 250).attr("y", 50).attr("width", 50).attr("height", 25)
+                       .style("fill", "red").on("click", StopReEnactment);
+        playButton = projectPages[2].append("rect").attr("x", 250).attr("y", 50).attr("width", 50).attr("height", 25).attr("visibility", "hidden")
+                                    .style("fill", "lime").on("click", StartReEnactment);
+      }
+
+
+      function UpdatePage3() {
+        playButton.attr("visibility", "visible");
+        var visibleLimit = evacueeSlider.select("text").text();
+        for (i = 0; i < 16; i ++) {
+          if (i <= visibleLimit) {
+            evacueeCircles[i].attr("visibility", "visible");
+            evacueeCircles[i].attr("cx", roomCenter[0]).attr("cy", roomCenter[1]);
+            graphicalCircles[i].attr("visibility", "visible");
+            graphicalCircles[i].attr("cx", roomCenter[0] + 285).attr("cy", 350);
+            var thisAngle = +createdSliders[i].select("text").text() * Math.PI / 180;
+            var startingX = 200 * Math.cos(thisAngle);
+            var startingY = 200 * -Math.sin(thisAngle);
+            startingVector[i] = [startingX, startingY];
+          }
+          createdSliders[i].attr("visibility", "hidden");
+          createdButtons[i].attr("visibility", "hidden");
+        }
+        var exitAngle = exitPosSlider.select("text").text();
+        exitPosition[0] = 200 * Math.cos(exitAngle * Math.PI / 180);
+        exitPosition[1] = 200 * -Math.sin(exitAngle * Math.PI / 180);
+        exitMarker.attr("cx", roomCenter[0] + exitPosition[0]).attr("cy", roomCenter[1] + exitPosition[1]);
+
+        var lowestAng = 360;
+        var exitAng = +exitPosSlider.select("text").text();
+        for (var i = 0; i <= +evacueeSlider.select("text").text(); i++) {
+          var holdAng = +createdSliders[i].select("text").text();
+          var holdDir = createdButtons[i].style("fill");
+          holdDir = (holdDir == "gray") ? 0 : (holdDir == "lime") ? 1 : -1;
+          var possLow = 360;
+          if (exitAng == holdAng) {
+            lowestAng = 0;
+            break;
+          } else if (holdDir > 0) {
+            possLow = exitAng - holdAng;
+            if (possLow < 0) {
+              possLow = possLow + 360;
+            }
+          } else if (holdDir < 0) {
+            possLow = exitAng - holdAng;
+            if (possLow > 0) {
+              possLow = possLow - 360;
+            }
+            possLow = Math.abs(possLow);
+          }
+          if (possLow < lowestAng) {
+            lowestAng = possLow;
+          }
+        }
+        exitFoundTime = 60 + 60 * lowestAng * Math.PI / 180;
+
+        for (i = 0; i < 16; i++) {
+          var holdAng = +createdSliders[i].select("text").text() * Math.PI / 180;
+          var holdDir = createdButtons[i].style("fill");
+          holdDir = (holdDir == "gray") ? 0 : (holdDir == "lime") ? 1 : -1;
+          var holdAng = holdAng + holdDir * ((exitFoundTime / 60) - 1);
+          var endingX = 200 * Math.cos(holdAng);
+          var endingY = 200 * -Math.sin(holdAng);
+          endingPosition[i] = [endingX, endingY];
+        }
+
+        for (i = 0; i < 16; i++) {
+          var deltaX = exitPosition[0] - endingPosition[i][0];
+          var deltaY = exitPosition[1] - endingPosition[i][1];
+          exitingVector[i] = [deltaX, deltaY];
+          exitingDistance[i] = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2)) * (3 / 10);
+        }
+      }
+
+
+      function StartReEnactment() {
+        playButton.attr("visibility", "hidden");
+        timeLinePlayer = setInterval(PlayReEnactment, (1000 / 60));
+      }
+
+
+      function PlayReEnactment() {
+        var nextTime = +timeLineSlider.select("text").text() + 1;
+        var lowBound = +timeLineSlider.select("line").attr("x1");
+        var slideRatio = nextTime / timeLineOver;
+        timeLineSlider.select("rect").attr("x", lowBound + 400 * slideRatio);
+        if (nextTime >= timeLineOver) {
+          timeLineSlider.select("text").text(timeLineOver);
+          StopReEnactment();
+          return;
+        }
+        timeLineSlider.select("text").text(nextTime);
+        UpdateEvacuees();
+      }
+
+
+      function StopReEnactment() {
+        playButton.attr("visibility", "visible");
+        clearInterval(timeLinePlayer);
+      }
+
+
+      function UpdateEvacuees() {
+        var visibleLimit = +evacueeSlider.select("text").text();
+        var curTime = +timeLineSlider.select("text").text();
+        for (i = 0; i < 16; i++) {
+          if (i <= visibleLimit) {
+            var thisDirect = createdButtons[i].style("fill");
+            thisDirect = (thisDirect == "gray") ? 0 : (thisDirect == "lime") ? 1 : -1;
+            var thisAngle = +createdSliders[i].select("text").text() * Math.PI / 180 + thisDirect * ((curTime / 60) - 1);
+
+            if (curTime >= exitFoundTime + exitingDistance[i]) {
+              evacueeCircles[i].attr("cx", roomCenter[0] + exitPosition[0])
+                               .attr("cy", roomCenter[1] + exitPosition[1]);
+            } else if (curTime >= exitFoundTime) {
+              evacueeCircles[i].attr("cx", roomCenter[0] + endingPosition[i][0] + ((curTime - exitFoundTime) / exitingDistance[i]) * exitingVector[i][0])
+                               .attr("cy", roomCenter[1] + endingPosition[i][1] + ((curTime - exitFoundTime) / exitingDistance[i]) * exitingVector[i][1]);
+            } else if (curTime >= 60) {
+              evacueeCircles[i].attr("cx", roomCenter[0] + 200 * Math.cos(thisAngle))
+                               .attr("cy", roomCenter[1] - 200 * Math.sin(thisAngle));
+            } else {
+              evacueeCircles[i].attr("cx", roomCenter[0] + (curTime / 60) * startingVector[i][0])
+                               .attr("cy", roomCenter[1] + (curTime / 60) * startingVector[i][1]);
+            }
+          }
+        }
+        var xLoc = +timeLineSlider.select("rect").attr("x");
+        for (i = 0; i < 16; i++) {
+          if (i <= visibleLimit) {
+            var xPos = roomCenter[0] + exitPosition[0] - evacueeCircles[i].attr("cx");
+            var yPos = roomCenter[1] + exitPosition[1] - evacueeCircles[i].attr("cy");
+            var yLoc = 550 - Math.sqrt(Math.pow(xPos, 2) + Math.pow(yPos, 2));
+            graphicalCircles[i].attr("cx", xLoc).attr("cy", yLoc);
+          }
+        }
+      }
+
+
+      function ChangePage(direction) {
+        var newPage = currentPage + direction;
+        if ((newPage < 0) || (newPage >= projectPages.length)) {
+          return;
+        }
+        switch(newPage) {
+          case(0):
+            UpdatePage1();
+            break;
+          case(1):
+            UpdatePage2();
+            break;
+          case(2):
+            UpdatePage3();
+            break;
+        }
+        projectPages[currentPage].attr("visibility", "hidden");
+        currentPage = newPage;
+        projectPages[currentPage].attr("visibility", "visible");
+      }
+
+
+      function CreateSlider(w, x, y, l, s, f) {
+        var g = w.append("g");
+        var sliderText = g.append("text").text(0).attr("x", x).attr("y", y + 15);
+        var sliderLine = g.append("line").attr("x1", x + 25).attr("y1", y).attr("x2", x + 25 + l).attr("y2", y).style("stroke", "000000");
+        g.append("rect").attr("x", x + 25).attr("y", y).attr("width", 20).attr("height", 20)
+                       .style("fill", "808080").data([[g, s - 1, f]])
+                       .call(d3.drag().on("start", ActivateSlider).on("drag", UpdateSlider).on("end", DeActivateSlider));
+        return g;
+      }
+
+
+      //////////----------Initial Function Call----------//////////
+      StartProject();
+
+
+    </script>
+  </body>
+</html>
