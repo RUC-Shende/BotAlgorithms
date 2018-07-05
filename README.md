@@ -1,4 +1,4 @@
-# Bot Algorithms forEvacuating Mobile Agents from an Area
+# Algorithms for Evacuating Mobile Agents from an Area
 
 Algorithms for mobile agents in a specific area to search for an exit along a perimeter and
 evacuate, based on wireless and non-wireless communication models. 
