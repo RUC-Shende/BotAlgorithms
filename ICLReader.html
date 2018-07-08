@@ -1,0 +1,116 @@
+<!doctype html>
+
+<html>
+  <head>
+    <!--<script src = "https://d3js.org/d3.v5.min.js"></script>-->
+    <script src = "d3.min.js"></script>
+  </head>
+  <body>
+    <h1>Evacuate Room</h1>
+    <p>Circle Room</p>
+    <script>
+      //Learning Jupiter NoteBook
+      //////////----------Instantiate Variables----------//////////
+      var projector;
+      var fieldSVG;
+      var unit2Px = 0;
+      var center = [0, 0];
+      var fps = 60;
+      var instruBinder = [
+                          [[0, [30]], [1, ["left"]]],
+                          [[0, [330]], [1, ["right"]]],
+                          [[0, [30]], [2, ["right", 60]], [3, [null]]]
+                         ];
+      var tourists = [];
+
+      //////////---------- Instantiate Classes ----------//////////
+      class Tourist {
+        constructor (visual, instructions, center) {
+          this.fxs = [this.GoOutAtAngle, this.FollowWall, this.FollowWallFor, this.GoToCenter, this.Wait];
+          this.visual = visual;
+          this.instru = instructions;
+          this.a = 0;
+          this.x = center[0];
+          this.y = center[1];
+          this.on = 0;
+          this.velocity = unit2Px;
+          this.stamps = [];
+        }
+
+        GoOutAtAngle(who, value) {
+          var distance = Math.sqrt(Math.pow(center[0] - who.x, 2) + Math.pow(center[1] - who.y, 2));
+          who.a = value[0] * (Math.PI / 180);
+          if (distance < unit2Px) {
+            who.x = who.x + Math.cos(who.a) * (unit2Px / fps);
+            who.y = who.y + Math.sin(who.a) * (unit2Px / fps);
+            who.visual.attr("cx", who.x).attr("cy", who.y);
+          } else {
+            who.stamps.push([who.a, who.x, who.y]);
+            who.on++;
+          }
+        }
+
+        FollowWall(who, value) {
+          var change = ((value[0] == "left") ? (1) : (-1)) / fps;
+          who.a += change;
+          who.x = center[0] + unit2Px * Math.cos(who.a);
+          who.y = center[1] + unit2Px * Math.sin(who.a);
+          who.visual.attr("cx", who.x).attr("cy", who.y);
+        }
+
+        FollowWallFor(who, value) {
+          if (Math.abs(who.a - who.stamps[who.on - 1][0]) < value[1] * (Math.PI / 180)) {
+            var change = ((value[0] == "left") ? (1) : (-1)) / fps;
+            who.a += change;
+            who.x = center[0] + unit2Px * Math.cos(who.a);
+            who.y = center[1] + unit2Px * Math.sin(who.a);
+            who.visual.attr("cx", who.x).attr("cy", who.y);
+          } else {
+            who.stamps.push([who.a, who.x, who.y]);
+            who.on++;
+          }
+        }
+
+        GoToCenter(who, value) {
+          var distance = Math.sqrt(Math.pow(center[0] - who.x, 2) + Math.pow(center[1] - who.y, 2));
+          if (distance > .1) {
+            who.x = who.x - Math.cos(who.a) * (unit2Px / fps);
+            who.y = who.y - Math.sin(who.a) * (unit2Px / fps);
+            who.visual.attr("cx", who.x).attr("cy", who.y);
+          } else {
+            who.stamps.push([who.a, who.x, who.y]);
+            who.on++;
+          }
+        }
+
+        Wait(who, value) {
+          console.log("waiting...");
+        }
+      }
+      //////////--------Instantiate Call Functions--------//////////
+      function Start() {
+        unit2Px = (window.innerHeight <= window.innerWidth) ? (window.innerHeight / 5) : (window.innerWidth / 5);
+        center = [unit2Px * 2, unit2Px * 2];
+        fieldSVG = d3.select("body").append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4).style("border", "1px solid black");
+        fieldSVG.append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", unit2Px).style("fill-opacity", 0.0).style("stroke", "000000");
+        for (i = 0; i < instruBinder.length; i++) {
+          tourists.push(new Tourist(fieldSVG.append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", unit2Px / 16).style("fill", "red"), instruBinder[i], center));
+        }
+        fieldSVG.append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", 1).style("fill", "000000");
+        projector = setInterval(AnimFrame, 1000 / fps);
+      }
+
+      var AnimFrame = () => {
+        tourists.forEach((tourist) => {
+                   tourist.fxs[tourist.instru[tourist.on][0]](tourist, tourist.instru[tourist.on][1]);
+                 });
+      };
+
+      //////////----------Instantiate Functions----------//////////
+
+      //////////----------Initial Function Call----------//////////
+      Start();
+
+    </script>
+  </body>
+</html>
