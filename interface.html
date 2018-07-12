@@ -6,38 +6,95 @@
 </head>
 
 <body>
-    <style></style>
 
-    </style>
     <script>
+
+    //---------Interface V3----------//
+    /*
+
+    This version currently supports:
+
+        -dragging boxes
+        -allowing the user to place them in one of the empty slots
+        -keeping track of placed commands
+        -successfully changing parameters of different
+            CommandBlock types using the respective buttons
+        -passing those params to a function assigned to the CommandBlock at creation.
+
+        The command queue is a Doubly Linked List.
+
+        Current Issues:
+        TODO: DoublyLinkedList currently will insertAfter properly, but does NOT
+              properly delete (removeNode) the one that is sent to it by that function.
+        TODO: The green box SVG that is supposed to execute the commands in order
+              does not call any or all of the functions attached to the nodes'
+              CommandBlocks.
+        TODO: Not a big issue, but fix the control flow of the updateBox() function
+              to properly use and set the CommandBlock.placed attribute.
+
+    */
 
     //---Name Classes---//
 
-    class CommandBlock {
-        constructor (x, y, type, commandFn, params, prevNode, nextNode){
+    class EmptyBlock {
+        constructor(x, y) {
             this.x = x;
             this.y = y;
-            this.height = (window.innerHeight*1.2)/10;
-            this.width = (window.innerWidth*1.2)/10;
+            this.type = 'empty';
+            this.visRef = this.createBlank();
+        }
+
+        createBlank() {
+            var boxW = (window.innerWidth * 1.2)/10;
+            var boxH = (window.innerHeight * 1.2)/10;
+
+            var blank = d3.select('.binder').append('rect')
+               .attr('width', boxW)
+               .attr('height', boxH)
+               .attr('x', this.x)
+               .attr('y', this.y)
+               .style('stroke', '#999')
+               .style('fill', '#ddd')
+               .style('stroke-width', 1)
+               .style('stroke-dasharray', '10 7')
+            return blank;
+        }
+
+        removeEmptyBlock() {
+            this.visRef.remove();
+        }
+
+        callCommand(){
+            return;
+        }
+    }
+
+    class CommandBlock {
+        constructor (x, y, type, commandFn, params){
+            this.x = x;
+            this.y = y;
+            this.height = (window.innerHeight*1.2)/10+5;
+            this.width = (window.innerWidth*1.2)/10+5;
             this.commandFn = commandFn;
             this.params = [];
             this.type = type;
-            this.prevNode = null;
-            this.nextNode = null;
-            this.draw(this);
+            this.placed = false;
+            this.visRef = this.draw(this);
+
+            console.log(this.visRef);
         }
 
         draw(commandBlock) {
             //commandBlock takes itself in draw because when the SVG is selected, it becomes 'this'
-            //so we have to sepcify that we want the commandBlock's attributes to change, unfortunately.
+            //so we have to specify that we want the commandBlock's attributes to change, unfortunately.
             var box = d3.select('.binder').append('svg')
                 .attr('x', this.x)
                 .attr('y', this.y)
                 .attr('width', this.width)
                 .attr('height', this.height)
                 .call(d3.drag().on('start', activateBox)
-                    .on('drag', updateBox)
-                    .on("end", deactivateBox));
+                    .on('drag', updateBox(commandBlock))
+                    .on('end', deactivateBox));
 
             box.append('rect') //the block itself
                 .attr('x', 0)
@@ -51,12 +108,43 @@
 
             var t = commandBlock.type;
 
+            switch(t) {
+                case 'goOutAtAngle':
+                    commandBlock.creategoOutAtAngle(commandBlock, box);
+                    break;
+                case 'goToCenter':
+                    commandBlock.createGoToCenter(commandBlock, box);
+                    break;
+                case 'waitFor':
+                    commandBlock.createWaitFor(commandBlock, box);
+                    break;
+                case 'wait':
+                    commandBlock.createWait(commandBlock, box);
+                    break;
+                case 'waitAverage':
+                    commandBlock.createWaitAverage(commandBlock, box);
+                    break;
+                case 'followWall':
+                    commandBlock.createFollowWall(commandBlock, box);
+                    break;
+                case 'followWallFor':
+                    commandBlock.createFollowWallFor(commandBlock, box);
+                    break;
+            }
+
+            /*
+
             if (t == 'goOutAtAngle') {
                 commandBlock.creategoOutAtAngle(commandBlock, box);
             }
             else if (t == 'waitFor') {
                 commandBlock.createWaitFor(commandBlock, box);
             }
+
+            */
+
+            return box;
+
 
         }
 
@@ -67,7 +155,8 @@
         }
 
         //TODO create all blocks with specific array parameters.
-        //TODO implement a function to remove a commandBlock from the screen.
+
+        //all functions below return box as SVG
 
         //goOutAtAngle.params = [int angle]
         creategoOutAtAngle(commandBlock, box) {
@@ -86,7 +175,7 @@
                 .attr('class', 'textbox')
                 .on('mouseDown', deactivateBox); // so the box doesnt move when the textbox arrows are held...
 
-            var label = d3.select(this.parentNode).append('text')
+            var label = box.append('text')
                 .text('Go at angle')
                 .style('font-size', '20px')
                 .style('fill', 'black')
@@ -119,11 +208,19 @@
                         .attr('class', 'infotext');
             });
 
+            return box;
+
         }
 
         //goToCenter.params = [], takes 1 time to get there.
         createGoToCenter(commandBlock, box) {
-
+            var label = box.append('text')
+                .text('Go to center')
+                .style('font-size', '20px')
+                .style('fill', 'black')
+                .attr('transform', 'translate(20, 100) rotate(0)')
+                .attr('text-anchor', 'left')
+                .attr('class', 'infotext')
         }
 
 
@@ -181,7 +278,13 @@
 
         //wait.params = [], wait indefinitely.
         createWait(commandBlock, box){
-
+            var label = box.append('text')
+                .text('Wait')
+                .style('font-size', '20px')
+                .style('fill', 'black')
+                .attr('transform', 'translate(20, 100) rotate(0)')
+                .attr('text-anchor', 'left')
+                .attr('class', 'infotext')
         }
 
         //waitAverage.params = []
@@ -196,15 +299,125 @@
 
         //followWall.params = [string direction]
         createFollowWall(commandBlock, box) {
-
+            var label = box.append('text')
+                .text('Follow wall')
+                .style('font-size', '20px')
+                .style('fill', 'black')
+                .attr('transform', 'translate(20, 100) rotate(0)')
+                .attr('text-anchor', 'left')
+                .attr('class', 'infotext')
         }
 
-        removeCommandBlock() {
-
+        removeCommandBlock(commandBlock) {
+            this.visRef.remove();
         }
 
 
 
+
+    }
+
+    function Node(data) {
+        this.data = data;
+        this.prevNode = null;
+        this.nextNode = null;
+    }
+
+    class DoublyLinkedList {
+        constructor() {
+            this.head = null;
+            this.tail = null;
+            this.totalLength = 0;
+        }
+
+        add(data) {
+            const node = new Node(data);
+            if (!this.head) {
+                this.head = node;
+                this.tail = node;
+            }
+            else {
+                node.prevNode = this.tail;
+                this.tail.nextNode = node;
+                this.tail = node;
+            }
+            this.totalLength ++;
+        }
+
+        removeNode(data) {
+            var current = this.head;
+            while (current) {
+                if (current.data == data.data) {
+
+                    if (current === this.head && current === this.tail) {
+                        this.head = null;
+                        this.tail = null
+                    }
+                    else if (current === this.head) {
+                        this.head = this.head.nextNode;
+                        this.head.prevNode = null;
+                    }
+                    else if (current === this.tail) {
+                        this.tail = this.tail.prevNode;
+                        this.tail.nextNode = null;
+                    }
+                    else {
+                        console.log('i am in here');
+                        current.prevNode.nextNode = current.nextNode;
+                        current.nextNode.prevNode = current.prevNode;
+                    }
+                    this.totalLength--;
+                }
+                current = this.nextNode;
+            }
+        }
+
+        insertAfter(data, node) {
+            var current = this.head;
+
+            while (current) {
+                if (current === node) {
+                    const node = new Node(data);
+                    if (current === this.tail) {
+                        this.add(node);
+                        return;
+                    }
+                    else {
+                        current.nextNode.prevNode = node;
+                        node.prevNode = current;
+                        node.nextNode = current.nextNode;
+                        current.nextNode = node;
+                        this.totalLength++;
+                        return;
+                    }
+                }
+                current = current.nextNode
+            }
+        }
+
+        traverse(fn) {
+            var current = this.head;
+            while (current) {
+                if (fn) {
+                    fn(current);
+                }
+                current = current.prevNode;
+            }
+        }
+
+        length() {
+            return this.totalLength;
+        }
+
+        print() {
+            var string = '';
+            var current = this.head;
+            while(current) {
+                string += `${current.data} `;
+                current = current.nextNode;
+            }
+            console.log(string.trim());
+        }
     }
 
 
@@ -214,6 +427,8 @@
     var emptyQueue = [];
     var commandQueue = [];
     var looseCommands = [];
+    var dll = new DoublyLinkedList();
+    var flag = false;
     console.log(winWidth);
     console.log(winHeight);
 
@@ -230,24 +445,26 @@
 
     //---Name Functions---//
 
-    //Takes x1, y1, x2, y2, as ints.
+        //Takes x1, y1, x2, y2, as ints.
     function distance(x1, y1, x2, y2) {
         return Math.sqrt(((x2 - x1)*(x2-x1)) + ((y2-y1)*(y2-y1)));
     }
 
-    //Takes the window SVG as a d3 object, x as int, y as int.
-    function createBlank(svg, x, y) {
+        //Takes x as int, y as int.
+    function createBlank(x, y) {
+        var boxW = (window.innerWidth * 1.2)/10;
+        var boxH = (window.innerHeight * 1.2)/10;
 
-        var blank = svg.append('rect')
-           .attr('width', '10%')
-           .attr('height', '10%')
+        var blank = d3.select('.binder').append('rect')
+           .attr('width', boxW)
+           .attr('height', boxH)
            .attr('x', x)
            .attr('y', y)
            .style('stroke', '#999')
            .style('fill', '#ddd')
-           .style('stroke-width', 3)
+           .style('stroke-width', 1)
            .style('stroke-dasharray', '10 7')
-        emptyQueue.push([x, y]);
+        return blank;
     }
 
     function activateBox() {
@@ -255,29 +472,64 @@
         d3.select(this).classed('active', true);
     }
 
-    function updateBox() {
-        var mousePosX = d3.event.x;
-        var mousePosY = d3.event.y;
-        var newCommand = false;
+    function updateBox(commandBlock) {
+        return function () {
 
-        d3.select(this).attr('x', mousePosX).attr('y', mousePosY);
-        for (r=0; r<emptyQueue.length; r++) {
-            var x1 = +emptyQueue[r][0];
-            var y1 = +emptyQueue[r][1];
-            if (distance(x1, y1, mousePosX, mousePosY) < 25) {
-                d3.select(this).attr('x', x1).attr('y', y1);
+            if (commandBlock.placed) {
+                return;
+            }
+            else if (commandBlock.placed){
+            }
+            var mousePosX = d3.event.x;
+            var mousePosY = d3.event.y;
+            var newCommand = false;
 
+            d3.select(this).attr('x', mousePosX).attr('y', mousePosY);
+            commandBlock.x = mousePosX;
+            commandBlock.y = mousePosY;
+            current = dll.head;
+
+            for (r=0;r<dll.length();r++) {
+                var x1 = current.data.x; //dab
+                var y1 = current.data.y;
+
+                if (commandBlock.placed) {
+                    d3.select(this).classed('dragging', false);
+                }
+
+                if (!commandBlock.placed && distance(x1, y1, mousePosX, mousePosY) <= 40 && current.data.type == 'empty' ) {
+                    d3.select(this).attr('x', x1-1).attr('y', y1-1);
+                    window.dll.insertAfter(commandBlock, current);
+                    console.log(current.data);
+                    window.dll.removeNode(current);
+                    dll.removeNode(current);
+                    commandBlock.placed = !commandBlock.placed;
+                    d3.select(this).classed('dragging', false);
+                    break;
+
+                }
+                else if (current.data.type != 'empty' && distance(x1, y1, mousePosX, mousePosY) > 40 ) {
+                    //var empty = new EmptyBlock(x1, y1);
+                    //dll.replaceDataAt(current, empty);
+                }
+
+                current = current.nextNode;
             }
         }
-
         //need to change the internal object's x and y positions as well as the svg.
         //consider adding method to the class and calling commandBlock.updateBox instead.
 
     }
 
+    function checkEmpty(node) {
+        if (node.type == 'empty') {
+
+        }
+    }
+
     function deactivateBox() {
         d3.select(this).attr('stroke', 'black').attr('fill', '#ddd');
-        d3.select(this).classed('active', false);
+        d3.select(this).classed('dragging', false);
     }
 
     // Takes type as a string, commandFn as a function, posX, posY as int.
@@ -296,7 +548,7 @@
             .attr('stroke-width', 3)
             .attr('fill', '#ddd')
             //creates a new CommandBlock object on click and sends it to the loose command Queue.
-            .on('click', function() {looseCommands.push(new CommandBlock(d3.event.x, d3.event.y, type, commandFn, [], null, null));});
+            .on('click', function() {looseCommands.push(new CommandBlock(d3.event.x, d3.event.y, type, commandFn, []));});
         box.append('text')
             .text(type)
             .style('font-size', '24px')
@@ -305,6 +557,18 @@
             .attr('text-anchor', 'left')
             .attr('class', 'infotext');
     }
+
+    function Initialize() {
+        var winW = window.innerWidth;
+        var winH = window.innerHeight;
+
+        for (i=0;i<3;i++) {
+            dll.add(new EmptyBlock(winW * 0.05, i*(winH*0.15)+50));
+        }
+        console.log(dll);
+
+    }
+
 
     //---Set up boundaries---//
     win.append('line')
@@ -324,13 +588,12 @@
         drawCommandList(type, commandFn, posX, posY);
     }
 
+    Initialize();
 
-    var testCommand = new CommandBlock(100, 100, 'goOutAtAngle', testCommands, [], null, null);
-    var test2 = new CommandBlock(100, 300, 'waitFor', testCommands, [], null, null);
 
-    looseCommands = [testCommand, test2];
-    console.log(testCommand.params);
-    console.log(test2.params);
+    //var testCommand = new CommandBlock(400, 400, 'goOutAtAngle', testCommands, []);
+    //var test2 = new CommandBlock(100, 300, 'waitFor', testCommands, []);
+
 
     function testCommands(parameter) {
         console.log('the command block passed me a parameter');
@@ -349,9 +612,18 @@
         .attr('height', '100%')
         .attr('stroke', 'green')
         .attr('fill', '#a3ffa0')
-        .on('click', testCommand.callCommand(testCommand));
+        .on('click', function(){
+            current = dll.head;
+            while (current) {
+                console.log(current);
+                if (current != null && current.data.type != 'empty') {
+                    current.data.callCommand(current.data);
+                }
+                current = current.nextNode;
+            }
+        });
 
-    var start = win.append('svg')
+    var del = win.append('svg')
         .attr('x', winWidth * 0.82)
         .attr('y', winHeight/15 + (commandsList.length * (winHeight/9)))
         .attr('width', '10%')
@@ -363,12 +635,23 @@
         .attr('height', '100%')
         .attr('stroke', 'green')
         .attr('fill', '#ff6e51')
-        .on('click', function() {looseCommands = [];});
+        .on('click', function() {
+            //removes all 'loose commands' AKA commands which have not been implemented yet
+            //from the screen.
+            for (i=0;i<looseCommands.length;i++){
+                var cB = looseCommands[i];
+                cB.removeCommandBlock(cB);
+                delete(looseCommands[i]);
+                console.log(looseCommands);
+            }
+            looseCommands = [];
+            console.log(looseCommands);
+        });
 
     </script>
 
     <g>
-        <button name="test button" type="submit" value="submit-true">If u see this at the top left the website crashed.</button>
+        <button name="test button" type="submit" value="submit-true">If you see this at the top left the website crashed.</button>
     </g>
 </body>
 
