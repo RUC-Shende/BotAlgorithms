@@ -9,25 +9,34 @@
     <h1>Evacuate Room</h1>
     <p>Circle Room</p>
     <script>
-      //Learning Jupiter NoteBook
       //////////----------Instantiate Variables----------//////////
-      var loading = true;
       var fxs = [GoOutAtAngle, Wait, FollowWall, WaitFor, FollowWallFor, GoToCenter, WaitAverage];
 
+      var loading = true;
       var time = 0;
-      var timeMax = 10000;//in milliseconds
+      var fps = 60;
+      var timeMax = 10 * fps;
       var timeBox;
       var timeSlide;
 
       var projector;
       var fieldSVG;
-      var unit2Px = 0;
-      var center = [0, 0];
-      var fps = 120;
+      var unit2Px = (window.innerHeight <= window.innerWidth) ? (window.innerHeight / 5) : (window.innerWidth / 5);
+      var center = [unit2Px * 2, unit2Px * 2];
       var touristNum = 0;
+
+      var tourColors = [];
       var tourists = [];
 
-      var fieldExit = 0;
+      var graphSVG;
+      var graphDots = [];
+
+      var tourLines = [];
+      var graphLines = [];
+
+      var exitAngle = 0;
+      var fieldExit = [center[0] + unit2Px * Math.cos(exitAngle * (Math.PI / 180)),
+                     center[1] + unit2Px * Math.sin(exitAngle * (Math.PI / 180))];
       var wireless = true;
       var instruBinder = [
                           [[0, [45]], [2, ['left']]],
@@ -39,7 +48,7 @@
                          ];
 
       //////////--------Instantiate Call Functions--------//////////
-      //The box's dragging ability
+//Drag function, updates tourists and graph dots relative to lines
       function SSlide() {
         d3.select(this).style("fill", "orange");
         d3.select(this).classed("active", true);
@@ -52,10 +61,14 @@
           mousePos = (31 / 8) * unit2Px;
         }
         d3.select(this).attr("x", mousePos);
-        time = (mousePos / ((31 / 8) * unit2Px)) * timeMax;
-        tourists.forEach((tourist) => {
-          tourist.Update();
-        });
+        time = Math.round((mousePos / ((31 / 8) * unit2Px)) * timeMax);
+        for (i = 0; i < touristNum; i++) {
+          var who = tourists[i];
+          who.x = tourLines[i][time].attr("x1");
+          who.y = tourLines[i][time].attr("y1");
+          who.visual.attr("cx", who.x).attr("cy", who.y);
+          graphDots[i].attr("cx", graphLines[i][time].attr("x1")).attr("cy", graphLines[i][time].attr("y1"));
+        }
       }
       function ESlide() {
         d3.select(this).style("fill", "#888888");
@@ -63,122 +76,158 @@
       }
 
       //////////---------- Instantiate Classes ----------//////////
-      //A basic class, only holds data, and calls updates.
+//Data holder, and loader update
       class Tourist {
         constructor (visual, instructions) {
           this.number = touristNum;
           touristNum++;
           this.visual = visual;
+          this.knows = false;
           this.instru = instructions;
           this.stamps = [];
+          this.loadTime = 0;
           this.on = 0;
           this.a = 0;
           this.x = center[0];
           this.y = center[1];
         }
-        //A loading update for genrating the data before hand
         LoadUpdate() {
-          fxs[this.instru[this.on][0]](this, this.instru[this.on][1]);
-        }
-        //A standard update, initialized from the load update
-        Update() {
-          for (i = 0; i < this.stamps.length; i++) {
-            if (this.stamps[i][0] <= time) {
-              this.on = i;
-            } else {
-              break;
-            }
+          if (this.knows) {
+            //What exit function
+          } else {
+            fxs[this.instru[this.on][0]](this, this.instru[this.on][1]);
           }
-          fxs[this.stamps[this.on][1]](this, this.stamps[this.on][2]);
         }
       }
 
       //////////----------Instantiate Functions----------//////////
-
-//	Start/Middle; Requires at center and angle; Bot goes to wall
-      function GoOutAtAngle(who, value) {
-        if (who.on >= who.stamps.length) {
-          who.a = value[0] * (Math.PI / 180);
-          who.stamps.push([time, 0, value, who.a, who.x, who.y]);
+//Not working, for now, so ignore, pls
+      function GoToExit(who, value) {
+        /*if (who.on >= who.stamps.length) {
+          var angle = exitAngle - who.stamps[who.on][3];
+          if (angle >= 360) {angle -= 360;} else if (angle < 0) {angle += 360;}
+          who.stamps.push([who.stamps[who.on][0] + angle * (Math.PI / 180), 0, value, who.a, who.x, who.y]);
+          who.loadTime += Math.sqrt(Math.pow(fieldExit[0] - who.stamps[who.on][4], 2) + Math.pow(fieldExit[1] - who.stamps[who.on][5], 2));
         }
-        var timePerc = (time - who.stamps[who.on][0]) / 1000;
+        if (time <= who.loadTime) {
+          var vectorX = fieldExit[0] - who.stamps[who.on][4];
+          var vectorY = fieldExit[1] - who.stamps[who.on][5];
+          var timePerc = (time - who.stamps[who.on][0]) / Math.sqrt(Math.pow(fieldExit[0] - who.stamps[who.on][4], 2) + Math.pow(fieldExit[1] - who.stamps[who.on][5], 2));
+          who.x = who.stamps[who.on][4] + vectorX * timePerc;
+          who.y = who.stamps[who.on][5] + vectorY * timePerc;
+          who.visual.attr("cx", who.x).attr("cy", who.y);
+        }
+        var timePerc = (time - who.stamps[who.on][0]) / fps;
         if (timePerc <= 1) {
           who.x = center[0] + unit2Px * Math.cos(who.a) * timePerc;
           who.y = center[1] - unit2Px * Math.sin(who.a) * timePerc;
           who.visual.attr("cx", who.x).attr("cy", who.y);
         } else {
+          who.x = center[0] + unit2Px * Math.cos(who.a);
+          who.y = center[1] - unit2Px * Math.sin(who.a);
+          who.visual.attr("cx", who.x).attr("cy", who.y);
+          who.on++;
+        }*/
+      }
+
+//Requirements: At center	Params:	Angle(time)	Description: Goes to wall
+      function GoOutAtAngle(who, value) {
+        if (who.on >= who.stamps.length) {
+          who.a = value[0] * (Math.PI / 180);
+          who.stamps.push([who.loadTime, 0, value, who.a, who.x, who.y]);
+          who.loadTime += fps;
+        }
+        var timePerc = (time - who.stamps[who.on][0]) / fps;
+        if (timePerc <= 1) {
+          who.x = center[0] + unit2Px * Math.cos(who.a) * timePerc;
+          who.y = center[1] - unit2Px * Math.sin(who.a) * timePerc;
+          who.visual.attr("cx", who.x).attr("cy", who.y);
+        } else {
+          who.x = center[0] + unit2Px * Math.cos(who.a);
+          who.y = center[1] - unit2Px * Math.sin(who.a);
+          who.visual.attr("cx", who.x).attr("cy", who.y);
           who.on++;
         }
       }
 
-//	End; Requires nothing; Bot stops where it is.
+//Requirements: None	Params: null	Description: Wait indefinitely
       function Wait(who, value) {
         if (who.on >= who.stamps.length) {
-          who.stamps.push([time, 1, value, who.a, who.x, who.y]);
+          who.stamps.push([who.loadTime, 1, value, who.a, who.x, who.y]);
         }
-        who.visual.attr("cx", who.x).attr("cy", who.y);
+        who.visual.attr("cx", who.stamps[who.on][4]).attr("cy", who.stamps[who.on][5]);
       }
 
-//	End; Requires direction; Robot follows wall
+//Requirements: At wall		Params: null	Description: Follows wall at direction indefinitely
       function FollowWall(who, value) {
         if (who.on >= who.stamps.length) {
-          who.stamps.push([time, 2, value, who.a, who.x, who.y]);
+          who.stamps.push([who.loadTime, 2, value, who.a, who.x, who.y]);
         }
         var dir = (value[0] == 'left') ? (1) : (-1);
-        who.a = who.stamps[who.on][3] + ((time - who.stamps[who.on][0]) / 1000) * dir;
+        who.a = who.stamps[who.on][3] + ((time - who.stamps[who.on][0]) / fps) * dir;
         who.x = center[0] + unit2Px * Math.cos(who.a);
         who.y = center[1] - unit2Px * Math.sin(who.a);
         who.visual.attr("cx", who.x).attr("cy", who.y);
       }
 
-//	Start/Middle; Requires time; Wait for time
+//Requirements: None	Params: time	Description: Wait for x time
       function WaitFor(who, value) {
         if (who.on >= who.stamps.length) {
-          who.stamps.push([time, 3, value, who.a, who.x, who.y]);
+          who.stamps.push([who.loadTime, 3, value, who.a, who.x, who.y]);
+          who.loadTime += value[0] * fps;
         }
-        if (time < (who.stamps[who.on][0] + value[0] * 1000)) {
-          who.visual.attr("cx", who.x).attr("cy", who.y);
+        if (time < (who.stamps[who.on][0] + value[0] * fps)) {
+          who.visual.attr("cx", who.stamps[who.on][4]).attr("cy", who.stamps[who.on][5]);
         } else {
           who.on++;
         }
       }
 
-//	Middle; Requires direction and angle(time); bot travels along wall for angle(time)
+//Requirements: At wall		Params: direction and angle(time)	Description: Follows wall at direction for x time
       function FollowWallFor(who, value) {
         if (who.on >= who.stamps.length) {
-          who.stamps.push([time, 4, value, who.a, who.x, who.y]);
+          who.stamps.push([who.loadTime, 4, value, who.a, who.x, who.y]);
+          who.loadTime += value[1] * (Math.PI / 180) * fps;
         }
-        if (time < (who.stamps[who.on][0] + value[1] * (Math.PI / 180) * 1000)) {
+        if (time < (who.stamps[who.on][0] + value[1] * (Math.PI / 180) * fps)) {
           var dir = (value[0] == 'left') ? (1) : (-1);
-          who.a = who.stamps[who.on][3] + ((time - who.stamps[who.on][0]) / 1000) * dir;
+          who.a = who.stamps[who.on][3] + value[1] * (Math.PI / 180) * ((time - who.stamps[who.on][0]) / fps) * dir;
           who.x = center[0] + unit2Px * Math.cos(who.a);
           who.y = center[1] - unit2Px * Math.sin(who.a);
           who.visual.attr("cx", who.x).attr("cy", who.y);
         } else {
+          var dir = (value[0] == 'left') ? (1) : (-1);
+          who.a = who.stamps[who.on][3] + value[1] * (Math.PI / 180) * dir;
+          who.x = center[0] + unit2Px * Math.cos(who.a);
+          who.y = center[1] - unit2Px * Math.sin(who.a);
+          who.visual.attr("cx", who.x).attr("cy", who.y);
           who.on++;
         }
       }
 
-//	Middle; Requires not at center; Bot goes to center
+//Requirements: At wall		Params: null	Description: Goes to center
       function GoToCenter(who, value) {
         if (who.on >= who.stamps.length) {
-          who.stamps.push([time, 5, value, who.a, who.x, who.y]);
+          who.stamps.push([who.loadTime, 5, value, who.a, who.x, who.y]);
+          who.loadTime += fps;
         }
-        var timePerc = (time - who.stamps[who.on][0]) / 1000;
-        console.log(timePerc);
+        var timePerc = (time - who.stamps[who.on][0]) / fps;
         if (timePerc <= 1) {
-          who.x = who.stamps[who.on][4] - unit2Px * Math.cos(who.a) * timePerc;
-          who.y = who.stamps[who.on][5] + unit2Px * Math.sin(who.a) * timePerc;
+          who.x = who.stamps[who.on][4] - unit2Px * Math.cos(who.stamps[who.on][3]) * timePerc;
+          who.y = who.stamps[who.on][5] + unit2Px * Math.sin(who.stamps[who.on][3]) * timePerc;
           who.visual.attr("cx", who.x).attr("cy", who.y);
         } else {
+          who.x = who.stamps[who.on][4] - unit2Px * Math.cos(who.stamps[who.on][3]);
+          who.y = who.stamps[who.on][5] + unit2Px * Math.sin(who.stamps[who.on][3]);
+          who.visual.attr("cx", who.x).attr("cy", who.y);
           who.on++;
         }
       }
 
-//	Start/Middle; Required nothing; Bot stays at point between other bots not in average
+//Requirements: None	Params: null	Description: Goes to center of all bots
       function WaitAverage(who, value) {
         if (who.on >= who.stamps.length) {
-          who.stamps.push([time, 6, value, who.a, who.x, who.y]);
+          who.stamps.push([who.loadTime, 6, value, who.a, who.x, who.y]);
         }
         var sumPosition = [0, 0];
         var totalNum = 0;
@@ -200,18 +249,22 @@
 
 
 
-//Initialize the screen
-      function Start() {
-        unit2Px = (window.innerHeight <= window.innerWidth) ? (window.innerHeight / 5) : (window.innerWidth / 5);
-        center = [unit2Px * 2, unit2Px * 2];
-        fieldSVG = d3.select("body").append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4).style("border", "1px solid black");
+      function Start() { 
+        fieldSVG = d3.select("body").append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
+                     .style("float", "left").style("border", "1px solid black");
+        graphSVG = d3.select("body").append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
+                     .style("float", "left").style("border", "1px solid black");
         fieldSVG.append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", unit2Px).style("fill-opacity", 0.0).style("stroke", "#000000");
         for (i = 0; i < instruBinder.length; i++) {
+          tourColors.push(RandomColor());
           tourists.push(new Tourist(fieldSVG.append("circle").attr("cx", center[0]).attr("cy", center[1])
-                                            .attr("r", unit2Px / 16).style("fill", RandomColor()), instruBinder[i]));
+                                            .attr("r", unit2Px / 16).style("fill", tourColors[i]), instruBinder[i]));
+          tourLines.push([]);
+          graphDots.push(graphSVG.append("circle").attr("cy", unit2Px * 4).attr("r", unit2Px / 16).style("fill", tourColors[i]));
+          graphLines.push([]);
         }
-        fieldExit = [center[0] + unit2Px * Math.cos(fieldExit * (Math.PI / 180)), center[1] + unit2Px * Math.sin(fieldExit * (Math.PI / 180))];
-        fieldSVG.append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", 1).style("fill", "#000000");
+        fieldSVG.append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", 2).style("fill", "#000000");
+        fieldSVG.append("circle").attr("cx", fieldExit[0]).attr("cy", fieldExit[1]).attr("r", 2).style("fill", "#000000");
         timeBox = fieldSVG.append("rect").attr("width", unit2Px / 8).attr("height", unit2Px / 8).style("fill-opacity", 0.0).style("stroke", "#000000");
         timeSlide = fieldSVG.append("rect").attr("width", unit2Px / 8).attr("height", unit2Px / 8)
                     .attr("visibility", "hidden").style("fill", "#888888")
@@ -219,27 +272,53 @@
         projector = setInterval(LoadAnim, 1000 / fps);
       }
 
-//Create a random color, makes robots distinct.
+//Create a random hexadecimal color
       function RandomColor() {
-        var colorRed = Math.floor(Math.random() * 256).toString(16);
-        var colorGreen = Math.floor(Math.random() * 256).toString(16);
-        var colorBlue = Math.floor(Math.random() * 256).toString(16);
-        return(colorRed + colorGreen + colorBlue);
+        var RGB = [];
+        RGB[0] = Math.floor(Math.random() * 256).toString(16);
+        RGB[1] = Math.floor(Math.random() * 256).toString(16);
+        RGB[2] = Math.floor(Math.random() * 256).toString(16);
+        for (j = 0; j < 3; j++) {if (RGB[j].length == 1) {RGB[j] = '0' + RGB[j];}}
+        return(RGB[0] + RGB[1] + RGB[2]);
       }
 
-//Load interval
+//Control times, and update bots
       function LoadAnim() {
-        if (time >= timeMax) {
+        if (time > timeMax) {
           timeSlide.attr("visibility", "visible");
           clearInterval(projector);
         } else {
           tourists.forEach((tourist) => {
             tourist.LoadUpdate();
           });
-          time += (1000 / fps);
+          for (i = 0; i < tourists.length; i++) {
+            LoadLines(i);
+          }
+          time++;
           timeSlide.attr("x", (time / timeMax) * (31 / 8) * unit2Px);
           timeBox.attr("width", (time / timeMax) * 4 * unit2Px);
         }
+      }
+
+//Create lines, and update graph dot positions.
+      function LoadLines(i) {
+        var dista = unit2Px * 4 - Math.sqrt(Math.pow(fieldExit[0] - tourists[i].x, 2) + Math.pow(fieldExit[1] - tourists[i].y, 2))
+        graphDots[i].attr("cx", (time / timeMax) * (31 / 8) * unit2Px).attr("cy", dista);
+        var tourHold;
+        var graphHold;
+        if (time > 0) {
+          tourHold = [tourLines[i][time - 1].attr("x2"), tourLines[i][time - 1].attr("y2")];
+          graphHold = [graphLines[i][time - 1].attr("x2"), graphLines[i][time - 1].attr("y2")];
+        } else {
+          tourHold = center;
+          graphHold = [0, 3 * unit2Px];
+        }
+          tourLines[i].push(fieldSVG.append("line").attr("x1", tourHold[0]).attr("y1", tourHold[1])
+                             .attr("x2", tourists[i].x).attr("y2", tourists[i].y)
+                             .style("stroke", tourColors[i]).style("stroke-width", 2).style("stroke-opacity", 0.5));
+          graphLines[i].push(graphSVG.append("line").attr("x1", graphHold[0]).attr("y1", graphHold[1])
+                             .attr("x2", graphDots[i].attr("cx")).attr("y2", graphDots[i].attr("cy"))
+                             .style("stroke", tourColors[i]).style("stroke-width", 2).style("stroke-opacity", 0.5));
       }
 
       //////////----------Initial Function Call----------//////////
