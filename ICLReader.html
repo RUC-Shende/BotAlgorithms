@@ -20,6 +20,8 @@
       var timeBox;
       var timeSlide;
       var timePlay;
+      var timePause;
+      var timeRewind;
 
       var projector;
       var fieldSVG;
@@ -50,6 +52,7 @@
                           [[0, [170]], [3, [1]], [2, ['right']]],
                           [[0, [87]], [4, ['left', 60]], [1, [null]]],
                           [[0, [30]], [4, ['right', 60]], [5, [null]], [1, [null]]],
+                          [[0, [270]],[6, [null]]],
                           [[6, [null]]]
                          ];
 
@@ -63,8 +66,15 @@
         var mousePos = d3.event.x;
         if (mousePos < 0) {
           mousePos = 0;
+          timeRewind.attr("visibility", "hidden");
+          timePlay.attr("visibility", "visible");
         } else if (mousePos > (31 / 8) * unit2Px) {
           mousePos = (31 / 8) * unit2Px;
+          timePlay.attr("visibility", "hidden");
+          timeRewind.attr("visibility", "visible");
+        } else {
+          timePlay.attr("visibility", "visible");
+          timeRewind.attr("visibility", "visible");
         }
         d3.select(this).attr("x", mousePos);
         time = Math.round((mousePos / ((31 / 8) * unit2Px)) * timeMax);
@@ -99,9 +109,15 @@
         }
         LoadUpdate() {
           if (this.knows) {
-            //What exit function
+            fxs[1](this, [null])
           } else {
             fxs[this.instru[this.on][0]](this, this.instru[this.on][1]);
+            if (Math.sqrt(Math.pow(fieldExit[1] - this.y ,2) + Math.pow(fieldExit[0] - this.x ,2)) < (unit2Px / fps)) {
+              this.knows = true;
+              this.x = fieldExit[0];
+              this.y = fieldExit[1];
+              this.on++;
+            }
           }
         }
       }
@@ -143,8 +159,8 @@
           who.stamps.push([who.loadTime, 0, value, who.a, who.x, who.y]);
           who.loadTime += fps;
         }
-        var timePerc = (time - who.stamps[who.on][0]) / fps;
-        if (timePerc <= 1) {
+        if (time < who.loadTime) {
+          var timePerc = (time - who.stamps[who.on][0]) / fps;
           who.x = center[0] + unit2Px * Math.cos(who.a) * timePerc;
           who.y = center[1] - unit2Px * Math.sin(who.a) * timePerc;
           who.visual.attr("cx", who.x).attr("cy", who.y);
@@ -195,7 +211,7 @@
           who.stamps.push([who.loadTime, 4, value, who.a, who.x, who.y]);
           who.loadTime += value[1] * (Math.PI / 180) * fps;
         }
-        if (time < (who.stamps[who.on][0] + value[1] * (Math.PI / 180) * fps)) {
+        if (time <= (who.stamps[who.on][0] + value[1] * (Math.PI / 180) * fps)) {
           var dir = (value[0] == 'left') ? (1) : (-1);
           who.a = who.stamps[who.on][3] + value[1] * (Math.PI / 180) * ((time - who.stamps[who.on][0]) / fps) * dir;
           who.x = center[0] + unit2Px * Math.cos(who.a);
@@ -203,7 +219,6 @@
           who.visual.attr("cx", who.x).attr("cy", who.y);
         } else {
           var dir = (value[0] == 'left') ? (1) : (-1);
-          who.a = who.stamps[who.on][3] + value[1] * (Math.PI / 180) * dir;
           who.x = center[0] + unit2Px * Math.cos(who.a);
           who.y = center[1] - unit2Px * Math.sin(who.a);
           who.visual.attr("cx", who.x).attr("cy", who.y);
@@ -217,8 +232,8 @@
           who.stamps.push([who.loadTime, 5, value, who.a, who.x, who.y]);
           who.loadTime += fps;
         }
-        var timePerc = (time - who.stamps[who.on][0]) / fps;
-        if (timePerc <= 1) {
+        if (time < who.loadTime) {
+          var timePerc = (time - who.stamps[who.on][0]) / fps;
           who.x = who.stamps[who.on][4] - unit2Px * Math.cos(who.stamps[who.on][3]) * timePerc;
           who.y = who.stamps[who.on][5] + unit2Px * Math.sin(who.stamps[who.on][3]) * timePerc;
           who.visual.attr("cx", who.x).attr("cy", who.y);
@@ -246,8 +261,16 @@
         }
         sumPosition[0] /= totalNum;
         sumPosition[1] /= totalNum;
-        who.x = sumPosition[0];
-        who.y = sumPosition[1];
+        var dLoc = [sumPosition[0] - who.x, sumPosition[1] - who.y];
+        var dist = Math.sqrt(Math.pow(dLoc[1], 2) + Math.pow(dLoc[0], 2));
+        if (dist < unit2Px / fps) {
+          who.x = sumPosition[0];
+          who.y = sumPosition[1];
+        } else {
+          var ang = Math.atan2(dLoc[1], dLoc[0]);
+          who.x = who.x + (unit2Px / fps) * Math.cos(ang);
+          who.y = who.y + (unit2Px / fps) * Math.sin(ang);
+        }
         who.visual.attr("cx", who.x).attr("cy", who.y);
       }
 
@@ -255,29 +278,49 @@
 
 
 
-      function Start() { 
+      function Start() {
+//Visuals
         fieldSVG = d3.select("body").append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
                      .style("float", "left").style("border", "1px solid black");
         graphSVG = d3.select("body").append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
                      .style("float", "left").style("border", "1px solid black");
-        fieldSVG.append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", unit2Px).style("fill-opacity", 0.0).style("stroke", "#000000");
+        fieldSVG.append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", unit2Px)
+                .style("fill-opacity", 0.0).style("stroke", "#000000");
         for (i = 0; i < instruBinder.length; i++) {
           tourColors.push(RandomColor());
           tourists.push(new Tourist(fieldSVG.append("circle").attr("cx", center[0]).attr("cy", center[1])
-                                            .attr("r", unit2Px / 16).style("fill", tourColors[i]), instruBinder[i]));
+                                    .attr("r", unit2Px / 16)
+                                    .style("fill", tourColors[i]), instruBinder[i]));
           tourLines.push([]);
-          graphDots.push(graphSVG.append("circle").attr("cy", unit2Px * 4).attr("r", unit2Px / 16).style("fill", tourColors[i]));
+          graphDots.push(graphSVG.append("circle").attr("cy", unit2Px * 4).attr("r", unit2Px / 16)
+                         .style("fill", tourColors[i]));
           graphLines.push([]);
         }
         fieldSVG.append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", 2).style("fill", "#000000");
         fieldSVG.append("circle").attr("cx", fieldExit[0]).attr("cy", fieldExit[1]).attr("r", 2).style("fill", "#000000");
+        fieldSVG.append("line").attr("x1", 2 * unit2Px).attr("y1", unit2Px).attr("x2",  2 * unit2Px).attr("y2", 3 * unit2Px)
+                .style("stroke", "#000000").style("stroke-width", .5);
+        fieldSVG.append("line").attr("x1", unit2Px).attr("y1", 2 * unit2Px).attr("x2",  3 * unit2Px).attr("y2", 2 * unit2Px)
+                .style("stroke", "#000000").style("stroke-width", .5);
+        fieldSVG.append("text").attr("x", 3.1 * unit2Px).attr("y", center[1])
+                .style("font-size", unit2Px / 5).text("0");
+        fieldSVG.append("text").attr("x", center[0]).attr("y", .9 * unit2Px)
+                .style("text-anchor", "middle").style("font-size", unit2Px / 5).text("90");
+
+//Time Slider and Buttons
         timeBox = fieldSVG.append("rect").attr("width", unit2Px / 8).attr("height", unit2Px / 8)
                           .style("fill-opacity", 0.0).style("stroke", "#000000");
         timeSlide = fieldSVG.append("rect").attr("width", unit2Px / 8).attr("height", unit2Px / 8)
                     .attr("visibility", "hidden").style("fill", "#888888")
                     .call(d3.drag().on("start", SSlide).on("drag", MSlide).on("end", ESlide));
-        timePlay = fieldSVG.append("rect").attr("y", unit2Px / 8).attr("width", unit2Px / 4).attr("height", unit2Px / 8)
-                           .style("fill", "#00ff00").on("click", () => {projector = setInterval(PlayAnim, 1000 / fps);});
+        timePlay = fieldSVG.append("rect").attr("x", unit2Px / 2).attr("y", unit2Px / 8).attr("width", unit2Px / 4)
+                           .attr("height", unit2Px / 4).attr("visibility", "hidden").style("fill", "#00ff00")
+                           .on("click", () => {projector = setInterval(PlayAnim, 1000 / fps);});
+        timePause = fieldSVG.append("rect").attr("x", unit2Px / 4).attr("y", unit2Px / 8).attr("width", unit2Px / 4).attr("height", unit2Px / 4)
+                            .attr("visibility", "hidden").style("fill", "#0000ff").on("click", PauseAnim);
+        timeRewind = fieldSVG.append("rect").attr("y", unit2Px / 8).attr("width", unit2Px / 4).attr("height", unit2Px / 4)
+                             .attr("visibility", "hidden").style("fill", "#ff0000")
+                             .on("click", () => {projector = setInterval(ReverseAnim, 1000 / fps);});
         projector = setInterval(LoadAnim, 1000 / fps);
       }
 
@@ -294,6 +337,7 @@
 //Control times, and update bots
       function LoadAnim() {
         if (time > timeMax) {
+          timeRewind.attr("visibility", "visible");
           timeSlide.attr("visibility", "visible");
           clearInterval(projector);
         } else {
@@ -335,7 +379,12 @@
       function PlayAnim() {
         if (time > timeMax) {
           clearInterval(projector);
+          timePause.attr("visibility", "hidden");
+          timeRewind.attr("visibility", "visible");
         } else {
+          timePlay.attr("visibility", "hidden");
+          timeRewind.attr("visibility", "hidden");
+          timePause.attr("visibility", "visible");
           for (i = 0; i < touristNum; i++) {
             var who = tourists[i];
             who.x = tourLines[i][time].x;
@@ -344,6 +393,34 @@
             graphDots[i].attr("cx", graphLines[i][time].x).attr("cy", graphLines[i][time].y);
           }
           time++;
+          timeSlide.attr("x", (time / timeMax) * (31 / 8) * unit2Px);
+        }
+      }
+
+      function PauseAnim() {
+        clearInterval(projector);
+        timePause.attr("visibility", "hidden");
+        timePlay.attr("visibility", "visible");
+        timeRewind.attr("visibility", "visible");
+      }
+
+      function ReverseAnim() {
+        if (time <= 0) {
+          clearInterval(projector);
+          timePause.attr("visibility", "hidden");
+          timePlay.attr("visibility", "visible");
+        } else {
+          timePlay.attr("visibility", "hidden");
+          timeRewind.attr("visibility", "hidden");
+          timePause.attr("visibility", "visible");
+          time--;
+          for (i = 0; i < touristNum; i++) {
+            var who = tourists[i];
+            who.x = tourLines[i][time].x;
+            who.y = tourLines[i][time].y;
+            who.visual.attr("cx", who.x).attr("cy", who.y);
+            graphDots[i].attr("cx", graphLines[i][time].x).attr("cy", graphLines[i][time].y);
+          }
           timeSlide.attr("x", (time / timeMax) * (31 / 8) * unit2Px);
         }
       }
