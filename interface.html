@@ -9,7 +9,7 @@
 
     <script>
 
-    //---------Interface V3----------//
+    //---------Interface V4----------//
     /*
 
     This version currently supports:
@@ -20,17 +20,22 @@
         -successfully changing parameters of different
             CommandBlock types using the respective buttons
         -passing those params to a function assigned to the CommandBlock at creation.
+        -calling functions of boxes in order via the green button.
+        -RESET button which gets rid of all loose and placed commands.
 
         The command queue is a Doubly Linked List.
 
         Current Issues:
         TODO: DoublyLinkedList currently will insertAfter properly, but does NOT
               properly delete (removeNode) the one that is sent to it by that function.
-        TODO: The green box SVG that is supposed to execute the commands in order
-              does not call any or all of the functions attached to the nodes'
-              CommandBlocks.
+              (slightly fixed by just overlooking it when running commands...)
         TODO: Not a big issue, but fix the control flow of the updateBox() function
               to properly use and set the CommandBlock.placed attribute.
+
+        Fixed Issues (V3 --> V4):
+        -Functions now all call in order using the green button.
+        -Reset button gets rid of all commands on screen and allows a restart without
+         needing F5.
 
     */
 
@@ -80,8 +85,6 @@
             this.type = type;
             this.placed = false;
             this.visRef = this.draw(this);
-
-            console.log(this.visRef);
         }
 
         draw(commandBlock) {
@@ -131,17 +134,6 @@
                     commandBlock.createFollowWallFor(commandBlock, box);
                     break;
             }
-
-            /*
-
-            if (t == 'goOutAtAngle') {
-                commandBlock.creategoOutAtAngle(commandBlock, box);
-            }
-            else if (t == 'waitFor') {
-                commandBlock.createWaitFor(commandBlock, box);
-            }
-
-            */
 
             return box;
 
@@ -344,10 +336,12 @@
             this.totalLength ++;
         }
 
-        removeNode(data) {
+        removeNode(node) {
+            console.log(node);
             var current = this.head;
+            console.log(current);
             while (current) {
-                if (current.data == data.data) {
+                if (current === node) {
 
                     if (current === this.head && current === this.tail) {
                         this.head = null;
@@ -372,14 +366,14 @@
             }
         }
 
-        insertAfter(data, node) {
+        insertAfter(data, nodeToFind) {
             var current = this.head;
 
             while (current) {
-                if (current === node) {
+                if (current === nodeToFind) {
                     const node = new Node(data);
                     if (current === this.tail) {
-                        this.add(node);
+                        this.add(data);
                         return;
                     }
                     else {
@@ -417,6 +411,18 @@
                 current = current.nextNode;
             }
             console.log(string.trim());
+        }
+
+        removeAll() {
+            var current = this.head;
+            while(current) {
+                console.log(current.data.visRef);
+                current.data.visRef.remove();
+                current = current.nextNode;
+            }
+            this.head = null;
+            this.tail = null;
+            this.totalLength = 0;
         }
     }
 
@@ -500,9 +506,8 @@
                 if (!commandBlock.placed && distance(x1, y1, mousePosX, mousePosY) <= 40 && current.data.type == 'empty' ) {
                     d3.select(this).attr('x', x1-1).attr('y', y1-1);
                     window.dll.insertAfter(commandBlock, current);
-                    console.log(current.data);
+                    console.log(current);
                     window.dll.removeNode(current);
-                    dll.removeNode(current);
                     commandBlock.placed = !commandBlock.placed;
                     d3.select(this).classed('dragging', false);
                     break;
@@ -614,10 +619,12 @@
         .attr('fill', '#a3ffa0')
         .on('click', function(){
             current = dll.head;
-            while (current) {
-                console.log(current);
+            for (r=0;r<=dll.length();r++) {
+                if (current == null) {
+                    break;
+                }
                 if (current != null && current.data.type != 'empty') {
-                    current.data.callCommand(current.data);
+                    current.data.commandFn(current.data.params);
                 }
                 current = current.nextNode;
             }
@@ -627,8 +634,8 @@
         .attr('x', winWidth * 0.82)
         .attr('y', winHeight/15 + (commandsList.length * (winHeight/9)))
         .attr('width', '10%')
-        .attr('height', '10%')
-    .append('rect')
+        .attr('height', '10%');
+    del.append('rect')
         .attr('x', 0)
         .attr('y', 0)
         .attr('width', '100%')
@@ -638,15 +645,21 @@
         .on('click', function() {
             //removes all 'loose commands' AKA commands which have not been implemented yet
             //from the screen.
+            console.log(looseCommands);
+            dll.removeAll();
+            Initialize();
             for (i=0;i<looseCommands.length;i++){
-                var cB = looseCommands[i];
-                cB.removeCommandBlock(cB);
-                delete(looseCommands[i]);
-                console.log(looseCommands);
+                looseCommands[i].visRef.remove();
             }
             looseCommands = [];
             console.log(looseCommands);
         });
+    del.append('text')
+        .attr('x', 62)
+        .attr('y', 55)
+        .attr('font-size', '20px')
+        .attr('text-anchor', 'middle')
+        .text("RESET");
 
     </script>
 
