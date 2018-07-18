@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+    <script src='https://d3js.org/d3.v5.min.js'></script>
+</head>
+
+<body>
+    <script>
+
+    var winH = window.innerHeight;
+    var winW = window.innerWidth;
+    var unit2px = ((winH < winW) ? (winH) : (winW))/8; //one unit is 1/8th of the screen
+    var eventListener;
+
+    var titleArea = d3.select('body').append('svg')
+        .attr('width', winW)
+        .attr('height', unit2px)
+        .attr('class', 'title');
+    var title = titleArea.append('text')
+        .text('TITLE')
+        .attr('text-anchor', 'middle')
+        .attr('x', unit2px*6)
+        .attr('y', unit2px/2)
+        .attr('font-size', '48px')
+        .attr('class', 'title');
+
+    var botArea = d3.select('body').append('svg')
+        .attr('float', 'left')
+        .attr('width', unit2px*6)
+        .attr('height', unit2px*6)
+        .style('border', '3px solid black')
+        .attr('class', 'outer');
+
+    var typeArea = d3.select('body').append('svg')
+        .attr('float', 'left')
+        .attr('width', unit2px*6)
+        .attr('height', unit2px*6)
+        .style('border', '3px solid black')
+        .attr('class', 'outer');
+
+
+
+    function updateUnit2Px() {
+        var tempScale = ((window.innerHeight < window.innerWidth) ?
+            (window.innerHeight) :
+            (window.innerWidth)) /8; //one unit is 1/8th of the screen
+
+        var updates = d3.selectAll('.outer').each(function() {
+            var u = d3.select(this);
+            u.attr('width', +u.attr('width')*tempScale/unit2px)
+                .attr('height', tempScale*6);
+        });
+
+        var updates = d3.selectAll('.inner').each(function() {
+            var u = d3.select(this);
+            u.attr('x', +u.attr('x')*tempScale/unit2px)
+                .attr('y', +u.attr('y')*tempScale/unit2px)
+                .attr('width', +u.attr('width')*tempScale/unit2px)
+                .attr('height', +u.attr('height')*tempScale/unit2px);
+        });
+        unit2px = tempScale;
+
+    }
+
+    /*function tempUpdate() {
+        var tempScale = ((window.innerHeight < window.innerWidth) ?
+            (window.innerHeight) :
+            (window.innerWidth)) /8; //one unit is 1/8th of the screen
+
+        d3.select(botArea).selectAll().each(function() {
+            var hold = d3.select(this);
+            hold.attr('x', hold.attr('x')*tempScale/unit2px);
+            hold.attr('y', hold.attr('y')*tempScale/unit2px);
+            hold.attr('width', hold.attr('width')*tempScale/unit2px);
+            hold.attr('height', hold.attr('height')*tempScale/unit2px);
+        });
+        //unit2px = tempScale;
+    } */
+
+    for (i=1;i<6;i+=2) {
+        for (j=1;j<6;j+=2) {
+            botArea.append('rect')
+                .attr('x', unit2px*(j-1))
+                .attr('y', unit2px*(i-1))
+                .attr('width', unit2px*2)
+                .attr('height', unit2px*2)
+                .style('stroke', 'black')
+                .style('fill', 'none')
+                .attr('class', 'inner');
+        }
+    }
+
+    function Initialize() {
+        eventListener = setInterval(updateUnit2Px, 100);
+    }
+
+    Initialize();
+
+    </script>
+</body>
+</html>
