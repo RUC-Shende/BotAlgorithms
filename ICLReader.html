@@ -7,10 +7,10 @@
   </head>
   <body>
     <h1>Evacuate Room</h1>
-    <p>Circle Room</p>
+    <p>Circle Room - Wireless</p>
     <script>
       //////////----------Instantiate Variables----------//////////
-      var fxs = [GoOutAtAngle, Wait, FollowWall, WaitFor, FollowWallFor, GoToCenter, WaitAverage];
+      var fxs = [GoOutAtAngle, Wait, FollowWall, WaitFor, FollowWallFor, GoToCenter, WaitAverage, GoToExit];
 
       var loading = true;
       var time = 0;
@@ -46,6 +46,7 @@
       var fieldExit = [center[0] + unit2Px * Math.cos(exitAngle * (Math.PI / 180)),
                        center[1] + unit2Px * Math.sin(exitAngle * (Math.PI / 180))];
       var wireless = true;
+      var sendSignal = 0;
       var instruBinder = [
                           [[0, [45]], [2, ['left']]],
                           [[0, [-125]], [1, [null]]],
@@ -109,47 +110,32 @@
         }
         LoadUpdate() {
           if (this.knows) {
-            fxs[1](this, [null])
+            fxs[7](this, [null])
           } else {
             fxs[this.instru[this.on][0]](this, this.instru[this.on][1]);
             if (Math.sqrt(Math.pow(fieldExit[1] - this.y ,2) + Math.pow(fieldExit[0] - this.x ,2)) < (unit2Px / fps)) {
-              this.knows = true;
-              this.x = fieldExit[0];
-              this.y = fieldExit[1];
-              this.on++;
+              sendSignal++;
             }
           }
         }
       }
 
       //////////----------Instantiate Functions----------//////////
-//Not working, for now, so ignore, pls
       function GoToExit(who, value) {
-        /*if (who.on >= who.stamps.length) {
-          var angle = exitAngle - who.stamps[who.on][3];
-          if (angle >= 360) {angle -= 360;} else if (angle < 0) {angle += 360;}
-          who.stamps.push([who.stamps[who.on][0] + angle * (Math.PI / 180), 0, value, who.a, who.x, who.y]);
-          who.loadTime += Math.sqrt(Math.pow(fieldExit[0] - who.stamps[who.on][4], 2) + Math.pow(fieldExit[1] - who.stamps[who.on][5], 2));
+        if (who.on >= who.stamps.length) {
+          who.stamps.push([who.loadTime, 7, value, who.a, who.x, who.y]);
         }
-        if (time <= who.loadTime) {
-          var vectorX = fieldExit[0] - who.stamps[who.on][4];
-          var vectorY = fieldExit[1] - who.stamps[who.on][5];
-          var timePerc = (time - who.stamps[who.on][0]) / Math.sqrt(Math.pow(fieldExit[0] - who.stamps[who.on][4], 2) + Math.pow(fieldExit[1] - who.stamps[who.on][5], 2));
-          who.x = who.stamps[who.on][4] + vectorX * timePerc;
-          who.y = who.stamps[who.on][5] + vectorY * timePerc;
-          who.visual.attr("cx", who.x).attr("cy", who.y);
-        }
-        var timePerc = (time - who.stamps[who.on][0]) / fps;
-        if (timePerc <= 1) {
-          who.x = center[0] + unit2Px * Math.cos(who.a) * timePerc;
-          who.y = center[1] - unit2Px * Math.sin(who.a) * timePerc;
-          who.visual.attr("cx", who.x).attr("cy", who.y);
+        var dLoc = [fieldExit[0] - who.x, fieldExit[1] - who.y];
+        var dist = Math.sqrt(Math.pow(dLoc[1], 2) + Math.pow(dLoc[0], 2));
+        if (dist < unit2Px / fps) {
+          who.x = fieldExit[0];
+          who.y = fieldExit[1];
         } else {
-          who.x = center[0] + unit2Px * Math.cos(who.a);
-          who.y = center[1] - unit2Px * Math.sin(who.a);
-          who.visual.attr("cx", who.x).attr("cy", who.y);
-          who.on++;
-        }*/
+          var ang = Math.atan2(dLoc[1], dLoc[0]);
+          who.x = who.x + (unit2Px / fps) * Math.cos(ang);
+          who.y = who.y + (unit2Px / fps) * Math.sin(ang);
+        }
+        who.visual.attr("cx", who.x).attr("cy", who.y);
       }
 
 //Requirements: At center	Params:	Angle(time)	Description: Goes to wall
@@ -344,6 +330,15 @@
           tourists.forEach((tourist) => {
             tourist.LoadUpdate();
           });
+
+          if (sendSignal == 1) {
+            for (var i = 0; i < tourists.length; i++) {
+              tourists[i].knows = true;
+              tourists[i].on++;
+            }
+            sendSignal++;
+          }
+
           for (i = 0; i < tourists.length; i++) {
             LoadLines(i);
           }
