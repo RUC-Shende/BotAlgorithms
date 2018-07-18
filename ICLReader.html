@@ -7,10 +7,10 @@
   </head>
   <body>
     <h1>Evacuate Room</h1>
-    <p>Circle Room</p>
+    <p>Circle Room - Wireless</p>
     <script>
       //////////----------Instantiate Variables----------//////////
-      var fxs = [GoOutAtAngle, Wait, FollowWall, WaitFor, FollowWallFor, GoToCenter, WaitAverage];
+      var fxs = [GoOutAtAngle, Wait, FollowWall, WaitFor, FollowWallFor, GoToCenter, WaitAverage, GoToExit];
 
       var loading = true;
       var time = 0;
@@ -30,6 +30,10 @@
       var center = [unit2Px * 2, unit2Px * 2];
       var touristNum = 0;
 
+      var selectDown;
+      var selectText;
+      var selectUp;
+
       var tourColors = [];
       var tourists = [];
 
@@ -46,14 +50,13 @@
       var fieldExit = [center[0] + unit2Px * Math.cos(exitAngle * (Math.PI / 180)),
                        center[1] + unit2Px * Math.sin(exitAngle * (Math.PI / 180))];
       var wireless = true;
+      var sendSignal = 2;
       var instruBinder = [
                           [[0, [45]], [2, ['left']]],
                           [[0, [-125]], [1, [null]]],
                           [[0, [170]], [3, [1]], [2, ['right']]],
                           [[0, [87]], [4, ['left', 60]], [1, [null]]],
-                          [[0, [30]], [4, ['right', 60]], [5, [null]], [1, [null]]],
-                          [[0, [270]],[6, [null]]],
-                          [[6, [null]]]
+                          [[0, [30]], [4, ['right', 60]], [5, [null]], [1, [null]]]
                          ];
 
       //////////--------Instantiate Call Functions--------//////////
@@ -109,47 +112,34 @@
         }
         LoadUpdate() {
           if (this.knows) {
-            fxs[1](this, [null])
+            fxs[7](this, [null])
           } else {
             fxs[this.instru[this.on][0]](this, this.instru[this.on][1]);
             if (Math.sqrt(Math.pow(fieldExit[1] - this.y ,2) + Math.pow(fieldExit[0] - this.x ,2)) < (unit2Px / fps)) {
-              this.knows = true;
-              this.x = fieldExit[0];
-              this.y = fieldExit[1];
-              this.on++;
+              if (sendSignal < 1) {
+                sendSignal++;
+              }
             }
           }
         }
       }
 
       //////////----------Instantiate Functions----------//////////
-//Not working, for now, so ignore, pls
       function GoToExit(who, value) {
-        /*if (who.on >= who.stamps.length) {
-          var angle = exitAngle - who.stamps[who.on][3];
-          if (angle >= 360) {angle -= 360;} else if (angle < 0) {angle += 360;}
-          who.stamps.push([who.stamps[who.on][0] + angle * (Math.PI / 180), 0, value, who.a, who.x, who.y]);
-          who.loadTime += Math.sqrt(Math.pow(fieldExit[0] - who.stamps[who.on][4], 2) + Math.pow(fieldExit[1] - who.stamps[who.on][5], 2));
+        if (who.on >= who.stamps.length) {
+          who.stamps.push([who.loadTime, 7, value, who.a, who.x, who.y]);
         }
-        if (time <= who.loadTime) {
-          var vectorX = fieldExit[0] - who.stamps[who.on][4];
-          var vectorY = fieldExit[1] - who.stamps[who.on][5];
-          var timePerc = (time - who.stamps[who.on][0]) / Math.sqrt(Math.pow(fieldExit[0] - who.stamps[who.on][4], 2) + Math.pow(fieldExit[1] - who.stamps[who.on][5], 2));
-          who.x = who.stamps[who.on][4] + vectorX * timePerc;
-          who.y = who.stamps[who.on][5] + vectorY * timePerc;
-          who.visual.attr("cx", who.x).attr("cy", who.y);
-        }
-        var timePerc = (time - who.stamps[who.on][0]) / fps;
-        if (timePerc <= 1) {
-          who.x = center[0] + unit2Px * Math.cos(who.a) * timePerc;
-          who.y = center[1] - unit2Px * Math.sin(who.a) * timePerc;
-          who.visual.attr("cx", who.x).attr("cy", who.y);
+        var dLoc = [fieldExit[0] - who.x, fieldExit[1] - who.y];
+        var dist = Math.sqrt(Math.pow(dLoc[1], 2) + Math.pow(dLoc[0], 2));
+        if (dist < unit2Px / fps) {
+          who.x = fieldExit[0];
+          who.y = fieldExit[1];
         } else {
-          who.x = center[0] + unit2Px * Math.cos(who.a);
-          who.y = center[1] - unit2Px * Math.sin(who.a);
-          who.visual.attr("cx", who.x).attr("cy", who.y);
-          who.on++;
-        }*/
+          var ang = Math.atan2(dLoc[1], dLoc[0]);
+          who.x = who.x + (unit2Px / fps) * Math.cos(ang);
+          who.y = who.y + (unit2Px / fps) * Math.sin(ang);
+        }
+        who.visual.attr("cx", who.x).attr("cy", who.y);
       }
 
 //Requirements: At center	Params:	Angle(time)	Description: Goes to wall
@@ -279,13 +269,14 @@
 
 
       function Start() {
-//Visuals
+//Background Visuals
         fieldSVG = d3.select("body").append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
                      .style("float", "left").style("border", "1px solid black");
         graphSVG = d3.select("body").append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
                      .style("float", "left").style("border", "1px solid black");
         fieldSVG.append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", unit2Px)
                 .style("fill-opacity", 0.0).style("stroke", "#000000");
+//Tourist Visuals
         for (i = 0; i < instruBinder.length; i++) {
           tourColors.push(RandomColor());
           tourists.push(new Tourist(fieldSVG.append("circle").attr("cx", center[0]).attr("cy", center[1])
@@ -296,6 +287,8 @@
                          .style("fill", tourColors[i]));
           graphLines.push([]);
         }
+
+//Unit Circle Visuals
         fieldSVG.append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", 2).style("fill", "#000000");
         fieldSVG.append("circle").attr("cx", fieldExit[0]).attr("cy", fieldExit[1]).attr("r", 2).style("fill", "#000000");
         fieldSVG.append("line").attr("x1", 2 * unit2Px).attr("y1", unit2Px).attr("x2",  2 * unit2Px).attr("y2", 3 * unit2Px)
@@ -322,6 +315,16 @@
                              .attr("visibility", "hidden").style("fill", "#ff0000")
                              .on("click", () => {projector = setInterval(ReverseAnim, 1000 / fps);});
         projector = setInterval(LoadAnim, 1000 / fps);
+
+//Tourist Info Visual
+        selectDown = graphSVG.append("path").attr("d", 'M' + unit2Px * (1 / 25) + ',' + unit2Px * (6 / 25) + 'L' + unit2Px * (6 / 25) + ',' + unit2Px * (1 / 25)
+                                                + 'L' + unit2Px * (6 / 25) + ',' + unit2Px * (11 / 25) + 'L' + unit2Px * (1 / 25) + ',' + unit2Px * (6 / 25))
+                     .attr("visibility", "hidden").style("fill", "0000ff").on("click", () => {UpdateInfo(-1);});
+        selectText = graphSVG.append("text").attr("x", unit2Px * (13 / 25)).attr("y", unit2Px * (8 / 25)).attr("text-anchor", "middle")
+                     .attr("visibility", "hidden").style("font-size", unit2Px * (7 / 25)).style("fill", "0000ff").text("1");
+        selectUp = graphSVG.append("path").attr("d", 'M' + unit2Px * (25 / 25) + ',' + unit2Px * (6 / 25) + 'L' + unit2Px * (20 / 25) + ',' + unit2Px * (1 / 25)
+                                                   + 'L' + unit2Px * (20 / 25) + ',' + unit2Px * (11 / 25) + 'L' + unit2Px * (25 / 25) + ',' + unit2Px * (6 / 25))
+                   .attr("visibility", "hidden").style("fill", "0000ff").on("click", () => {UpdateInfo(1);});
       }
 
 //Create a random hexadecimal color
@@ -339,11 +342,24 @@
         if (time > timeMax) {
           timeRewind.attr("visibility", "visible");
           timeSlide.attr("visibility", "visible");
+          selectDown.attr("visibility", "visible");
+          selectText.attr("visibility", "visible");
+          selectUp.attr("visibility", "visible");
+          UpdateInfo(0);
           clearInterval(projector);
         } else {
           tourists.forEach((tourist) => {
             tourist.LoadUpdate();
           });
+
+          if (sendSignal == 1) {
+            for (var i = 0; i < tourists.length; i++) {
+              tourists[i].knows = true;
+              tourists[i].on++;
+            }
+            sendSignal++;
+          }
+
           for (i = 0; i < tourists.length; i++) {
             LoadLines(i);
           }
@@ -423,6 +439,24 @@
           }
           timeSlide.attr("x", (time / timeMax) * (31 / 8) * unit2Px);
         }
+      }
+
+      function UpdateInfo(delta) {
+        tourists[selectText.text() - 1].visual.style("stroke", "none").style("fill-opacity", 1);
+        graphDots[selectText.text() - 1].style("stroke", "none").style("fill-opacity", 1);
+        tourLine[selectText.text() - 1].style("stroke-opacity", 0.5);
+        graphLine[selectText.text() - 1].style("stroke-opacity", 0.5);
+        delta += +selectText.text();
+        if (delta < 1) {delta = 1;}
+        else if (delta > tourists.length) {delta = tourists.length;}
+        selectText.text(delta);
+        tourists[delta - 1].visual.style("stroke", "#000000").style("stroke-width", unit2Px / 20).style("fill-opacity", 0.5);
+        graphDots[delta - 1].style("stroke", "#000000").style("stroke-width", unit2Px / 20).style("fill-opacity", 0.5);
+        tourLine[delta - 1].style("stroke-opacity", 1).raise();
+        graphLine[delta - 1].style("stroke-opacity", 1).raise();
+        selectUp.style("fill", tourColors[delta - 1]);
+        selectText.style("fill", tourColors[delta - 1]);
+        selectDown.style("fill", tourColors[delta - 1]);
       }
 
       //////////----------Initial Function Call----------//////////
