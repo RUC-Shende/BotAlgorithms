@@ -109,7 +109,6 @@
               }
             }
           }
-          this.visual.attr("cx", this.x).attr("cy", this.y);
         }
       }
 
@@ -257,7 +256,8 @@
                                     .attr("r", unit2Px / 16)
                                     .style("fill", tourColors[i]), instruBinder[i]));
           tourLines.push([]);
-          graphDots.push(graphSVG.append("circle").attr("cy", unit2Px * 4).attr("r", unit2Px / 16)
+          graphDots.push(graphSVG.append("circle").attr("cx", unit2Px * (10 / 25))
+                         .attr("cy", unit2Px * 4 * (20 / 25) - unit2Px * (10 / 25)).attr("r", unit2Px / 16)
                          .style("fill", tourColors[i]));
           graphLines.push([]);
         }
@@ -275,30 +275,29 @@
                 .style("text-anchor", "middle").style("font-size", unit2Px / 5).text("90");
 
 //Time Slider and Buttons
-        timeBox = graphSVG.append("rect").attr("width", unit2Px / 8).attr("height", unit2Px / 8)
+        timeBox = graphSVG.append("rect").attr("width", 4 * unit2Px).attr("height", unit2Px / 8)
                           .attr("fill-opacity", 0.0).style("stroke", "#000000");
         timeSlide = graphSVG.append("rect").attr("width", unit2Px / 8).attr("height", unit2Px / 8)
-                    .attr("class", "reveal").attr("visibility", "hidden").style("fill", "#888888")
+                    .attr("class", "reveal").style("fill", "#888888")
                     .call(d3.drag().on("start", SSlide).on("drag", MSlide).on("end", ESlide));
         graphSVG.append("rect").attr("x", unit2Px * (19 / 25)).attr("y", unit2Px * (4 / 25)).attr("width", unit2Px / 4)
-                .attr("class", "reveal").attr("height", unit2Px / 4).attr("visibility", "hidden").style("fill", "#00ff00")
+                .attr("class", "reveal").attr("height", unit2Px / 4).style("fill", "#00ff00")
                 .on("click", () => {timeDirect = 1;});
         graphSVG.append("rect").attr("x", unit2Px * (10 / 25)).attr("y", unit2Px * (4 / 25)).attr("width", unit2Px / 4).attr("height", unit2Px / 4)
-                .attr("class", "reveal").attr("visibility", "hidden").style("fill", "#0000ff").on("click", () => {timeDirect = 0;});
+                .attr("class", "reveal").style("fill", "#0000ff").on("click", () => {timeDirect = 0;});
         graphSVG.append("rect").attr("x", unit2Px * (1 / 25)).attr("y", unit2Px * (4 / 25)).attr("width", unit2Px / 4).attr("height", unit2Px / 4)
-                .attr("class", "reveal").attr("visibility", "hidden").style("fill", "#ff0000")
+                .attr("class", "reveal").style("fill", "#ff0000")
                 .on("click", () => {timeDirect = -1;});
-        projector = setInterval(LoadAnim, 1000 / fps);
 
 //Tourist Info Visual
         graphSVG.append("path").attr("d", 'M' + unit2Px * (1 / 25) + ',' + unit2Px * (16 / 25) + 'L' + unit2Px * (6 / 25) + ',' + unit2Px * (11 / 25)
                                                 + 'L' + unit2Px * (6 / 25) + ',' + unit2Px * (21 / 25) + 'L' + unit2Px * (1 / 25) + ',' + unit2Px * (16 / 25))
-                     .attr("class", "reveal select").attr("visibility", "hidden").on("click", () => {UpdateInfo(-1);});
+                     .attr("class", "select").on("click", () => {UpdateInfo(-1);});
         selectText = graphSVG.append("text").attr("x", unit2Px * (13 / 25)).attr("y", unit2Px * (18 / 25)).attr("text-anchor", "middle")
-                     .attr("class", "reveal select").attr("visibility", "hidden").style("font-size", unit2Px * (7 / 25)).text("1");
+                     .attr("class", "select").style("font-size", unit2Px * (7 / 25)).text("1");
         graphSVG.append("path").attr("d", 'M' + unit2Px * (25 / 25) + ',' + unit2Px * (16 / 25) + 'L' + unit2Px * (20 / 25) + ',' + unit2Px * (11 / 25)
                                                    + 'L' + unit2Px * (20 / 25) + ',' + unit2Px * (21 / 25) + 'L' + unit2Px * (25 / 25) + ',' + unit2Px * (16 / 25))
-                   .attr("class", "reveal select").attr("visibility", "hidden").on("click", () => {UpdateInfo(1);});
+                   .attr("class", "select").on("click", () => {UpdateInfo(1);});
         graphSVG.append("path").attr("d", 'M' + unit2Px * (10 / 25) + ',' + unit2Px * (50 / 25)
                                         + 'L' + unit2Px * (10 / 25) + ',' + unit2Px * (90 / 25)
                                         + 'L' + unit2Px * (90 / 25) + ',' + unit2Px * (90 / 25))
@@ -308,6 +307,20 @@
                 .style("font-size", unit2Px * (5 / 25)).style("fill", "#000000").text("Distance from Exit");
         graphSVG.append("text").attr("x", unit2Px * 2).attr("y", unit2Px * (395 / 100)).attr("text-anchor", "middle")
                 .style("font-size", unit2Px * (5 / 25)).style("fill", "#000000").text("Time");
+//Loader
+        while (time <= timeMax) {
+          LoadAnim();
+        }
+        for (var i = 0; i < tourists.length; i++) {
+          tourLine[i] = fieldSVG.append("path").attr("d", lineFx(tourLines[i]))
+                        .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
+          graphLine[i] = graphSVG.append("path").attr("d", lineFx(graphLines[i]))
+                         .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
+        }
+        time = 0;
+        timeDirect = 0;
+        UpdateInfo(0);
+        setInterval(PlayAnim, 1000 / fps);
       }
 
 //Create a random hexadecimal color
@@ -322,45 +335,27 @@
 
 //Control times, and update bots
       function LoadAnim() {
-        if (time > timeMax) {
-          d3.selectAll(".reveal").attr("visibility", "visible");
-          UpdateInfo(0);
-          clearInterval(projector);
-          setInterval(PlayAnim, 1000 / fps);
-        } else {
-          tourists.forEach((tourist) => {
-            tourist.LoadUpdate();
-          });
-          if (sendSignal == 1) {
-            for (var i = 0; i < tourists.length; i++) {
-              tourists[i].knows = true;
-              tourists[i].on++;
-            }
-            sendSignal++;
-          }
+        tourists.forEach((tourist) => {
+          tourist.LoadUpdate();
+        });
+        if (sendSignal == 1) {
           for (var i = 0; i < tourists.length; i++) {
-            LoadLines(i);
+            tourists[i].knows = true;
+            tourists[i].on++;
           }
-          time++;
-          timeSlide.attr("x", (time / timeMax) * (31 / 8) * unit2Px);
-          timeBox.attr("width", (time / timeMax) * 4 * unit2Px);
+          sendSignal++;
         }
+        for (var i = 0; i < tourists.length; i++) {
+          LoadLines(i);
+        }
+        time++;
       }
 
 //Create lines, and update graph dot positions, as well recreating image of path.
       function LoadLines(i) {
         var dista = unit2Px * 4 - (Math.sqrt(Math.pow(fieldExit[0] - tourists[i].x, 2) + Math.pow(fieldExit[1] - tourists[i].y, 2)) * (20 / 25));
-        graphDots[i].attr("cx", (unit2Px * (10 / 25) + (time / timeMax) * (80 / 25) * unit2Px)).attr("cy", (dista - unit2Px * (10 / 25)));
-        if (time > 0) {
-          tourLine[i].remove();
-          graphLine[i].remove();
-        }
         tourLines[i].push({x:tourists[i].x, y:tourists[i].y});
-        tourLine[i] = fieldSVG.append("path").attr("d", lineFx(tourLines[i]))
-                      .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
-        graphLines[i].push({x:graphDots[i].attr("cx"), y:graphDots[i].attr("cy")});
-        graphLine[i] = graphSVG.append("path").attr("d", lineFx(graphLines[i]))
-                       .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
+        graphLines[i].push({x:(unit2Px * (10 / 25) + (time / timeMax) * (80 / 25) * unit2Px), y:(dista - unit2Px * (10 / 25))});
       }
 
       function PlayAnim() {
@@ -392,8 +387,8 @@
           graphLine[selectText.text() - 1].style("stroke-opacity", 0.5);
         }
         delta += +selectText.text();
-        if (delta < 0) {delta = 0;}
-        else if (delta > tourists.length) {delta = tourists.length;}
+        if (delta < 0) {delta = tourists.length;}
+        else if (delta > tourists.length) {delta = 0;}
         selectText.text(delta);
         if (delta != 0) {
           tourists[delta - 1].visual.attr("r", unit2Px / 8);
