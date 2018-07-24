@@ -1,673 +1,390 @@
 <!doctype html>
 <html>
-
 <head>
-    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src='https://d3js.org/d3.v5.min.js'></script>
+    <script src='https://fastcdn.org/FileSaver.js/1.1.20151003/FileSaver.js'></script>
 </head>
 
 <body>
+    <style>
 
+            * { box-sizing: border-box; }
+        body {
+          font: 16px Arial;
+        }
+        .autocomplete {
+          /*the container must be positioned relative:*/
+          position: relative;
+          display: inline-block;
+        }
+        input {
+          border: 1px solid transparent;
+          background-color: #f1f1f1;
+          padding: 10px;
+          font-size: 16px;
+        }
+        input[type=text] {
+          background-color: #f1f1f1;
+        }
+        input[type=submit] {
+          background-color: DodgerBlue;
+          color: #fff;
+        }
+        button {
+            background-color: DodgerBlue;
+            color: #fff;
+        }
+
+        input.reset {
+            background-color: Red;
+            color: #fff;
+        }
+
+        input.copypaste {
+            background-color: #ccc;
+            color: #000;
+        }
+
+        .autocomplete-items {
+          position: relative;
+          border: 1px solid #d4d4d4;
+          border-bottom: none;
+          border-top: none;
+          z-index: 99;
+          /*position the autocomplete items to be the same width as the container:*/
+          top: 100%;
+          left: 0;
+          right: 0;
+        }
+        .autocomplete-items div {
+          padding: 10px;
+          cursor: pointer;
+          background-color: #fff;
+          border-bottom: 1px solid #d4d4d4;
+        }
+        .autocomplete-items div:hover {
+          /*when hovering an item:*/
+          background-color: #e9e9e9;
+        }
+        .autocomplete-active {
+          /*when navigating through the items using the arrow keys:*/
+          background-color: DodgerBlue !important;
+          color: #ffffff;
+        }
+    </style>
     <script>
 
-    //---------Interface V4----------//
     /*
 
-    This version currently supports:
+    Interface t03 (previous t02) is version 2.0 of interface_alt.
 
-        -dragging boxes
-        -allowing the user to place them in one of the empty slots
-        -keeping track of placed commands
-        -successfully changing parameters of different
-            CommandBlock types using the respective buttons
-        -passing those params to a function assigned to the CommandBlock at creation.
-        -calling functions of boxes in order via the green button.
-        -RESET button which gets rid of all loose and placed commands.
+    The goal of this is to allow the user to essentially program the robots using pseudocode.
+    The commands are attempted to autocomplete as the user types, so that there is no confusion
+    as to what the list of commands is or what they can be.
+    There are convenient copy/paste options because most of the time, the robots will be following similar
+    algorithms, with only a slight change in values passed to them. The propsed design choice is to
+    show default commands with an X in place of a value, and set that value to be
+    random (when based on angles) or indefinitely/until a signal is recieved (when based on time).
+    For now, input via the main textbox, paste button, and editing a line is permitted.
 
-        The command queue is a Doubly Linked List.
 
-        Current Issues:
-        TODO: DoublyLinkedList currently will insertAfter properly, but does NOT
-              properly delete (removeNode) the one that is sent to it by that function.
-              (slightly fixed by just overlooking it when running commands...)
-        TODO: Not a big issue, but fix the control flow of the updateBox() function
-              to properly use and set the CommandBlock.placed attribute.
+    TODO: show all commands when the focus is on an empty textbox. (edit autocomplete)
+    TODO: delete and insert specific lines in the command list.
+    TODO; create reader and text file with commands in it
 
-        Fixed Issues (V3 --> V4):
-        -Functions now all call in order using the green button.
-        -Reset button gets rid of all commands on screen and allows a restart without
-         needing F5.
+
+    Fixed: t02 --> t03
+    - Bug where copy array would be a direct reference to commands subarray, now it is just a naive clone.
+        - Consequence of this is that the commands in the box that were copied can be removed, and the
+        copy clone will still work.
+    - Can now edit a command by the line and the changes will be saved.
+    - Remove unecessary function definitions.
+    - Added the save commands feature, which saves an ICL file.
+    - Add framework for loading of commands.
+    - Fixed a bug which did not allow the line to be edited when an empty string was sent to the commands.
+
 
     */
 
-    //---Name Classes---//
+    var winH = window.innerHeight;
+    var winW = window.innerWidth;
+    var unit2px = ((winH < winW) ? (winH) : (winW))/8; //one unit is 1/8th of the smaller portion screen
+    var eventListener;
+    var numBots;
+    var commands = [];
+    const commandsList = ['GoOutAtAngle X', 'Wait', 'FollowWall', 'WaitFor X',
+                          'FollowWallFor X', 'GoToCenter', 'WaitAverage', 'GoToExit'];
 
-    class EmptyBlock {
-        constructor(x, y) {
-            this.x = x;
-            this.y = y;
-            this.type = 'empty';
-            this.visRef = this.createBlank();
-        }
+    const comparator = ['GoOutAtAngle','Wait','FollowWall','WaitFor',
+                        'FollowWallFor','GoToCenter','WaitAverage','GoToExit'];
 
-        createBlank() {
-            var boxW = (window.innerWidth * 1.2)/10;
-            var boxH = (window.innerHeight * 1.2)/10;
+    var copy = [];
 
-            var blank = d3.select('.binder').append('rect')
-               .attr('width', boxW)
-               .attr('height', boxH)
-               .attr('x', this.x)
-               .attr('y', this.y)
-               .style('stroke', '#999')
-               .style('fill', '#ddd')
-               .style('stroke-width', 1)
-               .style('stroke-dasharray', '10 7')
-            return blank;
-        }
+    var titleArea = d3.select('body').append('svg')
+        .attr('width', winW)
+        .attr('height', unit2px)
+        .attr('class', 'title');
+    var title = titleArea.append('text')
+        .text('TITLE')
+        .attr('text-anchor', 'middle')
+        .attr('x', winW/2)
+        .attr('y', unit2px/2)
+        .attr('font-size', '48px')
+        .attr('class', 'title');
+    d3.select('body').append('p')
+        .text('Replace "X" in a command suggestion with a number to specify a value!');
 
-        removeEmptyBlock() {
-            this.visRef.remove();
-        }
-
-        callCommand(){
+    function updateList(){
+        var numBots = document.getElementById('numBots').value;
+        if (numBots > 100) {
+            alert("Slow down there partner, don't wanna crash the site... Try a number in range.")
             return;
         }
+        if (numBots < 1) {
+            alert("You need at least 1 robot!");
+            return;
+        }
+        d3.selectAll('.autocomplete').remove();
+        commands = [];
+
+        for (i=0; i<numBots;i++) {
+            commands.push([]);
+            var d = d3.select('body').append('div')
+                .style('width', unit2px*3+'px')
+                .style('height', unit2px*3+'px')
+                .attr('float', 'left')
+                .style('position', 'relative')
+                .style('overflow-y', 'scroll')
+                .attr('class', 'autocomplete')
+                .style('border', '1px black solid');
+            form = d.append('form')
+                .attr('id', 'formno'+i)
+                .attr('action', 'javascript:void(0)')
+                .attr('autocomplete', 'off');
+            list = d.append('ol');
+            var b = form.append('input')
+                .attr('type', 'text')
+                .attr('id', 'inputno'+i) // !important!, how we differentiate between different form inputs.
+                .on('keydown', function() {
+                    if (event.keyCode == 13) {this.form.submit(); return false;}
+                });
+
+            form.append('input')
+                .attr('type', 'submit')
+                .property('value','Enter')
+                .on('click', function() {
+                    console.log(d3.select(this.parentNode.parentNode).select('ol').node().getElementsByTagName('li')); //
+                    var id = d3.select(this.parentNode).attr('id').substring(6);
+                    var v = d3.select(this.parentNode).select('input').property('value');
+                    if (v == '') {
+                        v = '__________';
+                    }
+                    d3.select(this.parentNode).select('input').property('value',''); //reset textbox because why not.
+                    commands[id].push(v);
+                    var idno = d3.select(this.parentNode.parentNode).select('ol').node().getElementsByTagName('li').length;
+                    var li = d3.select(this.parentNode.parentNode).select('ol').append('li').attr('id', 'listid'+idno);
+                    li.append('span')
+                        .text(v)
+                        .attr('class', 'display')
+                        .on('click' , function(d) {
+                            console.log(d3.select(this.parentNode).node());
+                            var edit = d3.select(this).text();
+                            d3.select(this).style('display', 'none');
+                            d3.select(this.parentNode).select('.edit').style('display', 'inline').property('value', edit);
+                        })
+                    li.append('input')
+                        .attr('class', 'edit')
+                        .style('display', 'none')
+                        .on('focusout', function(){
+                            var idindex = +d3.select(this.parentNode).attr('id').substring(6);
+                            var edit = d3.select(this).property('value');
+                            if (edit == ''){
+                                edit = '__________';
+                            }
+                            d3.select(this).style('display', 'none');
+                            d3.select(this.parentNode).select('.display').style('display', 'inline').text(edit);
+                            commands[id][idindex] = edit;
+                        });
+                }); //ENTER BUTTON
+
+            form.append('input')
+                .attr('type', 'submit')
+                .property('value','X')
+                .attr('class', 'reset')
+                .on('click', function(){
+                    var id = d3.select(this.parentNode).attr('id').substring(6);
+                    commands[id] = [];
+                    console.log(commands);
+                    var divTemp = d3.select(this.parentNode.parentNode);
+                    divTemp.select('ol').remove();
+                    divTemp.append('ol');
+                }); //X BUTTON
+
+            form.append('input')
+                .attr('type', 'submit')
+                .attr('class', 'copypaste')
+                .property('value', 'Copy')
+                .on('click', function() {
+                    var id = d3.select(this.parentNode).attr('id').substring(6);
+                    console.log(id);
+                    copy = commands[id].slice(0);
+                    console.log(commands[id]);
+                }); //COPY BUTTON
+
+            form.append('input') //PASTE BUTTON
+                .attr('type', 'submit')
+                .attr('class', 'copypaste')
+                .property('value', 'Paste')
+                .on('click', function() {
+                    var id = d3.select(this.parentNode).attr('id').substring(6);
+                    console.log(id);
+                    divTemp = d3.select(this.parentNode.parentNode);
+                    divTemp.select('ol').remove();
+                    divTemp.append('ol');
+                    for (x=0;x<copy.length;x++) {
+                        var li = divTemp.select('ol').append('li').attr('id', 'listid'+x);
+                        li.append('span')
+                            .text(copy[x])
+                            .attr('class', 'display')
+                            .on('click' , function(d) {
+                                var edit = d3.select(this).text();
+                                d3.select(this).style('display', 'none');
+                                d3.select(this.parentNode).select('.edit').style('display', 'inline').property('value', edit);
+                            })
+                        li.append('input')
+                            .attr('class', 'edit')
+                            .style('display', 'none')
+                            .on('focusout', function(){
+                                var idindex = +d3.select(this.parentNode).attr('id').substring(6);
+                                var edit = d3.select(this).property('value');
+                                if (edit == ''){
+                                    edit = '__________';
+                                }
+                                d3.select(this).style('display', 'none');
+                                d3.select(this.parentNode).select('.display').style('display', 'inline').text(edit);
+                                commands[id][idindex] = edit;
+                            });
+                    }
+                    commands[id] = copy.slice(0);
+                });
+
+            //add all event listeners to inputs
+            autocomplete(b.node(), commandsList);
+
+        }
     }
 
-    class CommandBlock {
-        constructor (x, y, type, commandFn, params){
-            this.x = x;
-            this.y = y;
-            this.height = (window.innerHeight*1.2)/10+5;
-            this.width = (window.innerWidth*1.2)/10+5;
-            this.commandFn = commandFn;
-            this.params = [];
-            this.type = type;
-            this.placed = false;
-            this.visRef = this.draw(this);
-        }
-
-        draw(commandBlock) {
-            //commandBlock takes itself in draw because when the SVG is selected, it becomes 'this'
-            //so we have to specify that we want the commandBlock's attributes to change, unfortunately.
-            var box = d3.select('.binder').append('svg')
-                .attr('x', this.x)
-                .attr('y', this.y)
-                .attr('width', this.width)
-                .attr('height', this.height)
-                .call(d3.drag().on('start', activateBox)
-                    .on('drag', updateBox(commandBlock))
-                    .on('end', deactivateBox));
-
-            box.append('rect') //the block itself
-                .attr('x', 0)
-                .attr('y', 0)
-                .attr('width', this.width)
-                .attr('height', this.height)
-                .attr('stroke', 'black')
-                .attr('stroke-width', 3)
-                .attr('fill', '#ddd')
-                .attr('class', 'block');
-
-            var t = commandBlock.type;
-
-            switch(t) {
-                case 'goOutAtAngle':
-                    commandBlock.creategoOutAtAngle(commandBlock, box);
-                    break;
-                case 'goToCenter':
-                    commandBlock.createGoToCenter(commandBlock, box);
-                    break;
-                case 'waitFor':
-                    commandBlock.createWaitFor(commandBlock, box);
-                    break;
-                case 'wait':
-                    commandBlock.createWait(commandBlock, box);
-                    break;
-                case 'waitAverage':
-                    commandBlock.createWaitAverage(commandBlock, box);
-                    break;
-                case 'followWall':
-                    commandBlock.createFollowWall(commandBlock, box);
-                    break;
-                case 'followWallFor':
-                    commandBlock.createFollowWallFor(commandBlock, box);
-                    break;
+    function autocomplete(inp, arr) {
+      // https://www.w3schools.com/howto/howto_js_autocomplete.asp //
+      var currentFocus;
+      inp.addEventListener("input", function(e) {
+          var a, b, i, val = this.value;
+          closeAllLists();
+          if (!val) { return false;}
+          currentFocus = -1;
+          a = document.createElement("DIV");
+          a.setAttribute("id", this.id + "autocomplete-list");
+          a.setAttribute("class", "autocomplete-items");
+          this.parentNode.appendChild(a);
+          for (i = 0; i < arr.length; i++) {
+            if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+              b = document.createElement("DIV");
+              b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+              b.innerHTML += arr[i].substr(val.length);
+              b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                  b.addEventListener("click", function(e) {
+                  inp.value = this.getElementsByTagName("input")[0].value;
+                  closeAllLists();
+              });
+              a.appendChild(b);
             }
-
-            return box;
-
-
-        }
-
-        callCommand(commandBlock) {
-            return function () { //closure scope, only calls function when button is clicked
-                commandBlock.commandFn(commandBlock.params);
+          }
+      });
+      inp.addEventListener("keydown", function(e) {
+          var x = document.getElementById(this.id + "autocomplete-list");
+          if (x) x = x.getElementsByTagName("div");
+          if (e.keyCode == 40) {
+            currentFocus++;
+            addActive(x);
+          } else if (e.keyCode == 38) { //up
+            currentFocus--;
+            addActive(x);
+          } else if (e.keyCode == 13) {
+            e.preventDefault();
+            if (currentFocus > -1) {
+              if (x) x[currentFocus].click();
             }
+          }
+      });
+      function addActive(x) {
+        if (!x) return false;
+        removeActive(x);
+        if (currentFocus >= x.length) currentFocus = 0;
+        if (currentFocus < 0) currentFocus = (x.length - 1);
+        x[currentFocus].classList.add("autocomplete-active");
+      }
+      function removeActive(x) {
+        for (var i = 0; i < x.length; i++) {
+          x[i].classList.remove("autocomplete-active");
         }
-
-        //TODO create all blocks with specific array parameters.
-
-        //all functions below return box as SVG
-
-        //goOutAtAngle.params = [int angle]
-        creategoOutAtAngle(commandBlock, box) {
-
-            var fo = box.append('foreignObject')
-                .attr('x', this.width/3)
-                .attr('y', 10)
-                .attr('width', 50);
-
-            var textBox = fo.append('xhtml:div').append('div').append('input')
-                .attr('name', 'Angle')
-                .attr('type', 'number')
-                .attr('min', 0)
-                .attr('max', 360)
-                .attr('value', 0)
-                .attr('class', 'textbox')
-                .on('mouseDown', deactivateBox); // so the box doesnt move when the textbox arrows are held...
-
-            var label = box.append('text')
-                .text('Go at angle')
-                .style('font-size', '20px')
-                .style('fill', 'black')
-                .attr('transform', 'translate(20, 100) rotate(0)')
-                .attr('text-anchor', 'left')
-                .attr('class', 'infotext')
-
-            box.append('rect') // the button
-                .attr('x', this.width/3)
-                .attr('y', this.height/3)
-                .attr('width', '30%')
-                .attr('height', '20%')
-                .attr('stroke', 'black')
-                .attr('fill', '#68ff63')
-                .on('click', function () {
-                    if (commandBlock.params.length == 0){
-                        commandBlock.params.push(+d3.select(this.parentNode).select('.textbox').property('value')); //selects parent svg of the button, then goes back into the children to find the textbox input
-                    }
-                    else{
-                        commandBlock.params[0] = +d3.select(this.parentNode).select('.textbox').property('value');
-                    }
-                    console.log(commandBlock.params);
-                    d3.select(this.parentNode).select('.infotext').remove();
-                    label = d3.select(this.parentNode).append('text')
-                        .text('Go at angle: ' + commandBlock.params)
-                        .style('font-size', '20px')
-                        .style('fill', 'black')
-                        .attr("transform", "translate(20, 100) rotate(0)")
-                        .attr('text-anchor', 'left')
-                        .attr('class', 'infotext');
-            });
-
-            return box;
-
+      }
+      function closeAllLists(elmnt) {
+        var x = document.getElementsByClassName("autocomplete-items");
+        for (var i = 0; i < x.length; i++) {
+          if (elmnt != x[i] && elmnt != inp) {
+          x[i].parentNode.removeChild(x[i]);
+          }
         }
-
-        //goToCenter.params = [], takes 1 time to get there.
-        createGoToCenter(commandBlock, box) {
-            var label = box.append('text')
-                .text('Go to center')
-                .style('font-size', '20px')
-                .style('fill', 'black')
-                .attr('transform', 'translate(20, 100) rotate(0)')
-                .attr('text-anchor', 'left')
-                .attr('class', 'infotext')
-        }
-
-
-        //waitFor.params = [int time]
-        createWaitFor(commandBlock, box) {
-
-            var fo = box.append('foreignObject')
-                .attr('x', this.width/3)
-                .attr('y', 10)
-                .attr('width', 50);
-
-            var textBox = fo.append('xhtml:div').append('div').append('input')
-                .attr('name', 'Wait for: ')
-                .attr('type', 'number')
-                .attr('min', 0)
-                .attr('max', 9999)
-                .attr('value', 0)
-                .attr('class', 'textbox')
-                .on('mouseDown', deactivateBox); // so the box doesnt move when the textbox arrows are held...
-
-            var label = d3.select(this.parentNode).append('text')
-                .text('Wait for: ')
-                .style('font-size', '20px')
-                .style('fill', 'black')
-                .attr('transform', 'translate(20, 100) rotate(0)')
-                .attr('text-anchor', 'left')
-                .attr('class', 'infotext');
-
-            box.append('rect') // the button
-                .attr('x', this.width/3)
-                .attr('y', this.height/3)
-                .attr('width', '30%')
-                .attr('height', '20%')
-                .attr('stroke', 'black')
-                .attr('fill', '#68ff63')
-                .on('click', function () {
-                    if (commandBlock.params.length == 0){
-                        commandBlock.params.push(+d3.select(this.parentNode).select('.textbox').property('value'));
-                    }
-                    else{
-                        commandBlock.params[0] = +d3.select(this.parentNode).select('.textbox').property('value');
-                    }
-                    console.log(commandBlock.params);
-                    d3.select(this.parentNode).select('.infotext').remove();
-                    label = d3.select(this.parentNode).append('text')
-                        .text('Wait for: ' + commandBlock.params)
-                        .style('font-size', '20px')
-                        .style('fill', 'black')
-                        .attr("transform", "translate(20, 100) rotate(0)")
-                        .attr('text-anchor', 'left')
-                        .attr('class', 'infotext');
-            });
-
-        }
-
-        //wait.params = [], wait indefinitely.
-        createWait(commandBlock, box){
-            var label = box.append('text')
-                .text('Wait')
-                .style('font-size', '20px')
-                .style('fill', 'black')
-                .attr('transform', 'translate(20, 100) rotate(0)')
-                .attr('text-anchor', 'left')
-                .attr('class', 'infotext')
-        }
-
-        //waitAverage.params = []
-        createWaitAverage(commandBlock, box) {
-
-        }
-
-        //followWallFor.params = [string direction, int angle(time)]
-        createFollowWallFor(commandBlock, box) {
-
-        }
-
-        //followWall.params = [string direction]
-        createFollowWall(commandBlock, box) {
-            var label = box.append('text')
-                .text('Follow wall')
-                .style('font-size', '20px')
-                .style('fill', 'black')
-                .attr('transform', 'translate(20, 100) rotate(0)')
-                .attr('text-anchor', 'left')
-                .attr('class', 'infotext')
-        }
-
-        removeCommandBlock(commandBlock) {
-            this.visRef.remove();
-        }
-
-
-
-
+      }
+      document.addEventListener("click", function (e) {
+        closeAllLists(e.target);
+      });
     }
 
-    function Node(data) {
-        this.data = data;
-        this.prevNode = null;
-        this.nextNode = null;
-    }
+    function saveCommands() {
+        console.log(commands);
+        console.log(comparator);
 
-    class DoublyLinkedList {
-        constructor() {
-            this.head = null;
-            this.tail = null;
-            this.totalLength = 0;
-        }
-
-        add(data) {
-            const node = new Node(data);
-            if (!this.head) {
-                this.head = node;
-                this.tail = node;
-            }
-            else {
-                node.prevNode = this.tail;
-                this.tail.nextNode = node;
-                this.tail = node;
-            }
-            this.totalLength ++;
-        }
-
-        removeNode(node) {
-            console.log(node);
-            var current = this.head;
-            console.log(current);
-            while (current) {
-                if (current === node) {
-
-                    if (current === this.head && current === this.tail) {
-                        this.head = null;
-                        this.tail = null
-                    }
-                    else if (current === this.head) {
-                        this.head = this.head.nextNode;
-                        this.head.prevNode = null;
-                    }
-                    else if (current === this.tail) {
-                        this.tail = this.tail.prevNode;
-                        this.tail.nextNode = null;
-                    }
-                    else {
-                        console.log('i am in here');
-                        current.prevNode.nextNode = current.nextNode;
-                        current.nextNode.prevNode = current.prevNode;
-                    }
-                    this.totalLength--;
-                }
-                current = this.nextNode;
-            }
-        }
-
-        insertAfter(data, nodeToFind) {
-            var current = this.head;
-
-            while (current) {
-                if (current === nodeToFind) {
-                    const node = new Node(data);
-                    if (current === this.tail) {
-                        this.add(data);
-                        return;
-                    }
-                    else {
-                        current.nextNode.prevNode = node;
-                        node.prevNode = current;
-                        node.nextNode = current.nextNode;
-                        current.nextNode = node;
-                        this.totalLength++;
-                        return;
+        var l = commands.length;
+        var s = '';
+        for (i=0;i<l;i++) {
+            for (j=0;j<commands[i].length;j++) {
+                for (c=comparator.length;c>=0;c--) {
+                    if (commands[i][j].includes(comparator[c])){
+                        s+='['+c+':'
+                        var args = commands[i][j].substring(comparator[c].length);
+                        if (args.length == 0) {
+                            args = ' null]';
+                        }
+                        else {
+                            args += ']';
+                        }
+                        s+=args;
+                        console.log(s);
+                        break;
                     }
                 }
-                current = current.nextNode
             }
+            s += '\n';
         }
-
-        traverse(fn) {
-            var current = this.head;
-            while (current) {
-                if (fn) {
-                    fn(current);
-                }
-                current = current.prevNode;
-            }
-        }
-
-        length() {
-            return this.totalLength;
-        }
-
-        print() {
-            var string = '';
-            var current = this.head;
-            while(current) {
-                string += `${current.data} `;
-                current = current.nextNode;
-            }
-            console.log(string.trim());
-        }
-
-        removeAll() {
-            var current = this.head;
-            while(current) {
-                console.log(current.data.visRef);
-                current.data.visRef.remove();
-                current = current.nextNode;
-            }
-            this.head = null;
-            this.tail = null;
-            this.totalLength = 0;
-        }
+        var blob = new Blob([s], {type: 'text/plain;charset=utf-8'});
+        saveAs(blob, 'my-algorithm.icl');
     }
 
-
-    //---Instantiate Variables---//
-    var winWidth = window.innerWidth;
-    var winHeight = window.innerHeight;
-    var emptyQueue = [];
-    var commandQueue = [];
-    var looseCommands = [];
-    var dll = new DoublyLinkedList();
-    var flag = false;
-    console.log(winWidth);
-    console.log(winHeight);
-
-    var win = d3.select('body').append('svg')
-              .attr('width', winWidth)
-              .attr('height', winHeight)
-              .attr('class', 'binder');
-
-    var commandsList = [['goOutAtAngle', testCommands], ['goToCenter', testCommands],
-                        ['waitFor', testCommands], ['wait', testCommands],
-                        ['waitAverage', testCommands], ['followWallFor', testCommands],
-                        ['followWall', testCommands]]
-
-
-    //---Name Functions---//
-
-        //Takes x1, y1, x2, y2, as ints.
-    function distance(x1, y1, x2, y2) {
-        return Math.sqrt(((x2 - x1)*(x2-x1)) + ((y2-y1)*(y2-y1)));
+    function loadCommands() {
+        console.log('loading...');
     }
-
-        //Takes x as int, y as int.
-    function createBlank(x, y) {
-        var boxW = (window.innerWidth * 1.2)/10;
-        var boxH = (window.innerHeight * 1.2)/10;
-
-        var blank = d3.select('.binder').append('rect')
-           .attr('width', boxW)
-           .attr('height', boxH)
-           .attr('x', x)
-           .attr('y', y)
-           .style('stroke', '#999')
-           .style('fill', '#ddd')
-           .style('stroke-width', 1)
-           .style('stroke-dasharray', '10 7')
-        return blank;
-    }
-
-    function activateBox() {
-        d3.select(this).attr('stroke', 'gray').attr('fill', '#ccc').attr('class', 'commandBox');
-        d3.select(this).classed('active', true);
-    }
-
-    function updateBox(commandBlock) {
-        return function () {
-
-            if (commandBlock.placed) {
-                return;
-            }
-            else if (commandBlock.placed){
-            }
-            var mousePosX = d3.event.x;
-            var mousePosY = d3.event.y;
-            var newCommand = false;
-
-            d3.select(this).attr('x', mousePosX).attr('y', mousePosY);
-            commandBlock.x = mousePosX;
-            commandBlock.y = mousePosY;
-            current = dll.head;
-
-            for (r=0;r<dll.length();r++) {
-                var x1 = current.data.x; //dab
-                var y1 = current.data.y;
-
-                if (commandBlock.placed) {
-                    d3.select(this).classed('dragging', false);
-                }
-
-                if (!commandBlock.placed && distance(x1, y1, mousePosX, mousePosY) <= 40 && current.data.type == 'empty' ) {
-                    d3.select(this).attr('x', x1-1).attr('y', y1-1);
-                    window.dll.insertAfter(commandBlock, current);
-                    console.log(current);
-                    window.dll.removeNode(current);
-                    commandBlock.placed = !commandBlock.placed;
-                    d3.select(this).classed('dragging', false);
-                    break;
-
-                }
-                else if (current.data.type != 'empty' && distance(x1, y1, mousePosX, mousePosY) > 40 ) {
-                    //var empty = new EmptyBlock(x1, y1);
-                    //dll.replaceDataAt(current, empty);
-                }
-
-                current = current.nextNode;
-            }
-        }
-        //need to change the internal object's x and y positions as well as the svg.
-        //consider adding method to the class and calling commandBlock.updateBox instead.
-
-    }
-
-    function checkEmpty(node) {
-        if (node.type == 'empty') {
-
-        }
-    }
-
-    function deactivateBox() {
-        d3.select(this).attr('stroke', 'black').attr('fill', '#ddd');
-        d3.select(this).classed('dragging', false);
-    }
-
-    // Takes type as a string, commandFn as a function, posX, posY as int.
-    function drawCommandList(type, commandFn, posX, posY) {
-        var box = d3.select('.binder').append('svg')
-            .attr('x', posX)
-            .attr('y', posY)
-            .attr('width', '15%')
-            .attr('height', '10%');
-        box.append('rect')
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('width', '100%')
-            .attr('height', '100%')
-            .style('stroke', 'black')
-            .attr('stroke-width', 3)
-            .attr('fill', '#ddd')
-            //creates a new CommandBlock object on click and sends it to the loose command Queue.
-            .on('click', function() {looseCommands.push(new CommandBlock(d3.event.x, d3.event.y, type, commandFn, []));});
-        box.append('text')
-            .text(type)
-            .style('font-size', '24px')
-            .style('fill', 'black')
-            .attr("transform", "translate(10, 50) rotate(0)")
-            .attr('text-anchor', 'left')
-            .attr('class', 'infotext');
-    }
-
-    function Initialize() {
-        var winW = window.innerWidth;
-        var winH = window.innerHeight;
-
-        for (i=0;i<3;i++) {
-            dll.add(new EmptyBlock(winW * 0.05, i*(winH*0.15)+50));
-        }
-        console.log(dll);
-
-    }
-
-
-    //---Set up boundaries---//
-    win.append('line')
-        .attr('x1', winWidth * 0.6)
-        .attr('y1', 0)
-        .attr('x2', winWidth * 0.6)
-        .attr('y2', winHeight)
-        .style('stroke', '#000')
-        .attr('stroke-width', 3);
-
-    // Draw up a list of command boxes to click on.
-    for (i = 0; i < commandsList.length; i++) {
-        var posX = winWidth * 0.7;
-        var posY = winHeight/15 + (i * (winHeight/9));
-        type = commandsList[i][0];
-        commandFn = commandsList[i][1];
-        drawCommandList(type, commandFn, posX, posY);
-    }
-
-    Initialize();
-
-
-    //var testCommand = new CommandBlock(400, 400, 'goOutAtAngle', testCommands, []);
-    //var test2 = new CommandBlock(100, 300, 'waitFor', testCommands, []);
-
-
-    function testCommands(parameter) {
-        console.log('the command block passed me a parameter');
-        console.log(parameter);
-    }
-
-    var start = win.append('svg')
-        .attr('x', winWidth * 0.7)
-        .attr('y', winHeight/15 + (commandsList.length * (winHeight/9)))
-        .attr('width', '10%')
-        .attr('height', '10%')
-    .append('rect')
-        .attr('x', 0)
-        .attr('y', 0)
-        .attr('width', '100%')
-        .attr('height', '100%')
-        .attr('stroke', 'green')
-        .attr('fill', '#a3ffa0')
-        .on('click', function(){
-            current = dll.head;
-            for (r=0;r<=dll.length();r++) {
-                if (current == null) {
-                    break;
-                }
-                if (current != null && current.data.type != 'empty') {
-                    current.data.commandFn(current.data.params);
-                }
-                current = current.nextNode;
-            }
-        });
-
-    var del = win.append('svg')
-        .attr('x', winWidth * 0.82)
-        .attr('y', winHeight/15 + (commandsList.length * (winHeight/9)))
-        .attr('width', '10%')
-        .attr('height', '10%');
-    del.append('rect')
-        .attr('x', 0)
-        .attr('y', 0)
-        .attr('width', '100%')
-        .attr('height', '100%')
-        .attr('stroke', 'green')
-        .attr('fill', '#ff6e51')
-        .on('click', function() {
-            //removes all 'loose commands' AKA commands which have not been implemented yet
-            //from the screen.
-            console.log(looseCommands);
-            dll.removeAll();
-            Initialize();
-            for (i=0;i<looseCommands.length;i++){
-                looseCommands[i].visRef.remove();
-            }
-            looseCommands = [];
-            console.log(looseCommands);
-        });
-    del.append('text')
-        .attr('x', 62)
-        .attr('y', 55)
-        .attr('font-size', '20px')
-        .attr('text-anchor', 'middle')
-        .text("RESET");
 
 
     </script>
 
-    <g>
-        <button name="test button" type="submit" value="submit-true">If you see this at the top left the website crashed.</button>
-    </g>
-
+    <form style="margin:3%" action="javascript:void(0)"> <!-- this keeps the page from reloading-->
+        <input type='number' min=1 max=30 name='bots' id='numBots'/>
+        <input type='submit' value='Input the number of Bots to use...' onClick="updateList()"/>
+    </form>
+    <form style="margin:3% ; position: relative;" action="javascript:void(0)">
+        <input type='submit' class='copypaste' value='Save Commands' onClick='saveCommands()' />
+        <input type='submit' class='copypaste' value='Load Commands' onClick='loadCommands()' />
+    </form>
 </body>
-
 </html>
