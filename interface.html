@@ -156,7 +156,9 @@
                 .style('position', 'relative')
                 .style('overflow-y', 'scroll')
                 .attr('class', 'autocomplete')
-                .style('border', '1px black solid');
+                .style('border', '1px black solid')
+                .style('border-radius', '5px')
+                .style('margin', '0.5%');
             form = d.append('form')
                 .attr('id', 'formno'+i)
                 .attr('action', 'javascript:void(0)')
