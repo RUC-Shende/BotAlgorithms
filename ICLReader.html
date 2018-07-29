@@ -10,15 +10,17 @@
     <p>Circle Room - Wireless</p>
     <script>
       //////////----------Instantiate Variables----------//////////
-      var fxs = [GoOutAtAngle, Wait, FollowWall, WaitFor, FollowWallFor, GoToCenter, WaitAverage, GoToExit];
+      var fxs = [GoOutAtAngle, Wait, FollowWall, WaitFor, FollowWallFor, GoToCenter, WaitAverage];
 
       var time = 0;
+      var timeText;
+      var frameText;
       var fps = 60;
       var timeMax = 10 * fps;
 
       var timeBox;
       var timeSlide;
-      var timeDirect;
+      var timeDirect = 0;
 
       var selectText;
 
@@ -41,9 +43,9 @@
       var graphLines = [];
       var graphLine = [];
 
-      var exitAngle = 180;
+      var exitAngle = 20;
       var fieldExit = [center[0] + unit2Px * Math.cos(exitAngle * (Math.PI / 180)),
-                       center[1] + unit2Px * Math.sin(exitAngle * (Math.PI / 180))];
+                       center[1] - unit2Px * Math.sin(exitAngle * (Math.PI / 180))];
       var wireless = true;
       var sendSignal = 0;
       var instruBinder = [
@@ -90,6 +92,8 @@
           touristNum++;
           this.visual = visual;
           this.knows = false;
+          this.target = null;
+          this.targeted = false;
           this.instru = instructions;
           this.stamps = [];
           this.loadTime = 0;
@@ -98,30 +102,18 @@
           this.x = center[0];
           this.y = center[1];
         }
-        LoadUpdate() {
-          if (this.knows) {
-            fxs[7](this, [null])
-          } else {
-            fxs[this.instru[this.on][0]](this, this.instru[this.on][1]);
-            if (Math.sqrt(Math.pow(fieldExit[1] - this.y ,2) + Math.pow(fieldExit[0] - this.x ,2)) < (unit2Px / fps)) {
-              if (sendSignal < 1) {
-                sendSignal++;
-              }
-            }
-          }
-        }
       }
 
       //////////----------Instantiate Functions----------//////////
-      function GoToExit(who, value) {
+      function GoToPoint(who, value) {
         if (who.on >= who.stamps.length) {
           who.stamps.push([who.loadTime, who.a, who.x, who.y]);
         }
-        var dLoc = [fieldExit[0] - who.x, fieldExit[1] - who.y];
+        var dLoc = [value[0] - who.x, value[1] - who.y];
         var dist = Math.sqrt(Math.pow(dLoc[1], 2) + Math.pow(dLoc[0], 2));
         if (dist < unit2Px / fps) {
-          who.x = fieldExit[0];
-          who.y = fieldExit[1];
+          who.x = value[0];
+          who.y = value[1];
         } else {
           var ang = Math.atan2(dLoc[1], dLoc[0]);
           who.x = who.x + (unit2Px / fps) * Math.cos(ang);
@@ -242,14 +234,14 @@
 
 
       function Start() {
-//Background Visuals
+        //Background Visuals
         fieldSVG = d3.select("body").append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
                      .style("float", "left").style("border", "1px solid black");
         graphSVG = d3.select("body").append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
                      .style("float", "left").style("border", "1px solid black");
         fieldSVG.append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", unit2Px)
                 .style("fill-opacity", 0.0).style("stroke", "#000000");
-//Tourist Visuals
+        //Tourist Visuals
         for (var i = 0; i < instruBinder.length; i++) {
           tourColors.push(RandomColor());
           tourists.push(new Tourist(fieldSVG.append("circle").attr("cx", center[0]).attr("cy", center[1])
@@ -261,8 +253,7 @@
                          .style("fill", tourColors[i]));
           graphLines.push([]);
         }
-
-//Unit Circle Visuals
+        //Unit Circle Visuals
         fieldSVG.append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", 2).style("fill", "#000000");
         fieldSVG.append("circle").attr("cx", fieldExit[0]).attr("cy", fieldExit[1]).attr("r", 2).style("fill", "#000000");
         fieldSVG.append("line").attr("x1", 2 * unit2Px).attr("y1", unit2Px).attr("x2",  2 * unit2Px).attr("y2", 3 * unit2Px)
@@ -273,8 +264,11 @@
                 .style("text-anchor", "left").style("font-size", unit2Px / 5).text("0");
         fieldSVG.append("text").attr("x", center[0]).attr("y", .9 * unit2Px)
                 .style("text-anchor", "middle").style("font-size", unit2Px / 5).text("90");
-
-//Time Slider and Buttons
+        //Time Slider and Buttons
+        timeText = graphSVG.append("text").attr("x", unit2Px * 1.1).attr("y", unit2Px * .4)
+                   .style("font-size", unit2Px * (8 / 25)).style("text-anchor", "right").text("0");
+        frameText = graphSVG.append("text").attr("x", unit2Px * 1.1).attr("y", unit2Px * .7)
+                    .style("font-size", unit2Px * (8 / 25)).style("text-anchor", "right").text("0");
         timeBox = graphSVG.append("rect").attr("width", 4 * unit2Px).attr("height", unit2Px / 8)
                           .attr("fill-opacity", 0.0).style("stroke", "#000000");
         timeSlide = graphSVG.append("rect").attr("width", unit2Px / 8).attr("height", unit2Px / 8)
@@ -288,13 +282,12 @@
         graphSVG.append("rect").attr("x", unit2Px * (1 / 25)).attr("y", unit2Px * (4 / 25)).attr("width", unit2Px / 4).attr("height", unit2Px / 4)
                 .attr("class", "reveal").style("fill", "#ff0000")
                 .on("click", () => {timeDirect = -1;});
-
-//Tourist Info Visual
+        //Tourist Info Visual
         graphSVG.append("path").attr("d", 'M' + unit2Px * (1 / 25) + ',' + unit2Px * (16 / 25) + 'L' + unit2Px * (6 / 25) + ',' + unit2Px * (11 / 25)
                                                 + 'L' + unit2Px * (6 / 25) + ',' + unit2Px * (21 / 25) + 'L' + unit2Px * (1 / 25) + ',' + unit2Px * (16 / 25))
                      .attr("class", "select").on("click", () => {UpdateInfo(-1);});
         selectText = graphSVG.append("text").attr("x", unit2Px * (13 / 25)).attr("y", unit2Px * (18 / 25)).attr("text-anchor", "middle")
-                     .attr("class", "select").style("font-size", unit2Px * (7 / 25)).text("1");
+                     .attr("class", "select").style("font-size", unit2Px * (7 / 25)).text("0");
         graphSVG.append("path").attr("d", 'M' + unit2Px * (25 / 25) + ',' + unit2Px * (16 / 25) + 'L' + unit2Px * (20 / 25) + ',' + unit2Px * (11 / 25)
                                                    + 'L' + unit2Px * (20 / 25) + ',' + unit2Px * (21 / 25) + 'L' + unit2Px * (25 / 25) + ',' + unit2Px * (16 / 25))
                    .attr("class", "select").on("click", () => {UpdateInfo(1);});
@@ -307,11 +300,15 @@
                 .style("font-size", unit2Px * (5 / 25)).style("fill", "#000000").text("Distance from Exit");
         graphSVG.append("text").attr("x", unit2Px * 2).attr("y", unit2Px * (395 / 100)).attr("text-anchor", "middle")
                 .style("font-size", unit2Px * (5 / 25)).style("fill", "#000000").text("Time");
-//Loader
+        //Loader Visual General
         while (time <= timeMax) {
           LoadAnim();
         }
-        for (var i = 0; i < tourists.length; i++) {
+        //Loader Visual Exit
+        time = 0;
+        projector = setInterval(AlterAnim, 1000 / fps);
+
+        /*for (var i = 0; i < tourists.length; i++) {
           tourLine[i] = fieldSVG.append("path").attr("d", lineFx(tourLines[i]))
                         .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
           graphLine[i] = graphSVG.append("path").attr("d", lineFx(graphLines[i]))
@@ -320,7 +317,7 @@
         time = 0;
         timeDirect = 0;
         UpdateInfo(0);
-        setInterval(PlayAnim, 1000 / fps);
+        setInterval(PlayAnim, 1000 / fps);*/
       }
 
 //Create a random hexadecimal color
@@ -333,29 +330,82 @@
         return('#' + RGB[0] + RGB[1] + RGB[2]);
       }
 
-//Control times, and update bots
+//Control times, update bots, update points and lines.
       function LoadAnim() {
-        tourists.forEach((tourist) => {
-          tourist.LoadUpdate();
-        });
-        if (sendSignal == 1) {
-          for (var i = 0; i < tourists.length; i++) {
-            tourists[i].knows = true;
-            tourists[i].on++;
-          }
-          sendSignal++;
-        }
         for (var i = 0; i < tourists.length; i++) {
-          LoadLines(i);
+          fxs[tourists[i].instru[tourists[i].on][0]](tourists[i], tourists[i].instru[tourists[i].on][1]);
+          var dista = unit2Px * 4 - (Math.sqrt(Math.pow(fieldExit[0] - tourists[i].x, 2) + Math.pow(fieldExit[1] - tourists[i].y, 2)) * (20 / 25));
+          tourLines[i].push({x:tourists[i].x, y:tourists[i].y});
+          graphLines[i].push({x:(unit2Px * (10 / 25) + (time / timeMax) * (80 / 25) * unit2Px), y:(dista - unit2Px * (10 / 25))});
         }
         time++;
       }
 
-//Create lines, and update graph dot positions, as well recreating image of path.
-      function LoadLines(i) {
+      function AlterAnim() {
+        if (time > timeMax) {
+          clearInterval(projector);
+          for (var i = 0; i < tourists.length; i++) {
+            tourLine[i] = fieldSVG.append("path").attr("d", lineFx(tourLines[i]))
+                          .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
+            graphLine[i] = graphSVG.append("path").attr("d", lineFx(graphLines[i]))
+                           .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
+          }
+          UpdateInfo(0);
+          setInterval(PlayAnim, 1000 / fps);
+        } else {
+          for (var i = 0; i < touristNum; i++) {
+            var who = tourists[i];
+            if (who.knows) {
+              if (wireless) {
+                GoToPoint(who, fieldExit)
+                AlterLines(i);
+              } else {
+                //Here is where a bot would go out to another, by comparing time distance, to their location.
+                if (who.target == null) {
+                  var shorTime = Infinity;
+                  for (var i = 0; i < tourists.length; i++) {
+                    if (i != who.number) {
+                      if (!tourists[i].knows) {
+                        if (!tourist.targeted) {
+                          var closestPt = Infinity;
+                          
+                        }
+                      }
+                    }
+                  }
+                }
+                //If equal, go to there to intercept, also check each robot (that doesn't know, or isn't being intercepted).
+              }
+            } else {
+              who.x = tourLines[i][time].x;
+              who.y = tourLines[i][time].y;
+              if (Math.sqrt(Math.pow(fieldExit[1] - who.y, 2) + Math.pow(fieldExit[0] - who.x, 2)) < (unit2Px / fps)) {
+                if (sendSignal < 1) {
+                  sendSignal++;
+                }
+                who.knows = true;
+              }
+            }
+            who.visual.attr("cx", who.x).attr("cy", who.y);
+            graphDots[i].attr("cx", graphLines[i][time].x).attr("cy", graphLines[i][time].y);
+          }
+          if (sendSignal == 1) {
+            for (var i = 0; i < tourists.length; i++) {
+              tourists[i].knows = true;
+            }
+            sendSignal++;
+          }
+          time++;
+          timeText.text("Time: " + time / fps);
+          frameText.text("Frame: " + time);
+          timeSlide.attr("x", (time / timeMax) * (31 / 8) * unit2Px);
+        }
+      }
+
+      function AlterLines(i) {
         var dista = unit2Px * 4 - (Math.sqrt(Math.pow(fieldExit[0] - tourists[i].x, 2) + Math.pow(fieldExit[1] - tourists[i].y, 2)) * (20 / 25));
-        tourLines[i].push({x:tourists[i].x, y:tourists[i].y});
-        graphLines[i].push({x:(unit2Px * (10 / 25) + (time / timeMax) * (80 / 25) * unit2Px), y:(dista - unit2Px * (10 / 25))});
+        tourLines[i][time] = {x:tourists[i].x, y:tourists[i].y};
+        graphLines[i][time] = {x:(unit2Px * (10 / 25) + (time / timeMax) * (80 / 25) * unit2Px), y:(dista - unit2Px * (10 / 25))};
       }
 
       function PlayAnim() {
@@ -377,6 +427,8 @@
           time += timeDirect;
           timeSlide.attr("x", (time / timeMax) * (31 / 8) * unit2Px);
         }
+          timeText.text("Time: " + time / fps);
+          frameText.text("Frame: " + time);
       }
 
       function UpdateInfo(delta) {
