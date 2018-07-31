@@ -11,47 +11,41 @@
       var fxs = [GoOutAtAngle, Wait, FollowWall, WaitFor, FollowWallFor, GoToCenter, WaitAverage];
 
       var loading = true;
+      var wireless = true;
       var time = 0;
       var fps = 60;
       var timeMax = 10 * fps;
 
       var timeBox;
       var timeSlide;
-      var timePlay;
-      var timePause;
-      var timeRewind;
 
       var projector;
-      var fieldSVG;
       var unit2Px = ((window.innerHeight <= window.innerWidth) ?
                     (window.innerHeight) : (window.innerWidth)) / 5;
       var center = [unit2Px * 2, unit2Px * 2];
-      var touristNum = 0;
-
-      var selectDown;
-      var selectText;
-      var selectUp;
-
-      var tourColors = [];
-      var tourists = [];
-
-      var graphSVG;
-      var graphDots = [];
-
-      var lineFx = d3.line().x((d) => {return(d.x);}).y((d) => {return(d.y);});
-      var tourLines = [];
-      var tourLine = [];
-      var graphLines = [];
-      var graphLine = [];
-
       var exitAngle = 0;
       var fieldExit = [center[0] + unit2Px, center[1]];
-      var wireless = true;
+
+      var selectText;
+      var lineFx = d3.line().x((d) => {return(d.x);}).y((d) => {return(d.y);});
+
+      var touristNum = 0;
       var instruBinder = [
                           [[0, [45]], [3, [1]], [5, [null]], [0, [225]], [4, ["left", 90]], [2, ["right"]]],
                           [[0, [-45]], [3, [1]], [5, [null]], [0, [135]], [4, ["right", 90]], [1, [null]]],
                           [[6, [null]]]
                          ];
+      var tourColors = [];
+
+      var fieldSVG;
+      var tourists = [];
+      var tourLines = [];
+      var tourLine = [];
+
+      var graphSVG;
+      var graphDots = [];
+      var graphLines = [];
+      var graphLine = [];
 
       //////////--------Instantiate Call Functions--------//////////
 //Drag function, updates tourists and graph dots relative to lines
@@ -92,7 +86,7 @@
           this.knows = false;
           this.stamps = [];
           this.loadTime = 0;
-          //this.allowance = 0;
+          this.allowance = 0;
           this.on = 0;
           this.a = 0;
           this.x = center[0];
@@ -110,10 +104,18 @@
         if (dist < unit2Px / fps) {
           who.x = value[0];
           who.y = value[1];
+          who.allowance -= dist;
         } else {
           var ang = Math.atan2(dLoc[1], dLoc[0]);
-          who.x = who.x + (unit2Px / fps) * Math.cos(ang);
-          who.y = who.y + (unit2Px / fps) * Math.sin(ang);
+          if (who.allowance < unit2Px / fps) {
+            who.x = who.x + (unit2Px / fps) * Math.cos(ang) * (who.allowance / (unit2Px / fps));
+            who.y = who.y + (unit2Px / fps) * Math.sin(ang) * (who.allowance / (unit2Px / fps));
+            who.allowance = 0;
+          } else {
+            who.x = who.x + (unit2Px / fps) * Math.cos(ang);
+            who.y = who.y + (unit2Px / fps) * Math.sin(ang);
+            who.allowance = 0;
+          }
         }
       }
 
@@ -125,7 +127,6 @@
         }
         if ((who.x == center[0] + unit2Px * Math.cos(who.a)) && (who.y == center[1] - unit2Px * Math.sin(who.a))) {
           who.on++;
-          fxs[instruBinder[who.number][who.on][0]](who, instruBinder[who.number][who.on][1]);
         } else {
           GoToPoint(who, [center[0] + unit2Px * Math.cos(who.a), center[1] - unit2Px * Math.sin(who.a)]);
         }
@@ -136,6 +137,7 @@
         if (who.on >= who.stamps.length) {
           who.stamps.push([who.loadTime, who.a, who.x, who.y]);
         }
+        who.allowance = 0;
       }
 
 //Requirements: At wall		Params: direction	Description: Follows wall at direction indefinitely
@@ -144,7 +146,7 @@
           who.stamps.push([who.loadTime, who.a, who.x, who.y]);
         }
         var dir = (value[0] == 'left') ? (1) : (-1);
-        who.a += (1 / fps) * dir;
+        who.a += (1 / (fps * unit2Px)) * dir;
         GoToPoint(who, [center[0] + unit2Px * Math.cos(who.a), center[1] - unit2Px * Math.sin(who.a)]);
       }
 
@@ -154,26 +156,35 @@
           who.stamps.push([who.loadTime, who.a, who.x, who.y]);
           who.loadTime = time + value[0] * fps;
         }
-        if (time > who.loadTime) {
+        if (time >= who.loadTime) {
           who.on++;
-          fxs[instruBinder[who.number][who.on][0]](who, instruBinder[who.number][who.on][1]);
         }
+        who.allowance = 0;
       }
 
 //Requirements: At wall		Params: direction and angle(time)	Description: Follows wall at direction for x time
       function FollowWallFor(who, value) {
+        var dir = (value[0] == 'left') ? (1) : (-1);
         if (who.on >= who.stamps.length) {
           who.stamps.push([who.loadTime, who.a, who.x, who.y]);
-          who.loadTime = time + value[1] * (Math.PI / 180) * fps;
+          who.loadTime = who.a + value[1] * (Math.PI / 180) * dir;
         }
-        var dir = (value[0] == 'left') ? (1) : (-1);
-        if (time < who.loadTime) {
-          who.a += (1 / fps) * dir;
-          GoToPoint(who, [center[0] + unit2Px * Math.cos(who.a), center[1] - unit2Px * Math.sin(who.a)]);
+        if (dir > 0) {
+          if (who.a + (1 / (fps * unit2Px)) * dir > who.loadTime) {
+            who.on++;
+            who.a = who.loadTime;
+          } else {
+            who.a += (1 / (fps * unit2Px)) * dir;
+          }
         } else {
-          who.on++;
-          fxs[instruBinder[who.number][who.on][0]](who, instruBinder[who.number][who.on][1]);
+          if (who.a + (1 / (fps * unit2Px)) * dir < who.loadTime) {
+            who.on++;
+            who.a = who.loadTime;
+          } else {
+            who.a += (1 / (fps * unit2Px)) * dir;
+          }
         }
+        GoToPoint(who, [center[0] + unit2Px * Math.cos(who.a), center[1] - unit2Px * Math.sin(who.a)]);
       }
 
 //Requirements: At wall		Params: null	Description: Goes to center
@@ -183,7 +194,6 @@
         }
         if ((who.x == center[0]) && (who.y == center[1])) {
           who.on++;
-          fxs[instruBinder[who.number][who.on][0]](who, instruBinder[who.number][who.on][1]);
         } else {
           GoToPoint(who, center);
         }
@@ -205,7 +215,11 @@
         }
         sumPosition[0] /= totalNum;
         sumPosition[1] /= totalNum;
-        GoToPoint(who, sumPosition);
+        if ((who.x == sumPosition[0]) && (who.y == sumPosition[1])) {
+          who.allowance = 0;
+        } else {
+          GoToPoint(who, sumPosition);
+        }
       }
 
 
@@ -224,13 +238,16 @@
                 .style("text-anchor", "middle").style("font-size", unit2Px * (1 / 5)).text("Search and Exit");
         fieldSVG.append("text").attr("x",  center[0]).attr("y", unit2Px * (3 / 10))
                 .style("text-anchor", "middle").style("font-size", unit2Px * (1 / 10)).text("Circle Wireless");
+        fieldSVG.append("text").attr("x",  center[0]).attr("y", unit2Px * (5 / 10)).attr("class", "exitText")
+                .style("text-anchor", "middle").style("font-size", unit2Px * (2 / 10))
+                .text("Left-Click, to choose exit location at ~" + 0 + " degrees");
         fieldSVG.append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", unit2Px)
                 .style("fill-opacity", 0.0).style("stroke", "#000000");
         //Tourist Visuals
         for (var i = 0; i < instruBinder.length; i++) {
           tourColors.push(RandomColor());
           tourists.push(new Tourist(fieldSVG.append("circle").attr("cx", center[0]).attr("cy", center[1])
-                                    .attr("r", unit2Px / 16)
+                                    .attr("r", unit2Px / 16)//.on("mouseover", () => {alert("woo");})
                                     .style("fill", tourColors[i]), instruBinder[i]));
           touristNum++;
           tourLines.push([]);
@@ -302,12 +319,15 @@
 //Controls exit positioning for user's choice
       function ChoosExit() {
         exitAngle = Math.atan2(d3.event.x - center[0], d3.event.y - center[1]) - (Math.PI / 2);
+        if (exitAngle < 0) {exitAngle += 2 * Math.PI;}
+        d3.select(".exitText").text("Left-Click, to choose exit location at ~" + Math.floor(exitAngle * 180 / Math.PI) + " degrees");
         fieldExit = [center[0] + unit2Px * Math.cos(exitAngle), center[1] - unit2Px * Math.sin(exitAngle)];
         d3.select(".exit").attr("cx", fieldExit[0]).attr("cy", fieldExit[1]);
       }
 
 //Turns off exit choosing events, and starts loading
       function exitChosen() {
+        d3.select(".exitText").remove();
         fieldSVG.on("mousemove", null).on("click", null);
         projector = setInterval(LoadAnim, 1000 / fps);
       }
@@ -321,8 +341,11 @@
         } else {
           for (var i = 0; i < tourists.length; i++) {
             var who = tourists[i];
-            fxs[instruBinder[i][who.on][0]](who, instruBinder[i][who.on][1]);
-            who.visual.attr("cx", who.x).attr("cy", who.y);
+            who.allowance = unit2Px / fps;
+            while (who.allowance > 0) {
+              fxs[instruBinder[i][who.on][0]](who, instruBinder[i][who.on][1]);
+              who.visual.attr("cx", who.x).attr("cy", who.y);
+            }
             LoadLines(i);
           }
           time++;
