@@ -76,7 +76,7 @@
 
     /*
 
-    Interface t03 (previous t02) is version 2.0 of interface_alt.
+    Interface t04 (previous t03) is version 2.0 of interface_alt.
 
     The goal of this is to allow the user to essentially program the robots using pseudocode.
     The commands are attempted to autocomplete as the user types, so that there is no confusion
@@ -86,22 +86,24 @@
     show default commands with an X in place of a value, and set that value to be
     random (when based on angles) or indefinitely/until a signal is recieved (when based on time).
     For now, input via the main textbox, paste button, and editing a line is permitted.
+    Input via a file was added in version t04.
 
-
+    TODO: Add save button to single-box command interface.
     TODO: show all commands when the focus is on an empty textbox. (edit autocomplete)
     TODO: delete and insert specific lines in the command list.
-    TODO; create reader and text file with commands in it
 
 
-    Fixed: t02 --> t03
-    - Bug where copy array would be a direct reference to commands subarray, now it is just a naive clone.
-        - Consequence of this is that the commands in the box that were copied can be removed, and the
-        copy clone will still work.
-    - Can now edit a command by the line and the changes will be saved.
-    - Remove unecessary function definitions.
-    - Added the save commands feature, which saves an ICL file.
-    - Add framework for loading of commands.
-    - Fixed a bug which did not allow the line to be edited when an empty string was sent to the commands.
+    Changed: t03 --> t04
+    - Added a way to load the commands from a file (*.icl only)
+    - Added functionality for typing in one set of commands and assigning to multiple Bots.
+        - Included an ability to step up the angle/argument for each bot using "Command +x"
+    - Added a list up front to confirm the communication type (f2f/wireless) before assigning commands.
+      This will make sense later when the commands are different for different types of communication.
+    - Added functionality to both Assign All and Assign Separately buttons. (not tested if they fully work)
+
+
+
+
 
 
     */
@@ -111,8 +113,9 @@
     var unit2px = ((winH < winW) ? (winH) : (winW))/8; //one unit is 1/8th of the smaller portion screen
     var eventListener;
     var numBots;
+    var communication;
     var commands = [];
-    const commandsList = ['GoOutAtAngle X', 'Wait', 'FollowWall', 'WaitFor X',
+    const commandsList = ['GoOutAtAngle X', 'Wait', 'FollowWall (left, right)', 'WaitFor X',
                           'FollowWallFor X', 'GoToCenter', 'WaitAverage', 'GoToExit'];
 
     const comparator = ['GoOutAtAngle','Wait','FollowWall','WaitFor',
@@ -120,22 +123,28 @@
 
     var copy = [];
 
+
+
     var titleArea = d3.select('body').append('svg')
         .attr('width', winW)
         .attr('height', unit2px)
         .attr('class', 'title');
     var title = titleArea.append('text')
-        .text('TITLE')
+        .text('Evacuation Room')
         .attr('text-anchor', 'middle')
         .attr('x', winW/2)
         .attr('y', unit2px/2)
         .attr('font-size', '48px')
         .attr('class', 'title');
     d3.select('body').append('p')
-        .text('Replace "X" in a command suggestion with a number to specify a value!');
+        .text('Replace "X" in a command suggestion with a number to specify a value! Use \'+value\' to specify a step amount when assigning to all robots at once.');
 
     function updateList(){
-        var numBots = document.getElementById('numBots').value;
+        var numBots = window.numBots;
+        if (numBots == null){
+            var numBots = document.getElementById('numBotsMulti').value;
+            commands = [];
+        }
         if (numBots > 100) {
             alert("Slow down there partner, don't wanna crash the site... Try a number in range.")
             return;
@@ -145,10 +154,16 @@
             return;
         }
         d3.selectAll('.autocomplete').remove();
-        commands = [];
 
         for (i=0; i<numBots;i++) {
-            commands.push([]);
+            var full = false;
+            if (commands[i] == null){
+                commands.push([]);
+            }
+            else {
+                full = true;
+            }
+            console.log(full);
             var d = d3.select('body').append('div')
                 .style('width', unit2px*3+'px')
                 .style('height', unit2px*3+'px')
@@ -156,26 +171,27 @@
                 .style('position', 'relative')
                 .style('overflow-y', 'scroll')
                 .attr('class', 'autocomplete')
+                .attr('id', 'divno'+i)
                 .style('border', '1px black solid')
                 .style('border-radius', '5px')
                 .style('margin', '0.5%');
-            form = d.append('form')
+            var form = d.append('form')
                 .attr('id', 'formno'+i)
                 .attr('action', 'javascript:void(0)')
                 .attr('autocomplete', 'off');
-            list = d.append('ol');
+            d.append('p').text('Bot ID No. '+i);
+            var list = d.append('ol');
             var b = form.append('input')
                 .attr('type', 'text')
                 .attr('id', 'inputno'+i) // !important!, how we differentiate between different form inputs.
                 .on('keydown', function() {
-                    if (event.keyCode == 13) {this.form.submit(); return false;}
+                    if (event.keyCode == 13) {this.node().form.submit(); return false;}
                 });
 
             form.append('input')
                 .attr('type', 'submit')
                 .property('value','Enter')
                 .on('click', function() {
-                    console.log(d3.select(this.parentNode.parentNode).select('ol').node().getElementsByTagName('li')); //
                     var id = d3.select(this.parentNode).attr('id').substring(6);
                     var v = d3.select(this.parentNode).select('input').property('value');
                     if (v == '') {
@@ -193,7 +209,7 @@
                             var edit = d3.select(this).text();
                             d3.select(this).style('display', 'none');
                             d3.select(this.parentNode).select('.edit').style('display', 'inline').property('value', edit);
-                        })
+                        });
                     li.append('input')
                         .attr('class', 'edit')
                         .style('display', 'none')
@@ -208,6 +224,38 @@
                             commands[id][idindex] = edit;
                         });
                 }); //ENTER BUTTON
+
+            if (full){
+                for (j=0;j<commands[i].length;j++){
+                    //var id = d3.select(this.parentNode).attr('id').substring(6);
+                    console.log(d3.select('#divno'+i).select('ol'));
+                    var ol = d3.select('#divno'+i).select('ol');
+                    var li = ol.append('li').attr('id', 'listid'+i);
+                    li.append('span')
+                        .text(commands[i][j])
+                        .attr('class', 'display')
+                        .on('click' , function(d) {
+                            console.log(d3.select(this.parentNode).node());
+                            var edit = d3.select(this).text();
+                            d3.select(this).style('display', 'none');
+                            d3.select(this.parentNode).select('.edit').style('display', 'inline').property('value', edit);
+                        });
+                    li.append('input')
+                        .attr('class', 'edit')
+                        .style('display', 'none')
+                        .on('focusout', function(){
+                            var idindex = +d3.select(this.parentNode).attr('id').substring(6);
+                            var id = +d3.select(this.parentNode.parentNode.parentNode).attr('id').substring(5);
+                            var edit = d3.select(this).property('value');
+                            if (edit == ''){
+                                edit = '__________';
+                            }
+                            d3.select(this).style('display', 'none');
+                            d3.select(this.parentNode).select('.display').style('display', 'inline').text(edit);
+                            commands[id][idindex] = edit;
+                        });
+                }
+            }
 
             form.append('input')
                 .attr('type', 'submit')
@@ -274,6 +322,101 @@
             autocomplete(b.node(), commandsList);
 
         }
+    }
+
+    function updateListSingle(){
+        d3.selectAll('.autocomplete').remove();
+        numBots = +d3.select('#numBotsSingle').property('value');
+        commands = [];
+        for (i=0;i<numBots;i++){
+            commands[i] = [];
+        }
+
+        var recommendedArg = parseFloat(360/numBots).toFixed(2);
+        var d = d3.select('body').append('div')
+            .style('width', unit2px*6+'px')
+            .style('height', unit2px*3+'px')
+            .attr('float', 'left')
+            .style('position', 'relative')
+            .style('overflow-y', 'scroll')
+            .attr('class', 'autocomplete')
+            .style('border', '1px black solid')
+            .style('margin', '0.5%');
+        d.append('p')
+            .attr('float', 'right')
+            .text('Recommended Step for GoOutAtAngle: +'+recommendedArg);
+
+        var form = d.append('form')
+            .attr('autocomplete', 'off')
+            .attr('action', 'javascript:void(0)');
+
+        var textArea = form.append('input')
+            .attr('type', 'text');
+
+        autocomplete(textArea.node(), commandsList);
+
+         form.append('input') // Enter Button
+            .attr('type', 'submit')
+            .property('value', 'Enter')
+            .on('click', function(){
+                var step = null;
+                var v = d3.select(this.parentNode).select('input').property('value');
+                if (v == '') {
+                    v = '__________';
+                }
+                else if (v.split(' ')[1] != '' && v.split(' ')[1].includes('+')){
+                    step = parseInt(v.split(' ')[1].substring(1));
+                }
+                d3.select(this.parentNode).select('input').property('value',''); //reset textbox because why not.
+                var copyV = v.slice(0);//
+                for (i=0;i<commands.length;i++){
+                    if (step != null){
+                        var stepped = (i+1) * step;
+                        if (v.split(' ')[0] == "GoOutAtAngle"){
+                            stepped = stepped % 360;
+                        }
+                        console.log(stepped);
+                        var index = v.indexOf('+');
+                        console.log(index);
+                        copyV = v.substring(0, index) + stepped;
+                    }
+
+                    commands[i].push(copyV);
+                }
+                var idno = d3.select(this.parentNode.parentNode).select('ol').node().getElementsByTagName('li').length;
+                var li = d3.select(this.parentNode.parentNode).select('ol').append('li').attr('id', 'listid'+idno);
+                li.append('span')
+                    .text(v)
+                    .attr('class', 'display')
+                    .on('click' , function(d) {
+                        var edit = d3.select(this).text();
+                        d3.select(this).style('display', 'none');
+                        d3.select(this.parentNode).select('.edit').style('display', 'inline').property('value', edit);
+                    });
+                li.append('input')
+                    .attr('class', 'edit')
+                    .style('display', 'none')
+                    .on('focusout', function(){
+                        var idindex = +d3.select(this.parentNode).attr('id').substring(6);
+                        var edit = d3.select(this).property('value');
+                        if (edit == ''){
+                            edit = '__________';
+                        }
+                        d3.select(this).style('display', 'none');
+                        d3.select(this.parentNode).select('.display').style('display', 'inline').text(edit);
+                        for (j=0;j<commands.length;j++){
+                            commands[j][idindex] = edit;
+                        }
+                    });
+            });
+
+
+        var list = d.append('ol');
+
+
+
+
+
     }
 
     function autocomplete(inp, arr) {
@@ -353,13 +496,13 @@
             for (j=0;j<commands[i].length;j++) {
                 for (c=comparator.length;c>=0;c--) {
                     if (commands[i][j].includes(comparator[c])){
-                        s+='['+c+':'
+                        s+=''+c+':'
                         var args = commands[i][j].substring(comparator[c].length);
                         if (args.length == 0) {
-                            args = ' null]';
+                            args = '|';
                         }
                         else {
-                            args += ']';
+                            args += '|';
                         }
                         s+=args;
                         console.log(s);
@@ -373,20 +516,94 @@
         saveAs(blob, 'my-algorithm.icl');
     }
 
-    function loadCommands() {
-        console.log('loading...');
+    function loadCommands(event) {
+        var file = event.target.files[0]; //even though it only takes one file, the input type will still be a FileList.
+        var fileName = document.getElementById('loadcommands').value;
+        if (!fileName.includes('.icl')){
+            alert('Please use a proper *.icl file to load your commands. If you think the file name is correct, then it might be corrupted.');
+            return;
+        }
+        var fileReader = new FileReader();
+        fileReader.onload = (function(file){
+            var text = fileReader.result;
+            var sText = text.split("\n");
+            numBots = sText.length - 1;
+            document.getElementById('numBotsMulti').value;
+            for (i=0;i<=numBots;i++) {
+                var outerCommand = sText[i].split('|');
+                for (j=0;j<outerCommand.length-1;j++){
+                    var innerCommand = outerCommand[j].split(":");
+                    console.log(innerCommand);
+                    var comm = parseInt(innerCommand[0]);
+                    for (c=comparator.length;c>=0;c--){
+                        if (comm == c) {
+                            comm = comparator[c];
+                            break;
+                        }
+                    }
+                    innerCommand[1] = innerCommand[1].replace(' null', '');
+                    if (commands[i] == null){
+                        commands[i] = [];
+                    }
+                    commands[i].push(''+comm+''+innerCommand[1]);
+                }
+            }
+            updateList();
+        });
+        fileReader.readAsText(file);
+
     }
+
+    function singleBox(){
+        d3.selectAll('#multiBox').style('display', 'none');
+        commands = [];
+        numBots = null;
+        document.getElementById('loadcommands').value = '';
+        d3.selectAll('.autocomplete').remove();
+        d3.selectAll('#singleBox').style('display', 'inline');
+        //updateListSingle();
+
+    }
+
+    function multiBox() {
+        d3.selectAll('#singleBox').style('display', 'none');
+        commands = [];
+        numBots = null;
+        d3.selectAll('.autocomplete').remove();
+        d3.selectAll('#multiBox').style('display', 'inline');
+    }
+
 
 
     </script>
 
-    <form style="margin:3%" action="javascript:void(0)"> <!-- this keeps the page from reloading-->
-        <input type='number' min=1 max=30 name='bots' id='numBots'/>
-        <input type='submit' value='Input the number of Bots to use...' onClick="updateList()"/>
+
+    <form style='margin:3% position:relative;' action='javascript:void(0)'>
+        <p>
+            Choose how the robots will communicate:
+        </p>
+        <input list='commTypes' id='communicate'/>
+        <datalist id='commTypes'>
+            <option>Wireless</option>
+            <option>Face to Face</option>
+        </datalist>
+        <input type='submit' value='Assign to all...' onClick='singleBox()' />
+        <input type='submit' value='Assign separately...' onClick='multiBox()' />
     </form>
-    <form style="margin:3% ; position: relative;" action="javascript:void(0)">
-        <input type='submit' class='copypaste' value='Save Commands' onClick='saveCommands()' />
-        <input type='submit' class='copypaste' value='Load Commands' onClick='loadCommands()' />
-    </form>
+    <div style='display:none' id='multiBox'>
+        <form class= 'multiBox' style='margin:3%; position:relative;' action='javascript:void(0)'> <!-- this keeps the page from reloading-->
+            <input type='number' min=1 max=30 id='numBotsMulti'/>
+            <input type='submit' value='Input the number of Bots to use...' onClick='updateList()'/>
+
+            <input type='submit' class='copypaste' value='Save Commands' onClick='saveCommands()' />
+            <input type='file' class='copypaste' id='loadcommands' value='Load Commands' accept='.icl' onchange='loadCommands(event)' />
+        </form>
+    </div>
+    <div style='display:none' id='singleBox'>
+        <form class='singleBox' style='margin:3%; position: relative;' action='javascript:void(0)'>
+            <input type='number' min=1 max=30 id='numBotsSingle' />
+            <input type='submit' value='Input the number of Bots to use...' onClick='updateListSingle()' />
+        </form>
+    </div>
 </body>
 </html>
