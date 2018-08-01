@@ -8,7 +8,7 @@
   <body>
     <script>
       //////////----------Instantiate Variables----------//////////
-      var fxs = [GoOutAtAngle, Wait, FollowWall, WaitFor, FollowWallFor, GoToCenter, WaitAverage];
+      var fxs = [GoOutAtAngle, Wait, FollowWall, WaitFor, FollowWallFor, GoToCenter, WaitAverage, GoToPoint];
       var shapes = ["Circle", "Line", "Triangle", "Square", "Pentagon", "Hexagon",
                     "Heptagon", "Octagon", "Nonagon", "Decagon", "Undecagon", "Dodecagon"];
 
@@ -30,6 +30,7 @@
       var fieldExit = [center[0] + unit2Px, center[1]];
 
       var selectText;
+      var dataBox;
       var lineFx = d3.line().x((d) => {return(d.x);}).y((d) => {return(d.y);});
 
       var touristNum = 0;
@@ -88,6 +89,7 @@
           this.visual = visual;
           this.knows = false;
           this.target = null;
+          this.velocity = 1;
           this.allowance = 0;
           this.on = 0;
           this.a = 0;
@@ -97,22 +99,22 @@
       }
 
       //////////----------Instantiate Functions----------//////////
-      function GoToPoint(who, value) {
+      function DirectTo(who, value) {
         var dLoc = [value[0] - who.x, value[1] - who.y];
         var dist = Math.sqrt(Math.pow(dLoc[1], 2) + Math.pow(dLoc[0], 2));
-        if (dist < unit2Px / fps) {
+        if (dist < who.velocity * unit2Px / fps) {
           who.x = value[0];
           who.y = value[1];
           who.allowance -= dist;
         } else {
           var ang = Math.atan2(dLoc[1], dLoc[0]);
-          if (who.allowance < unit2Px / fps) {
-            who.x = who.x + (unit2Px / fps) * Math.cos(ang) * (who.allowance / (unit2Px / fps));
-            who.y = who.y + (unit2Px / fps) * Math.sin(ang) * (who.allowance / (unit2Px / fps));
+          if (who.allowance < who.velocity * unit2Px / fps) {
+            who.x = who.x + who.velocity * Math.cos(ang) * (who.allowance / (who.velocity * unit2Px / fps));
+            who.y = who.y + who.velocity * Math.sin(ang) * (who.allowance / (who.velocity * unit2Px / fps));
             who.allowance = 0;
           } else {
-            who.x = who.x + (unit2Px / fps) * Math.cos(ang);
-            who.y = who.y + (unit2Px / fps) * Math.sin(ang);
+            who.x = who.x + (who.velocity * unit2Px / fps) * Math.cos(ang);
+            who.y = who.y + (who.velocity * unit2Px / fps) * Math.sin(ang);
             who.allowance = 0;
           }
         }
@@ -138,7 +140,7 @@
           if ((who.x == holdX) && (who.y == holdY)) {
             who.on++;
           } else {
-            GoToPoint(who, [holdX, holdY]);
+            DirectTo(who, [holdX, holdY]);
           }
         }
       }
@@ -152,10 +154,9 @@
       function FollowWall(who, value) {
         var dir = (value[0] == 'left') ? (1) : (-1);
         who.a += (1 / (fps * unit2Px)) * dir;
-        if (degrees == 1) {
-          holdX = center[0] + unit2Px * Math.cos(who.a);
-          holdY = center[1] - unit2Px * Math.sin(who.a);
-        } else { 
+        var holdX = center[0] + unit2Px * Math.cos(who.a);
+        var holdY = center[1] - unit2Px * Math.sin(who.a);
+        if (degrees > 1) {
           var unitDeg = (2 * Math.PI) / degrees;
           if (dir > 0) {
             var pt1 = Math.floor(who.a / unitDeg);
@@ -168,7 +169,7 @@
           holdY = (center[1] - unit2Px * Math.sin(pt1 * unitDeg))
                        - (Math.sin((pt1 + dir) * unitDeg) * dir - Math.sin(pt1 * unitDeg) * dir) * unit2Px * edgePerc;
         }
-        GoToPoint(who, [holdX, holdY]);
+        DirectTo(who, [holdX, holdY]);
       }
 
 //Requirements: None	Params: time	Description: Wait for x time
@@ -191,17 +192,12 @@
         if (who.target == null) {
           who.target = who.a + value[1] * (Math.PI / 180) * dir;
         }
-        var leftCondition = 0;
-        var rightCondition = 0;
-        if (dir > 0) {
-          leftCondition = who.a + (1 / (fps * unit2Px)) * dir;
-          rightCondition = who.target;
-        } else {
+        var leftCondition = who.a + (1 / (fps * unit2Px)) * dir;
+        var rightCondition = who.target;
+        if (dir < 0) {
           leftCondition = who.target;
           rightCondition = who.a + (1 / (fps * unit2Px)) * dir;
         }
-        var holdX = 0;
-        var holdY = 0;
         if (leftCondition > rightCondition) {
           who.on++;
           who.a = who.target;
@@ -209,10 +205,9 @@
         } else {
           who.a += (1 / (fps * unit2Px)) * dir;
         }
-        if (degrees == 1) {
-          holdX = center[0] + unit2Px * Math.cos(who.a);
-          holdY = center[1] - unit2Px * Math.sin(who.a);
-        } else { 
+        var holdX = center[0] + unit2Px * Math.cos(who.a);
+        var holdY = center[1] - unit2Px * Math.sin(who.a);
+        if (degrees > 1) { 
           var unitDeg = (2 * Math.PI) / degrees;
           if (dir > 0) {
             var pt1 = Math.floor(who.a / unitDeg);
@@ -225,7 +220,7 @@
           holdY = (center[1] - unit2Px * Math.sin(pt1 * unitDeg))
                        - (Math.sin((pt1 + dir) * unitDeg) * dir - Math.sin(pt1 * unitDeg) * dir) * unit2Px * edgePerc;
         }
-        GoToPoint(who, [holdX, holdY]);
+        DirectTo(who, [holdX, holdY]);
       }
 
 //Requirements: At wall		Params: null	Description: Goes to center
@@ -233,7 +228,7 @@
         if ((who.x == center[0]) && (who.y == center[1])) {
           who.on++;
         } else {
-          GoToPoint(who, center);
+          DirectTo(who, center);
         }
       }
 
@@ -253,7 +248,16 @@
         if ((who.x == sumPosition[0]) && (who.y == sumPosition[1])) {
           who.allowance = 0;
         } else {
-          GoToPoint(who, sumPosition);
+          DirectTo(who, sumPosition);
+        }
+      }
+
+//Requirements: None		Params: cartesian coordinates	Description: Goes to coordinates
+      function GoToPoint(who, value) {
+        if ((who.x == value[0]) && (who.y == value[1])) {
+          who.on++;
+        } else {
+          DirectTo(who, value);
         }
       }
 
@@ -270,11 +274,11 @@
         graphSVG = d3.select("body").append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
                      .style("float", "left").style("border", "1px solid black");
         var classes = ["backGround", "lines", "bots", "overLay"];
-        for (vr i = 0; i < classes.length; i++) {
-        fieldSVG.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
-                     .attr("class", classes[i]);
-        graphSVG.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
-                     .attr("class", classes[i]);
+        for (var i = 0; i < classes.length; i++) {
+          fieldSVG.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
+                       .attr("class", classes[i]);
+          graphSVG.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
+                       .attr("class", classes[i]);
         }
         LoadField();
         LoadGraph();
@@ -314,12 +318,12 @@
           fieldSVG.select(".backGround").append("path").attr("d", hold).style("fill", "none").style("stroke", "#000000");
         }
         //Unit Circle Visuals
-        fieldSVG.select(".overLay").append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", 2).style("fill", "#000000");
-        fieldSVG.select(".overLay").append("circle").attr("class", "exit").attr("cx", fieldExit[0]).attr("cy", fieldExit[1]).attr("r", 2)
+        fieldSVG.select(".backGround").append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", 2).style("fill", "#000000");
+        fieldSVG.select(".backGround").append("circle").attr("class", "exit").attr("cx", fieldExit[0]).attr("cy", fieldExit[1]).attr("r", 2)
                 .style("fill", "#000000");
-        fieldSVG.select(".overLay").append("line").attr("x1", 2 * unit2Px).attr("y1", unit2Px).attr("x2",  2 * unit2Px).attr("y2", 3 * unit2Px)
+        fieldSVG.select(".backGround").append("line").attr("x1", 2 * unit2Px).attr("y1", unit2Px).attr("x2",  2 * unit2Px).attr("y2", 3 * unit2Px)
                 .style("stroke", "#000000").style("stroke-width", .5);
-        fieldSVG.select(".overLay").append("line").attr("x1", unit2Px).attr("y1", 2 * unit2Px).attr("x2",  3 * unit2Px).attr("y2", 2 * unit2Px)
+        fieldSVG.select(".backGround").append("line").attr("x1", unit2Px).attr("y1", 2 * unit2Px).attr("x2",  3 * unit2Px).attr("y2", 2 * unit2Px)
                 .style("stroke", "#000000").style("stroke-width", .5);
         fieldSVG.select(".backGround").append("text").attr("x", 3.1 * unit2Px).attr("y", center[1])
                 .style("text-anchor", "left").style("font-size", unit2Px / 5).text("0");
@@ -331,34 +335,44 @@
         //Time Slider and Buttons
         timeText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * 1.1).attr("y", unit2Px * .4)
                    .style("font-size", unit2Px * (8 / 25)).style("text-anchor", "right").text("0");
-        frameText = graphSVG.select("backGround").append("text").attr("x", unit2Px * 1.1).attr("y", unit2Px * .7)
+        frameText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * 1.1).attr("y", unit2Px * .7)
                     .style("font-size", unit2Px * (8 / 25)).style("text-anchor", "right").text("0");
-        timeBox = graphSVG.select(".overLay").append("rect").attr("width", 4 * unit2Px).attr("height", unit2Px / 8)
+        timeBox = graphSVG.select(".backGround").append("rect").attr("width", 4 * unit2Px).attr("height", unit2Px / 8)
                           .attr("fill-opacity", 0.0).style("stroke", "#000000");
         timeSlide = graphSVG.select(".backGround").append("rect").attr("width", unit2Px / 8).attr("height", unit2Px / 8)
                     .attr("class", "reveal").style("fill", "#888888")
                     .call(d3.drag().on("start", SSlide).on("drag", MSlide).on("end", ESlide));
-        graphSVG.select(".overLay").append("rect").attr("x", unit2Px * (19 / 25)).attr("y", unit2Px * (4 / 25)).attr("width", unit2Px / 4)
+        graphSVG.select(".backGround").append("rect").attr("x", unit2Px * (19 / 25)).attr("y", unit2Px * (4 / 25)).attr("width", unit2Px / 4)
                 .attr("class", "reveal").attr("height", unit2Px / 4).style("fill", "#00ff00")
                 .on("click", () => {timeDirect = 1;});
-        graphSVG.select(".overLay").append("rect").attr("x", unit2Px * (10 / 25)).attr("y", unit2Px * (4 / 25)).attr("width", unit2Px / 4).attr("height", unit2Px / 4)
+        graphSVG.select(".backGround").append("rect").attr("x", unit2Px * (10 / 25)).attr("y", unit2Px * (4 / 25)).attr("width", unit2Px / 4).attr("height", unit2Px / 4)
                 .attr("class", "reveal").style("fill", "#0000ff").on("click", () => {timeDirect = 0;});
-        graphSVG.select(".overLay").append("rect").attr("x", unit2Px * (1 / 25)).attr("y", unit2Px * (4 / 25)).attr("width", unit2Px / 4).attr("height", unit2Px / 4)
+        graphSVG.select(".backGround").append("rect").attr("x", unit2Px * (1 / 25)).attr("y", unit2Px * (4 / 25)).attr("width", unit2Px / 4).attr("height", unit2Px / 4)
                 .attr("class", "reveal").style("fill", "#ff0000")
                 .on("click", () => {timeDirect = -1;});
         //Tourist Info Visual
-        graphSVG.select(".overLay").append("path").attr("d", 'M' + unit2Px * (1 / 25) + ',' + unit2Px * (16 / 25) + 'L' + unit2Px * (6 / 25) + ',' + unit2Px * (11 / 25)
+        graphSVG.select(".backGround").append("path").attr("d", 'M' + unit2Px * (1 / 25) + ',' + unit2Px * (16 / 25) + 'L' + unit2Px * (6 / 25) + ',' + unit2Px * (11 / 25)
                                                 + 'L' + unit2Px * (6 / 25) + ',' + unit2Px * (21 / 25) + 'L' + unit2Px * (1 / 25) + ',' + unit2Px * (16 / 25))
                      .attr("class", "select").on("click", () => {UpdateInfo(-1);});
-        selectText = graphSVG.select(".overLay").append("text").attr("x", unit2Px * (13 / 25)).attr("y", unit2Px * (18 / 25)).attr("text-anchor", "middle")
+        selectText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (13 / 25)).attr("y", unit2Px * (18 / 25)).attr("text-anchor", "middle")
                      .attr("class", "select").style("font-size", unit2Px * (7 / 25)).text("0");
-        graphSVG.select(".overLay").append("path").attr("d", 'M' + unit2Px * (25 / 25) + ',' + unit2Px * (16 / 25) + 'L' + unit2Px * (20 / 25) + ',' + unit2Px * (11 / 25)
+        graphSVG.select(".backGround").append("path").attr("d", 'M' + unit2Px * (25 / 25) + ',' + unit2Px * (16 / 25) + 'L' + unit2Px * (20 / 25) + ',' + unit2Px * (11 / 25)
                                                    + 'L' + unit2Px * (20 / 25) + ',' + unit2Px * (21 / 25) + 'L' + unit2Px * (25 / 25) + ',' + unit2Px * (16 / 25))
                    .attr("class", "select").on("click", () => {UpdateInfo(1);});
-        graphSVG.select(".overLay").append("path").attr("d", 'M' + unit2Px * (10 / 25) + ',' + unit2Px * (50 / 25)
+        graphSVG.select(".backGround").append("path").attr("d", 'M' + unit2Px * (10 / 25) + ',' + unit2Px * (50 / 25)
                                         + 'L' + unit2Px * (10 / 25) + ',' + unit2Px * (90 / 25)
                                         + 'L' + unit2Px * (90 / 25) + ',' + unit2Px * (90 / 25))
                 .style("fill", "none").style("stroke", "#000000");
+        for (var i = 0; i < 3; i++) {
+          graphSVG.select(".backGround").append("text").attr("x", unit2Px * (8 / 25))
+                  .attr("y", unit2Px * (90 / 25) - i * unit2Px * (20 / 25))
+                  .style("font-size", unit2Px * (4 / 25)).style("text-anchor", "middle").text(i + 'r');
+        }
+        for (var i = 0; i < 11; i++) {
+          graphSVG.select(".backGround").append("text").attr("x", unit2Px * (10 / 25) + i * unit2Px * (8 / 25))
+                  .attr("y", unit2Px * (94 / 25))
+                  .style("font-size", unit2Px * (4 / 25)).style("text-anchor", "middle").text(i);
+        }
         graphSVG.select(".backGround").append("text").attr("x", unit2Px * (5 / 25)).attr("y", unit2Px * (70 / 25)).attr("text-anchor", "middle")
                 .attr("transform", "rotate(-90," + unit2Px * (5 / 25) + ',' + unit2Px * (70 / 25) + ')')
                 .style("font-size", unit2Px * (5 / 25)).style("fill", "#000000").text("Distance from Exit");
@@ -411,7 +425,7 @@
         } else {
           for (var i = 0; i < tourists.length; i++) {
             var who = tourists[i];
-            who.allowance = unit2Px / fps;
+            who.allowance = who.velocity * unit2Px / fps;
             while (who.allowance > 0) {
               fxs[instruBinder[i][who.on][0]](who, instruBinder[i][who.on][1]);
               who.visual.attr("cx", who.x).attr("cy", who.y);
@@ -434,18 +448,18 @@
           tourLines[i].push({x:tourists[i].x, y:tourists[i].y});
           tourLine[i].remove();
           tourLine[i] = fieldSVG.select(".lines").append("path").attr("d", lineFx(tourLines[i]))
-                        .style("stroke", tourColors[i]).style("stroke-width", 3).style("stroke-opacity", 0.5).style("fill", "none");
+                        .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
           graphLines[i].push({x:(unit2Px * (10 / 25) + (time / timeMax) * (80 / 25) * unit2Px), y:(dista - unit2Px * (10 / 25))});
           graphLine[i].remove();
           graphLine[i] = graphSVG.select(".lines").append("path").attr("d", lineFx(graphLines[i]))
-                         .style("stroke", tourColors[i]).style("stroke-width", 3).style("stroke-opacity", 0.5).style("fill", "none");
+                         .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
         } else {
           tourLines[i].push({x:center[0], y:center[1]});
           tourLine.push(fieldSVG.select(".lines").append("path").attr("d", lineFx(tourLines[i]))
-                        .style("stroke", tourColors[i]).style("stroke-width", 3).style("stroke-opacity", 0.5).style("fill", "none"));
+                        .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none"));
           graphLines[i].push({x:(unit2Px * (10 / 25) + (time / timeMax) * (80 / 25) * unit2Px), y:(dista - unit2Px * (10 / 25))});
           graphLine.push(graphSVG.select(".lines").append("path").attr("d", lineFx(graphLines[i]))
-                         .style("stroke", tourColors[i]).style("stroke-width", 3).style("stroke-opacity", 0.5).style("fill", "none"));
+                         .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none"));
         }
       }
 
