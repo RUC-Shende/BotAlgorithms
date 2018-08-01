@@ -1,4 +1,4 @@
-<!doctype html>
+ <!doctype html>
 
 <html>
   <head>
@@ -9,17 +9,20 @@
     <script>
       //////////----------Instantiate Variables----------//////////
       var fxs = [GoOutAtAngle, Wait, FollowWall, WaitFor, FollowWallFor, GoToCenter, WaitAverage];
+      var shapes = ["Circle", "Line", "Triangle", "Square", "Pentagon", "Hexagon",
+                    "Heptagon", "Octagon", "Nonagon", "Decagon", "Undecagon", "Dodecagon"];
 
       var loading = true;
       var wireless = true;
+ 
       var time = 0;
       var fps = 60;
       var timeMax = 10 * fps;
-
       var timeBox;
       var timeSlide;
 
       var projector;
+      var degrees = 1;
       var unit2Px = ((window.innerHeight <= window.innerWidth) ?
                     (window.innerHeight) : (window.innerWidth)) / 5;
       var center = [unit2Px * 2, unit2Px * 2];
@@ -37,12 +40,12 @@
                          ];
       var tourColors = [];
 
-      var fieldSVG;
+      var fieldSVG; //0:Background - 1:Line - 2:Bots - 3:Overlay
       var tourists = [];
       var tourLines = [];
       var tourLine = [];
 
-      var graphSVG;
+      var graphSVG; //0:Background - 1:Line - 2:Bots - 3:Overlay
       var graphDots = [];
       var graphLines = [];
       var graphLine = [];
@@ -84,8 +87,7 @@
           this.number = touristNum;
           this.visual = visual;
           this.knows = false;
-          this.stamps = [];
-          this.loadTime = 0;
+          this.target = null;
           this.allowance = 0;
           this.on = 0;
           this.a = 0;
@@ -96,9 +98,6 @@
 
       //////////----------Instantiate Functions----------//////////
       function GoToPoint(who, value) {
-        if (who.on >= who.stamps.length) {
-          who.stamps.push([who.loadTime, who.a, who.x, who.y]);
-        }
         var dLoc = [value[0] - who.x, value[1] - who.y];
         var dist = Math.sqrt(Math.pow(dLoc[1], 2) + Math.pow(dLoc[0], 2));
         if (dist < unit2Px / fps) {
@@ -121,77 +120,116 @@
 
 //Requirements: At center	Params:	Angle(time)	Description: Goes to wall
       function GoOutAtAngle(who, value) {
-        if (who.on >= who.stamps.length) {
-          who.a = value[0] * (Math.PI / 180);
-          who.stamps.push([who.loadTime, who.a, who.x, who.y]);
-        }
-        if ((who.x == center[0] + unit2Px * Math.cos(who.a)) && (who.y == center[1] - unit2Px * Math.sin(who.a))) {
-          who.on++;
+        who.a = value[0] * (Math.PI / 180);
+        if (degrees == 1) {
+          if ((who.x == center[0] + unit2Px * Math.cos(who.a)) && (who.y == center[1] - unit2Px * Math.sin(who.a))) {
+            who.on++;
+          } else {
+            GoToPoint(who, [center[0] + unit2Px * Math.cos(who.a), center[1] - unit2Px * Math.sin(who.a)]);
+          }
         } else {
-          GoToPoint(who, [center[0] + unit2Px * Math.cos(who.a), center[1] - unit2Px * Math.sin(who.a)]);
+          var unitDeg = (2 * Math.PI) / degrees;
+          var pt1 = Math.floor(who.a / unitDeg);
+          var edgePerc = (who.a - (pt1 * unitDeg)) / (unitDeg);
+          var holdX = (center[0] + unit2Px * Math.cos(pt1 * unitDeg))
+                       + (Math.cos((pt1 + 1) * unitDeg) - Math.cos(pt1 * unitDeg)) * unit2Px * edgePerc;
+          var holdY = (center[1] - unit2Px * Math.sin(pt1 * unitDeg))
+                       - (Math.sin((pt1 + 1) * unitDeg) - Math.sin(pt1 * unitDeg)) * unit2Px * edgePerc;
+          if ((who.x == holdX) && (who.y == holdY)) {
+            who.on++;
+          } else {
+            GoToPoint(who, [holdX, holdY]);
+          }
         }
       }
 
 //Requirements: None	Params: null	Description: Wait indefinitely
       function Wait(who, value) {
-        if (who.on >= who.stamps.length) {
-          who.stamps.push([who.loadTime, who.a, who.x, who.y]);
-        }
         who.allowance = 0;
       }
 
 //Requirements: At wall		Params: direction	Description: Follows wall at direction indefinitely
       function FollowWall(who, value) {
-        if (who.on >= who.stamps.length) {
-          who.stamps.push([who.loadTime, who.a, who.x, who.y]);
-        }
         var dir = (value[0] == 'left') ? (1) : (-1);
         who.a += (1 / (fps * unit2Px)) * dir;
-        GoToPoint(who, [center[0] + unit2Px * Math.cos(who.a), center[1] - unit2Px * Math.sin(who.a)]);
+        if (degrees == 1) {
+          holdX = center[0] + unit2Px * Math.cos(who.a);
+          holdY = center[1] - unit2Px * Math.sin(who.a);
+        } else { 
+          var unitDeg = (2 * Math.PI) / degrees;
+          if (dir > 0) {
+            var pt1 = Math.floor(who.a / unitDeg);
+          } else {
+            var pt1 = Math.ceil(who.a / unitDeg);
+          }
+          var edgePerc = (who.a - (pt1 * unitDeg)) / (unitDeg);
+          holdX = (center[0] + unit2Px * Math.cos(pt1 * unitDeg))
+                       + (Math.cos((pt1 + dir) * unitDeg) * dir - Math.cos(pt1 * unitDeg) * dir) * unit2Px * edgePerc;
+          holdY = (center[1] - unit2Px * Math.sin(pt1 * unitDeg))
+                       - (Math.sin((pt1 + dir) * unitDeg) * dir - Math.sin(pt1 * unitDeg) * dir) * unit2Px * edgePerc;
+        }
+        GoToPoint(who, [holdX, holdY]);
       }
 
 //Requirements: None	Params: time	Description: Wait for x time
       function WaitFor(who, value) {
-        if (who.on >= who.stamps.length) {
-          who.stamps.push([who.loadTime, who.a, who.x, who.y]);
-          who.loadTime = time + value[0] * fps;
+        if (who.target == null) {
+          who.target = time + value[0] * fps;
         }
-        if (time >= who.loadTime) {
+        if (time >= who.target) {
           who.on++;
+          who.allowance -= (unit2Px / fps) - (time - who.target);
+          who.target = null;
+        } else {
+          who.allowance = 0;
         }
-        who.allowance = 0;
       }
 
 //Requirements: At wall		Params: direction and angle(time)	Description: Follows wall at direction for x time
       function FollowWallFor(who, value) {
         var dir = (value[0] == 'left') ? (1) : (-1);
-        if (who.on >= who.stamps.length) {
-          who.stamps.push([who.loadTime, who.a, who.x, who.y]);
-          who.loadTime = who.a + value[1] * (Math.PI / 180) * dir;
+        if (who.target == null) {
+          who.target = who.a + value[1] * (Math.PI / 180) * dir;
         }
+        var leftCondition = 0;
+        var rightCondition = 0;
         if (dir > 0) {
-          if (who.a + (1 / (fps * unit2Px)) * dir > who.loadTime) {
-            who.on++;
-            who.a = who.loadTime;
-          } else {
-            who.a += (1 / (fps * unit2Px)) * dir;
-          }
+          leftCondition = who.a + (1 / (fps * unit2Px)) * dir;
+          rightCondition = who.target;
         } else {
-          if (who.a + (1 / (fps * unit2Px)) * dir < who.loadTime) {
-            who.on++;
-            who.a = who.loadTime;
-          } else {
-            who.a += (1 / (fps * unit2Px)) * dir;
-          }
+          leftCondition = who.target;
+          rightCondition = who.a + (1 / (fps * unit2Px)) * dir;
         }
-        GoToPoint(who, [center[0] + unit2Px * Math.cos(who.a), center[1] - unit2Px * Math.sin(who.a)]);
+        var holdX = 0;
+        var holdY = 0;
+        if (leftCondition > rightCondition) {
+          who.on++;
+          who.a = who.target;
+          who.target = null;
+        } else {
+          who.a += (1 / (fps * unit2Px)) * dir;
+        }
+        if (degrees == 1) {
+          holdX = center[0] + unit2Px * Math.cos(who.a);
+          holdY = center[1] - unit2Px * Math.sin(who.a);
+        } else { 
+          var unitDeg = (2 * Math.PI) / degrees;
+          if (dir > 0) {
+            var pt1 = Math.floor(who.a / unitDeg);
+          } else {
+            var pt1 = Math.ceil(who.a / unitDeg);
+          }
+          var edgePerc = (who.a - (pt1 * unitDeg)) / (unitDeg);
+          holdX = (center[0] + unit2Px * Math.cos(pt1 * unitDeg))
+                       + (Math.cos((pt1 + dir) * unitDeg) * dir - Math.cos(pt1 * unitDeg) * dir) * unit2Px * edgePerc;
+          holdY = (center[1] - unit2Px * Math.sin(pt1 * unitDeg))
+                       - (Math.sin((pt1 + dir) * unitDeg) * dir - Math.sin(pt1 * unitDeg) * dir) * unit2Px * edgePerc;
+        }
+        GoToPoint(who, [holdX, holdY]);
       }
 
 //Requirements: At wall		Params: null	Description: Goes to center
       function GoToCenter(who, value) {
-        if (who.on >= who.stamps.length) {
-          who.stamps.push([who.loadTime, who.a, who.x, who.y]);
-        }
         if ((who.x == center[0]) && (who.y == center[1])) {
           who.on++;
         } else {
@@ -201,9 +239,6 @@
 
 //Requirements: None	Params: null	Description: Goes to center of all bots
       function WaitAverage(who, value) {
-        if (who.on >= who.stamps.length) {
-          who.stamps.push([who.loadTime, who.a, who.x, who.y]);
-        }
         var sumPosition = [0, 0];
         var totalNum = 0;
         for (i = 0; i < tourists.length; i++) {
@@ -228,81 +263,106 @@
 
 
       function Start() {
-        //Background Visuals
+        //Primary and layered SVGs
         fieldSVG = d3.select("body").append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
                      .style("float", "left").style("border", "1px solid black")
                      .on("mousemove", ChoosExit).on("click", exitChosen);
         graphSVG = d3.select("body").append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
                      .style("float", "left").style("border", "1px solid black");
-        fieldSVG.append("text").attr("x",  center[0]).attr("y", unit2Px * (1 / 5))
-                .style("text-anchor", "middle").style("font-size", unit2Px * (1 / 5)).text("Search and Exit");
-        fieldSVG.append("text").attr("x",  center[0]).attr("y", unit2Px * (3 / 10))
-                .style("text-anchor", "middle").style("font-size", unit2Px * (1 / 10)).text("Circle Wireless");
-        fieldSVG.append("text").attr("x",  center[0]).attr("y", unit2Px * (5 / 10)).attr("class", "exitText")
-                .style("text-anchor", "middle").style("font-size", unit2Px * (2 / 10))
-                .text("Left-Click, to choose exit location at ~" + 0 + " degrees");
-        fieldSVG.append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", unit2Px)
-                .style("fill-opacity", 0.0).style("stroke", "#000000");
+        var classes = ["backGround", "lines", "bots", "overLay"];
+        for (vr i = 0; i < classes.length; i++) {
+        fieldSVG.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
+                     .attr("class", classes[i]);
+        graphSVG.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
+                     .attr("class", classes[i]);
+        }
+        LoadField();
+        LoadGraph();
         //Tourist Visuals
         for (var i = 0; i < instruBinder.length; i++) {
           tourColors.push(RandomColor());
-          tourists.push(new Tourist(fieldSVG.append("circle").attr("cx", center[0]).attr("cy", center[1])
+          tourists.push(new Tourist(fieldSVG.select(".bots").append("circle").attr("cx", center[0]).attr("cy", center[1])
                                     .attr("r", unit2Px / 16)//.on("mouseover", () => {alert("woo");})
                                     .style("fill", tourColors[i]), instruBinder[i]));
           touristNum++;
           tourLines.push([]);
-          graphDots.push(graphSVG.append("circle").attr("cx", unit2Px * (10 / 25))
+          graphDots.push(graphSVG.select(".bots").append("circle").attr("cx", unit2Px * (10 / 25))
                          .attr("cy", unit2Px * 4 * (20 / 25) - unit2Px * (10 / 25)).attr("r", unit2Px / 16)
                          .style("fill", tourColors[i]));
           graphLines.push([]);
         }
+      }
+
+      function LoadField() {
+        fieldSVG.select(".backGround").append("text").attr("x",  center[0]).attr("y", unit2Px * (1 / 5))
+                .style("text-anchor", "middle").style("font-size", unit2Px * (1 / 5)).text("Search and Exit");
+        fieldSVG.select(".backGround").append("text").attr("x",  center[0]).attr("y", unit2Px * (3 / 10))
+                .style("text-anchor", "middle").style("font-size", unit2Px * (1 / 10)).text(shapes[degrees - 1] + " Wireless");
+        fieldSVG.select(".backGround").append("text").attr("x",  center[0]).attr("y", unit2Px * (5 / 10)).attr("class", "exitText")
+                .style("text-anchor", "middle").style("font-size", unit2Px * (2 / 10))
+                .text("Left-Click, to choose exit location at ~" + 0 + " degrees");
+        //Shape
+        if (degrees == 1) {
+          fieldSVG.select(".backGround").append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", unit2Px)
+                  .style("fill-opacity", 0.0).style("stroke", "#000000");
+        } else {
+          var hold = 'M' + (center[0] + unit2Px) + ',' + center[1];
+          for (var i = 1; i <= degrees; i++) {
+            var holdAng = ((360 / degrees) * i) * (Math.PI / 180);
+            hold += 'L' + (center[0] + unit2Px * Math.cos(holdAng)) + ',' + (center[1] - unit2Px * Math.sin(holdAng));
+          }
+          fieldSVG.select(".backGround").append("path").attr("d", hold).style("fill", "none").style("stroke", "#000000");
+        }
         //Unit Circle Visuals
-        fieldSVG.append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", 2).style("fill", "#000000");
-        fieldSVG.append("circle").attr("class", "exit").attr("cx", fieldExit[0]).attr("cy", fieldExit[1]).attr("r", 2)
+        fieldSVG.select(".overLay").append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", 2).style("fill", "#000000");
+        fieldSVG.select(".overLay").append("circle").attr("class", "exit").attr("cx", fieldExit[0]).attr("cy", fieldExit[1]).attr("r", 2)
                 .style("fill", "#000000");
-        fieldSVG.append("line").attr("x1", 2 * unit2Px).attr("y1", unit2Px).attr("x2",  2 * unit2Px).attr("y2", 3 * unit2Px)
+        fieldSVG.select(".overLay").append("line").attr("x1", 2 * unit2Px).attr("y1", unit2Px).attr("x2",  2 * unit2Px).attr("y2", 3 * unit2Px)
                 .style("stroke", "#000000").style("stroke-width", .5);
-        fieldSVG.append("line").attr("x1", unit2Px).attr("y1", 2 * unit2Px).attr("x2",  3 * unit2Px).attr("y2", 2 * unit2Px)
+        fieldSVG.select(".overLay").append("line").attr("x1", unit2Px).attr("y1", 2 * unit2Px).attr("x2",  3 * unit2Px).attr("y2", 2 * unit2Px)
                 .style("stroke", "#000000").style("stroke-width", .5);
-        fieldSVG.append("text").attr("x", 3.1 * unit2Px).attr("y", center[1])
+        fieldSVG.select(".backGround").append("text").attr("x", 3.1 * unit2Px).attr("y", center[1])
                 .style("text-anchor", "left").style("font-size", unit2Px / 5).text("0");
-        fieldSVG.append("text").attr("x", center[0]).attr("y", .9 * unit2Px)
+        fieldSVG.select(".backGround").append("text").attr("x", center[0]).attr("y", .9 * unit2Px)
                 .style("text-anchor", "middle").style("font-size", unit2Px / 5).text("90");
+      }
+
+      function LoadGraph() {
         //Time Slider and Buttons
-        timeText = graphSVG.append("text").attr("x", unit2Px * 1.1).attr("y", unit2Px * .4)
+        timeText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * 1.1).attr("y", unit2Px * .4)
                    .style("font-size", unit2Px * (8 / 25)).style("text-anchor", "right").text("0");
-        frameText = graphSVG.append("text").attr("x", unit2Px * 1.1).attr("y", unit2Px * .7)
+        frameText = graphSVG.select("backGround").append("text").attr("x", unit2Px * 1.1).attr("y", unit2Px * .7)
                     .style("font-size", unit2Px * (8 / 25)).style("text-anchor", "right").text("0");
-        timeBox = graphSVG.append("rect").attr("width", 4 * unit2Px).attr("height", unit2Px / 8)
+        timeBox = graphSVG.select(".overLay").append("rect").attr("width", 4 * unit2Px).attr("height", unit2Px / 8)
                           .attr("fill-opacity", 0.0).style("stroke", "#000000");
-        timeSlide = graphSVG.append("rect").attr("width", unit2Px / 8).attr("height", unit2Px / 8)
+        timeSlide = graphSVG.select(".backGround").append("rect").attr("width", unit2Px / 8).attr("height", unit2Px / 8)
                     .attr("class", "reveal").style("fill", "#888888")
                     .call(d3.drag().on("start", SSlide).on("drag", MSlide).on("end", ESlide));
-        graphSVG.append("rect").attr("x", unit2Px * (19 / 25)).attr("y", unit2Px * (4 / 25)).attr("width", unit2Px / 4)
+        graphSVG.select(".overLay").append("rect").attr("x", unit2Px * (19 / 25)).attr("y", unit2Px * (4 / 25)).attr("width", unit2Px / 4)
                 .attr("class", "reveal").attr("height", unit2Px / 4).style("fill", "#00ff00")
                 .on("click", () => {timeDirect = 1;});
-        graphSVG.append("rect").attr("x", unit2Px * (10 / 25)).attr("y", unit2Px * (4 / 25)).attr("width", unit2Px / 4).attr("height", unit2Px / 4)
+        graphSVG.select(".overLay").append("rect").attr("x", unit2Px * (10 / 25)).attr("y", unit2Px * (4 / 25)).attr("width", unit2Px / 4).attr("height", unit2Px / 4)
                 .attr("class", "reveal").style("fill", "#0000ff").on("click", () => {timeDirect = 0;});
-        graphSVG.append("rect").attr("x", unit2Px * (1 / 25)).attr("y", unit2Px * (4 / 25)).attr("width", unit2Px / 4).attr("height", unit2Px / 4)
+        graphSVG.select(".overLay").append("rect").attr("x", unit2Px * (1 / 25)).attr("y", unit2Px * (4 / 25)).attr("width", unit2Px / 4).attr("height", unit2Px / 4)
                 .attr("class", "reveal").style("fill", "#ff0000")
                 .on("click", () => {timeDirect = -1;});
         //Tourist Info Visual
-        graphSVG.append("path").attr("d", 'M' + unit2Px * (1 / 25) + ',' + unit2Px * (16 / 25) + 'L' + unit2Px * (6 / 25) + ',' + unit2Px * (11 / 25)
+        graphSVG.select(".overLay").append("path").attr("d", 'M' + unit2Px * (1 / 25) + ',' + unit2Px * (16 / 25) + 'L' + unit2Px * (6 / 25) + ',' + unit2Px * (11 / 25)
                                                 + 'L' + unit2Px * (6 / 25) + ',' + unit2Px * (21 / 25) + 'L' + unit2Px * (1 / 25) + ',' + unit2Px * (16 / 25))
                      .attr("class", "select").on("click", () => {UpdateInfo(-1);});
-        selectText = graphSVG.append("text").attr("x", unit2Px * (13 / 25)).attr("y", unit2Px * (18 / 25)).attr("text-anchor", "middle")
+        selectText = graphSVG.select(".overLay").append("text").attr("x", unit2Px * (13 / 25)).attr("y", unit2Px * (18 / 25)).attr("text-anchor", "middle")
                      .attr("class", "select").style("font-size", unit2Px * (7 / 25)).text("0");
-        graphSVG.append("path").attr("d", 'M' + unit2Px * (25 / 25) + ',' + unit2Px * (16 / 25) + 'L' + unit2Px * (20 / 25) + ',' + unit2Px * (11 / 25)
+        graphSVG.select(".overLay").append("path").attr("d", 'M' + unit2Px * (25 / 25) + ',' + unit2Px * (16 / 25) + 'L' + unit2Px * (20 / 25) + ',' + unit2Px * (11 / 25)
                                                    + 'L' + unit2Px * (20 / 25) + ',' + unit2Px * (21 / 25) + 'L' + unit2Px * (25 / 25) + ',' + unit2Px * (16 / 25))
                    .attr("class", "select").on("click", () => {UpdateInfo(1);});
-        graphSVG.append("path").attr("d", 'M' + unit2Px * (10 / 25) + ',' + unit2Px * (50 / 25)
+        graphSVG.select(".overLay").append("path").attr("d", 'M' + unit2Px * (10 / 25) + ',' + unit2Px * (50 / 25)
                                         + 'L' + unit2Px * (10 / 25) + ',' + unit2Px * (90 / 25)
                                         + 'L' + unit2Px * (90 / 25) + ',' + unit2Px * (90 / 25))
                 .style("fill", "none").style("stroke", "#000000");
-        graphSVG.append("text").attr("x", unit2Px * (5 / 25)).attr("y", unit2Px * (70 / 25)).attr("text-anchor", "middle")
+        graphSVG.select(".backGround").append("text").attr("x", unit2Px * (5 / 25)).attr("y", unit2Px * (70 / 25)).attr("text-anchor", "middle")
                 .attr("transform", "rotate(-90," + unit2Px * (5 / 25) + ',' + unit2Px * (70 / 25) + ')')
                 .style("font-size", unit2Px * (5 / 25)).style("fill", "#000000").text("Distance from Exit");
-        graphSVG.append("text").attr("x", unit2Px * 2).attr("y", unit2Px * (395 / 100)).attr("text-anchor", "middle")
+        graphSVG.select(".backGround").append("text").attr("x", unit2Px * 2).attr("y", unit2Px * (395 / 100)).attr("text-anchor", "middle")
                 .style("font-size", unit2Px * (5 / 25)).style("fill", "#000000").text("Time");
       }
 
@@ -321,7 +381,17 @@
         exitAngle = Math.atan2(d3.event.x - center[0], d3.event.y - center[1]) - (Math.PI / 2);
         if (exitAngle < 0) {exitAngle += 2 * Math.PI;}
         d3.select(".exitText").text("Left-Click, to choose exit location at ~" + Math.floor(exitAngle * 180 / Math.PI) + " degrees");
-        fieldExit = [center[0] + unit2Px * Math.cos(exitAngle), center[1] - unit2Px * Math.sin(exitAngle)];
+        if (degrees == 1) {
+          fieldExit = [center[0] + unit2Px * Math.cos(exitAngle), center[1] - unit2Px * Math.sin(exitAngle)];
+        } else {
+          var unitDeg = (2 * Math.PI) / degrees;
+          var pt1 = Math.floor(exitAngle / unitDeg);
+          var edgePerc = (exitAngle - (pt1 * unitDeg)) / (unitDeg);
+          fieldExit[0] = (center[0] + unit2Px * Math.cos(pt1 * unitDeg))
+                       + (Math.cos((pt1 + 1) * unitDeg) - Math.cos(pt1 * unitDeg)) * unit2Px * edgePerc;
+          fieldExit[1] = (center[1] - unit2Px * Math.sin(pt1 * unitDeg))
+                       - (Math.sin((pt1 + 1) * unitDeg) - Math.sin(pt1 * unitDeg)) * unit2Px * edgePerc;
+        }
         d3.select(".exit").attr("cx", fieldExit[0]).attr("cy", fieldExit[1]);
       }
 
@@ -363,18 +433,18 @@
         if (time > 0) {
           tourLines[i].push({x:tourists[i].x, y:tourists[i].y});
           tourLine[i].remove();
-          tourLine[i] = fieldSVG.append("path").attr("d", lineFx(tourLines[i]))
+          tourLine[i] = fieldSVG.select(".lines").append("path").attr("d", lineFx(tourLines[i]))
                         .style("stroke", tourColors[i]).style("stroke-width", 3).style("stroke-opacity", 0.5).style("fill", "none");
           graphLines[i].push({x:(unit2Px * (10 / 25) + (time / timeMax) * (80 / 25) * unit2Px), y:(dista - unit2Px * (10 / 25))});
           graphLine[i].remove();
-          graphLine[i] = graphSVG.append("path").attr("d", lineFx(graphLines[i]))
+          graphLine[i] = graphSVG.select(".lines").append("path").attr("d", lineFx(graphLines[i]))
                          .style("stroke", tourColors[i]).style("stroke-width", 3).style("stroke-opacity", 0.5).style("fill", "none");
         } else {
           tourLines[i].push({x:center[0], y:center[1]});
-          tourLine.push(fieldSVG.append("path").attr("d", lineFx(tourLines[i]))
+          tourLine.push(fieldSVG.select(".lines").append("path").attr("d", lineFx(tourLines[i]))
                         .style("stroke", tourColors[i]).style("stroke-width", 3).style("stroke-opacity", 0.5).style("fill", "none"));
           graphLines[i].push({x:(unit2Px * (10 / 25) + (time / timeMax) * (80 / 25) * unit2Px), y:(dista - unit2Px * (10 / 25))});
-          graphLine.push(graphSVG.append("path").attr("d", lineFx(graphLines[i]))
+          graphLine.push(graphSVG.select(".lines").append("path").attr("d", lineFx(graphLines[i]))
                          .style("stroke", tourColors[i]).style("stroke-width", 3).style("stroke-opacity", 0.5).style("fill", "none"));
         }
       }
