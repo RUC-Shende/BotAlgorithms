@@ -267,6 +267,28 @@
 
 
       function Start() {
+        //self contained, goal is to get user to choose room shape
+        var holdG = d3.select("body").append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
+                    .style("float", "left").style("border", "1px solid black");
+        holdG.append("text").attr("x", 2 * unit2Px).attr("y", unit2Px)
+             .style("text-anchor", "middle").style("font-size", unit2Px * (5 / 25)).text("What room shape?");
+        var holdT = holdG.append("text").attr("class", "numbah").attr("x", 2 * unit2Px).attr("y", unit2Px * (40 / 25))
+                    .style("text-anchor", "middle").style("font-size", unit2Px * (10 / 25)).text(shapes[degrees - 1]);
+        holdG.append("path").attr("d", 'M' + unit2Px * (80 / 25) + ',' + unit2Px * (36 / 25) + 'L' + unit2Px * (75 / 25) + ',' + unit2Px * (31 / 25)
+                                     + 'L' + unit2Px * (75 / 25) + ',' + unit2Px * (41 / 25) + 'L' + unit2Px * (80 / 25) + ',' + unit2Px * (36 / 25))
+             .on("click", () => {degrees++;if (degrees > 12) {degrees = 12;}holdT.text(shapes[degrees - 1]);});
+        holdG.append("path").attr("d", 'M' + unit2Px * (20 / 25) + ',' + unit2Px * (36 / 25) + 'L' + unit2Px * (25 / 25) + ',' + unit2Px * (31 / 25)
+                                     + 'L' + unit2Px * (25 / 25) + ',' + unit2Px * (41 / 25) + 'L' + unit2Px * (20 / 25) + ',' + unit2Px * (36 / 25))
+             .on("click", () => {degrees--;if (degrees < 1) {degrees = 1;}holdT.text(shapes[degrees - 1]);});
+        holdG.append("text").attr("x", 2 * unit2Px).attr("y", unit2Px * (60 / 25))
+             .style("text-anchor", "middle").style("font-size", unit2Px * (5 / 25)).text("Press this when done")
+             .on("click", () => {
+               holdG.remove();
+               Load();
+             });
+      }
+
+      function Load() {
         //Primary and layered SVGs
         fieldSVG = d3.select("body").append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
                      .style("float", "left").style("border", "1px solid black")
