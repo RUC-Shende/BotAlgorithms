@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+    <title>Face to Face Algorithm Showcase</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <!-- <script src='d3.min.js'></script>-->       <!--Offline support-->
+    <link rel='stylesheet' type='text/css' href='f2fshowcase.css' />
+</head>
+
+<body>
+    <script src='f2fshowcase.js'></script>
+
+    <!--<p>
+        This problem is being analyzed to determine the optimal time of mobile agents finding an exit.
+        This optimization is an attempt to find the lower bound of possibility of completing the task, given
+        any discrete variables. In other words, the lower bound is not simply the 'shortest time to complete the task,'
+        but instead the shortest amount of time to complete the task when there are obstacles such as
+        an unknown exit location (to the agents searching for it). Finding the lower bound is an optimization problem,
+        and as such, we try to find different strategies to optimize the search and evacuation procedure.
+
+    </p>-->
+
+    <div class='tab'>
+        <button class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("A")'/>Algorithm A</button>
+        <button class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("B")'/>Algorithm B</button>
+        <button class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("C")'/>Algorithm C</button>
+    </div>
+    <div class='tabtxt'>
+
+        <div id="A" class='desc'>
+            This algorithm is about two robots using the <span class='tooltip'>Face to Face communication model.<span class='tooltiptext'>The robots can only communicate by physically being next to each other.</span></span>
+            <ol><b><em>Steps:</em></b>
+                <li>
+                    The robots go to the perimeter at the same angle.
+                </li>
+                <li>
+                    They travel opposite directions once they reach the perimeter. e.g, If Robot 1 goes clockwise, Robot 2 goes counter-clockwise.
+                </li>
+                <li>
+                    The robots move along the perimeter until one of them finds the exit, in which case they will <span class='tooltip'>intercept the other's path. <span class='tooltiptext' >The robot which finds the exit will calculate a path (chord) across the circle s.t. the distance of its chord is equal to the arc that the other would have travelled along the perimeter in the time it takes to cross the chord. </span></span>
+                </li>
+                <li>
+                    The robots meet at the end of the point of interception and travel directly back to the exit.
+                </li>
+            </ol>
+        </div>
+
+        <div id="B" class='desc'>
+            This algorithm is about two robots using the <span class='tooltip'>Face to Face communication model.<span class='tooltiptext'>The robots can only communicate by physically being next to each other.</span></span> This algorithm takes two arguments, (X, Φ), X being the arc length travelled before taking <span class='tooltip'>a detour<span class='tooltiptext'>The robot will go away from the perimeter at an angle Φ, and travel toward and stop at the vertical axis of origin. If it has not been intercepted or notified about the exit at the point, it will return to the perimeter.</span></span>, and Φ being the angle to take the detour at.
+            <ol><b><em>Steps:</em></b>
+                <li>
+                    The robots go to the perimeter at the same angle.
+                </li>
+                <li>
+                    They travel opposite directions once they reach the perimeter. e.g, If Robot 1 goes clockwise, Robot 2 goes counter-clockwise.
+                </li>
+                <li>
+                    The robots move along the perimeter until one of them finds the exit, in which case they will <span class='tooltip'>intercept the other's path. <span class='tooltiptext'>The robot which finds the exit will calculate a path (chord) across the circle s.t. the distance of its chord is equal to the arc that the other would have travelled along the perimeter in the time it takes to cross the chord. </span></span>
+                </li>
+                <li>
+                    If the robots have travelled the distance X without being notified of the exit, they initiate the detour phase at angle Φ.
+                </li>
+                <li>
+                    If, after the detour phase the exit has not been found, the robots continue moving around the perimeter and follow the normal interception methods.
+                </li>
+            </ol>
+
+            This method takes advantage of the detour phase to provide a slightly faster evacuation time in the event that the exit is found quickly. The robot which finds the exit will travel less distance to intercept the other if it is currently in its detour phase, thus lowering the overall time. The only time which this does not apply is for a smaller set of exit positions, which are observed after the detour phase.
+
+        </div>
+
+        <div id="C" class='desc'>
+
+        </div>
+    </div>
+
+</body>
+</html>

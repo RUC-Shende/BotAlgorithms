@@ -1,0 +1,96 @@
+* {box-sizing: border-box;}
+
+input {
+    border: 1px solid transparent;
+    padding: 10px;
+    margin: 0.5%;
+}
+
+input[type=submit] {
+    color: black;
+    background-color: #ccc;
+    transition: 0.3s;
+}
+input[type=submit]:hover{
+    background-color: #ddd;
+}
+input[type=submit]:active{
+    background-color: #eee;
+    transition: 0.3s;
+}
+
+.desc {
+    font-size: 24px;
+    display: none;
+    font-family: Verdana, sans-serif;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted;
+    font-weight: bold;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    font-size: 16px;
+    font-family: Verdana, sans-serif;
+    font weight: normal;
+    font-style: italic;
+    width: 300px;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -150px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+
+    position: absolute;
+    z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    z-index: 1;
+}
+
+.tab {
+    overflow: hidden;
+    float: left;
+    width: 1200px;
+    background-color: #ccc;
+}
+ .tabtxt {
+     float: left;
+     width: 1200px;
+     background-color: #eee;
+     padding: 15px;
+ }
+
+.tab button {
+    background-color: #ccc;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    z-index: 0;
+}
+
+.tab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+    background-color: #eee;
+}
+
+.tablinks {
+    width: 33%;
+    background-color: inherit;
+}
