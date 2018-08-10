@@ -1,0 +1,5 @@
+Creation of changelog: 08/10/2018
+
+08/10/18: Added the first files for the single page app, the Face to Face algorithm showcase.
+          Includes explanations for algorithms A and B.
+          No support yet to change between them on the visual display.
