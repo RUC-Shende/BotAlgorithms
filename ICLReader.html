@@ -8,13 +8,17 @@
   <body>
     <script>
       //////////----------Instantiate Variables----------//////////
-      var fxs = [GoOutAtAngle, Wait, FollowWall, WaitFor, FollowWallFor, GoToCenter, WaitAverage, GoToPoint];
-      var efxs = [GoToExit];
-      var shapes = ["Circle", "Will Crash", "Triangle", "Square", "Pentagon", "Hexagon",
-                    "Heptagon", "Octagon", "Nonagon", "Decagon", "Undecagon", "Dodecagon"];
+      var fxs = {"GoOutAtAngle":GoOutAtAngle, "Wait":Wait, "FollowWall":FollowWall, "WaitFor":WaitFor,
+                 "FollowWallFor":FollowWallFor, "GoToCenter":GoToCenter, "WaitAverage":WaitAverage,
+                 "GoToPoint":GoToPoint};
+      var efxs = {"GoToExit":GoToExit, "PursueNonBeliever":PursueNonBeliever};
+      var shapes = ["Vertex", "Line", "Triangle", "Square", "Pentagon", "Hexagon", "Heptagon",
+                    "Octagon", "Nonagon", "Decagon", "Undecagon", "Dodecagon", "Circle"];
 
+      var exitAlert = false;
+      var exitAllow = 0;
       var loading = true;
-      var wireless = true;
+      var wireless = false;
  
       var time = 0;
       var timeDirect = 0;
@@ -24,7 +28,7 @@
       var timeSlide;
 
       var projector;
-      var degrees = 1;
+      var degrees = 2;
       var unit2Px = ((window.innerHeight <= window.innerWidth) ?
                     (window.innerHeight) : (window.innerWidth)) / 5;
       var center = [unit2Px * 2, unit2Px * 2];
@@ -37,17 +41,11 @@
 
       var touristNum = 0;
       var instruBinder = [
-                          /*[[0, [null]], [0, [45]], [3, [1]], [5, [null]], [0, [225]], [4, ["left", 90]], [2, ["right"]]],
-                          [[0, [null]], [0, [-45]], [3, [1]], [5, [null]], [0, [135]], [4, ["right", 90]], [1, [null]]],*/
-                          /*[[0, [null]], [0, [90]], [4, ["left", 180]], [1, [null]]],
-                          [[0, [null]], [0, [90]], [4, ["right", 180]], [1, [null]]],*/
-                          [[0, [null]], [0, [90]], [4, ["left", 120]], [7, [center[0], center[1] + unit2Px / 3]], [0, [null]], [4, ["left", 60]], [1, [null]]],
-                          [[0, [null]], [0, [90]], [4, ["right", 120]], [7, [center[0], center[1] + unit2Px / 3]], [0, [null]], [4, ["right", 60]], [1, [null]]],
-                          /*[[0, [null]], [0, [90]], [4, ["left", 120]], [7, [center[0] - unit2Px / 3, center[1] + unit2Px / 3]],
-                           [7, [center[0], center[1] + unit2Px / 3]], [0, [null]], [4, ["left", 60]], [1, [null]]],
-                          [[0, [null]], [0, [90]], [4, ["right", 120]], [7, [center[0] + unit2Px / 3, center[1] + unit2Px / 3]],
-                           [7, [center[0], center[1] + unit2Px / 3]], [0, [null]], [4, ["right", 60]], [1, [null]]],*/
-                          [[0, [null]], [6, [null]]]
+                          [["GoToExit", [null]], ["GoOutAtAngle", [45]], ["WaitFor", [1]], ["GoToCenter", [null]],
+                           ["GoOutAtAngle", [225]], ["FollowWallFor", ["left", 90]], ["FollowWall", ["right"]]],
+                          [["PursueNonBeliever", [null]], ["GoOutAtAngle", [-45]], ["WaitFor", [1]], ["GoToCenter", [null]],
+                           ["GoOutAtAngle", [135]], ["FollowWallFor", ["right", 90]], ["Wait", [null]]],
+                          [["GoToExit", [null]], ["WaitAverage", [null]]]
                          ];
       var tourColors = [];
 
@@ -77,13 +75,7 @@
         }
         d3.select(this).attr("x", mousePos);
         time = Math.round((mousePos / ((31 / 8) * unit2Px)) * timeMax);
-        for (var i = 0; i < touristNum; i++) {
-          var who = tourists[i];
-          who.x = tourLines[i][time].x;
-          who.y = tourLines[i][time].y;
-          who.visual.attr("cx", who.x).attr("cy", who.y);
-          graphDots[i].attr("cx", graphLines[i][time].x).attr("cy", graphLines[i][time].y);
-        }
+        UpdateVisuals();
       }
 
       function ESlide() {
@@ -136,12 +128,11 @@
           if (who.allowance < who.velocity * unit2Px / fps) {
             who.x = who.x + who.velocity * Math.cos(ang) * (who.allowance / (who.velocity * unit2Px / fps));
             who.y = who.y + who.velocity * Math.sin(ang) * (who.allowance / (who.velocity * unit2Px / fps));
-            who.allowance = 0;
           } else {
             who.x = who.x + (who.velocity * unit2Px / fps) * Math.cos(ang);
             who.y = who.y + (who.velocity * unit2Px / fps) * Math.sin(ang);
-            who.allowance = 0;
           }
+          who.allowance = 0;
         }
       }
 
@@ -150,19 +141,11 @@
         if (value[0] != null) {
           who.a = value[0] * (Math.PI / 180);
         }
-        if (degrees == 1) {
-          if ((who.x == center[0] + unit2Px * Math.cos(who.a)) && (who.y == center[1] - unit2Px * Math.sin(who.a))) {
-            who.on++;
-          } else {
-            GoToPoint(who, [center[0] + unit2Px * Math.cos(who.a), center[1] - unit2Px * Math.sin(who.a)]);
-          }
+        var hold = WallAtAngle(who.a);
+        if ((who.x == hold[0]) && (who.y == hold[1])) {
+          who.on++;
         } else {
-          var hold = WallAtAngle(who.a);
-          if ((who.x == hold[0]) && (who.y == hold[1])) {
-            who.on++;
-          } else {
-            DirectTo(who, hold);
-          }
+          DirectTo(who, hold);
         }
       }
 
@@ -175,11 +158,7 @@
       function FollowWall(who, value) {
         var dir = (value[0] == 'left') ? (1) : (-1);
         who.a += (1 / (fps * unit2Px)) * dir;
-        var hold = [center[0] + unit2Px * Math.cos(who.a), center[1] - unit2Px * Math.sin(who.a)];
-        if (degrees > 1) {
-          hold = WallAtAngle(who.a);
-        }
-        DirectTo(who, hold);
+        DirectTo(who, WallAtAngle(who.a));
       }
 
 //Requirements: None	Params: time	Description: Wait for x time
@@ -215,11 +194,7 @@
         } else {
           who.a += (1 / (fps * unit2Px)) * dir;
         }
-        var hold = [center[0] + unit2Px * Math.cos(who.a), center[1] - unit2Px * Math.sin(who.a)];
-        if (degrees > 1) { 
-          var hold = WallAtAngle(who.a);
-        }
-        DirectTo(who, hold);
+        DirectTo(who, WallAtAngle(who.a));
       }
 
 //Requirements: At wall		Params: null	Description: Goes to center
@@ -273,6 +248,21 @@
         }
       }
 
+      function PursueNonBeliever(who, value) {
+        var hold = fieldExit;
+        for (var i = 0; i < touristNum; i++) {
+          if (!tourists[i].knows) {
+            hold = [tourists[i].x, tourists[i].y];
+          }
+        }
+        if ((who.x == hold[0]) && (who.y == hold[1])) {
+          who.allowance = 0;
+          //GoToExit(who, value);
+        } else {
+          DirectTo(who, hold);
+        }
+      }
+
 
 
 
@@ -288,15 +278,19 @@
                     .style("text-anchor", "middle").style("font-size", unit2Px * (10 / 25)).text(shapes[degrees - 1]);
         holdG.append("path").attr("d", 'M' + unit2Px * (80 / 25) + ',' + unit2Px * (36 / 25) + 'L' + unit2Px * (75 / 25) + ',' + unit2Px * (31 / 25)
                                      + 'L' + unit2Px * (75 / 25) + ',' + unit2Px * (41 / 25) + 'L' + unit2Px * (80 / 25) + ',' + unit2Px * (36 / 25))
-             .on("click", () => {degrees++;var degStr = (degrees > 12) ? (degrees + "gon") : (shapes[degrees - 1]);holdT.text(degStr);});
+             .on("click", () => {degrees++;if (degrees > 13) {degrees = 13;}holdT.text(shapes[degrees - 1]);});
         holdG.append("path").attr("d", 'M' + unit2Px * (20 / 25) + ',' + unit2Px * (36 / 25) + 'L' + unit2Px * (25 / 25) + ',' + unit2Px * (31 / 25)
                                      + 'L' + unit2Px * (25 / 25) + ',' + unit2Px * (41 / 25) + 'L' + unit2Px * (20 / 25) + ',' + unit2Px * (36 / 25))
              .on("click", () => {degrees--;if (degrees < 1) {degrees = 1;}holdT.text(shapes[degrees - 1]);});
         holdG.append("text").attr("x", 2 * unit2Px).attr("y", unit2Px * (60 / 25))
              .style("text-anchor", "middle").style("font-size", unit2Px * (5 / 25)).text("Press this when done")
              .on("click", () => {
-               holdG.remove();
-               Load();
+               if (degrees == 1) {
+                 holdT.text("Boring");
+               } else {
+                 holdG.remove();
+                 Load();
+               }
              });
       }
 
@@ -340,17 +334,15 @@
                 .style("text-anchor", "middle").style("font-size", unit2Px * (2 / 10))
                 .text("Left-Click, to choose exit location at ~" + 0 + " degrees");
         //Shape
-        if (degrees == 1) {
-          fieldSVG.select(".backGround").append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", unit2Px)
-                  .style("fill-opacity", 0.0).style("stroke", "#000000");
-        } else {
-          var hold = 'M' + (center[0] + unit2Px) + ',' + center[1];
-          for (var i = 1; i <= degrees; i++) {
-            var holdAng = ((360 / degrees) * i) * (Math.PI / 180);
-            hold += 'L' + (center[0] + unit2Px * Math.cos(holdAng)) + ',' + (center[1] - unit2Px * Math.sin(holdAng));
-          }
-          fieldSVG.select(".backGround").append("path").attr("d", hold).style("fill", "none").style("stroke", "#000000");
+        if (degrees == 13) {
+          degrees = 360;
         }
+        var hold = 'M' + (center[0] + unit2Px) + ',' + center[1];
+        for (var i = 1; i <= degrees; i++) {
+          var holdAng = ((360 / degrees) * i) * (Math.PI / 180);
+          hold += 'L' + (center[0] + unit2Px * Math.cos(holdAng)) + ',' + (center[1] - unit2Px * Math.sin(holdAng));
+        }
+        fieldSVG.select(".backGround").append("path").attr("d", hold).style("fill", "none").style("stroke", "#000000");
         //Unit Circle Visuals
         fieldSVG.select(".backGround").append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", 2).style("fill", "#000000");
         fieldSVG.select(".backGround").append("circle").attr("class", "exit").attr("cx", fieldExit[0]).attr("cy", fieldExit[1]).attr("r", 2)
@@ -367,35 +359,43 @@
 
       function LoadGraph() {
         //Time Slider and Buttons
-        timeText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * 1.1).attr("y", unit2Px * .4)
-                   .style("font-size", unit2Px * (8 / 25)).style("text-anchor", "right").text("0");
-        frameText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * 1.1).attr("y", unit2Px * .7)
-                    .style("font-size", unit2Px * (8 / 25)).style("text-anchor", "right").text("0");
+        timeText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1/ 25)).attr("y", unit2Px * .4)
+                   .style("font-size", unit2Px * (8 / 25)).style("text-anchor", "start").text("Time: 0");
+        frameText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1/ 25)).attr("y", unit2Px * .7)
+                    .style("font-size", unit2Px * (8 / 25)).style("text-anchor", "start").text("Frame: 0");
         timeBox = graphSVG.select(".backGround").append("rect").attr("width", 4 * unit2Px).attr("height", unit2Px / 8)
                           .attr("fill-opacity", 0.0).style("stroke", "#000000");
         timeSlide = graphSVG.select(".backGround").append("rect").attr("width", unit2Px / 8).attr("height", unit2Px / 8)
                     .attr("class", "reveal").style("fill", "#888888")
                     .call(d3.drag().on("start", SSlide).on("drag", MSlide).on("end", ESlide));
-        graphSVG.select(".backGround").append("rect").attr("x", unit2Px * (19 / 25)).attr("y", unit2Px * (4 / 25)).attr("width", unit2Px / 4)
-                .attr("class", "reveal").attr("height", unit2Px / 4).style("fill", "#00ff00")
-                .on("click", () => {timeDirect++;});
-        graphSVG.select(".backGround").append("rect").attr("x", unit2Px * (10 / 25)).attr("y", unit2Px * (4 / 25)).attr("width", unit2Px / 4).attr("height", unit2Px / 4)
-                .attr("class", "reveal").style("fill", "#0000ff").on("click", () => {timeDirect = 0;});
-        graphSVG.select(".backGround").append("rect").attr("x", unit2Px * (1 / 25)).attr("y", unit2Px * (4 / 25)).attr("width", unit2Px / 4).attr("height", unit2Px / 4)
-                .attr("class", "reveal").style("fill", "#ff0000")
-                .on("click", () => {timeDirect--;});
+        graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1 / 25)).attr("y", unit2Px * (24 / 25))
+                .attr("class", "reveal").on("click", () => {timeDirect++;}).style("font-size", unit2Px * (6 / 25))
+                .style("fill", "#00ff00").text("Play");
+        graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1 / 25)).attr("y", unit2Px * (30 / 25))
+                .attr("class", "reveal").on("click", () => {timeDirect = 0;}).style("font-size", unit2Px * (6 / 25))
+                .style("fill", "#0000ff").text("Stop");
+        graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1 / 25)).attr("y", unit2Px * (36 / 25))
+                .attr("class", "reveal").on("click", () => {timeDirect--;}).style("font-size", unit2Px * (6 / 25))
+                .style("fill", "#ff0000").text("Rewind");
+        graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1 / 25)).attr("y", unit2Px * (42 / 25))
+                .attr("class", "reveal").on("click", () => {timeDirect/=2;}).style("font-size", unit2Px * (6 / 25))
+                .style("fill", "#00aaaa").text("Slow");
         //Tourist Info Visual
-        graphSVG.select(".backGround").append("path").attr("d", 'M' + unit2Px * (1 / 25) + ',' + unit2Px * (16 / 25) + 'L' + unit2Px * (6 / 25) + ',' + unit2Px * (11 / 25)
-                                                + 'L' + unit2Px * (6 / 25) + ',' + unit2Px * (21 / 25) + 'L' + unit2Px * (1 / 25) + ',' + unit2Px * (16 / 25))
-                     .attr("class", "select").on("click", () => {UpdateInfo(-1);});
-        selectText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (13 / 25)).attr("y", unit2Px * (18 / 25)).attr("text-anchor", "middle")
+        graphSVG.select(".backGround").append("path").attr("d", 'M' + unit2Px * (75 / 25) + ',' + unit2Px * (10 / 25)
+                                                              + 'L' + unit2Px * (80 / 25) + ',' + unit2Px * (5 / 25)
+                                                              + 'L' + unit2Px * (80 / 25) + ',' + unit2Px * (15 / 25)
+                                                              + 'L' + unit2Px * (75 / 25) + ',' + unit2Px * (10 / 25))
+                .attr("class", "select").on("click", () => {UpdateInfo(-1);});
+        selectText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (87 / 25)).attr("y", unit2Px * (12 / 25)).attr("text-anchor", "middle")
                      .attr("class", "select").style("font-size", unit2Px * (7 / 25)).text("0");
-        graphSVG.select(".backGround").append("path").attr("d", 'M' + unit2Px * (25 / 25) + ',' + unit2Px * (16 / 25) + 'L' + unit2Px * (20 / 25) + ',' + unit2Px * (11 / 25)
-                                                   + 'L' + unit2Px * (20 / 25) + ',' + unit2Px * (21 / 25) + 'L' + unit2Px * (25 / 25) + ',' + unit2Px * (16 / 25))
-                   .attr("class", "select").on("click", () => {UpdateInfo(1);});
+        graphSVG.select(".backGround").append("path").attr("d", 'M' + unit2Px * (99 / 25) + ',' + unit2Px * (10 / 25)
+                                                              + 'L' + unit2Px * (94 / 25) + ',' + unit2Px * (5 / 25)
+                                                              + 'L' + unit2Px * (94 / 25) + ',' + unit2Px * (15 / 25)
+                                                              + 'L' + unit2Px * (99 / 25) + ',' + unit2Px * (10 / 25))
+                .attr("class", "select").on("click", () => {UpdateInfo(1);});
         graphSVG.select(".backGround").append("path").attr("d", 'M' + unit2Px * (10 / 25) + ',' + unit2Px * (50 / 25)
-                                        + 'L' + unit2Px * (10 / 25) + ',' + unit2Px * (90 / 25)
-                                        + 'L' + unit2Px * (90 / 25) + ',' + unit2Px * (90 / 25))
+                                                              + 'L' + unit2Px * (10 / 25) + ',' + unit2Px * (90 / 25)
+                                                              + 'L' + unit2Px * (90 / 25) + ',' + unit2Px * (90 / 25))
                 .style("fill", "none").style("stroke", "#000000");
         for (var i = 0; i < 3; i++) {
           graphSVG.select(".backGround").append("text").attr("x", unit2Px * (8 / 25))
@@ -465,9 +465,9 @@
             who.allowance = who.velocity * unit2Px / fps;
             while (who.allowance > 0) {
               fxs[instruBinder[i][who.on][0]](who, instruBinder[i][who.on][1]);
-              who.visual.attr("cx", who.x).attr("cy", who.y);
             }
           }
+          UpdateVisuals();
           time++;
           timeSlide.attr("x", (time / timeMax) * (31 / 8) * unit2Px);
           timeBox.attr("width", (time / timeMax) * 4 * unit2Px);
@@ -479,7 +479,6 @@
 //Create lines, and update graph dot positions, as well recreating image of path.
       function LoadLines(i) {
         var dista = unit2Px * 4 - (Math.sqrt(Math.pow(fieldExit[0] - tourists[i].x, 2) + Math.pow(fieldExit[1] - tourists[i].y, 2)) * (20 / 25));
-        graphDots[i].attr("cx", (unit2Px * (10 / 25) + (time / timeMax) * (80 / 25) * unit2Px)).attr("cy", (dista - unit2Px * (10 / 25)));
         if (time > 0) {
           tourLines[i].push({x:tourists[i].x, y:tourists[i].y});
           tourLine[i].remove();
@@ -507,26 +506,59 @@
           clearInterval(projector);
           projector = setInterval(PlayAnim, 1000 / fps);
         } else {
-          for (var i = 0; i < tourists.length; i++) {//Save previous frame
+          var saveBuffer = [];
+          for (var i = 0; i < tourists.length; i++) {
             AlterLines(i);
-          }
-          for (var i = 0; i < tourists.length; i++) {//Prepare next frame
             var who = tourists[i];
+            saveBuffer.push([who.x, who.y, who.a, who.on]);
             who.allowance = who.velocity * unit2Px / fps;
             while (who.allowance > 0) {
-              var dLoc = [fieldExit[0] - who.x, fieldExit[1] - who.y];
-              var dist = Math.sqrt(Math.pow(dLoc[1], 2) + Math.pow(dLoc[0], 2));
-              if (dist < who.velocity * unit2Px / fps) {
-                who.knows = true;
-              }
               if (who.knows) {
                 efxs[instruBinder[i][0][0]](who, instruBinder[i][0][1]);
               } else {
                 fxs[instruBinder[i][who.on][0]](who, instruBinder[i][who.on][1]);
               }
-              who.visual.attr("cx", who.x).attr("cy", who.y);
+            }
+            if (!who.knows) {
+              var dLoc = [fieldExit[0] - who.x, fieldExit[1] - who.y];
+              var dist = Math.sqrt(Math.pow(dLoc[1], 2) + Math.pow(dLoc[0], 2));
+              if (dist < who.velocity * unit2Px / fps) {
+                who.knows = true;
+                exitAlert = true;
+                exitAllow = dist;
+              }
             }
           }
+          if (exitAlert) {
+            for (var i = 0; i < tourists.length; i++) {//reset bots
+              var who = tourists[i];
+              who.x = saveBuffer[i][0];
+              who.y = saveBuffer[i][1];
+              who.a = saveBuffer[i][2];
+              who.on = saveBuffer[i][3];
+              if (wireless) {
+                who.knows = true;
+              }
+              who.allowance = exitAllow;
+              while (who.allowance > 0) {
+                if (who.knows) {
+                  efxs[instruBinder[i][0][0]](who, instruBinder[i][0][1]);
+                } else {
+                  fxs[instruBinder[i][who.on][0]](who, instruBinder[i][who.on][1]);
+                }
+              }
+              who.allowance = (who.velocity * unit2Px / fps) - exitAllow;
+              while (who.allowance > 0) {
+                if (who.knows) {
+                  efxs[instruBinder[i][0][0]](who, instruBinder[i][0][1]);
+                } else {
+                  fxs[instruBinder[i][who.on][0]](who, instruBinder[i][who.on][1]);
+                }
+              }
+            }
+            exitAlert = false;
+          }
+          UpdateVisuals();
           time++;
           timeSlide.attr("x", (time / timeMax) * (31 / 8) * unit2Px);
         }
@@ -537,7 +569,6 @@
 //Create lines, and update graph dot positions, as well recreating image of path.
       function AlterLines(i) {
         var dista = unit2Px * 4 - (Math.sqrt(Math.pow(fieldExit[0] - tourists[i].x, 2) + Math.pow(fieldExit[1] - tourists[i].y, 2)) * (20 / 25));
-        graphDots[i].attr("cx", (unit2Px * (10 / 25) + (time / timeMax) * (80 / 25) * unit2Px)).attr("cy", (dista - unit2Px * (10 / 25)));
         tourLines[i][time] = {x:tourists[i].x, y:tourists[i].y};
         tourLine[i].remove();
         tourLine[i] = fieldSVG.select(".lines").append("path").attr("d", lineFx(tourLines[i]))
@@ -558,16 +589,18 @@
             time = timeMax;
             timeDirect = 0;
           }
-          for (var i = 0; i < touristNum; i++) {
-            var who = tourists[i];
-            who.x = tourLines[i][time].x;
-            who.y = tourLines[i][time].y;
-            who.visual.attr("cx", who.x).attr("cy", who.y);
-            graphDots[i].attr("cx", graphLines[i][time].x).attr("cy", graphLines[i][time].y);
-          }
+          UpdateVisuals();
           timeSlide.attr("x", (time / timeMax) * (31 / 8) * unit2Px);
           timeText.text("Time: " + Math.floor((10000 * time) / fps) / 10000);
-          frameText.text("Frame: " + time);
+          frameText.text("Frame: " + Math.floor(time));
+        }
+      }
+
+      function UpdateVisuals() {
+        for (var i = 0; i < touristNum; i++) {
+          var who = tourists[i];
+          who.visual.attr("cx", tourLines[i][Math.floor(time)].x).attr("cy", tourLines[i][Math.floor(time)].y);
+          graphDots[i].attr("cx", graphLines[i][Math.floor(time)].x).attr("cy", graphLines[i][Math.floor(time)].y);
         }
       }
 
