@@ -3,3 +3,18 @@ Creation of changelog: 08/10/2018
 08/10/18: Added the first files for the single page app, the Face to Face algorithm showcase.
           Includes explanations for algorithms A and B.
           No support yet to change between them on the visual display.
+
+08/12/18: Version 20
+          Changed function array to function object.
+          Now input requires the use the actual function names.
+          Added a pursue function for wireless.(works, but not completely)
+          Save Buffer added.
+          Exit interrupt added.
+          Changed square buttons to words.
+          Added slow button, slows forwards or backwards.
+          Reduced some visual loading code.
+          Circle is now considered a polygon with 360 sides.
+          Line still breaks, for now.
+          Added Vertex room, does nothing.
+          Loads twice for debugging.
+          Re-arranged UI.
