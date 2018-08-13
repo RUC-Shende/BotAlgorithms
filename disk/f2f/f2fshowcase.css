@@ -1,5 +1,9 @@
 * {box-sizing: border-box;}
 
+body {
+    text-align: center;
+}
+
 input {
     border: 1px solid transparent;
     padding: 10px;
@@ -34,6 +38,7 @@ input[type=submit]:active{
 
 .tooltip .tooltiptext {
     visibility: hidden;
+    opacity: 0;
     font-size: 16px;
     font-family: Verdana, sans-serif;
     font weight: normal;
@@ -50,28 +55,38 @@ input[type=submit]:active{
 
     position: absolute;
     z-index: 1;
+    transition: 0.2s;
 }
 
 .tooltip:hover .tooltiptext {
     visibility: visible;
+    opacity: 1;
     z-index: 1;
 }
 
 .tab {
+    text-align: left;
+    margin: 0 auto;
+    width: 80%;
     overflow: hidden;
-    float: left;
-    width: 1200px;
     background-color: #ccc;
+    border: 1px solid black;
 }
  .tabtxt {
-     float: left;
-     width: 1200px;
+     transition: 0.3s;
+     font-size: 24px;
+     font-family: Verdana, sans-serif;
+     text-align: left;
+     margin: 0 auto;
+     width: 80%;
      background-color: #eee;
      padding: 15px;
  }
 
 .tab button {
     background-color: #ccc;
+    display: inline-block;
+    margin: 0 auto;
     float: left;
     border: none;
     outline: none;

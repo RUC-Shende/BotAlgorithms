@@ -168,6 +168,7 @@
     TODO: fix loading multiple different files in one run.
     TODO: delete and insert specific lines in the command list.
     TODO: fix logic on EDIT to include +step support
+    TODO: fix window.numbots to be null on import file
 
 
     Changed: t04 --> t05
@@ -212,6 +213,7 @@
         .attr('font-size', '48px')
         .attr('class', 'title');
     d3.select('body').append('p')
+        .style('text-align', 'center')
         .text('Replace "X" in a command suggestion with a number to specify a value! Use \'+value\' to specify a step amount when assigning to all robots at once.');
 
 

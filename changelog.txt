@@ -24,4 +24,11 @@ Creation of changelog: 08/10/2018
           Pursue function now claims target; prevents same target.
           Pursue function has caught target, if within half a frame of movement.
           Exit found, if within half a frame of movement.
+
+08/13/18: F2F showcase uses ICL Reader Version 21 framework.
+          Explanation for algorithm C added.
+          Explanation for triangular detour added.
+          Added more responsive design to the F2Fshowcase.
+          ChoosExit slightly malfunctions now that the SVG is centered
+          @@@@ Dave if you read this please look at f2fshowcase.js @@@@
           
