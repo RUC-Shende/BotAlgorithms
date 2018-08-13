@@ -41,11 +41,19 @@
 
       var touristNum = 0;
       var instruBinder = [
-                          [["GoToExit", [null]], ["GoOutAtAngle", [45]], ["WaitFor", [1]], ["GoToCenter", [null]],
+                          [["PursueNonBeliever", [null]], ["GoOutAtAngle", [0]], ["Wait", [null]]],
+                          [["PursueNonBeliever", [null]], ["GoOutAtAngle", [90]], ["Wait", [null]]],
+                          [["PursueNonBeliever", [null]], ["GoOutAtAngle", [180]], ["Wait", [null]]],
+                          [["PursueNonBeliever", [null]], ["GoOutAtAngle", [270]], ["Wait", [null]]],
+                          [["PursueNonBeliever", [null]], ["GoOutAtAngle", [45]], ["WaitFor", [1]], ["GoToCenter", [null]],
                            ["GoOutAtAngle", [225]], ["FollowWallFor", ["left", 90]], ["FollowWall", ["right"]]],
                           [["PursueNonBeliever", [null]], ["GoOutAtAngle", [-45]], ["WaitFor", [1]], ["GoToCenter", [null]],
                            ["GoOutAtAngle", [135]], ["FollowWallFor", ["right", 90]], ["Wait", [null]]],
-                          [["GoToExit", [null]], ["WaitAverage", [null]]]
+                          [["PursueNonBeliever", [null]], ["GoOutAtAngle", [225]], ["WaitFor", [1]], ["GoToCenter", [null]],
+                           ["GoOutAtAngle", [45]], ["FollowWallFor", ["left", 90]], ["FollowWall", ["right"]]],
+                          [["PursueNonBeliever", [null]], ["GoOutAtAngle", [135]], ["WaitFor", [1]], ["GoToCenter", [null]],
+                           ["GoOutAtAngle", [-45]], ["FollowWallFor", ["right", 90]], ["Wait", [null]]],
+                          [["PursueNonBeliever", [null]], ["WaitAverage", [null]]]
                          ];
       var tourColors = [];
 
@@ -75,6 +83,8 @@
         }
         d3.select(this).attr("x", mousePos);
         time = Math.round((mousePos / ((31 / 8) * unit2Px)) * timeMax);
+        timeText.text("Time: " + Math.floor((10000 * time) / fps) / 10000);
+        frameText.text("Frame: " + Math.floor(time));
         UpdateVisuals();
       }
 
@@ -90,7 +100,9 @@
           this.number = touristNum;
           this.visual = visual;
           this.knows = false;
+          this.knew = false;
           this.target = null;
+          this.hunted = null;
           this.velocity = 1;
           this.allowance = 0;
           this.on = 1;
@@ -134,6 +146,7 @@
           }
           who.allowance = 0;
         }
+        
       }
 
 //Requirements: At center	Params:	Angle(time)	Description: Goes to wall
@@ -249,18 +262,35 @@
       }
 
       function PursueNonBeliever(who, value) {
-        var hold = fieldExit;
+        var holdWho = null;
+        var closest = Infinity;
         for (var i = 0; i < touristNum; i++) {
-          if (!tourists[i].knows) {
-            hold = [tourists[i].x, tourists[i].y];
+          if ((!tourists[i].knows)
+             && ((tourists[i].hunted == who.number) || (tourists[i].hunted == null))) {
+            var eVec = [tourists[i].x - who.x, tourists[i].y - who.y];
+            var exitDist = Math.sqrt(Math.pow(eVec[1], 2) + Math.pow(eVec[0], 2));
+            if (exitDist < closest) {
+              holdWho = i;
+              closest = exitDist;
+            }
           }
         }
-        if ((who.x == hold[0]) && (who.y == hold[1])) {
-          who.allowance = 0;
-          //GoToExit(who, value);
+        if (holdWho == null) {
+          GoToExit(who, value);
         } else {
-          DirectTo(who, hold);
+          tourists[holdWho].hunted = who.number;
+          var eVec = [tourists[holdWho].x - who.x, tourists[holdWho].y - who.y];
+          var exitDist = Math.sqrt(Math.pow(eVec[1], 2) + Math.pow(eVec[0], 2));
+          if (exitDist <= who.velocity * unit2Px / fps) {
+            exitAlert = tourists[holdWho].knows = true;
+            exitAllow = exitDist;
+          }
+          DirectTo(who, [tourists[holdWho].x, tourists[holdWho].y]);
         }
+      }
+
+      function InterceptNonBeliever(who, value) {
+        
       }
 
 
@@ -428,7 +458,7 @@
       function ChoosExit() {
         exitAngle = Math.atan2(d3.event.x - center[0], d3.event.y - center[1]) - (Math.PI / 2);
         if (exitAngle < 0) {exitAngle += 2 * Math.PI;}
-        d3.select(".exitText").text("Left-Click, to choose exit location at ~" + Math.floor(exitAngle * 180 / Math.PI) + " degrees");
+        d3.select(".exitText").text("Left-Click, to choose exit at ~" + Math.floor(exitAngle * 180 * 100 / Math.PI) / 100 + " degrees");
         if (degrees == 1) {
           fieldExit = [center[0] + unit2Px * Math.cos(exitAngle), center[1] - unit2Px * Math.sin(exitAngle)];
         } else if (degrees == 2) {
@@ -519,13 +549,13 @@
                 fxs[instruBinder[i][who.on][0]](who, instruBinder[i][who.on][1]);
               }
             }
+
             if (!who.knows) {
-              var dLoc = [fieldExit[0] - who.x, fieldExit[1] - who.y];
-              var dist = Math.sqrt(Math.pow(dLoc[1], 2) + Math.pow(dLoc[0], 2));
-              if (dist < who.velocity * unit2Px / fps) {
-                who.knows = true;
-                exitAlert = true;
-                exitAllow = dist;
+              var eVec = [fieldExit[0] - saveBuffer[i][0], fieldExit[1] - saveBuffer[i][1]];
+              var exitDist = Math.sqrt(Math.pow(eVec[1], 2) + Math.pow(eVec[0], 2));
+              if (exitDist <= who.velocity * unit2Px / (2 * fps)) {
+                exitAlert = who.knows = true;
+                exitAllow = exitDist;
               }
             }
           }
@@ -541,7 +571,7 @@
               }
               who.allowance = exitAllow;
               while (who.allowance > 0) {
-                if (who.knows) {
+                if (who.knew) {
                   efxs[instruBinder[i][0][0]](who, instruBinder[i][0][1]);
                 } else {
                   fxs[instruBinder[i][who.on][0]](who, instruBinder[i][who.on][1]);
@@ -551,6 +581,7 @@
               while (who.allowance > 0) {
                 if (who.knows) {
                   efxs[instruBinder[i][0][0]](who, instruBinder[i][0][1]);
+                  who.knew = true;
                 } else {
                   fxs[instruBinder[i][who.on][0]](who, instruBinder[i][who.on][1]);
                 }
