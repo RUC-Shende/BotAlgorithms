@@ -4,7 +4,7 @@ Creation of changelog: 08/10/2018
           Includes explanations for algorithms A and B.
           No support yet to change between them on the visual display.
 
-08/12/18: Version 20
+08/12/18: ICL Reader Version 20
           Changed function array to function object.
           Now input requires the use the actual function names.
           Added a pursue function for wireless.(works, but not completely)
@@ -18,3 +18,10 @@ Creation of changelog: 08/10/2018
           Added Vertex room, does nothing.
           Loads twice for debugging.
           Re-arranged UI.
+
+08/13/18: ICL Reader Version 21
+          Pursue function now pursues closest.
+          Pursue function now claims target; prevents same target.
+          Pursue function has caught target, if within half a frame of movement.
+          Exit found, if within half a frame of movement.
+          
