@@ -29,6 +29,13 @@ Creation of changelog: 08/10/2018
           Explanation for algorithm C added.
           Explanation for triangular detour added.
           Added more responsive design to the F2Fshowcase.
-          ChoosExit slightly malfunctions now that the SVG is centered
+          TODO: ChoosExit slightly malfunctions now that the SVG is centered
           @@@@ Dave if you read this please look at f2fshowcase.js @@@@
+
+08/14/18: F2F Showcase Visual/QOL updates -
+          Links to algorithms focus on the description when clicked.
+          More responsive design added.
+          Updated animation controllers to look more natural.
           
+          TODO: Animation slider crashes when clicked BEFORE animation starts.
+          TODO: Bot selector crashes when clicked before animation starts.
