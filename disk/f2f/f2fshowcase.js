@@ -13,7 +13,7 @@ var wireless = false;
 var time = 0;
 var timeDirect = 0;
 var fps = 60;
-var timeMax = 10 * fps;
+var timeMax = 3 * fps;
 var timeBox;
 var timeSlide;
 
@@ -31,9 +31,9 @@ var lineFx = d3.line().x((d) => {return(d.x);}).y((d) => {return(d.y);});
 
 var touristNum = 0;
 var instruBinder = [
-                    [["PursueNonBeliever", [null]], ["GoOutAtAngle", [0]], ["Wait", [null]]],
-                    [["PursueNonBeliever", [null]], ["GoOutAtAngle", [90]], ["Wait", [null]]],
-                    [["PursueNonBeliever", [null]], ["GoOutAtAngle", [180]], ["Wait", [null]]],
+                    [["PursueNonBeliever", [null]], ["GoOutAtAngle", [0]], ["FollowWall", ['left']]],
+                    [["PursueNonBeliever", [null]], ["GoOutAtAngle", [0]], ["FollowWall", ['right']]],
+                    /*[["PursueNonBeliever", [null]], ["GoOutAtAngle", [180]], ["FollowWall", ['left']]],
                     [["PursueNonBeliever", [null]], ["GoOutAtAngle", [270]], ["Wait", [null]]],
                     [["PursueNonBeliever", [null]], ["GoOutAtAngle", [45]], ["WaitFor", [1]], ["GoToCenter", [null]],
                      ["GoOutAtAngle", [225]], ["FollowWallFor", ["left", 90]], ["FollowWall", ["right"]]],
@@ -43,7 +43,7 @@ var instruBinder = [
                      ["GoOutAtAngle", [45]], ["FollowWallFor", ["left", 90]], ["FollowWall", ["right"]]],
                     [["PursueNonBeliever", [null]], ["GoOutAtAngle", [135]], ["WaitFor", [1]], ["GoToCenter", [null]],
                      ["GoOutAtAngle", [-45]], ["FollowWallFor", ["right", 90]], ["Wait", [null]]],
-                    [["PursueNonBeliever", [null]], ["WaitAverage", [null]]]
+                    [["PursueNonBeliever", [null]], ["WaitAverage", [null]]] */
                    ];
 var tourColors = [];
 
@@ -73,7 +73,7 @@ function MSlide() {
   }
   d3.select(this).attr("x", mousePos);
   time = Math.round((mousePos / ((31 / 8) * unit2Px)) * timeMax);
-  timeText.text("Time: " + Math.floor((10000 * time) / fps) / 10000);
+  timeText.text("Time: " + Math.floor((100 * time) / fps) / 100);
   frameText.text("Frame: " + Math.floor(time));
   UpdateVisuals();
 }
@@ -298,6 +298,7 @@ function Load() {
   fieldSVG = d3.select("body").append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
                .style("border", "1px solid black")
                .on("mousemove", ChoosExit).on("click", exitChosen);
+
   graphSVG = d3.select("body").append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
                .style("border", "1px solid black");
   var classes = ["backGround", "lines", "bots", "overLay"];
@@ -326,12 +327,12 @@ function Load() {
 
 function LoadField() {
   fieldSVG.select(".backGround").append("text").attr("x",  center[0]).attr("y", unit2Px * (1 / 5))
-          .style("text-anchor", "middle").style("font-size", unit2Px * (1 / 5)).text("Search and Exit");
+          .style("text-anchor", "middle").style("font-size", unit2Px * (1 / 5)).text("Search and Exit").style('padding', '15px');
   fieldSVG.select(".backGround").append("text").attr("x",  center[0]).attr("y", unit2Px * (3 / 10))
-          .style("text-anchor", "middle").style("font-size", unit2Px * (1 / 10)).text(shapes[degrees - 1] + " Wireless");
+          .style("text-anchor", "middle").style("font-size", unit2Px * (1 / 10)).text("Circle -- Face-to-Face Communication");
   fieldSVG.select(".backGround").append("text").attr("x",  center[0]).attr("y", unit2Px * (5 / 10)).attr("class", "exitText")
           .style("text-anchor", "middle").style("font-size", unit2Px * (2 / 10))
-          .text("Left-Click, to choose exit location at ~" + 0 + " degrees");
+          .text("Click to place exit at ~" + 0 + " degrees");
   //Shape
   if (degrees == 13) {
     degrees = 360;
@@ -359,26 +360,45 @@ function LoadField() {
 function LoadGraph() {
   //Time Slider and Buttons
   timeText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1/ 25)).attr("y", unit2Px * .4)
-             .style("font-size", unit2Px * (8 / 25)).style("text-anchor", "start").text("Time: 0");
+             .style("font-size", unit2Px * (7 / 25)).style("text-anchor", "start").text("Time: 0");
   frameText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1/ 25)).attr("y", unit2Px * .7)
-              .style("font-size", unit2Px * (8 / 25)).style("text-anchor", "start").text("Frame: 0");
+              .style("font-size", unit2Px * (7 / 25)).style("text-anchor", "start").text("Frame: 0");
   timeBox = graphSVG.select(".backGround").append("rect").attr("width", 4 * unit2Px).attr("height", unit2Px / 8)
                     .attr("fill-opacity", 0.0).style("stroke", "#000000");
   timeSlide = graphSVG.select(".backGround").append("rect").attr("width", unit2Px / 8).attr("height", unit2Px / 8)
               .attr("class", "reveal").style("fill", "#888888")
               .call(d3.drag().on("start", SSlide).on("drag", MSlide).on("end", ESlide));
-  graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1 / 25)).attr("y", unit2Px * (24 / 25))
-          .attr("class", "reveal").on("click", () => {timeDirect++;}).style("font-size", unit2Px * (6 / 25))
-          .style("fill", "#00ff00").text("Play");
-  graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1 / 25)).attr("y", unit2Px * (30 / 25))
-          .attr("class", "reveal").on("click", () => {timeDirect = 0;}).style("font-size", unit2Px * (6 / 25))
-          .style("fill", "#0000ff").text("Stop");
-  graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1 / 25)).attr("y", unit2Px * (36 / 25))
-          .attr("class", "reveal").on("click", () => {timeDirect--;}).style("font-size", unit2Px * (6 / 25))
-          .style("fill", "#ff0000").text("Rewind");
-  graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1 / 25)).attr("y", unit2Px * (42 / 25))
-          .attr("class", "reveal").on("click", () => {timeDirect/=2;}).style("font-size", unit2Px * (6 / 25))
-          .style("fill", "#00aaaa").text("Slow");
+
+  var fo = graphSVG.append('foreignObject').attr('x', unit2Px * (1/25)).attr('y', unit2Px * (18/25)).attr('width', unit2Px * 1.5).attr('height', unit2Px * (18/25));
+
+  var timeButtons = fo.append('xhtml:div');
+  timeButtons.append('input')
+    .attr('type', 'submit')
+    .property('value', ' ▶▶ Play')
+    .attr('class', 'reveal play')
+    .on('click', () => {timeDirect++;});
+  timeButtons.append('input')
+    .attr('class', 'reveal stop')
+    .attr('type', 'submit')
+    .property('value', ' ■ Stop')
+    .on('click', () => {timeDirect = 0;});
+  timeButtons.append('input')
+    .attr('class', 'reveal rewind')
+    .attr('type', 'submit')
+    .property('value', '◀◀ Rewind')
+    .on('click', () => {timeDirect--;});
+  timeButtons.append('input')
+    .attr('class', 'reveal slow')
+    .attr('type', 'submit')
+    .property('value', '◀ Slow ▶')
+    .on('click', () => {if (timeDirect == 0){
+        timeDirect += 0.5;
+    }
+    else{
+        timeDirect/=2;
+    }
+    });
+
   //Tourist Info Visual
   graphSVG.select(".backGround").append("path").attr("d", 'M' + unit2Px * (75 / 25) + ',' + unit2Px * (10 / 25)
                                                         + 'L' + unit2Px * (80 / 25) + ',' + unit2Px * (5 / 25)
@@ -408,9 +428,9 @@ function LoadGraph() {
   }
   graphSVG.select(".backGround").append("text").attr("x", unit2Px * (5 / 25)).attr("y", unit2Px * (70 / 25)).attr("text-anchor", "middle")
           .attr("transform", "rotate(-90," + unit2Px * (5 / 25) + ',' + unit2Px * (70 / 25) + ')')
-          .style("font-size", unit2Px * (5 / 25)).style("fill", "#000000").text("Distance from Exit");
+          .style("font-size", unit2Px * (4 / 25)).style("fill", "#000000").text("Distance from Exit");
   graphSVG.select(".backGround").append("text").attr("x", unit2Px * 2).attr("y", unit2Px * (395 / 100)).attr("text-anchor", "middle")
-          .style("font-size", unit2Px * (5 / 25)).style("fill", "#000000").text("Time");
+          .style("font-size", unit2Px * (4 / 25)).style("fill", "#000000").text("Time");
 }
 
 //Create a random hexadecimal color
@@ -427,7 +447,7 @@ function RandomColor() {
 function ChoosExit() {
   exitAngle = Math.atan2(d3.event.x - center[0], d3.event.y - center[1]) - (Math.PI / 2);
   if (exitAngle < 0) {exitAngle += 2 * Math.PI;}
-  d3.select(".exitText").text("Left-Click, to choose exit at ~" + Math.floor(exitAngle * 180 * 100 / Math.PI) / 100 + " degrees");
+  d3.select(".exitText").text("Click to place exit at ~" + Math.round(Math.floor(exitAngle * 180 * 100 / Math.PI) / 100) + " degrees");
   if (degrees == 1) {
     fieldExit = [center[0] + unit2Px * Math.cos(exitAngle), center[1] - unit2Px * Math.sin(exitAngle)];
   } else if (degrees == 2) {
@@ -471,7 +491,7 @@ function LoadAnim() {
     timeSlide.attr("x", (time / timeMax) * (31 / 8) * unit2Px);
     timeBox.attr("width", (time / timeMax) * 4 * unit2Px);
   }
-  timeText.text("Time: " + Math.floor((10000 * time) / fps) / 10000);
+  timeText.text("Time: " + Math.floor((100 * time) / fps) / 100);
   frameText.text("Frame: " + time);
 }
 
@@ -562,7 +582,7 @@ function AlterAnim() {
     time++;
     timeSlide.attr("x", (time / timeMax) * (31 / 8) * unit2Px);
   }
-  timeText.text("Time: " + Math.floor((10000 * time) / fps) / 10000);
+  timeText.text("Time: " + Math.floor((100 * time) / fps) / 100);
   frameText.text("Frame: " + time);
 }
 
@@ -591,7 +611,7 @@ function PlayAnim() {
     }
     UpdateVisuals();
     timeSlide.attr("x", (time / timeMax) * (31 / 8) * unit2Px);
-    timeText.text("Time: " + Math.floor((10000 * time) / fps) / 10000);
+    timeText.text("Time: " + Math.floor((100 * time) / fps) / 100);
     frameText.text("Frame: " + Math.floor(time));
   }
 }
@@ -625,7 +645,19 @@ function UpdateInfo(delta) {
 }
 
 function showAlgorithmDesc(s){
+    var color;
+    switch(s){
+        case 'A':
+            color = "#efe";
+            break;
+        case 'B':
+            color = '#eef';
+            break;
+        case 'C':
+            color = '#fee';
+    }
     d3.selectAll('.desc').style('display', 'none');
+    d3.select('.tabtxt').style('background-color', color);
     d3.select('#'+s).style('display', 'inline-block');
 }
 

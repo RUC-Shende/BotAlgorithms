@@ -4,10 +4,14 @@
     <title>Face to Face Algorithm Showcase</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <!-- <script src='d3.min.js'></script>-->       <!--Offline support-->
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
     <link rel='stylesheet' type='text/css' href='f2fshowcase.css' />
 </head>
 
 <body>
+    <h1>Robots Evacuating an Area using Face-to-Face Communication</h1>
     <script src='f2fshowcase.js'></script>
 
     <!--<p>
@@ -30,14 +34,14 @@
     </script>-->
 
     <div class='tab'>
-        <button class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("A")'/>Algorithm A</button>
-        <button class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("B")'/>Algorithm B(X, Φ)</button>
-        <button class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("C")'/>Algorithm C(X, Φ, λ)</button>
+        <a href="#AlgA"><button class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("A")'/>Algorithm <b>A</b></button></a>
+        <a href="#AlgB"><button class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("B")'/>Algorithm <b>B(X, Φ)</b></button></a>
+        <a href="#AlgC"><button class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("C")'/>Algorithm <b>C(X, Φ, λ)</b></button></a>
     </div>
     <div class='tabtxt'>
-        Thes algorithms focus on evacuating two robots using the <span class='tooltip'>Face to Face communication model.<span class='tooltiptext'>The robots can only communicate by physically being next to each other.</span></span>
+        These algorithms focus on evacuating two robots using the <span class='tooltip'>Face to Face communication model.<span class='tooltiptext'>The robots can only communicate by physically being next to each other.</span></span>
         <br />
-        <div id="A" class='desc'>
+        <a id='AlgA'><div id="A" class='desc'></a>
             <ol><b><em><u>Steps:</u></em></b>
                 <li>
                     The robots go to the perimeter at the same angle.
@@ -54,10 +58,10 @@
             </ol>
         </div>
 
-        <div id="B" class='desc'>
+        <a id="AlgB"><div id="B" class='desc'></a>
             <br />
             This algorithm takes two arguments, B(X, Φ); X being the arc length travelled before taking <span class='tooltip'>a detour<span class='tooltiptext'>The robot will go away from the perimeter at an angle Φ, and travel toward and stop at the vertical axis of origin. If it has not been intercepted or notified about the exit at the point, it will return to the perimeter.</span></span>, and Φ being the angle to take the detour at.
-            <ol><b><em>Steps:</em></b>
+            <ol><b><em><u>Steps:</u></em></b>
                 <li>
                     The robots go to the perimeter at the same angle.
                 </li>
@@ -81,8 +85,8 @@
 
         <div id="C" class='desc'>
             <br />
-            Thise algorithm takes two arguments, C(X, Φ, λ); X being the arc length travelled before taking <span class='tooltip'>a triangular detour<span class='tooltiptext'>The robot will go away from the perimeter at an angle Φ for time λ, and then travel DIRECTLY toward and stop at the vertical axis of origin. If it has not been intercepted or notified about the exit at the point, it will return to the perimeter using the shortest path back to the point it came from.</span></span>, Φ being the angle to take the detour at, and λ being the time for at which the robot starts to travel directly to the central axis from its detour.
-            <ol><b><em>Steps:</em></b>
+            This algorithm takes two arguments, C(X, Φ, λ); X being the arc length travelled before taking <span class='tooltip'>a triangular detour<span class='tooltiptext'>The robot will go away from the perimeter at an angle Φ for time λ, and then travel DIRECTLY toward and stop at the vertical axis of origin. If it has not been intercepted or notified about the exit at the point, it will return to the perimeter using the shortest path back to the point it came from.</span></span>, Φ being the angle to take the detour at, and λ being the time for at which the robot starts to travel directly to the central axis from its detour.
+            <ol><b><em><u>Steps:</u></em></b>
                 <li>
                     The robots go to the perimeter at the same angle.
                 </li>

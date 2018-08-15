@@ -2,7 +2,7 @@
 
 <html>
   <head>
-    <!--<script src = "https://d3js.org/d3.v5.min.js"></script>-->
+    <script src = "https://d3js.org/d3.v5.min.js"></script>
     <script src = "d3.min.js"></script>
   </head>
   <body>
@@ -19,7 +19,7 @@
       var exitAllow = 0;
       var loading = true;
       var wireless = false;
- 
+
       var time = 0;
       var timeDirect = 0;
       var fps = 60;
@@ -146,7 +146,7 @@
           }
           who.allowance = 0;
         }
-        
+
       }
 
 //Requirements: At center	Params:	Angle(time)	Description: Goes to wall
@@ -290,7 +290,7 @@
       }
 
       function InterceptNonBeliever(who, value) {
-        
+
       }
 
 
@@ -458,7 +458,7 @@
       function ChoosExit() {
         exitAngle = Math.atan2(d3.event.x - center[0], d3.event.y - center[1]) - (Math.PI / 2);
         if (exitAngle < 0) {exitAngle += 2 * Math.PI;}
-        d3.select(".exitText").text("Left-Click, to choose exit at ~" + Math.floor(exitAngle * 180 * 100 / Math.PI) / 100 + " degrees");
+        d3.select(".exitText").text("Click to place exit at ~" + Math.floor(exitAngle * 180 * 100 / Math.PI) / 100 + " degrees");
         if (degrees == 1) {
           fieldExit = [center[0] + unit2Px * Math.cos(exitAngle), center[1] - unit2Px * Math.sin(exitAngle)];
         } else if (degrees == 2) {
