@@ -13,7 +13,7 @@ var wireless = false;
 var time = 0;
 var timeDirect = 0;
 var fps = 60;
-var timeMax = 3 * fps;
+var timeMax = 10 * fps;
 var timeBox;
 var timeSlide;
 
