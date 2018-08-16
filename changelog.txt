@@ -39,3 +39,7 @@ Creation of changelog: 08/10/2018
           
           TODO: Animation slider crashes when clicked BEFORE animation starts.
           TODO: Bot selector crashes when clicked before animation starts.
+
+09/16/18: ICL Reader V22
+          Intercept implemented
+          Hovering over bot, shows its instructions
