@@ -2,16 +2,16 @@
 
 <html>
   <head>
-    <script src = "https://d3js.org/d3.v5.min.js"></script>
+    <!--<script src = "https://d3js.org/d3.v5.min.js"></script>-->
     <script src = "d3.min.js"></script>
   </head>
   <body>
     <script>
       //////////----------Instantiate Variables----------//////////
-      var fxs = {"GoOutAtAngle":GoOutAtAngle, "Wait":Wait, "FollowWall":FollowWall, "WaitFor":WaitFor,
-                 "FollowWallFor":FollowWallFor, "GoToCenter":GoToCenter, "WaitAverage":WaitAverage,
+      var fxs = {"GoOutAtAngle":GoOutAtAngle, "GoToWallAtAngle":GoToWallAtAngle, "Wait":Wait, "FollowWall":FollowWall,
+                 "WaitFor":WaitFor, "FollowWallFor":FollowWallFor, "GoToCenter":GoToCenter, "WaitAverage":WaitAverage,
                  "GoToPoint":GoToPoint};
-      var efxs = {"GoToExit":GoToExit, "PursueNonBeliever":PursueNonBeliever};
+      var efxs = {"GoToExit":GoToExit, "PursueNonBeliever":PursueNonBeliever, "InterceptNonBeliever":InterceptNonBeliever};
       var shapes = ["Vertex", "Line", "Triangle", "Square", "Pentagon", "Hexagon", "Heptagon",
                     "Octagon", "Nonagon", "Decagon", "Undecagon", "Dodecagon", "Circle"];
 
@@ -19,7 +19,7 @@
       var exitAllow = 0;
       var loading = true;
       var wireless = false;
-
+ 
       var time = 0;
       var timeDirect = 0;
       var fps = 60;
@@ -41,19 +41,15 @@
 
       var touristNum = 0;
       var instruBinder = [
-                          [["PursueNonBeliever", [null]], ["GoOutAtAngle", [0]], ["Wait", [null]]],
-                          [["PursueNonBeliever", [null]], ["GoOutAtAngle", [90]], ["Wait", [null]]],
-                          [["PursueNonBeliever", [null]], ["GoOutAtAngle", [180]], ["Wait", [null]]],
-                          [["PursueNonBeliever", [null]], ["GoOutAtAngle", [270]], ["Wait", [null]]],
-                          [["PursueNonBeliever", [null]], ["GoOutAtAngle", [45]], ["WaitFor", [1]], ["GoToCenter", [null]],
-                           ["GoOutAtAngle", [225]], ["FollowWallFor", ["left", 90]], ["FollowWall", ["right"]]],
-                          [["PursueNonBeliever", [null]], ["GoOutAtAngle", [-45]], ["WaitFor", [1]], ["GoToCenter", [null]],
-                           ["GoOutAtAngle", [135]], ["FollowWallFor", ["right", 90]], ["Wait", [null]]],
-                          [["PursueNonBeliever", [null]], ["GoOutAtAngle", [225]], ["WaitFor", [1]], ["GoToCenter", [null]],
-                           ["GoOutAtAngle", [45]], ["FollowWallFor", ["left", 90]], ["FollowWall", ["right"]]],
-                          [["PursueNonBeliever", [null]], ["GoOutAtAngle", [135]], ["WaitFor", [1]], ["GoToCenter", [null]],
-                           ["GoOutAtAngle", [-45]], ["FollowWallFor", ["right", 90]], ["Wait", [null]]],
-                          [["PursueNonBeliever", [null]], ["WaitAverage", [null]]]
+                          /*[["PursueNonBeliever", [null]], ["Wait", [null]]],
+                          [["PursueNonBeliever", [null]], ["FollowWall", ["left"]]],
+                          [["PursueNonBeliever", [null]], ["FollowWallFor", ["right", 1]], ["Wait", [null]]],*/
+                          [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right"]]],
+                          [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [60]], ["FollowWall", ["right"]]],
+                          [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [120]], ["FollowWall", ["right"]]],
+                          [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right"]]],
+                          [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [240]], ["FollowWall", ["right"]]],
+                          [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [300]], ["FollowWall", ["right"]]]
                          ];
       var tourColors = [];
 
@@ -113,6 +109,30 @@
       }
 
       //////////----------Instantiate Functions----------//////////
+      function LineOverride(who, value) {//direction, time(in radiuses)
+        if (value[1] == null) {
+          if (who.target == null) {
+            who.target = who.x + value[0] * value[1] * unit2Px;
+          }
+          var leftCondition = who.target;
+          var rightCondition = who.x;
+          if (value[0] < 0) {
+            leftCondition = who.x;
+            rightCondition = who.target;
+          }
+          if (leftCondition < rightCondition) {
+            who.x = who.target;
+            who.target = null;
+            who.on++;
+          } else {
+            who.x += value[0] * unit2Px / fps;
+          }
+        } else {
+          who.x += value[0] * unit2Px / fps;
+        }
+        DirectTo(who, [who.x, who.y]);
+      }
+
       function WallAtAngle(angle) {
         var unitAngle = (2 * Math.PI) / degrees;//Angle segments
         var angleUnit = Math.floor(angle / unitAngle);//Which segment
@@ -146,11 +166,10 @@
           }
           who.allowance = 0;
         }
-
       }
 
-//Requirements: At center	Params:	Angle(time)	Description: Goes to wall
-      function GoOutAtAngle(who, value) {
+//Requirements: None	Params:	Angle	Description: Goes to wall
+      function GoToWallAtAngle(who, value) {
         if (value[0] != null) {
           who.a = value[0] * (Math.PI / 180);
         }
@@ -159,6 +178,20 @@
           who.on++;
         } else {
           DirectTo(who, hold);
+        }
+      }
+
+//Requirements: None	Params:	Angle, distance(time)	Description: Move at angle
+      function GoOutAtAngle(who, value) {
+        if (who.target == null) {
+          var hold = [value[1] * Math.cos(value[0] * (Math.PI / 180)), value[1] * Math.sin(value[0] * (Math.PI / 180))];
+          who.target = [who.x + hold[0], who.y + hold[1]];
+        }
+        if ((who.x == who.target[0]) && (who.y == who.target[1])) {
+          who.on++;
+          who.target = null;
+        } else {
+          DirectTo(who, who.target);
         }
       }
 
@@ -192,7 +225,7 @@
       function FollowWallFor(who, value) {
         var dir = (value[0] == 'left') ? (1) : (-1);
         if (who.target == null) {
-          who.target = who.a + value[1] * (Math.PI / 180) * dir;
+          who.target = who.a + value[1] * (Math.PI / 180) * -dir;
         }
         var leftCondition = who.a + (1 / (fps * unit2Px)) * dir;
         var rightCondition = who.target;
@@ -262,35 +295,71 @@
       }
 
       function PursueNonBeliever(who, value) {
-        var holdWho = null;
-        var closest = Infinity;
-        for (var i = 0; i < touristNum; i++) {
-          if ((!tourists[i].knows)
-             && ((tourists[i].hunted == who.number) || (tourists[i].hunted == null))) {
-            var eVec = [tourists[i].x - who.x, tourists[i].y - who.y];
-            var exitDist = Math.sqrt(Math.pow(eVec[1], 2) + Math.pow(eVec[0], 2));
-            if (exitDist < closest) {
-              holdWho = i;
-              closest = exitDist;
+        if (who.target == null) {
+          var closest = Infinity;
+          for (var i = 0; i < touristNum; i++) {
+            if ((!tourists[i].knows) && ((tourists[i].hunted == who.number) || (tourists[i].hunted == null))) {
+              var eVec = [tourists[i].x - who.x, tourists[i].y - who.y];
+              var exitDist = Math.sqrt(Math.pow(eVec[1], 2) + Math.pow(eVec[0], 2));
+              if (exitDist < closest) {
+                who.target = i;
+                closest = exitDist;
+              }
             }
           }
         }
-        if (holdWho == null) {
+        if (who.target == null) {
           GoToExit(who, value);
         } else {
-          tourists[holdWho].hunted = who.number;
-          var eVec = [tourists[holdWho].x - who.x, tourists[holdWho].y - who.y];
-          var exitDist = Math.sqrt(Math.pow(eVec[1], 2) + Math.pow(eVec[0], 2));
-          if (exitDist <= who.velocity * unit2Px / fps) {
-            exitAlert = tourists[holdWho].knows = true;
-            exitAllow = exitDist;
+          tourists[who.target].hunted = who.number;
+          var bVec = [tourists[who.target].x - who.x, tourists[who.target].y - who.y];
+          var botDist = Math.sqrt(Math.pow(bVec[1], 2) + Math.pow(bVec[0], 2));
+          if (botDist <= who.velocity * unit2Px / fps) {
+            exitAlert = tourists[who.target].knows = true;
+            exitAllow = botDist;
           }
-          DirectTo(who, [tourists[holdWho].x, tourists[holdWho].y]);
+          DirectTo(who, [tourists[who.target].x, tourists[who.target].y]);
+          if (tourists[who.target].knows) {
+            who.target = null;
+          }
         }
       }
 
       function InterceptNonBeliever(who, value) {
-
+        if (who.target == null) {
+          var holdTime = 0;
+          var closest = Infinity;
+          for (var i = 0; i < touristNum; i++) {
+            if ((!tourists[i].knows) && ((tourists[i].hunted == who.number) || (tourists[i].hunted == null))) {
+              for (var j = 0; j < 2 * unit2Px; j++) {
+                if (time + j < timeMax) {
+                  var intercept = tourLines[i][time + j];
+                  var bVec = [intercept.x - who.x, intercept.y - who.y];
+                  var botDist = Math.sqrt(Math.pow(bVec[1], 2) + Math.pow(bVec[0], 2));
+                  if ((Math.abs(j * unit2Px / fps - botDist) <= who.velocity * unit2Px / (2 * fps)) && (botDist < closest)) {
+                    who.target = [i, intercept];
+                    closest = botDist;
+                  }
+                }
+              }
+            }
+          }
+        }
+        if (who.target == null) {
+          GoToExit(who, value);
+        } else {
+          tourists[who.target[0]].hunted = who.number;
+          var pVec = [who.target[1].x - who.x, who.target[1].y - who.y];
+          var pointDist = Math.sqrt(Math.pow(pVec[1], 2) + Math.pow(pVec[0], 2));
+          if (pointDist <= who.velocity * unit2Px / fps) {
+            exitAlert = tourists[who.target[0]].knows = true;
+            exitAllow = pointDist;
+          }
+          DirectTo(who, [who.target[1].x, who.target[1].y]);
+          if (tourists[who.target[0]].knows) {
+            who.target = null;
+          }
+        }
       }
 
 
@@ -344,15 +413,16 @@
         for (var i = 0; i < instruBinder.length; i++) {
           tourColors.push(RandomColor());
           tourists.push(new Tourist(fieldSVG.select(".bots").append("circle").attr("cx", center[0]).attr("cy", center[1])
-                                    .attr("r", unit2Px / 16)//.on("mouseover", () => {alert("woo");})
-                                    .style("fill", tourColors[i]), instruBinder[i]));
-          touristNum++;
+                                    .attr("data", touristNum).attr("r", unit2Px / 16).on("mouseover", MoveDataBox)
+                                    .on("mouseout", HideDataBox).style("fill", tourColors[i]), instruBinder[i]));
           tourLines.push([]);
           graphDots.push(graphSVG.select(".bots").append("circle").attr("cx", unit2Px * (10 / 25))
                          .attr("cy", unit2Px * 4 * (20 / 25) - unit2Px * (10 / 25)).attr("r", unit2Px / 16)
                          .style("fill", tourColors[i]));
           graphLines.push([]);
+          touristNum++;
         }
+        dataBox = fieldSVG.select(".overLay").append("svg").attr("width", 2 * unit2Px).attr("height", unit2Px).attr("visibility", "hidden");
       }
 
       function LoadField() {
@@ -374,17 +444,24 @@
         }
         fieldSVG.select(".backGround").append("path").attr("d", hold).style("fill", "none").style("stroke", "#000000");
         //Unit Circle Visuals
-        fieldSVG.select(".backGround").append("circle").attr("cx", center[0]).attr("cy", center[1]).attr("r", 2).style("fill", "#000000");
+        fieldSVG.select(".backGround").append("circle").attr("class", "center").attr("cx", center[0]).attr("cy", center[1]).attr("r", 2).style("fill", "#000000");
         fieldSVG.select(".backGround").append("circle").attr("class", "exit").attr("cx", fieldExit[0]).attr("cy", fieldExit[1]).attr("r", 2)
                 .style("fill", "#000000");
         fieldSVG.select(".backGround").append("line").attr("x1", 2 * unit2Px).attr("y1", unit2Px).attr("x2",  2 * unit2Px).attr("y2", 3 * unit2Px)
                 .style("stroke", "#000000").style("stroke-width", .5);
         fieldSVG.select(".backGround").append("line").attr("x1", unit2Px).attr("y1", 2 * unit2Px).attr("x2",  3 * unit2Px).attr("y2", 2 * unit2Px)
                 .style("stroke", "#000000").style("stroke-width", .5);
-        fieldSVG.select(".backGround").append("text").attr("x", 3.1 * unit2Px).attr("y", center[1])
-                .style("text-anchor", "left").style("font-size", unit2Px / 5).text("0");
-        fieldSVG.select(".backGround").append("text").attr("x", center[0]).attr("y", .9 * unit2Px)
-                .style("text-anchor", "middle").style("font-size", unit2Px / 5).text("90");
+        if (degrees == 2) {
+          fieldSVG.select(".backGround").append("text").attr("x", 3.1 * unit2Px).attr("y", center[1])
+                  .attr("class", "left").style("text-anchor", "middle").style("font-size", unit2Px / 5).text("1");
+          fieldSVG.select(".backGround").append("text").attr("x", .9 * unit2Px).attr("y", center[1])
+                  .attr("class", "right").style("text-anchor", "middle").style("font-size", unit2Px / 5).text("-1");
+        } else {
+          fieldSVG.select(".backGround").append("text").attr("x", 3.1 * unit2Px).attr("y", center[1])
+                  .style("text-anchor", "start").style("font-size", unit2Px / 5).text("0");
+          fieldSVG.select(".backGround").append("text").attr("x", center[0]).attr("y", .9 * unit2Px)
+                  .style("text-anchor", "middle").style("font-size", unit2Px / 5).text("90");
+        }
       }
 
       function LoadGraph() {
@@ -458,7 +535,7 @@
       function ChoosExit() {
         exitAngle = Math.atan2(d3.event.x - center[0], d3.event.y - center[1]) - (Math.PI / 2);
         if (exitAngle < 0) {exitAngle += 2 * Math.PI;}
-        d3.select(".exitText").text("Click to place exit at ~" + Math.floor(exitAngle * 180 * 100 / Math.PI) / 100 + " degrees");
+        d3.select(".exitText").text("Left-Click, to choose exit at ~" + Math.floor(exitAngle * 180 * 100 / Math.PI) / 100 + " degrees");
         if (degrees == 1) {
           fieldExit = [center[0] + unit2Px * Math.cos(exitAngle), center[1] - unit2Px * Math.sin(exitAngle)];
         } else if (degrees == 2) {
@@ -571,18 +648,21 @@
               }
               who.allowance = exitAllow;
               while (who.allowance > 0) {
-                if (who.knew) {
+                if (who.knew) {//Target already on exit procedures.
                   efxs[instruBinder[i][0][0]](who, instruBinder[i][0][1]);
-                } else {
+                } else {//Has not started exit procedures yet.
                   fxs[instruBinder[i][who.on][0]](who, instruBinder[i][who.on][1]);
+                  if (who.knows) {//Clear target for bot if beginning exit procedures.
+                    who.target = null;
+                  }
                 }
               }
               who.allowance = (who.velocity * unit2Px / fps) - exitAllow;
               while (who.allowance > 0) {
-                if (who.knows) {
+                if (who.knows) {//Proceed with exit procedures.
                   efxs[instruBinder[i][0][0]](who, instruBinder[i][0][1]);
                   who.knew = true;
-                } else {
+                } else {//Still does not know.
                   fxs[instruBinder[i][who.on][0]](who, instruBinder[i][who.on][1]);
                 }
               }
@@ -653,6 +733,22 @@
           graphLine[delta - 1].style("stroke-opacity", 1).raise();
           d3.selectAll(".select").style("fill", tourColors[delta - 1]);
         }
+      }
+
+      function MoveDataBox() {
+        var hold = d3.select(this);
+        dataBox.attr("visibility", "visible").attr("x", hold.attr("cx")).attr("y", hold.attr("cy"));
+        dataBox.attr("height", instruBinder[+hold.attr("data")].length * unit2Px / 9);
+        for (var i = 0; i < instruBinder[+hold.attr("data")].length; i++) {
+          dataBox.append("text").attr("x", (1 / 10) * unit2Px).attr("y", (1 + i) * (1 / 10) * unit2Px)
+                 .style("font-size", (1/ 10) * unit2Px)
+                 .text(instruBinder[+hold.attr("data")][i]);
+        }
+      }
+
+      function HideDataBox() {
+        dataBox.attr("visibility", "hidden");
+        dataBox.selectAll("text").remove();
       }
 
       //////////----------Initial Function Call----------//////////
