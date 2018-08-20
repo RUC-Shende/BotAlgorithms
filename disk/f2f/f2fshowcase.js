@@ -1,7 +1,7 @@
 var fxs = {"GoOutAtAngle":GoOutAtAngle, "Wait":Wait, "FollowWall":FollowWall, "WaitFor":WaitFor,
            "FollowWallFor":FollowWallFor, "GoToCenter":GoToCenter, "WaitAverage":WaitAverage,
            "GoToPoint":GoToPoint};
-var efxs = {"GoToExit":GoToExit, "PursueNonBeliever":PursueNonBeliever};
+var efxs = {"GoToExit":GoToExit, "PursueNonBeliever":PursueNonBeliever, "InterceptNonBeliever":InterceptNonBeliever};
 var shapes = ["Vertex", "Line", "Triangle", "Square", "Pentagon", "Hexagon", "Heptagon",
               "Octagon", "Nonagon", "Decagon", "Undecagon", "Dodecagon", "Circle"];
 
@@ -31,8 +31,9 @@ var lineFx = d3.line().x((d) => {return(d.x);}).y((d) => {return(d.y);});
 
 var touristNum = 0;
 var instruBinder = [
-                    [["PursueNonBeliever", [null]], ["GoOutAtAngle", [0]], ["FollowWall", ['left']]],
-                    [["PursueNonBeliever", [null]], ["GoOutAtAngle", [0]], ["FollowWall", ['right']]],
+                    [["InterceptNonBeliever", [null]], ["GoOutAtAngle", [0]], ["FollowWall", ['left']]],
+                    [["InterceptNonBeliever", [null]], ["GoOutAtAngle", [0]], ["FollowWall", ['right']]],
+
                     /*[["PursueNonBeliever", [null]], ["GoOutAtAngle", [180]], ["FollowWall", ['left']]],
                     [["PursueNonBeliever", [null]], ["GoOutAtAngle", [270]], ["Wait", [null]]],
                     [["PursueNonBeliever", [null]], ["GoOutAtAngle", [45]], ["WaitFor", [1]], ["GoToCenter", [null]],
@@ -280,7 +281,40 @@ function PursueNonBeliever(who, value) {
 }
 
 function InterceptNonBeliever(who, value) {
-
+  if (who.target == null) {
+    var holdTime = 0;
+    var closest = Infinity;
+    for (var i = 0; i < touristNum; i++) {
+      if ((!tourists[i].knows) && ((tourists[i].hunted == who.number) || (tourists[i].hunted == null))) {
+        for (var j = 0; j < 2 * unit2Px; j++) {
+          if (time + j < timeMax) {
+            var intercept = tourLines[i][time + j];
+            var bVec = [intercept.x - who.x, intercept.y - who.y];
+            var botDist = Math.sqrt(Math.pow(bVec[1], 2) + Math.pow(bVec[0], 2));
+            if ((Math.abs(j * unit2Px / fps - botDist) <= who.velocity * unit2Px / (2 * fps)) && (botDist < closest)) {
+              who.target = [i, intercept];
+              closest = botDist;
+            }
+          }
+        }
+      }
+    }
+  }
+  if (who.target == null) {
+    GoToExit(who, value);
+  } else {
+    tourists[who.target[0]].hunted = who.number;
+    var pVec = [who.target[1].x - who.x, who.target[1].y - who.y];
+    var pointDist = Math.sqrt(Math.pow(pVec[1], 2) + Math.pow(pVec[0], 2));
+    if (pointDist <= who.velocity * unit2Px / fps) {
+      exitAlert = tourists[who.target[0]].knows = true;
+      exitAllow = pointDist;
+    }
+    DirectTo(who, [who.target[1].x, who.target[1].y]);
+    if (tourists[who.target[0]].knows) {
+      who.target = null;
+    }
+  }
 }
 
 
@@ -314,8 +348,8 @@ function Load() {
   for (var i = 0; i < instruBinder.length; i++) {
     tourColors.push(RandomColor());
     tourists.push(new Tourist(fieldSVG.select(".bots").append("circle").attr("cx", center[0]).attr("cy", center[1])
-                              .attr("r", unit2Px / 16)//.on("mouseover", () => {alert("woo");})
-                              .style("fill", tourColors[i]), instruBinder[i]));
+                              .attr("data", touristNum).attr("r", unit2Px / 16).on("mouseover", MoveDataBox)
+                              .on("mouseout", HideDataBox).style("fill", tourColors[i]), instruBinder[i]));
     touristNum++;
     tourLines.push([]);
     graphDots.push(graphSVG.select(".bots").append("circle").attr("cx", unit2Px * (10 / 25))
@@ -323,6 +357,8 @@ function Load() {
                    .style("fill", tourColors[i]));
     graphLines.push([]);
   }
+  dataBox = fieldSVG.select(".overLay").append("svg").attr("width", 2 * unit2Px).attr("height", unit2Px).attr("visibility", "hidden");
+
 }
 
 function LoadField() {
@@ -643,6 +679,24 @@ function UpdateInfo(delta) {
     d3.selectAll(".select").style("fill", tourColors[delta - 1]);
   }
 }
+
+function MoveDataBox() {
+  var hold = d3.select(this);
+  dataBox.attr("visibility", "visible").attr("x", hold.attr("cx")).attr("y", hold.attr("cy"));
+  dataBox.attr("height", instruBinder[+hold.attr("data")].length * unit2Px / 9);
+  for (var i = 0; i < instruBinder[+hold.attr("data")].length; i++) {
+    dataBox.append("text").attr("x", (1 / 10) * unit2Px).attr("y", (1 + i) * (1 / 10) * unit2Px)
+           .style("font-size", (1/ 10) * unit2Px)
+           .text(instruBinder[+hold.attr("data")][i]);
+  }
+}
+
+function HideDataBox() {
+  dataBox.attr("visibility", "hidden");
+  dataBox.selectAll("text").remove();
+}
+
+
 
 function showAlgorithmDesc(s){
     var color;
