@@ -36,10 +36,10 @@ Creation of changelog: 08/10/2018
           Links to algorithms focus on the description when clicked.
           More responsive design added.
           Updated animation controllers to look more natural.
-          
+
           TODO: Animation slider crashes when clicked BEFORE animation starts.
           TODO: Bot selector crashes when clicked before animation starts.
 
-09/16/18: ICL Reader V22
+08/16/18: ICL Reader V22
           Intercept implemented
           Hovering over bot, shows its instructions
