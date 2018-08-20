@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Welcome to Search and Exit Algorithms documentation! &#8212; Search and Exit Algorithms  documentation</title>
-    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
@@ -15,7 +15,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -23,15 +23,15 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="nav-item nav-item-0"><a href="#">Search and Exit Algorithms  documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="#">Search and Exit Algorithms  documentation</a> &#187;</li>
       </ul>
-    </div>  
+    </div>
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body" role="main">
-            
+
   <div class="section" id="welcome-to-search-and-exit-algorithms-documentation">
 <h1>Welcome to Search and Exit Algorithms documentation!<a class="headerlink" href="#welcome-to-search-and-exit-algorithms-documentation" title="Permalink to this headline">¶</a></h1>
 <p>This site covers the documentation of our app.</p>
@@ -47,6 +47,44 @@ robots, and try to decrease the lower bound of how long it takes for different n
 <div class="section" id="getting-started">
 <h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
 <p>To see the app in action, simply get the project from <a class="reference external" href="https://github.com/dbushta/BotAlgorithms/">Github</a>.</p>
+<p>In version 1.0 of the app, there are a few types of simulations available for showing 2 Robot Face-to-Face communication model algorithms.</p>
+</div>
+<div class="section" id="types-of-algorithms">
+<h1>Types of algorithms<a class="headerlink" href="#types-of-algorithms" title="Permalink to this headline">¶</a></h1>
+<p>These algorithms differ significantly depending upon the number of available robots, the type of communication they utilize,
+and the shape of the area the robots are searching. We assume, in these algorithms, that the robots</p>
+<ol class="loweralpha simple">
+<li>know the algorithms and trajectory of the others at any given time.</li>
+<li>all move at the same speed, being their maximum speed.</li>
+<li>know how to move about the area and recognize the exit no matter what.</li>
+</ol>
+<p>In our app, we provide multiple examples of algorithms previously stated in other papers, and allow users to create their own using these
+variables.</p>
+<div class="section" id="number-of-robots">
+<h2>Number of robots<a class="headerlink" href="#number-of-robots" title="Permalink to this headline">¶</a></h2>
+<p>Currently, algorithms exist for 2 robots, 3 robots, and n &gt; 3 robots. For any number greater than 3, the algorithms usually share
+many similar steps, so we use these 3 categories to separate the algorithms.</p>
+</div>
+<div class="section" id="types-of-communication">
+<h2>Types of communication<a class="headerlink" href="#types-of-communication" title="Permalink to this headline">¶</a></h2>
+<p>There are two ways for the robots to communicate with each other. One way is Face-to-Face, which states that robots can only share new
+information (such as exit location and any changed trajectories of other robots) by being next to another, meaning their paths must
+intersect for information to be exchanged.</p>
+<p>The other form of communication utilized by the robots is wireless. In this wireless communication model, the robots may broadcast
+to any other robots in the given area, and it is assumed that the broadcast range is long enough to reach the others no matter the size of the area.</p>
+<p>The face-to-face algorithms typically require more steps than the wireless algorithms, and thus we differentiate between the two types.</p>
+</div>
+<div class="section" id="shape-of-the-area">
+<h2>Shape of the area<a class="headerlink" href="#shape-of-the-area" title="Permalink to this headline">¶</a></h2>
+<p>The shape of the area the robots search plays a factor in what they do as well, for example if the robots are simply searching for an
+exit on a 2-dimensional line, they will take some different commands than if they were searching on a 2-dimensional convex shape. It is also assumed
+that the shapes are generally convex, and not concave.</p>
+</div>
+</div>
+<div class="section" id="showcases">
+<h1>Showcases<a class="headerlink" href="#showcases" title="Permalink to this headline">¶</a></h1>
+<p>Currently, the project showcases these algorithms:</p>
+<p><a class="reference external" href="/disk/f2f/f2fshowcase.html">Face-to-Face, 2 Robots</a>.</p>
 </div>
 
 
@@ -60,6 +98,13 @@ robots, and try to decrease the lower bound of how long it takes for different n
 <li><a class="reference internal" href="#">Welcome to Search and Exit Algorithms documentation!</a></li>
 <li><a class="reference internal" href="#intro">Intro</a></li>
 <li><a class="reference internal" href="#getting-started">Getting Started</a></li>
+<li><a class="reference internal" href="#types-of-algorithms">Types of algorithms</a><ul>
+<li><a class="reference internal" href="#number-of-robots">Number of robots</a></li>
+<li><a class="reference internal" href="#types-of-communication">Types of communication</a></li>
+<li><a class="reference internal" href="#shape-of-the-area">Shape of the area</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#showcases">Showcases</a></li>
 </ul>
 
   <div role="note" aria-label="source link">
@@ -91,7 +136,7 @@ robots, and try to decrease the lower bound of how long it takes for different n
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
-        <li class="nav-item nav-item-0"><a href="#">Search and Exit Algorithms  documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="#">Search and Exit Algorithms  documentation</a> &#187;</li>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
