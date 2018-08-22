@@ -410,13 +410,13 @@ function LoadGraph() {
   var timeButtons = fo.append('xhtml:div');
   timeButtons.append('input')
     .attr('type', 'submit')
-    .property('value', ' ▶▶ Play')
+    .property('value', '▶▶ Play')
     .attr('class', 'reveal play')
     .on('click', () => {timeDirect++;});
   timeButtons.append('input')
     .attr('class', 'reveal stop')
     .attr('type', 'submit')
-    .property('value', ' ■ Stop')
+    .property('value', ' ◼ Stop')
     .on('click', () => {timeDirect = 0;});
   timeButtons.append('input')
     .attr('class', 'reveal rewind')
