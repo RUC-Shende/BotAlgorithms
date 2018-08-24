@@ -43,3 +43,14 @@ Creation of changelog: 08/10/2018
 09/16/18: ICL Reader V22
           Intercept implemented
           Hovering over bot, shows its instructions
+
+09/24/18: ICL Reader V23
+          @@@@ Response to 08/13/18 @@@@
+                    - Turns out mouse local to svg doesn't fix any of the problems, apologies.
+          Using mouse local to the svg, didn't work in fixing padding, zooming, or scrolling errors.
+          Same version from Wednesday, been busy and forgot to upload this one.
+          Now hovering over bot, "highlights" the bot and their lines.
+          When a bot finds the exit, a line is drawn on the graph.
+          When all bots are at the exit, a line is drawn on the graph.
+          First graph load is pre-generated.
+          
