@@ -12,6 +12,9 @@ This site covers the documentation of our app.
    :maxdepth: 2
    :caption: Contents:
 
+   filenamehere
+   for an extra page
+
 Intro
 =====
 
@@ -93,7 +96,7 @@ Most commonly used for deployment phase, for example, Algorithm A (n=2, Face-to-
 
 The default (no argument) will cause the robot to choose a random angle to go out at.
 
-FollowWall (direction, [time | angle])
+FollowWall (direction, [time/angle])
 --------------------------------------
 The robot will search for the exit along the perimeter of the shape in the specified
 direction. [Optional: time/angle to travel for, no argument will result in indefinitely until it is notified of the exit.]
