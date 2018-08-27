@@ -260,6 +260,10 @@ code {
     font-family: Arial, sans-serif;
 }
 
+.function {
+    background-color: #eee;
+}
+
 div.viewcode-block:target {
     background-color: #f4debf;
     border-top: 1px solid #ac9;

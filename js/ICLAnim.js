@@ -74,19 +74,36 @@
 
       //////////---------- Instantiate Classes ----------//////////
 //Data holder, and loader update
+
+      /**
+      * Represents a robot on the field searching for the exit.
+      *
+      * @param {Circle} visual Represents the visual related to the bot.
+      */
       class Tourist {
         constructor (visual) {
+          /** The robot's ID as an integer. */
           this.number = touristNum;
           this.visual = visual;
+          /** The robot has learned of the exit on this frame. */
           this.knows = false;
+          /** The robot has known of the exit for more than one frame. */
           this.knew = false;
+          /** Robot's current goal according to its command. Can be a point on the shape or another robot. */
           this.target = null;
+          /** The robot that is currently pursuing this. */
           this.hunted = null;
+          /** Speed of the tourist. */
           this.velocity = 1;
+          /** How far this can move in one frame. */
           this.allowance = 0;
+          /** This tourist's current instruction function. */
           this.on = 1;
+          /** tourist's current angle. */
           this.a = 0;
+          /** tourist's current x position. */
           this.x = center[0];
+          /** tourist's current y position. */
           this.y = center[1];
         }
       }
@@ -151,7 +168,14 @@
         }
       }
 
-//Requirements: None	Params:	Angle	Description: Goes to wall
+        /**
+        * Makes a robot go to the wall at a specific angle on the shape.
+        *
+        *@param {Tourist} who Robot to follow command
+        *@param {integer} value Angle on the shape of the perimeter
+        *
+        *
+        */
       function GoToWallAtAngle(who, value) {
         if (value[0] != null) {
           who.a = value[0] * (Math.PI / 180);
@@ -164,7 +188,15 @@
         }
       }
 
-//Requirements: None	Params:	Angle, distance(time)	Description: Move at angle
+        /**
+        * The robot will go from the interior of the object to an angle on the perimeter.
+        * Robot is required to be in the interior (not in perimeter) of the object.
+        *
+        *@param {Tourist} who Robot to follow command
+        *@param {integer} value Angle on the shape of the perimeter
+        *
+        *
+        */
       function GoOutAtAngle(who, value) {
         if (who.target == null) {
           var hold = [value[1] * Math.cos(value[0] * (Math.PI / 180)), value[1] * Math.sin(value[0] * (Math.PI / 180))];
@@ -178,7 +210,14 @@
         }
       }
 
-//Requirements: None	Params: time?	Description: Wait
+        /**
+        * A robot will wait for a time in seconds, or indefinitely if no time is specified.
+        *
+        *@param {Tourist} who Robot to follow command
+        *@param {integer} value Time to wait for in seconds.
+        *
+        *
+        */
       function Wait(who, value) {
         if (value[0] == null) {
           who.allowance = 0;
@@ -197,6 +236,17 @@
       }
 
 //Requirements: At wall		Params: direction and time?	Description: Follows wall at direction
+
+       /**
+        * A robot will follow the perimeter for a certain number of seconds, or indefinitely if no time specified.
+        * value[0] Will default to 'right' if no direction specified.
+        * Robot is required to be at a position on the perimeter.
+        *
+        *@param {Tourist} who Robot to follow command
+        *@param {Array} value value[0]: Direction string 'left' or 'right' - value[1]: time to follow wall in seconds.
+        *
+        *
+        */
       function FollowWall(who, value) {
         var dir = (value[0] == 'left') ? (1) : (-1);
         if (value[1] == null) {
@@ -225,7 +275,14 @@
         }
       }
 
-//Requirements: At wall		Params: null	Description: Goes to center
+        /**
+        * The robot will go to the center (origin) of the shape. Robot is not required to be at any specific position.
+        *
+        *@param {Tourist} who Robot to follow command.
+        *@param value null
+        *
+        *
+        */
       function GoToCenter(who, value) {
         if ((who.x == center[0]) && (who.y == center[1])) {
           who.on++;
@@ -234,12 +291,20 @@
         }
       }
 
-//Requirements: None	Params: null	Description: Goes to center of all bots
+
+        /**
+         * A robot will wait at the average position of all robots NOT doing the WaitAverage command.
+         *
+         *@param {Tourist} who Robot to follow command
+         *@param value null
+         *
+         *
+         */
       function WaitAverage(who, value) {
         var sumPosition = [0, 0];
         var totalNum = 0;
         for (i = 0; i < tourists.length; i++) {
-          if (instruBinder[i][tourists[i].on][0] != 6) {
+          if (instruBinder[i][tourists[i].on][0] != "WaitAverage") {
             totalNum++;
             sumPosition[0] += tourists[i].x;
             sumPosition[1] += tourists[i].y;
@@ -254,7 +319,13 @@
         }
       }
 
-//Requirements: None		Params: cartesian coordinates	Description: Goes to coordinates
+        /**
+        *
+        * The robot will go to a point on the shape defined by cartesian coordinates (x, y)
+        *
+        *@param {Tourist} who Robot to follow command.
+        *@param {Array} value value[0]: float, x position -- value[1]: float, y position
+        */
       function GoToPoint(who, value) {
         if ((who.x == value[0]) && (who.y == value[1])) {
           who.on++;
@@ -267,7 +338,14 @@
 
 
 
-
+        /**
+        *
+        * Robot will go to the exit at cartestian coordinates (x, y).
+        * This is not the same as exitAngle.
+        *
+        *@param {Tourist} who Robot to follow command.
+        *@param {Array} value value[0]: float, x position -- value[1]: float, y positions
+        */
       function GoToExit(who, value) {
         if ((who.x == fieldExit[0]) && (who.y == fieldExit[1])) {
           Wait(who, [null]);
@@ -279,6 +357,13 @@
         }
       }
 
+        /**
+        *
+        * Robot will continuously move in the direction of the target, until it catches it.
+        *
+        *@param {Tourist} who Robot to follow command.
+        *@param value null
+        */
       function PursueNonBeliever(who, value) {
         if (who.target == null) {
           var closest = Infinity;
@@ -309,7 +394,14 @@
           }
         }
       }
-
+        /**
+        *
+        * Robot will calculate the shortest to path to the closest targetable robot and
+        * create a straight path to intercept it.
+        *
+        *@param {Tourist} who Robot to follow command.
+        *@param value null
+        */
       function InterceptNonBeliever(who, value) {
         if (who.target == null) {
           var holdTime = 0;
@@ -657,7 +749,7 @@
         allExitedLine = graphSVG.select(".overLay").append("line").attr("x1", holdX).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
                         .attr("x2", holdX).attr("y2", 2 * unit2Px).style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px)
                         .style("stroke-opacity", 0.5);
-        alert(Math.floor((100 * time) / fps) / 100);
+        console.log(Math.floor((100 * time) / fps) / 100);
       }
 
       function PlayAnim() {

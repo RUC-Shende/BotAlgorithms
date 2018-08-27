@@ -43,7 +43,10 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
+    'sphinx_js'
 ]
+
+js_source_path = '../js/'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
