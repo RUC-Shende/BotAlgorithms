@@ -1,0 +1,185 @@
+* {
+    box-sizing: border-box;
+    font-family: "Ubuntu", "Roboto Condensed", "Trebuchet MS", sans-serif;
+}
+
+body {
+    text-align: center;
+    background-color: #eee;
+}
+
+div {
+    display: block;
+}
+
+svg {
+    background-color: #fff;
+    border-radius: 6px;
+    margin: 10px;
+    text-align: center;
+    box-shadow: 3px 4px 3px #888;
+}
+
+a {
+    color: black;
+    border: 1px solid transparent;
+    text-decoration: none;
+}
+
+input {
+    border: 1px solid transparent;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 1%;
+    box-shadow: 2px 3px 2px #888888;
+}
+
+input[type=submit] {
+    color: black;
+    background-color: #ccc;
+    transition: 0.3s;
+}
+input[type=submit]:hover{
+    background-color: #ddd;
+}
+input[type=submit]:active{
+    background-color: #eee;
+    transition: 0.3s;
+}
+
+.reveal {
+    width: 100%;
+    font-size: 1em;
+    padding: 16 14;
+}
+
+.reveal.play {
+    background-color: #00dd00;
+}
+
+.reveal.play:hover {
+    background-color: #00ff00;
+}
+
+.reveal.stop {
+    background-color: #dd0000;
+}
+
+.reveal.stop:hover {
+    background-color: #ff5555;
+}
+
+.reveal.rewind {
+    background-color: #5998cc;
+}
+
+.reveal.rewind:hover {
+    background-color: #5998ff;
+}
+
+.reveal.slow {
+    background-color: #00aaaa;
+}
+
+.reveal.slow:hover {
+    background-color: #00cccc;
+}
+
+.desc {
+    font-size: 24px;
+    display: none;
+    font-family: "Ubuntu", "Roboto Condensed", Verdana, sans-serif;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted;
+    font-weight: bold;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    opacity: 0;
+    font-size: 16px;
+    font-family: "Ubuntu", "Roboto Condensed", Verdana, sans-serif;
+    font weight: normal;
+    font-style: italic;
+    width: 300px;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -150px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+
+    position: absolute;
+    z-index: 1;
+    transition: 0.2s;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+    z-index: 1;
+}
+
+.tooltip .tooltiptext:hover {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.tab {
+    text-align: left;
+    margin: 5px auto;
+    width: 80%;
+    overflow: hidden;
+    background-color: #ccc;
+    border: 1px solid black;
+    border-radius: 6px;
+}
+ .tabtxt {
+     transition: 0.3s;
+     font-size: 24px;
+     font-family: "Ubuntu", "Roboto Condensed", Verdana, sans-serif;
+     text-align: left;
+     margin: 5px auto;
+     width: 80%;
+     background-color: #eef;
+     border: 1px solid #ccf;
+     border-radius: 6px;
+     padding: 15px;
+ }
+
+.tab button {
+    background-color: #ccc;
+    display: inline-block;
+    margin: 0 auto;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    z-index: 0;
+}
+
+.tab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+    background-color: #eee;
+}
+
+.tablinks {
+    width: 33%;
+    background-color: inherit;
+}
+
+#A, #B, #C {
+    background-color: inherit;
+}
