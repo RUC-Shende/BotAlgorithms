@@ -54,3 +54,11 @@ Creation of changelog: 08/10/2018
           When a bot finds the exit, a line is drawn on the graph.
           When all bots are at the exit, a line is drawn on the graph.
           First graph load is pre-generated.
+          
+          note for the future: how to merge alpha with master
+
+git merge master (on alpha)
+(fix conflicts)
+git checkout master
+git merge alpha
+
