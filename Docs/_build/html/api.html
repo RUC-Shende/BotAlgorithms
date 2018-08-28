@@ -1,0 +1,414 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Search and Exit Tourist API &#8212; Search and Exit Algorithms 1.1a documentation</title>
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to Search and Exit Algorithms documentation!" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Search and Exit Algorithms documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 1.1a documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="search-and-exit-tourist-api">
+<h1>Search and Exit Tourist API<a class="headerlink" href="#search-and-exit-tourist-api" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="Tourist">
+<em class="property">class </em><code class="descname">Tourist</code><span class="sig-paren">(</span><em>visual</em><span class="sig-paren">)</span><a class="headerlink" href="#Tourist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a robot on the field searching for the exit.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>visual</strong> (<em>Circle</em>) – Represents the visual related to the bot.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="Tourist.a">
+<code class="descclassname">Tourist.</code><code class="descname">a</code><a class="headerlink" href="#Tourist.a" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tourist’s current angle.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Tourist.allowance">
+<code class="descclassname">Tourist.</code><code class="descname">allowance</code><a class="headerlink" href="#Tourist.allowance" title="Permalink to this definition">¶</a></dt>
+<dd><p>How far the tourist can move in one frame.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Tourist.hunted">
+<code class="descclassname">Tourist.</code><code class="descname">hunted</code><a class="headerlink" href="#Tourist.hunted" title="Permalink to this definition">¶</a></dt>
+<dd><p>The tourist that is currently pursuing this one.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Tourist.knew">
+<code class="descclassname">Tourist.</code><code class="descname">knew</code><a class="headerlink" href="#Tourist.knew" title="Permalink to this definition">¶</a></dt>
+<dd><p>The tourist has known of the exit for more than one frame.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Tourist.knows">
+<code class="descclassname">Tourist.</code><code class="descname">knows</code><a class="headerlink" href="#Tourist.knows" title="Permalink to this definition">¶</a></dt>
+<dd><p>The tourist has learned of the exit on this frame.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Tourist.number">
+<code class="descclassname">Tourist.</code><code class="descname">number</code><a class="headerlink" href="#Tourist.number" title="Permalink to this definition">¶</a></dt>
+<dd><p>The tourist’s ID as an integer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Tourist.on">
+<code class="descclassname">Tourist.</code><code class="descname">on</code><a class="headerlink" href="#Tourist.on" title="Permalink to this definition">¶</a></dt>
+<dd><p>This tourist’s current instruction function.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Tourist.target">
+<code class="descclassname">Tourist.</code><code class="descname">target</code><a class="headerlink" href="#Tourist.target" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tourist’s current goal according to its command. Can be a point on the shape or another tourist.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Tourist.velocity">
+<code class="descclassname">Tourist.</code><code class="descname">velocity</code><a class="headerlink" href="#Tourist.velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Speed of the tourist.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Tourist.x">
+<code class="descclassname">Tourist.</code><code class="descname">x</code><a class="headerlink" href="#Tourist.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tourist’s current x position.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Tourist.y">
+<code class="descclassname">Tourist.</code><code class="descname">y</code><a class="headerlink" href="#Tourist.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tourist’s current y position.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p>Currently, the project supports the following instructions for robots (class: Tourist). Arguments in [square-brackets] are optional,
+as denoted in the description.</p>
+<div class="section" id="gotowallatangle-x">
+<h2>GoToWallAtAngle (x)<a class="headerlink" href="#gotowallatangle-x" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="GoToWallAtAngle">
+<code class="descname">GoToWallAtAngle</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#GoToWallAtAngle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a robot go to the wall at a specific angle on the shape.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>who</strong> (<a class="reference internal" href="#Tourist" title="Tourist"><em>Tourist</em></a>) – Robot to follow command</li>
+<li><strong>value</strong> (<em>integer</em>) – Angle on the shape of the perimeter</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>The robot will go to the perimeter of the shape at the given angle on the unit shape.
+Most commonly used for deployment phase, for example, Algorithm A (n=2, Face-to-Face):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">R1</span> <span class="n">Instructions</span><span class="p">)</span>
+
+    <span class="mf">1.</span> <span class="n">GoToWallAtAngle</span> <span class="mi">30</span>  <span class="c1"># 30 degrees on the unit shape.</span>
+    <span class="mf">2.</span> <span class="n">FollowWall</span> <span class="n">left</span>
+
+
+<span class="p">(</span><span class="n">R2</span> <span class="n">Instructions</span><span class="p">)</span>
+
+    <span class="mf">1.</span> <span class="n">GoToWallAtAngle</span> <span class="mi">210</span>  <span class="c1"># 210 degrees on the unit shape.</span>
+    <span class="mf">2.</span> <span class="n">FollowWall</span> <span class="n">right</span>
+</pre></div>
+</div>
+<p>The default (no argument) will cause the robot to choose a random angle to go out at.</p>
+</div>
+<div class="section" id="followwall-direction-time-angle">
+<h2>FollowWall (direction, [time/angle])<a class="headerlink" href="#followwall-direction-time-angle" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="FollowWall">
+<code class="descname">FollowWall</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#FollowWall" title="Permalink to this definition">¶</a></dt>
+<dd><p>A robot will follow the perimeter for a certain number of seconds, or indefinitely if no time specified.
+value[0] Will default to ‘right’ if no direction specified.
+Robot is required to be at a position on the perimeter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>who</strong> (<a class="reference internal" href="#Tourist" title="Tourist"><em>Tourist</em></a>) – Robot to follow command</li>
+<li><strong>value</strong> (<em>Array</em>) – value[0]: Direction string ‘left’ or ‘right’ - value[1]: time to follow wall in seconds.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>The robot will search for the exit along the perimeter of the shape in the specified
+direction. [Optional: time/angle to travel for, no argument will result in indefinitely until it is notified of the exit.]
+Most commonly used for the search phase, or pre/post-detour phase:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">Servant</span> <span class="n">Instructions</span><span class="p">)</span>
+
+    <span class="mf">1.</span> <span class="n">GoToWallAtAngle</span> <span class="mi">180</span>
+    <span class="mf">2.</span> <span class="n">FollowWall</span> <span class="n">right</span>  <span class="c1"># Indefinitely search in the clockwise direction.</span>
+
+
+<span class="p">(</span><span class="n">Queen</span> <span class="n">Instructions</span><span class="p">)</span>
+
+    <span class="mf">1.</span> <span class="n">GoToWallAtAngle</span> <span class="mi">180</span>
+    <span class="mf">2.</span> <span class="n">FollowWall</span> <span class="n">left</span> <span class="mi">120</span>  <span class="c1"># Search in the counter-clockwise direction for 120 degrees.</span>
+    <span class="mf">3.</span> <span class="n">GoToWallAtAngle</span> <span class="mi">350</span>
+    <span class="mf">4.</span> <span class="n">FollowWall</span> <span class="n">right</span>     <span class="c1"># Indefinitely search in the clockwise direction.</span>
+</pre></div>
+</div>
+<p>Note: left and right are relative to counter-clockwise and clockwise respectively.</p>
+</div>
+<div class="section" id="wait-time">
+<h2>Wait ([time])<a class="headerlink" href="#wait-time" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="Wait">
+<code class="descname">Wait</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#Wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>A robot will wait for a time in seconds, or indefinitely if no time is specified.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>who</strong> (<a class="reference internal" href="#Tourist" title="Tourist"><em>Tourist</em></a>) – Robot to follow command</li>
+<li><strong>value</strong> (<em>integer</em>) – Time to wait for in seconds.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>The robot will wait indefinitely at the point it is currently at unless a time argument is specified.
+Commonly used once the queen has finished its trajectory, and is waiting for the servants to find the exit.</p>
+</div>
+<div class="section" id="waitaverage-wireless-specific">
+<h2>WaitAverage () {Wireless specific}<a class="headerlink" href="#waitaverage-wireless-specific" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="WaitAverage">
+<code class="descname">WaitAverage</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#WaitAverage" title="Permalink to this definition">¶</a></dt>
+<dd><p>A robot will wait at the average position of all robots NOT doing the WaitAverage command.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>who</strong> (<a class="reference internal" href="#Tourist" title="Tourist"><em>Tourist</em></a>) – Robot to follow command</li>
+<li><strong>value</strong> – null</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>The robot will wait at the average position of all the other robots. This usually involves the other robots
+doing the search, and the one who is to WaitAverage will simply be ready for a broadcast of an exit location.</p>
+</div>
+<div class="section" id="broadcast-wireless-specific">
+<h2>Broadcast () {Wireless specific}<a class="headerlink" href="#broadcast-wireless-specific" title="Permalink to this headline">¶</a></h2>
+<p>If the exit is found, the robot will wirelessly broadcast its location to all other robots that need to exit.
+Currently only available as a command for a robot’s exit protocol:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">Multi</span><span class="o">-</span><span class="n">Robot</span> <span class="n">Instructions</span><span class="p">)</span>
+
+    <span class="mf">1.</span> <span class="n">Search</span> <span class="n">Algorithm</span><span class="o">....</span>
+
+
+<span class="p">(</span><span class="n">Multi</span><span class="o">-</span><span class="n">Robot</span> <span class="n">Exit</span> <span class="n">Protocol</span><span class="p">)</span> <span class="p">{</span><span class="n">wireless</span><span class="p">}</span>
+
+    <span class="mf">1.</span> <span class="n">Broadcast</span>  <span class="c1"># Broadcasts the exit location to all available robots and subsequently</span>
+    <span class="mf">2.</span> <span class="n">GoToExit</span>   <span class="c1"># exits the room.</span>
+</pre></div>
+</div>
+<p>The robots that receive the broadcast immediately abandon their instructions and follow exit protocol.</p>
+<p>Note: in instances where there is a priority evacuation, such as a queen, only the queen is <em>required</em>
+by the program to be able to receive the broadcasts.</p>
+</div>
+<div class="section" id="gotopoint-x-y">
+<h2>GoToPoint (x, y)<a class="headerlink" href="#gotopoint-x-y" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="GoToPoint">
+<code class="descname">GoToPoint</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#GoToPoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>The robot will go to a point on the shape defined by cartesian coordinates (x, y)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>who</strong> (<a class="reference internal" href="#Tourist" title="Tourist"><em>Tourist</em></a>) – Robot to follow command.</li>
+<li><strong>value</strong> (<em>Array</em>) – value[0]: float, x position – value[1]: float, y position</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>The robot will go to a specified point on the current (x, y) plane.</p>
+</div>
+<div class="section" id="interceptnonbeliever-face-to-face-specific">
+<h2>InterceptNonBeliever () {Face-to-Face specific}<a class="headerlink" href="#interceptnonbeliever-face-to-face-specific" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="InterceptNonBeliever">
+<code class="descname">InterceptNonBeliever</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#InterceptNonBeliever" title="Permalink to this definition">¶</a></dt>
+<dd><p>Robot will calculate the shortest to path to the closest targetable robot and
+create a straight path to intercept it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>who</strong> (<a class="reference internal" href="#Tourist" title="Tourist"><em>Tourist</em></a>) – Robot to follow command.</li>
+<li><strong>value</strong> – null</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p>If the exit is found, or the robot needs to go to another at the point in time, it may calculate the robot’s
+trajectory and then calculate a path for itself to directly intercept the robot at the earliest time possible.
+This is most commonly used in the face-to-face algorithms’ exit protocols:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">Multi</span><span class="o">-</span><span class="n">Robot</span> <span class="n">Instructions</span><span class="p">)</span>
+
+    <span class="mf">1.</span> <span class="n">Search</span> <span class="n">Algorithm</span><span class="o">....</span>
+
+
+<span class="p">(</span><span class="n">Multi</span><span class="o">-</span><span class="n">Robot</span> <span class="n">Exit</span> <span class="n">Protocol</span><span class="p">)</span>
+
+    <span class="mf">1.</span> <span class="n">InterceptNonBeliever</span>  <span class="c1"># *see below*</span>
+</pre></div>
+</div>
+<p>*Upon finding the exit, the robot will find all of the closest robots to itself and intercept their paths,
+exchanging information about the exit and updated trajectories of other robots, until there are no required exiting robots left.</p>
+</div>
+<div class="section" id="pursuenonbeliever">
+<h2>PursueNonBeliever ()<a class="headerlink" href="#pursuenonbeliever" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="PursueNonBeliever">
+<code class="descname">PursueNonBeliever</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#PursueNonBeliever" title="Permalink to this definition">¶</a></dt>
+<dd><p>Robot will continuously move in the direction of the target, until it catches it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>who</strong> (<a class="reference internal" href="#Tourist" title="Tourist"><em>Tourist</em></a>) – Robot to follow command.</li>
+<li><strong>value</strong> – null</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Search and Exit Tourist API</a><ul>
+<li><a class="reference internal" href="#gotowallatangle-x">GoToWallAtAngle (x)</a></li>
+<li><a class="reference internal" href="#followwall-direction-time-angle">FollowWall (direction, [time/angle])</a></li>
+<li><a class="reference internal" href="#wait-time">Wait ([time])</a></li>
+<li><a class="reference internal" href="#waitaverage-wireless-specific">WaitAverage () {Wireless specific}</a></li>
+<li><a class="reference internal" href="#broadcast-wireless-specific">Broadcast () {Wireless specific}</a></li>
+<li><a class="reference internal" href="#gotopoint-x-y">GoToPoint (x, y)</a></li>
+<li><a class="reference internal" href="#interceptnonbeliever-face-to-face-specific">InterceptNonBeliever () {Face-to-Face specific}</a></li>
+<li><a class="reference internal" href="#pursuenonbeliever">PursueNonBeliever ()</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to Search and Exit Algorithms documentation!</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/api.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Search and Exit Algorithms documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 1.1a documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Chris Till, David Bushta.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.
+    </div>
+  </body>
+</html>

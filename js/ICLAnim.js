@@ -82,28 +82,28 @@
       */
       class Tourist {
         constructor (visual) {
-          /** The robot's ID as an integer. */
-          this.number = touristNum;
           this.visual = visual;
-          /** The robot has learned of the exit on this frame. */
+          /** The tourist's ID as an integer. */
+          this.number = touristNum;
+          /** The tourist has learned of the exit on this frame. */
           this.knows = false;
-          /** The robot has known of the exit for more than one frame. */
+          /** The tourist has known of the exit for more than one frame. */
           this.knew = false;
-          /** Robot's current goal according to its command. Can be a point on the shape or another robot. */
+          /** Tourist's current goal according to its command. Can be a point on the shape or another tourist. */
           this.target = null;
-          /** The robot that is currently pursuing this. */
+          /** The tourist that is currently pursuing this one. */
           this.hunted = null;
           /** Speed of the tourist. */
           this.velocity = 1;
-          /** How far this can move in one frame. */
+          /** How far the tourist can move in one frame. */
           this.allowance = 0;
           /** This tourist's current instruction function. */
           this.on = 1;
-          /** tourist's current angle. */
+          /** Tourist's current angle. */
           this.a = 0;
-          /** tourist's current x position. */
+          /** Tourist's current x position. */
           this.x = center[0];
-          /** tourist's current y position. */
+          /** Tourist's current y position. */
           this.y = center[1];
         }
       }

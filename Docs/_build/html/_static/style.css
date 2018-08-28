@@ -256,12 +256,17 @@ code {
     font-family: monospace;
 }
 
-.viewcode-back {
-    font-family: Arial, sans-serif;
+.class {
+    border: 1px blue solid;
+    border-radius: 6px;
 }
 
 .function {
     background-color: #eee;
+}
+
+.viewcode-back {
+    font-family: Arial, sans-serif;
 }
 
 div.viewcode-block:target {

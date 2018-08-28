@@ -256,6 +256,15 @@ code {
     font-family: monospace;
 }
 
+.class {
+    border: 1px blue solid;
+    border-radius: 6px;
+}
+
+.function {
+    background-color: #eee;
+}
+
 .viewcode-back {
     font-family: Arial, sans-serif;
 }
