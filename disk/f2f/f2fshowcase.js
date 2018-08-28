@@ -686,6 +686,24 @@ function Start() {
     }
   }
 
+function MoveDataBox() {
+  var hold = d3.select(this);
+  dataBox.attr("visibility", "visible").attr("x", hold.attr("cx")).attr("y", hold.attr("cy"));
+  dataBox.attr("height", instruBinder[+hold.attr("data")].length * unit2Px / 9);
+  for (var i = 0; i < instruBinder[+hold.attr("data")].length; i++) {
+    dataBox.append("text").attr("x", (1 / 10) * unit2Px).attr("y", (1 + i) * (1 / 10) * unit2Px)
+           .style("font-size", (1/ 10) * unit2Px)
+           .text(instruBinder[+hold.attr("data")][i]);
+  }
+}
+
+function HideDataBox() {
+  dataBox.attr("visibility", "hidden");
+  dataBox.selectAll("text").remove();
+}
+
+
+
 function showAlgorithmDesc(s){
     var color;
     switch(s){
