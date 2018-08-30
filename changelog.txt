@@ -45,7 +45,7 @@ Creation of changelog: 08/10/2018
           Hovering over bot, shows its instructions
 
 
-09/24/18: ICL Reader V23
+08/24/18: ICL Reader V23
           @@@@ Response to 08/13/18 @@@@
                   - Turns out mouse local to svg doesn't fix any of the problems, apologies.
           Using mouse local to the svg, didn't work in fixing padding, zooming, or scrolling errors.

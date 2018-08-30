@@ -715,10 +715,23 @@ function showAlgorithmDesc(s){
             break;
         case 'C':
             color = '#fee';
+            break;
     }
     d3.selectAll('.desc').style('display', 'none');
     d3.select('.tabtxt').style('background-color', color);
     d3.select('#'+s).style('display', 'inline-block');
+    closeNav();
+}
+
+function openNav() {
+    document.getElementById("mySidenav").style.width = "300px";
+    document.getElementById("navdiv").style.display = "none";
+}
+
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+    document.getElementById("navdiv").style.display = "block";
+
 }
 
 

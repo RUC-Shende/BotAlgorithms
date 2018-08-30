@@ -24,6 +24,14 @@ a {
     color: black;
     border: 1px solid transparent;
     text-decoration: none;
+    font-size: 24px;
+}
+
+img {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 25%;
 }
 
 input {
@@ -45,6 +53,10 @@ input[type=submit]:hover{
 input[type=submit]:active{
     background-color: #eee;
     transition: 0.3s;
+}
+
+.center {
+    text-align: center;
 }
 
 .reveal {
@@ -178,6 +190,72 @@ input[type=submit]:active{
 .tablinks {
     width: 33%;
     background-color: inherit;
+}
+
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 20px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidenav a:hover {
+    color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+.openNav {
+    width: 6%;
+    position: sticky;
+    z-index: 1;
+    top: 0px;
+    left: 0px;
+    display: block;
+    font-size: 30px;
+    cursor: pointer;
+    padding: 10px 20px;
+    background-color: lightblue;
+    border-radius: 6px;
+    box-shadow: 3px 3px 3px #888;
+    transition: 0.3s;
+}
+
+.openNav:hover{
+    background-color: #f1f1f1;
+}
+
+.openButton {
+    display: block;
+    font-size: 30px;
+    width: 100%;
+    text-align: center;
 }
 
 #A, #B, #C {

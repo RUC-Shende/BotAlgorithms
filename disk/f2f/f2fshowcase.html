@@ -13,8 +13,19 @@
 </head>
 
 <body>
+
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="#AlgA" onclick="showAlgorithmDesc('A')">Algorithm A</a>
+        <a href="#AlgB" onclick="showAlgorithmDesc('B')">Algorithm B(X, Φ)</a>
+        <a href="#AlgC" onclick="showAlgorithmDesc('C')">Algorithm C(X, Φ, λ)</a>
+    </div>
+    <div id="navdiv" class="openNav">
+        <span class='openButton' onclick="openNav()">&#9776;</span>
+    </div>
+
     <h1>Robots Evacuating an Area using Face-to-Face Communication</h1>
-    <script src='/js/f2fshowcase.js'></script>
+    <script src='f2fshowcase.js'></script>
 
     <!--<p>
         This problem is being analyzed to determine the optimal time of mobile agents finding an exit.
@@ -58,6 +69,10 @@
                     The robots meet at the end of the point of interception and travel directly back to the exit.
                 </li>
             </ol>
+            <img src='intercept.png' />
+            <p class='center'>
+                <em>R1 intercepting R2 after finding the exit.</em>
+            </p>
         </div>
 
         <a id="AlgB"><div id="B" class='desc'></a>
@@ -69,18 +84,23 @@
                     The robots follow the same trajectory as they would in <b>Algorithm A</b>, for a certain amount of time X.
                 </li>
                 <li>
-                    If the robots have travelled the distance X without being notified of the exit, they initiate the detour phase at angle Φ.
+                    If the robots have travelled the distance X without being notified of the exit, they initiate the detour phase at angle Φ relative to the tangent to the circle at that point.
                 </li>
                 <li>
                     If, after the detour phase the exit has not been found, the robots continue moving around the perimeter and follow the normal interception methods.
                 </li>
             </ol>
 
+            <img src='detour.png' />
+            <p class='center'>
+                <em>Both robots take a detour at angle Φ after searching for distance X.</em>
+            </p>
+
             This method takes advantage of the detour phase to provide a slightly faster evacuation time in the event that the exit is found quickly. The robot which finds the exit will travel less distance to intercept the other if it is currently in its detour phase, thus lowering the overall time. The only time which this does not apply is for a smaller set of exit positions, which are observed after the detour phase.
 
         </div>
 
-        <div id="C" class='desc'>
+        <a id="AlgC"><div id="C" class='desc'>
             <br />
             This algorithm takes two arguments, C(X, Φ, λ); X being the arc length travelled before taking <span class='tooltip'>a triangular detour<span class='tooltiptext'>The robot will go away from the perimeter at an angle Φ for time λ, and then travel DIRECTLY toward and stop at the vertical axis of origin. If it has not been intercepted or notified about the exit at the point, it will return to the perimeter using the shortest path back to the point it came from.</span></span>, Φ being the angle to take the detour at, and λ being the time for at which the robot starts to travel directly to the central axis from its detour.
             This algorithm shares the same first three steps as Algorithm A.
@@ -95,6 +115,11 @@
                     If, after the triangular detour phase the exit has not been found, the robots continue moving around the perimeter and follow the normal interception methods.
                 </li>
             </ol>
+
+            <img src='tri-detour.png' />
+            <p class='center'>
+                <em>Both robots take a detour at angle Φ after searching for distance X, follow it for λ seconds, then go directly toward the center.</em>
+            </p>
 
             This method takes advantage of the triangular detour phase to provide a slightly faster evacuation time in the event that the exit is found quickly. The robot which finds the exit will travel less distance to intercept the other if it is currently in its detour phase, thus lowering the overall time. The only time which this does not apply is for a smaller set of exit positions, which are observed after the detour phase.
 
