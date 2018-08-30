@@ -54,3 +54,17 @@ Creation of changelog: 08/10/2018
           When a bot finds the exit, a line is drawn on the graph.
           When all bots are at the exit, a line is drawn on the graph.
           First graph load is pre-generated.
+
+09/27/18: ICL Reader V24
+          Documentation added
+          
+09/30/18: ICL Reader V25
+          Now is a nearly empty html file, that calls in ICLAnim.js, and ICLFashion.css.
+          
+          ICL Anim V2
+          All functions are now methods.
+          All fucctions only require value.
+          Fixed some function errors.
+          Fixed exit funtions with wireless.
+          Removed the fxs and efxs objects.
+          
