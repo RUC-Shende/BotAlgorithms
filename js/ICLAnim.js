@@ -25,13 +25,8 @@ var lineFx = d3.line().x((d) => {return(d.x);}).y((d) => {return(d.y);});
 
 var touristNum = 0;
 var instruBinder = [
-                    [["InterceptNonBeliever", [null]], ["Wait", []]],
-                    [["InterceptNonBeliever", [null]], ["WaitAverage", []]],
-                    [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right"]]],
-                    [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [270]], ["FollowWall", ["left"]]],
-                    [["InterceptNonBeliever", [null]], ["Wait", [1]], ["GoToWallAtAngle", [0]], ["Wait", []]],
                     [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right", 30]], ["Wait", []]]
-                   ];
+                ];
 var tourColors = [];
 
 var fieldSVG; //0:Background - 1:Line - 2:Bots - 3:Overlay
