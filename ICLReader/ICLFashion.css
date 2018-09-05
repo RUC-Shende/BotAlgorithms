@@ -12,8 +12,8 @@ div {
     display: block;
 }
 
-svg {
-    background-color: #fff;
+canvas, svg {
+    border: 1px black solid;
     border-radius: 6px;
     margin: 10px;
     text-align: center;
@@ -48,7 +48,7 @@ input[type=submit]:active{
 }
 
 .reveal {
-    width: 100%;
+    width: 95%;
     font-size: 1em;
     padding: 16 14;
 }
