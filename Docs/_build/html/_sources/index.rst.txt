@@ -13,6 +13,7 @@ This site covers the documentation of our app.
    :caption: Contents:
 
    api
+   references 
 
 Intro
 =====

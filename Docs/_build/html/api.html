@@ -16,6 +16,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="References and Bibliography" href="references.html" />
     <link rel="prev" title="Welcome to Search and Exit Algorithms documentation!" href="index.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -24,6 +25,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="references.html" title="References and Bibliography"
+             accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="index.html" title="Welcome to Search and Exit Algorithms documentation!"
              accesskey="P">previous</a> |</li>
@@ -53,6 +57,191 @@
 </tr>
 </tbody>
 </table>
+<dl class="function">
+<dt id="Tourist.FollowWall">
+<code class="descclassname">Tourist.</code><code class="descname">FollowWall</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#Tourist.FollowWall" title="Permalink to this definition">¶</a></dt>
+<dd><p>A robot will follow the perimeter for a certain number of seconds, or indefinitely if no time specified.
+value[0] Will default to ‘right’ if no direction specified.
+Robot is required to be at a position on the perimeter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>who</strong> (<a class="reference internal" href="#Tourist" title="Tourist"><em>Tourist</em></a>) – Robot to follow command</li>
+<li><strong>value</strong> (<em>Array</em>) – value[0]: Direction string ‘left’ or ‘right’ - value[1]: time to follow wall in seconds.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Tourist.GoOutAtAngle">
+<code class="descclassname">Tourist.</code><code class="descname">GoOutAtAngle</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#Tourist.GoOutAtAngle" title="Permalink to this definition">¶</a></dt>
+<dd><p>The robot will go from the interior of the object to an angle on the perimeter.
+Robot is required to be in the interior (not in perimeter) of the object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>who</strong> (<a class="reference internal" href="#Tourist" title="Tourist"><em>Tourist</em></a>) – Robot to follow command</li>
+<li><strong>value</strong> (<em>integer</em>) – Angle on the shape of the perimeter</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Tourist.GoToCenter">
+<code class="descclassname">Tourist.</code><code class="descname">GoToCenter</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#Tourist.GoToCenter" title="Permalink to this definition">¶</a></dt>
+<dd><p>The robot will go to the center (origin) of the shape. Robot is not required to be at any specific position.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>who</strong> (<a class="reference internal" href="#Tourist" title="Tourist"><em>Tourist</em></a>) – Robot to follow command.</li>
+<li><strong>value</strong> – null</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Tourist.GoToExit">
+<code class="descclassname">Tourist.</code><code class="descname">GoToExit</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#Tourist.GoToExit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Robot will go to the exit at cartestian coordinates (x, y).
+This is not the same as exitAngle.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>who</strong> (<a class="reference internal" href="#Tourist" title="Tourist"><em>Tourist</em></a>) – Robot to follow command.</li>
+<li><strong>value</strong> (<em>Array</em>) – value[0]: float, x position – value[1]: float, y positions</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Tourist.GoToPoint">
+<code class="descclassname">Tourist.</code><code class="descname">GoToPoint</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#Tourist.GoToPoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>The robot will go to a point on the shape defined by cartesian coordinates (x, y)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>who</strong> (<a class="reference internal" href="#Tourist" title="Tourist"><em>Tourist</em></a>) – Robot to follow command.</li>
+<li><strong>value</strong> (<em>Array</em>) – value[0]: float, x position – value[1]: float, y position</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Tourist.GoToWallAtAngle">
+<code class="descclassname">Tourist.</code><code class="descname">GoToWallAtAngle</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#Tourist.GoToWallAtAngle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a robot go to the wall at a specific angle on the shape.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>who</strong> (<a class="reference internal" href="#Tourist" title="Tourist"><em>Tourist</em></a>) – Robot to follow command</li>
+<li><strong>value</strong> (<em>integer</em>) – Angle on the shape of the perimeter</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Tourist.InterceptNonBeliever">
+<code class="descclassname">Tourist.</code><code class="descname">InterceptNonBeliever</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#Tourist.InterceptNonBeliever" title="Permalink to this definition">¶</a></dt>
+<dd><p>Robot will calculate the shortest to path to the closest targetable robot and
+create a straight path to intercept it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>who</strong> (<a class="reference internal" href="#Tourist" title="Tourist"><em>Tourist</em></a>) – Robot to follow command.</li>
+<li><strong>value</strong> – null</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Tourist.PursueNonBeliever">
+<code class="descclassname">Tourist.</code><code class="descname">PursueNonBeliever</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#Tourist.PursueNonBeliever" title="Permalink to this definition">¶</a></dt>
+<dd><p>Robot will continuously move in the direction of the target, until it catches it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>who</strong> (<a class="reference internal" href="#Tourist" title="Tourist"><em>Tourist</em></a>) – Robot to follow command.</li>
+<li><strong>value</strong> – null</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Tourist.Wait">
+<code class="descclassname">Tourist.</code><code class="descname">Wait</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#Tourist.Wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>A robot will wait for a time in seconds, or indefinitely if no time is specified.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>who</strong> (<a class="reference internal" href="#Tourist" title="Tourist"><em>Tourist</em></a>) – Robot to follow command</li>
+<li><strong>value</strong> (<em>integer</em>) – Time to wait for in seconds.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Tourist.WaitAverage">
+<code class="descclassname">Tourist.</code><code class="descname">WaitAverage</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#Tourist.WaitAverage" title="Permalink to this definition">¶</a></dt>
+<dd><p>A robot will wait at the average position of all robots NOT doing the WaitAverage command.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>who</strong> (<a class="reference internal" href="#Tourist" title="Tourist"><em>Tourist</em></a>) – Robot to follow command</li>
+<li><strong>value</strong> – null</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="Tourist.a">
 <code class="descclassname">Tourist.</code><code class="descname">a</code><a class="headerlink" href="#Tourist.a" title="Permalink to this definition">¶</a></dt>
@@ -371,6 +560,9 @@ exchanging information about the exit and updated trajectories of other robots, 
   <h4>Previous topic</h4>
   <p class="topless"><a href="index.html"
                         title="previous chapter">Welcome to Search and Exit Algorithms documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="references.html"
+                        title="next chapter">References and Bibliography</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -400,6 +592,9 @@ exchanging information about the exit and updated trajectories of other robots, 
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="references.html" title="References and Bibliography"
+             >next</a> |</li>
         <li class="right" >
           <a href="index.html" title="Welcome to Search and Exit Algorithms documentation!"
              >previous</a> |</li>

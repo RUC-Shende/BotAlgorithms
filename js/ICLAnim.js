@@ -26,7 +26,7 @@ var lineFx = d3.line().x((d) => {return(d.x);}).y((d) => {return(d.y);});
 var touristNum = 0;
 var instruBinder = [
                     [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right", 30]], ["Wait", []]]
-                ];
+                   ];
 var tourColors = [];
 
 var fieldSVG; //0:Background - 1:Line - 2:Bots - 3:Overlay
@@ -41,34 +41,7 @@ var graphLine = [];
 var exitFoundLine = null;
 var allExitedLine = null;
 
-//////////--------Instantiate Call Functions--------//////////
-//Drag function, updates tourists and graph dots relative to lines
-function SSlide() {
-  d3.select(this).style("fill", "orange");
-  d3.select(this).classed("active", true);
-}
-
-function MSlide() {
-  var mousePos = d3.event.x;
-  if (mousePos < 0) {
-    mousePos = 0;
-  } else if (mousePos > (31 / 8) * unit2Px) {
-    mousePos = (31 / 8) * unit2Px;
-  }
-  d3.select(this).attr("x", mousePos);
-  time = Math.round((mousePos / ((31 / 8) * unit2Px)) * timeMax);
-  timeText.text("Time: " + Math.floor((100 * time) / fps) / 100);
-  frameText.text("Frame: " + Math.floor(time));
-  UpdateVisuals();
-}
-
-function ESlide() {
-  d3.select(this).style("fill", "#888888");
-  d3.select(this).classed("active", false);
-}
-
-//////////---------- Instantiate Classes ----------//////////
-//Data holder, and loader update
+//////////--------Instantiate Functions--------//////////
 
 /**
 * Represents a robot on the field searching for the exit.
@@ -399,6 +372,32 @@ class Tourist {
       }
     }
   }
+}
+
+
+//Drag function, updates tourists and graph dots relative to lines
+function SSlide() {
+  d3.select(this).style("fill", "orange");
+  d3.select(this).classed("active", true);
+}
+
+function MSlide() {
+  var mousePos = d3.event.x;
+  if (mousePos < 0) {
+    mousePos = 0;
+  } else if (mousePos > (31 / 8) * unit2Px) {
+    mousePos = (31 / 8) * unit2Px;
+  }
+  d3.select(this).attr("x", mousePos);
+  time = Math.round((mousePos / ((31 / 8) * unit2Px)) * timeMax);
+  timeText.text("Time: " + Math.floor((100 * time) / fps) / 100);
+  frameText.text("Frame: " + Math.floor(time));
+  UpdateVisuals();
+}
+
+function ESlide() {
+  d3.select(this).style("fill", "#888888");
+  d3.select(this).classed("active", false);
 }
 
 //////////----------Instantiate Functions----------//////////
