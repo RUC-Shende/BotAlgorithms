@@ -25,8 +25,8 @@ var lineFx = d3.line().x((d) => {return(d.x);}).y((d) => {return(d.y);});
 
 var touristNum = 0;
 var instruBinder = [
-                     [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
-                     [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
+                     [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right"]]],
+                     [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left"]]]
                    ];
 var tourColors = [];
 
@@ -41,6 +41,9 @@ var graphPoints = [];
 var graphLine = [];
 var exitFoundLine = null;
 var allExitedLine = null;
+
+var b = d3.select('body').append('div');
+
 
 //////////--------Instantiate Call Functions--------//////////
 //Drag function, updates tourists and graph dots relative to lines
@@ -81,6 +84,7 @@ class Tourist {
     this.visual = visual;
     /** The tourist's ID as an integer. */
     this.number = touristNum;
+    console.log("Tourist num: " + this.number);
     /** The tourist has learned of the exit on this frame. */
     this.knows = false;
     /** The tourist has known of the exit for more than one frame. */
@@ -365,7 +369,7 @@ class Tourist {
   *@param value null
   */
   InterceptNonBeliever(value) {
-    if ((this.target == null) && (!wireless)) {
+    if (((this.target == null) || !this.target) && (!wireless)) {// this.target was being undefined, instead of null, so !this.target fixed it..... how do we explain this weird phenomenon
       var holdTime = 0;
       var closest = Infinity;
       for (var i = 0; i < touristNum; i++) {
@@ -411,10 +415,10 @@ function Start() {
 
 //Load visuals and bots.(Might be changed to its own script later, to split visual and functional)
 function Load() {
-  fieldSVG = d3.select("body").append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
+  fieldSVG = b.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
                .style("float", "left").style("border", "1px solid black")
                .on("mousemove", ChoosExit).on("click", exitChosen);
-  graphSVG = d3.select("body").append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
+  graphSVG = b.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
                .style("float", "left").style("border", "1px solid black");
   var classes = ["backGround", "lines", "bots", "overLay"];
   for (var i = 0; i < classes.length; i++) {//Create layers
@@ -454,6 +458,7 @@ function Load() {
                    .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
   }
 }
+
 
 function LoadField() {
   fieldSVG.select(".backGround").append("text").attr("x",  center[0]).attr("y", unit2Px * (1 / 5))
@@ -536,6 +541,53 @@ function LoadGraph() {
   graphSVG.select(".backGround").append("text").attr("x", unit2Px * 2).attr("y", unit2Px * (395 / 100)).attr("text-anchor", "middle")
           .style("font-size", unit2Px * (5 / 25)).style("fill", "#000000").text("Time");
 }
+
+//Reset Animation.
+function Reset() {
+
+    //TODO: prevent reloading while loading anim.
+
+    exitAlert = false;//Someone learned where the exit is.
+    exitAllow = 0;//How far in a frame was the exit found.
+
+    time = 0;
+    timeDirect = 0;//After loading, play direction.
+    fps = 60;
+    timeMax = 10 * fps;
+    timeSlider = null;
+
+    projector = null;
+    degrees = 3;
+    unit2Px = ((window.innerHeight <= window.innerWidth) ?
+                        (window.innerHeight) : (window.innerWidth)) / 5;
+    center = [unit2Px * 2, unit2Px * 2];
+    exitAngle = 0;
+    fieldExit = [center[0] + unit2Px, center[1]];
+
+    dataBox = null;
+
+    wireless = false;
+    touristNum = 0;
+    tourColors = [];
+
+    fieldSVG.selectAll('svg').remove();
+    fieldSVG.remove();
+    tourists = [];
+    tourPoints = [];
+    tourLine = [];
+
+    graphSVG.selectAll('svg').remove(); //0:Background - 1:Line - 2:Bots - 3:Overlay
+    graphSVG.remove();
+    graphDots = [];
+    graphPoints = [];
+    graphLine = [];
+    exitFoundLine = null;
+    allExitedLine = null;
+
+    Start();
+
+}
+
 
 //Create a random hexadecimal color
 function RandomColor() {
@@ -747,18 +799,31 @@ function showAlgorithmDesc(s){
     switch(s){
         case 'A':
             color = "#efe";
+            instruBinder = [
+                            [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right"]]],
+                            [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left"]]]
+                        ];
             break;
         case 'B':
             color = '#eef';
+            instruBinder = [
+                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
+                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
+                               ];
             break;
         case 'C':
             color = '#fee';
+            instruBinder = [
+                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0] + 70, center[1]+40]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
+                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0] - 70, center[1]+40]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
+                               ];
             break;
     }
     d3.selectAll('.desc').style('display', 'none');
     d3.select('.tabtxt').style('background-color', color);
     d3.select('#'+s).style('display', 'inline-block');
     closeNav();
+    Reset();
 }
 
 function openNav() {

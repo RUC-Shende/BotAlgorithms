@@ -6,5 +6,5 @@ Below is a list of papers containing algorithms included in the showcase.
 `Czyzowicz, Jurek, et al. “Evacuating Robots via Unknown Exit in a Disk.” Lecture Notes in Computer Science Distributed Computing, 2014, pp. 122–136., doi:10.1007/978-3-662-45174-8_9.
 </papers/Evac_DISC2015.pdf>`_.
 
-`Czyzowicz, J., et al. “Evacuating Robots from a Disk Using Face-to-Face Communication (Extended Abstract).” Lecture Notes in Computer Science Algorithms and Complexity, 2015, pp. 140–152., doi:10.1007/978-3-319-18173-8_10.
+`Czyzowicz, J., et al. “Evacuating Robots from a Disk Using Face-to-Face Communication.” Lecture Notes in Computer Science Algorithms and Complexity, 2015, pp. 140–152., doi:10.1007/978-3-319-18173-8_10.
 </papers/F2F_CIAC_2015.pdf>`_.

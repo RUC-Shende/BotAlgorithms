@@ -47,14 +47,14 @@
     </script>-->
 
     <div class='tab'>
-        <a href="#AlgA"><button class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("A")'/>Algorithm <b>A</b></button></a>
-        <a href="#AlgB"><button class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("B")'/>Algorithm <b>B(X, Φ)</b></button></a>
-        <a href="#AlgC"><button class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("C")'/>Algorithm <b>C(X, Φ, λ)</b></button></a>
+        <a href="#AlgA"><button id='AlgA' class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("A")'/>Algorithm <b>A</b></button></a>
+        <a href="#AlgB"><button id="AlgB" class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("B")'/>Algorithm <b>B(X, Φ)</b></button></a>
+        <a href="#AlgC"><button id="AlgC" class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("C")'/>Algorithm <b>C(X, Φ, λ)</b></button></a>
     </div>
     <div class='tabtxt'>
         These algorithms focus on evacuating two robots using the <span class='tooltip'>Face to Face communication model.<span class='tooltiptext'>The robots can only communicate by physically being next to each other.</span></span>
         <br />
-        <a id='AlgA'><div id="A" class='desc'></a>
+        <a><div id="A" class='desc'></a>
             <ol><b><em><u>Steps:</u></em></b>
                 <li>
                     The robots go to the perimeter at the same angle.
@@ -75,7 +75,7 @@
             </p>
         </div>
 
-        <a id="AlgB"><div id="B" class='desc'></a>
+        <a><div id="B" class='desc'></a>
             <br />
             This algorithm takes two arguments, B(X, Φ); X being the arc length travelled before taking <span class='tooltip'>a detour<span class='tooltiptext'>The robot will go away from the perimeter at an angle Φ, and travel toward and stop at the vertical axis of origin. If it has not been intercepted or notified about the exit at the point, it will return to the perimeter.</span></span>, and Φ being the angle to take the detour at.
             This algorithms shares the same first three steps as algorithm A.

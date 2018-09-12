@@ -55,16 +55,25 @@ Creation of changelog: 08/10/2018
           When all bots are at the exit, a line is drawn on the graph.
           First graph load is pre-generated.
 
-09/27/18: ICL Reader V24
+08/27/18: ICL Reader V24
           Documentation added
-          
-09/30/18: ICL Reader V25
+
+08/30/18: ICL Reader V25
           Now is a nearly empty html file, that calls in ICLAnim.js, and ICLFashion.css.
-          
+
           ICL Anim V2
           All functions are now methods.
           All fucctions only require value.
           Fixed some function errors.
           Fixed exit funtions with wireless.
           Removed the fxs and efxs objects.
-          
+
+09/12/18: F2F Showcase V1.2
+          The showcase now features algorithms A, B, and C in working order.
+          Users can now click on an algorithm description to see its explanation,
+          and the algorithm will reset and change its instructions.
+
+          Documents V2
+          Included (over the past few weeks) documentation for all the Tourist
+          class functions and variables, as well as references to the papers we
+          read to get the algorithms instructions.
