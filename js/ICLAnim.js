@@ -14,8 +14,7 @@ var timeSlider;
 
 var projector;
 var degrees = 3;
-var unit2Px = ((window.innerHeight <= window.innerWidth) ?
-                    (window.innerHeight) : (window.innerWidth)) / 5;
+var unit2Px = 25;
 var center = [unit2Px * 2, unit2Px * 2];
 var exitAngle = 0;
 var fieldExit = [center[0] + unit2Px, center[1]];
@@ -25,23 +24,57 @@ var lineFx = d3.line().x((d) => {return(d.x);}).y((d) => {return(d.y);});
 
 var touristNum = 0;
 var instruBinder = [
-                    [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right", 30]], ["Wait", []]]
+                    [["Intercept", [null]], ["Wait", []]],
+                    [["Intercept", [null]], ["GoToPoint", [center[0] + .25, center[1] + .25]], ["Wait", []]],
+                    [["Intercept", [null]], ["GoOutAtAngle", [135, .25]], ["Wait", []]],
+                    [["Intercept", [null]], ["WaitAverage", []]],
+                    [["Intercept", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right"]]],
+                    [["Intercept", [null]], ["GoToWallAtAngle", [270]], ["FollowWall", ["left"]]],
+                    [["Intercept", [null]], ["Wait", [1]], ["GoToWallAtAngle", [0]], ["Wait", []]],
+                    [["Intercept", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right", 30]], ["Wait", []]]
                    ];
 var tourColors = [];
 
-var fieldSVG; //0:Background - 1:Line - 2:Bots - 3:Overlay
+var fieldSVG = d3.select("#anim"); //0:Background - 1:Line - 2:Bots - 3:Overlay
 var tourists = [];
 var tourPoints = [];
 var tourLine = [];
 
-var graphSVG; //0:Background - 1:Line - 2:Bots - 3:Overlay
+var graphSVG = d3.select("#graph"); //0:Background - 1:Line - 2:Bots - 3:Overlay
 var graphDots = [];
 var graphPoints = [];
 var graphLine = [];
 var exitFoundLine = null;
 var allExitedLine = null;
 
-//////////--------Instantiate Functions--------//////////
+//////////--------Instantiate Call Functions--------//////////
+//Drag function, updates tourists and graph dots relative to lines
+function SSlide() {
+  d3.select(this).style("fill", "orange");
+  d3.select(this).classed("active", true);
+}
+
+function MSlide() {
+  var mousePos = d3.event.x;
+  if (mousePos < 0) {
+    mousePos = 0;
+  } else if (mousePos > (31 / 8) * unit2Px) {
+    mousePos = (31 / 8) * unit2Px;
+  }
+  d3.select(this).attr("x", mousePos);
+  time = Math.round((mousePos / ((31 / 8) * unit2Px)) * timeMax);
+  d3.select("#timeText").text("Time: " + Math.floor((100 * time) / fps) / 100);
+  d3.select("#frameText").text("Frame: " + Math.floor(time));
+  UpdateVisuals();
+}
+
+function ESlide() {
+  d3.select(this).style("fill", "#888888");
+  d3.select(this).classed("active", false);
+}
+
+//////////---------- Instantiate Classes ----------//////////
+//Data holder, and loader update
 
 /**
 * Represents a robot on the field searching for the exit.
@@ -113,8 +146,7 @@ class Tourist {
   /**
   * Makes a robot go to the wall at a specific angle on the shape.
   *
-  *@param {Tourist} who Robot to follow command
-  *@param {integer} value Angle on the shape of the perimeter
+  *@param {float} value Angle on the shape of the perimeter
   *
   *
   */
@@ -131,18 +163,36 @@ class Tourist {
   }
 
   /**
-  * The robot will go from the interior of the object to an angle on the perimeter.
-  * Robot is required to be in the interior (not in perimeter) of the object.
+  * The robot will go from its location to some polar coordinate relative to itself.
   *
-  *@param {Tourist} who Robot to follow command
-  *@param {integer} value Angle on the shape of the perimeter
+  *@param {float} value Angle in degrees
+  *@param {float} value Distance measured in radiuses
   *
   *
   */
   GoOutAtAngle(value) {
     if (this.target == null) {
-      var hold = [value[1] * Math.cos(value[0] * (Math.PI / 180)), value[1] * Math.sin(value[0] * (Math.PI / 180))];
-      this.target = [this.x + hold[0], this.y + hold[1]];
+      var hold = [value[1] * Math.cos(value[0] * (Math.PI / 180)), value[1] * -Math.sin(value[0] * (Math.PI / 180))];
+      this.target = [this.x + unit2Px * hold[0], this.y + unit2Px * hold[1]];
+    }
+    if ((this.x == this.target[0]) && (this.y == this.target[1])) {
+      this.on++;
+      this.target = null;
+    } else {
+      this.DirectTo(this.target);
+    }
+  }
+
+  /**
+  * The robot will go one 2d vector relative to itself.
+  *
+  *@param {Array} value value[0]: float, x position -- value[1]: float, y position => Both measured in Radiuses
+  *
+  *
+  */
+  GoOutAtVector(value) {
+    if (this.target == null) {
+      this.target = [this.x + unit2Px * value[0], this.y + unit2Px * value[1]];
     }
     if ((this.x == this.target[0]) && (this.y == this.target[1])) {
       this.on++;
@@ -155,8 +205,7 @@ class Tourist {
   /**
   * A robot will wait for a time in seconds, or indefinitely if no time is specified.
   *
-  *@param {Tourist} who Robot to follow command
-  *@param {integer} value Time to wait for in seconds.
+  *@param {float} value Time to wait for in seconds.
   *
   *
   */
@@ -182,7 +231,6 @@ class Tourist {
   * value[0] Will default to 'right' if no direction specified.
   * Robot is required to be at a position on the perimeter.
   *
-  *@param {Tourist} who Robot to follow command
   *@param {Array} value value[0]: Direction string 'left' or 'right' - value[1]: time to follow wall in seconds.
   *
   *
@@ -216,7 +264,6 @@ class Tourist {
   /**
   * The robot will go to the center (origin) of the shape. Robot is not required to be at any specific position.
   *
-  *@param {Tourist} who Robot to follow command.
   *@param value null
   *
   *
@@ -232,7 +279,6 @@ class Tourist {
   /**
   * A robot will wait at the average position of all robots NOT doing the WaitAverage command.
   *
-  *@param {Tourist} who Robot to follow command
   *@param value null
   *
   *
@@ -260,7 +306,6 @@ class Tourist {
   *
   * The robot will go to a point on the shape defined by cartesian coordinates (x, y)
   *
-  *@param {Tourist} who Robot to follow command.
   *@param {Array} value value[0]: float, x position -- value[1]: float, y position
   */
   GoToPoint(value) {
@@ -276,7 +321,6 @@ class Tourist {
   * Robot will go to the exit at cartestian coordinates (x, y).
   * This is not the same as exitAngle.
   *
-  *@param {Tourist} who Robot to follow command.
   *@param {Array} value value[0]: float, x position -- value[1]: float, y positions
   */
   GoToExit(value) {
@@ -294,14 +338,13 @@ class Tourist {
   *
   * Robot will continuously move in the direction of the target, until it catches it.
   *
-  *@param {Tourist} who Robot to follow command.
   *@param value null
   */
-  PursueNonBeliever(value) {
+  Pursue(value) {
     if ((this.target == null) && (!wireless)) {
       var closest = Infinity;
       for (var i = 0; i < touristNum; i++) {
-        if ((!tourists[i].knows) && ((tourists[i].hunted == this.number) || (tourists[i].hunted == null))) {
+        if ((!tourists[i].knows) && (tourists[i].hunted == null)) {
           var eVec = [tourists[i].x - this.x, tourists[i].y - this.y];
           var exitDist = Math.sqrt(Math.pow(eVec[1], 2) + Math.pow(eVec[0], 2));
           if (exitDist < closest) {
@@ -333,15 +376,14 @@ class Tourist {
   * Robot will calculate the shortest to path to the closest targetable robot and
   * create a straight path to intercept it.
   *
-  *@param {Tourist} who Robot to follow command.
   *@param value null
   */
-  InterceptNonBeliever(value) {
+  Intercept(value) {
     if ((this.target == null) && (!wireless)) {
       var holdTime = 0;
       var closest = Infinity;
       for (var i = 0; i < touristNum; i++) {
-        if ((!tourists[i].knows) && ((tourists[i].hunted == this.number) || (tourists[i].hunted == null))) {
+        if ((!tourists[i].knows) && (tourists[i].hunted == null)) {
           for (var j = 0; j < 2 * unit2Px; j++) {
             if (time + j < timeMax) {
               var intercept = tourPoints[i][time + j];
@@ -374,91 +416,39 @@ class Tourist {
   }
 }
 
-
-//Drag function, updates tourists and graph dots relative to lines
-function SSlide() {
-  d3.select(this).style("fill", "orange");
-  d3.select(this).classed("active", true);
-}
-
-function MSlide() {
-  var mousePos = d3.event.x;
-  if (mousePos < 0) {
-    mousePos = 0;
-  } else if (mousePos > (31 / 8) * unit2Px) {
-    mousePos = (31 / 8) * unit2Px;
-  }
-  d3.select(this).attr("x", mousePos);
-  time = Math.round((mousePos / ((31 / 8) * unit2Px)) * timeMax);
-  timeText.text("Time: " + Math.floor((100 * time) / fps) / 100);
-  frameText.text("Frame: " + Math.floor(time));
-  UpdateVisuals();
-}
-
-function ESlide() {
-  d3.select(this).style("fill", "#888888");
-  d3.select(this).classed("active", false);
-}
-
 //////////----------Instantiate Functions----------//////////
 //Mostly self contained, only edits exit location outside of function.
 function Start() {
-  var holdG = d3.select("body").append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
-              .style("float", "left").style("border", "1px solid black");
-  holdG.append("text").attr("x", 2 * unit2Px).attr("y", unit2Px)
-       .style("text-anchor", "middle").style("font-size", unit2Px * (5 / 25)).text("What room shape?");
-  var holdT = holdG.append("text").attr("class", "numbah").attr("x", 2 * unit2Px).attr("y", unit2Px * (40 / 25))
-              .style("text-anchor", "middle").style("font-size", unit2Px * (10 / 25)).text(shapes[degrees - 1]);
-  holdG.append("path").attr("d", 'M' + unit2Px * (80 / 25) + ',' + unit2Px * (36 / 25) + 'L' + unit2Px * (75 / 25) + ',' + unit2Px * (31 / 25)
-                               + 'L' + unit2Px * (75 / 25) + ',' + unit2Px * (41 / 25) + 'L' + unit2Px * (80 / 25) + ',' + unit2Px * (36 / 25))
-       .on("click", () => {degrees++;if (degrees > 13) {degrees = 13;}holdT.text(shapes[degrees - 1]);});
-  holdG.append("path").attr("d", 'M' + unit2Px * (20 / 25) + ',' + unit2Px * (36 / 25) + 'L' + unit2Px * (25 / 25) + ',' + unit2Px * (31 / 25)
-                               + 'L' + unit2Px * (25 / 25) + ',' + unit2Px * (41 / 25) + 'L' + unit2Px * (20 / 25) + ',' + unit2Px * (36 / 25))
-       .on("click", () => {degrees--;if (degrees < 1) {degrees = 1;}holdT.text(shapes[degrees - 1]);});
-  holdG.append("text").attr("x", 2 * unit2Px).attr("y", unit2Px * (60 / 25))
-       .style("text-anchor", "middle").style("font-size", unit2Px * (5 / 25)).text("Press this when done")
-       .on("click", () => {
-         if (degrees == 1) {
-           holdT.text("Boring");
-         } else if (degrees == 2) {
-           holdT.text("Not done");
-         } else {
-           holdG.remove();
-           Load();
-         }
-       });
+  fieldSVG.select("#backGround").attr("height", "100%").attr("width", "100%");
+  fieldSVG.select("#lines").attr("height", "100%").attr("width", "100%");
+  fieldSVG.select("#bots").attr("height", "100%").attr("width", "100%");
+  fieldSVG.select("#overLay").attr("height", "100%").attr("width", "100%");
+  fieldSVG.select("#excess").attr("height", "100%").attr("width", "100%");
+  graphSVG.select("#backGround").attr("height", "100%").attr("width", "100%");
+  graphSVG.select("#lines").attr("height", "100%").attr("width", "100%");
+  graphSVG.select("#bots").attr("height", "100%").attr("width", "100%");
+  graphSVG.select("#overLay").attr("height", "100%").attr("width", "100%");
+  graphSVG.select("#excess").attr("height", "100%").attr("width", "100%");
 }
 
 //Load visuals and bots.(Might be changed to its own script later, to split visual and functional)
 function Load() {
-  fieldSVG = d3.select("body").append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
-               .style("float", "left").style("border", "1px solid black")
-               .on("mousemove", ChoosExit).on("click", exitChosen);
-  graphSVG = d3.select("body").append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
-               .style("float", "left").style("border", "1px solid black");
-  var classes = ["backGround", "lines", "bots", "overLay"];
-  for (var i = 0; i < classes.length; i++) {//Create layers
-    fieldSVG.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
-            .attr("class", classes[i]);
-    graphSVG.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
-            .attr("class", classes[i]);
-  }
   LoadField();
   LoadGraph();
   for (var i = 0; i < instruBinder.length; i++) {//Add bots, lines, and coordinate collectors.
     tourColors.push(RandomColor());
-    tourists.push(new Tourist(fieldSVG.select(".bots").append("circle").attr("cx", center[0]).attr("cy", center[1])
+    tourists.push(new Tourist(fieldSVG.select("#bots").append("circle").attr("cx", center[0]).attr("cy", center[1])
                               .attr("data", touristNum).attr("r", unit2Px / 16).on("mouseover", MoveDataBox)
                               .on("mouseout", HideDataBox).style("fill", tourColors[i])
                               .style("stroke", "#ffffff").style("stroke-width", (1 / 100) * unit2Px)));
     tourPoints.push([]);
-    graphDots.push(graphSVG.select(".bots").append("circle").attr("cx", unit2Px * (10 / 25))
+    graphDots.push(graphSVG.select("#bots").append("circle").attr("cx", unit2Px * (10 / 25))
                    .attr("cy", unit2Px * 4 * (20 / 25) - unit2Px * (10 / 25)).attr("r", unit2Px / 16)
                    .style("fill", tourColors[i]).style("stroke", "#ffffff").style("stroke-width", (1 / 100) * unit2Px));
     graphPoints.push([]);
     touristNum++;
   }
-  dataBox = fieldSVG.select(".overLay").append("svg").attr("width", 2 * unit2Px).attr("height", unit2Px).attr("visibility", "hidden");
+  dataBox = fieldSVG.select("#overLay").append("svg").attr("width", 2 * unit2Px).attr("height", unit2Px).attr("visibility", "hidden");
   while (time < timeMax) {//Load one run through.
     LoadAnim();
   }
@@ -468,61 +458,42 @@ function Load() {
     tourists[i].a = 0;
     tourists[i].x = center[0];
     tourists[i].y = center[1];
-    tourLine[i] = fieldSVG.select(".lines").append("path").attr("d", lineFx(tourPoints[i]))
+    tourLine[i] = fieldSVG.select("#lines").append("path").attr("d", lineFx(tourPoints[i]))
                   .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
-    graphLine[i] = graphSVG.select(".lines").append("path").attr("d", lineFx(graphPoints[i]))
+    graphLine[i] = graphSVG.select("#lines").append("path").attr("d", lineFx(graphPoints[i]))
                    .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
   }
 }
 
 function LoadField() {
-  fieldSVG.select(".backGround").append("text").attr("x",  center[0]).attr("y", unit2Px * (1 / 5))
-          .style("text-anchor", "middle").style("font-size", unit2Px * (1 / 5)).text("Search and Exit");
-  fieldSVG.select(".backGround").append("text").attr("x",  center[0]).attr("y", unit2Px * (3 / 10))
-          .style("text-anchor", "middle").style("font-size", unit2Px * (1 / 10)).text(shapes[degrees - 1] + " Wireless");
-  fieldSVG.select(".backGround").append("text").attr("x",  center[0]).attr("y", unit2Px * (5 / 10)).attr("class", "exitText")
-          .style("text-anchor", "middle").style("font-size", unit2Px * (2 / 10))
-          .text("Left-Click to place exit at ~" + 0 + " degrees");
+  var wire = (wireless) ? " Wireless" : " Non-Wireless";
+  d3.select("#Desc").text(shapes[degrees - 1] + wire);
   if (degrees == 13) {//If circle, change to 360 degrees.
     degrees = 360;
   }
-  var hold = 'M' + (center[0] + unit2Px) + ',' + center[1];
+  var hold = "M75,50";
   for (var i = 1; i <= degrees; i++) {//Create the shape.
     var holdAng = ((360 / degrees) * i) * (Math.PI / 180);
-    hold += 'L' + (center[0] + unit2Px * Math.cos(holdAng)) + ',' + (center[1] - unit2Px * Math.sin(holdAng));
+    hold += 'L' + (50 + 25 * Math.cos(holdAng)) + ',' + (50 - 25 * Math.sin(holdAng));
   }
-  fieldSVG.select(".overLay").append("path").attr("d", hold).style("fill", "none").style("stroke", "#000000");
-  fieldSVG.select(".overLay").append("line").attr("x1", 2 * unit2Px).attr("y1", unit2Px).attr("x2",  2 * unit2Px).attr("y2", 3 * unit2Px)
-          .style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px);
-  fieldSVG.select(".overLay").append("line").attr("x1", unit2Px).attr("y1", 2 * unit2Px).attr("x2",  3 * unit2Px).attr("y2", 2 * unit2Px)
-          .style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px);
-  fieldSVG.select(".overLay").append("circle").attr("class", "center").attr("cx", center[0]).attr("cy", center[1]).attr("r", (1 / 50) * unit2Px)
-          .style("fill", "#ffffff").style("stroke", "#000000").style("stroke-width", (1 / 200) * unit2Px);
-  fieldSVG.select(".overLay").append("circle").attr("class", "exit").attr("cx", fieldExit[0]).attr("cy", fieldExit[1]).attr("r", (1 / 50) * unit2Px)
-          .style("fill", "#ffffff").style("stroke", "#000000").style("stroke-width", (1 / 200) * unit2Px);
+  fieldSVG.select("#overLay").append("path").attr("d", hold).style("fill", "none").style("stroke", "#000000").style("stroke-width", ".25");
+  fieldSVG.select("#overLay").append("circle").attr("id", "exit").attr("cx", 50).attr("cy", 50).attr("r", .5)
+          .style("fill", "#ffffff").style("stroke", "#000000").style("stroke-width", .1);
   if (degrees == 2) {//Add two distance numbers if a line.
-    fieldSVG.select(".backGround").append("text").attr("x", 3.1 * unit2Px).attr("y", center[1])
+    fieldSVG.select("#backGround").append("text").attr("x", 3.1 * unit2Px).attr("y", center[1])
             .attr("class", "left").style("text-anchor", "middle").style("font-size", unit2Px / 5).text("1");
-    fieldSVG.select(".backGround").append("text").attr("x", .9 * unit2Px).attr("y", center[1])
+    fieldSVG.select("#backGround").append("text").attr("x", .9 * unit2Px).attr("y", center[1])
             .attr("class", "right").style("text-anchor", "middle").style("font-size", unit2Px / 5).text("-1");
   } else {//Add two reference angles if not a line.
-    fieldSVG.select(".backGround").append("text").attr("x", 3.1 * unit2Px).attr("y", center[1])
+    fieldSVG.select("#backGround").append("text").attr("x", 3.1 * unit2Px).attr("y", center[1])
             .style("text-anchor", "start").style("font-size", unit2Px / 5).text("0");
-    fieldSVG.select(".backGround").append("text").attr("x", center[0]).attr("y", .9 * unit2Px)
+    fieldSVG.select("#backGround").append("text").attr("x", center[0]).attr("y", .9 * unit2Px)
             .style("text-anchor", "middle").style("font-size", unit2Px / 5).text("90");
   }
 }
 
 function LoadGraph() {
-  timeText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1/ 25)).attr("y", unit2Px * .4)
-             .style("font-size", unit2Px * (8 / 25)).style("text-anchor", "start").text("Time: 0");
-  frameText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1/ 25)).attr("y", unit2Px * .7)
-              .style("font-size", unit2Px * (8 / 25)).style("text-anchor", "start").text("Frame: 0");
-  graphSVG.select(".backGround").append("rect").attr("width", 4 * unit2Px).attr("height", unit2Px / 8)
-          .attr("fill-opacity", 0.0).style("stroke", "#000000");
-  timeSlider = graphSVG.select(".backGround").append("rect").attr("width", unit2Px / 8).attr("height", unit2Px / 8)
-               .attr("class", "reveal").style("fill", "#888888")
-               .call(d3.drag().on("start", SSlide).on("drag", MSlide).on("end", ESlide));
+  d3.select("#timeSlide").call(d3.drag().on("start", SSlide).on("drag", MSlide).on("end", ESlide));
   var fo = graphSVG.append('foreignObject').attr('x', unit2Px * (1/25)).attr('y', unit2Px * (18/25)).attr('width', unit2Px * 1.5).attr('height', unit2Px * (18/25));
   var timeButtons = fo.append('xhtml:div');
   timeButtons.append('input').attr('type', 'submit').property('value', ' ▶▶ Play')
@@ -536,25 +507,16 @@ function LoadGraph() {
   timeButtons.append('input')
             .attr('class', 'reveal slow').attr('type', 'submit')
             .property('value', '◀ Slow ▶').on('click', () => {if (timeDirect == 0) {timeDirect += 0.5;} else {timeDirect/=2;}});
-  graphSVG.select(".backGround").append("path").attr("d", 'M' + unit2Px * (10 / 25) + ',' + unit2Px * (50 / 25)
-                                                        + 'L' + unit2Px * (10 / 25) + ',' + unit2Px * (90 / 25)
-                                                        + 'L' + unit2Px * (90 / 25) + ',' + unit2Px * (90 / 25))
-          .style("fill", "none").style("stroke", "#000000");
   for (var i = 0; i < 3; i++) {//Create y-axis labels.
-    graphSVG.select(".backGround").append("text").attr("x", unit2Px * (8 / 25))
+    graphSVG.select("#backGround").append("text").attr("x", unit2Px * (8 / 25))
             .attr("y", unit2Px * (90 / 25) - i * unit2Px * (20 / 25))
             .style("font-size", unit2Px * (4 / 25)).style("text-anchor", "middle").text(i + 'r');
   }
   for (var i = 0; i < 11; i++) {//Create x-axis labels.
-    graphSVG.select(".backGround").append("text").attr("x", unit2Px * (10 / 25) + i * unit2Px * (8 / 25))
+    graphSVG.select("#backGround").append("text").attr("x", unit2Px * (10 / 25) + i * unit2Px * (8 / 25))
             .attr("y", unit2Px * (94 / 25))
             .style("font-size", unit2Px * (4 / 25)).style("text-anchor", "middle").text(i);
   }
-  graphSVG.select(".backGround").append("text").attr("x", unit2Px * (5 / 25)).attr("y", unit2Px * (70 / 25)).attr("text-anchor", "middle")
-          .attr("transform", "rotate(-90," + unit2Px * (5 / 25) + ',' + unit2Px * (70 / 25) + ')')
-          .style("font-size", unit2Px * (5 / 25)).style("fill", "#000000").text("Distance from Exit");
-  graphSVG.select(".backGround").append("text").attr("x", unit2Px * 2).attr("y", unit2Px * (395 / 100)).attr("text-anchor", "middle")
-          .style("font-size", unit2Px * (5 / 25)).style("fill", "#000000").text("Time");
 }
 
 //Create a random hexadecimal color
@@ -567,17 +529,38 @@ function RandomColor() {
   return('#' + RGB[0] + RGB[1] + RGB[2]);
 }
 
+function IncRight() {
+  degrees++;if (degrees > 13) {degrees = 13;}d3.select("#shapeText").text(shapes[degrees - 1]);
+}
+
+function IncLeft() {
+  degrees--;if (degrees < 1) {degrees = 1;}d3.select("#shapeText").text(shapes[degrees - 1]);
+}
+
+function ShapeChosen() {
+  if (degrees == 1) {
+    d3.select("#shapeText").text("Boring");
+  } else if (degrees == 2) {
+    d3.select("#shapeText").text("Not done");
+  } else {
+    fieldSVG.select("#excess").remove();
+    graphSVG.select("#excess").remove();
+    fieldSVG.on("mousemove", ChoosExit).on("click", exitChosen);
+    Load();
+  }
+}
+
 //Controls exit positioning for user's choice, relative to mouse and svg.
 function ChoosExit() {
-  exitAngle = Math.atan2(d3.mouse(this)[0] - center[0], d3.mouse(this)[1] - center[1]) - (Math.PI / 2);
+  exitAngle = Math.atan2(d3.mouse(this)[0] - d3.select("#center").attr("cx"), d3.mouse(this)[1] - d3.select("#center").attr("cy")) - (Math.PI / 2);
   if (exitAngle < 0) {exitAngle += 2 * Math.PI;}
-  d3.select(".exitText").text("Left-Click to place exit at ~" + Math.floor(exitAngle * 180 * 100 / Math.PI) / 100 + " degrees");
+  d3.select("#exitText").text("Left-Click to place exit at ~" + Math.floor(exitAngle * 180 * 100 / Math.PI) / 100 + " degrees");
   if (degrees == 2) {//Choose exit relative to mouse position.
     fieldExit = [d3.event.x, center[1]];
   } else {//Choose exit relative to shape.
     fieldExit = tourists[0].WallAtAngle(exitAngle);
   }
-  d3.select(".exit").attr("cx", fieldExit[0]).attr("cy", fieldExit[1]);
+  d3.select("#exit").attr("cx", fieldExit[0]).attr("cy", fieldExit[1]);
 }
 
 //Turns off exit choosing events, and starts loading
@@ -619,11 +602,23 @@ function AlterAnim() {
       AlterLines(i);
       var who = tourists[i];
       saveBuffer.push([who.x, who.y, who.a, who.on]);
-      who.allowance = who.velocity * unit2Px / fps;
+      who.allowance = exitAllow;
       while (who.allowance > 0) {
-        if (who.knows) {
+        if (who.knew) {//Target already on exit procedures.
           who[instruBinder[i][0][0]](instruBinder[i][0][1]);
-        } else {
+        } else {//Has not started exit procedures yet.
+          who[instruBinder[i][who.on][0]](instruBinder[i][who.on][1]);
+          if (who.knows) {//Clear target for bot if beginning exit procedures.
+            who.target = null;
+          }
+        }
+      }
+      who.allowance = (who.velocity * unit2Px / fps) - exitAllow;
+      while (who.allowance > 0) {
+        if (who.knows) {//Proceed with exit procedures.
+          who[instruBinder[i][0][0]](instruBinder[i][0][1]);
+          who.knew = true;
+        } else {//Still does not know.
           who[instruBinder[i][who.on][0]](instruBinder[i][who.on][1]);
         }
       }
@@ -639,7 +634,7 @@ function AlterAnim() {
     if (exitAlert) {
       if (exitFoundLine == null) {
         var holdX = (unit2Px * (10 / 25) + ((time + exitAllow) / timeMax) * (80 / 25) * unit2Px);
-        exitFoundLine = graphSVG.select(".overLay").append("line").attr("x1", holdX).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
+        exitFoundLine = graphSVG.select("#overLay").append("line").attr("x1", holdX).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
                         .attr("x2", holdX).attr("y2", 2 * unit2Px).style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px)
                         .style("stroke-opacity", 0.5);
       }
@@ -652,35 +647,17 @@ function AlterAnim() {
         if (wireless) {
           who.knows = true;
         }
-        who.allowance = exitAllow;
-        while (who.allowance > 0) {
-          if (who.knew) {//Target already on exit procedures.
-            who[instruBinder[i][0][0]](instruBinder[i][0][1]);
-          } else {//Has not started exit procedures yet.
-            who[instruBinder[i][who.on][0]](instruBinder[i][who.on][1]);
-            if (who.knows) {//Clear target for bot if beginning exit procedures.
-              who.target = null;
-            }
-          }
-        }
-        who.allowance = (who.velocity * unit2Px / fps) - exitAllow;
-        while (who.allowance > 0) {
-          if (who.knows) {//Proceed with exit procedures.
-            who[instruBinder[i][0][0]](instruBinder[i][0][1]);
-            who.knew = true;
-          } else {//Still does not know.
-            who[instruBinder[i][who.on][0]](instruBinder[i][who.on][1]);
-          }
-        }
       }
       exitAlert = false;
+      exitAllow = 0;
+    } else {
+      UpdateVisuals();
+      time++;
+      d3.select("#timeSlide").attr("x", (time / timeMax) * (31 / 8) * unit2Px);
     }
-    UpdateVisuals();
-    time++;
-    timeSlider.attr("x", (time / timeMax) * (31 / 8) * unit2Px);
   }
-  timeText.text("Time: " + Math.floor((100 * time) / fps) / 100);
-  frameText.text("Frame: " + time);
+  d3.select("#timeText").text("Time: " + Math.floor((100 * time) / fps) / 100);
+  d3.select("#frameText").text("Frame: " + time);
 }
 
 //Create lines, and update graph dot positions, as well as recreating image of path.
@@ -688,11 +665,11 @@ function AlterLines(i) {
   var dista = unit2Px * 4 - (Math.sqrt(Math.pow(fieldExit[0] - tourists[i].x, 2) + Math.pow(fieldExit[1] - tourists[i].y, 2)) * (20 / 25));
   tourPoints[i][time] = {x:tourists[i].x, y:tourists[i].y};
   tourLine[i].remove();
-  tourLine[i] = fieldSVG.select(".lines").append("path").attr("d", lineFx(tourPoints[i]))
+  tourLine[i] = fieldSVG.select("#lines").append("path").attr("d", lineFx(tourPoints[i]))
                 .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
   graphPoints[i][time] = {x:(unit2Px * (10 / 25) + (time / timeMax) * (80 / 25) * unit2Px), y:(dista - unit2Px * (10 / 25))};
   graphLine[i].remove();
-  graphLine[i] = graphSVG.select(".lines").append("path").attr("d", lineFx(graphPoints[i]))
+  graphLine[i] = graphSVG.select("#lines").append("path").attr("d", lineFx(graphPoints[i]))
                  .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
 }
 
@@ -704,7 +681,7 @@ function AllAtExit() {
     }
   }
   var holdX = (unit2Px * (10 / 25) + ((time + exitAllow) / timeMax) * (80 / 25) * unit2Px);
-  allExitedLine = graphSVG.select(".overLay").append("line").attr("x1", holdX).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
+  allExitedLine = graphSVG.select("#overLay").append("line").attr("x1", holdX).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
                   .attr("x2", holdX).attr("y2", 2 * unit2Px).style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px)
                   .style("stroke-opacity", 0.5);
   console.log(Math.floor((100 * time) / fps) / 100);
@@ -721,9 +698,9 @@ function PlayAnim() {
       timeDirect = 0;
     }
     UpdateVisuals();
-    timeSlider.attr("x", (time / timeMax) * (31 / 8) * unit2Px);
-    timeText.text("Time: " + Math.floor((100 * time) / fps) / 100);
-    frameText.text("Frame: " + Math.floor(time));
+    d3.select("#timeSlide").attr("x", (time / timeMax) * (31 / 8) * unit2Px);
+    d3.select("#timeText").text("Time: " + Math.floor((100 * time) / fps) / 100);
+    d3.select("#frameText").text("Frame: " + Math.floor(time));
   }
 }
 
