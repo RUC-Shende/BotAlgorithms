@@ -77,3 +77,12 @@ Creation of changelog: 08/10/2018
           Included (over the past few weeks) documentation for all the Tourist
           class functions and variables, as well as references to the papers we
           read to get the algorithms instructions.
+
+09/14/18: ICLAnim V4, ICLFashion(My edits), ICLReader
+          ICLAnim
+                    Code reduction
+                    Some on functions changed to actual function
+          ICLFashion
+                    svg is only real change
+          ICLReader
+                    now holds most of the visuals now.
