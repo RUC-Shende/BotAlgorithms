@@ -193,11 +193,11 @@
     var communication;
     var commands = [];
     var full;
-    const commandsList = ['GoOutAtAngle X', 'Wait', 'FollowWall (left, right)', 'WaitFor X',
-                          'FollowWallFor X', 'GoToCenter', 'WaitAverage', 'GoToExit'];
+    const commandsList = ['GoOutAtAngle <angle>', 'Wait [time]', 'FollowWall <left | right> [angle]',
+                          'GoToPoint <x, y>', 'WaitAverage', 'GoToWallAtAngle <angle>', 'GoToExit', 'Intercept'];
 
-    const comparator = ['GoOutAtAngle','Wait','FollowWall','WaitFor',
-                        'FollowWallFor','GoToCenter','WaitAverage','GoToExit'];
+    const comparator = ['GoOutAtAngle','Wait','FollowWall','GoToCenter', 'GoToPoint;',
+                        'GoToWallAtAngle','WaitAverage','GoToExit', 'Intercept'];
 
     var copy = [];
 
@@ -802,12 +802,15 @@
         var l = commands.length;
         var s = '';
 
+        console.log(commands);
+        console.log(commands.length);
+
         for (i=0;i<l;i++){
             for (k=0;k<commands[i][0].length;k++){
                 s+=commands[i][0][k] + '*';
             }
             s+='#';
-            for (j=1;j<commands.length;j++){
+            for (j=1;j<commands[i].length;j++){
                 s+=commands[i][j] + '|';
             }
             s+='\n';

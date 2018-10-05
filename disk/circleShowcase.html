@@ -3,32 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta charset="ISO-8859-1">
-    <title>Face to Face Algorithm Showcase</title>
+    <title>Disk Algorithm Showcase</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <!-- <script src='d3.min.js'></script>-->       <!--Offline support-->
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
-    <link rel='stylesheet' type='text/css' href='f2fshowcase.css' />
+    <link rel='stylesheet' type='text/css' href='circleShowcase.css' />
 </head>
 
 <body>
 
     <div id="mySidenav" class="sidenav">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-        <a href="#AlgA" onclick="showAlgorithmDesc('A')">Algorithm A</a>
-        <a href="#AlgB" onclick="showAlgorithmDesc('B')">Algorithm B(X, Φ)</a>
-        <a href="#AlgC" onclick="showAlgorithmDesc('C')">Algorithm C(X, Φ, λ)</a>
-        <!-- dont need this temporarily.
-        <input type='file' class='copypaste' id='loadcommands' value='Load Commands' accept='.icl' onchange='LoadAlgorithms(event)' />
-        -->
+        <h3 >Wireless Algorithms</h3>
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">Close &times;</a>
+        <a href="#AlgA" onclick="showAlgorithmDesc('A', true)">Algorithm A</a>
+        <a href="#AlgB" onclick="showAlgorithmDesc('B', true)">Algorithm B(X, Φ)</a>
+        <a href="#AlgC" onclick="showAlgorithmDesc('C', true)">Algorithm C(X, Φ, λ)</a>
+        <a onclick="showAlgorithmDesc('Q1', true)">Priority Search 1</a>
+        <a onclick="showAlgorithmDesc('Q2', true)">Priority Search 2</a>
+        <h3>Face-to-Face Algorithms</h3>
+        <a href="#AlgA" onclick="showAlgorithmDesc('A', false)">Algorithm A</a>
+        <a href="#AlgA" onclick="showAlgorithmDesc('B', false)">Algorithm B(X, Φ)</a>
+        <a href="#AlgA" onclick="showAlgorithmDesc('C', false)">Algorithm C(X, Φ, λ)</a>
+        <a href="#AlgA" onclick="showAlgorithmDesc('Q1', false)">Priority Search 1</a>
+        <a href="#AlgA" onclick="showAlgorithmDesc('Q2', false)">Priority Search 2</a>
+        <h3>Load ICL File</h3>
+        <input style='color:white;' type='file' class='copypaste' id='loadcommands' value='Load Commands' accept='.icl' onchange='LoadAlgorithms(event)' />
+
     </div>
     <div id="navdiv" class="openNav">
-        <span class='openButton' onclick="openNav()">&#9776;</span>
+        <span style="width: 100%;" class='openButton' onclick="openNav()">&#9776;</span>
     </div>
 
-    <h1>Robots Evacuating an Area using Face-to-Face Communication</h1>
-    <script src='f2fshowcase.js'></script>
+    <h1>Robots Evacuating a Disk</h1>
+    <script type='module' src='circleShowcase.js'></script>
+
 
     <!--<p>
         This problem is being analyzed to determine the optimal time of mobile agents finding an exit.
@@ -40,19 +50,13 @@
 
     </p>-->
 
-    <!--<script>
-
-        function showAlgorithmDesc(s){
-            d3.selectAll('.desc').style('display', 'none');
-            d3.select('#'+s).style('display', 'inline-block');
-        }
-
-    </script>-->
-
     <div class='tab'>
-        <a href="#AlgA"><button id='AlgA' class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("A")'/>Algorithm <b>A</b></button></a>
-        <a href="#AlgB"><button id="AlgB" class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("B")'/>Algorithm <b>B(X, Φ)</b></button></a>
-        <a href="#AlgC"><button id="AlgC" class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("C")'/>Algorithm <b>C(X, Φ, λ)</b></button></a>
+        <a href="#AlgA"><button id='AlgA' class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("A", false)'/>Algorithm <b>A</b></button></a>
+        <a href="#AlgB"><button id="AlgB" class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("B", false)'/>Algorithm <b>B(X, Φ)</b></button></a>
+        <a href="#AlgC"><button id="AlgC" class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("C", false)'/>Algorithm <b>C(X, Φ, λ)</b></button></a>
+        <a href="#AlgA"><button id='AlgA' class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("Q1", false)'/>Algorithm <b>Priority 1</b></button></a>
+        <a href="#AlgA"><button id='AlgA' class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("Q1", false)'/>Algorithm <b>Priority 2</b></button></a>
+
     </div>
     <div class='tabtxt'>
         These algorithms focus on evacuating two robots using the <span class='tooltip'>Face to Face communication model.<span class='tooltiptext'>The robots can only communicate by physically being next to each other.</span></span>
@@ -72,7 +76,7 @@
                     The robots meet at the end of the point of interception and travel directly back to the exit.
                 </li>
             </ol>
-            <img src='../../resources/intercept.png' />
+            <img src='../resources/intercept.png' />
             <p class='center'>
                 <em>R1 intercepting R2 after finding the exit.</em>
             </p>
@@ -94,7 +98,7 @@
                 </li>
             </ol>
 
-            <img src='../../resources/detour.png' />
+            <img src='../resources/detour.png' />
             <p class='center'>
                 <em>Both robots take a detour at angle Φ after searching for distance X.</em>
             </p>
@@ -119,7 +123,7 @@
                 </li>
             </ol>
 
-            <img src='../../resources/tri-detour.png' />
+            <img src='../resources/tri-detour.png' />
             <p class='center'>
                 <em>Both robots take a detour at angle Φ after searching for distance X, follow it for λ seconds, then go directly toward the center.</em>
             </p>

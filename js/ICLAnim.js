@@ -738,3 +738,80 @@ function HideDataBox() {
     graphLine[i].style("stroke-opacity", 0.5).style("stroke-width", unit2Px * (1 / 25));
   }
 }
+
+function LoadAlgorithms(event) {
+    var file = event.target.files[0]; //even though it only takes one file, the input type will still be a FileList.
+    var fileName = document.getElementById('loadcommands').value;
+    if (!fileName.includes('.icl')){
+        alert('Please use a proper *.icl file to load your commands. If you think the file name is correct, then it might be corrupted.');
+        return;
+    }
+    instruBinder = [];
+    var fileReader = new FileReader();
+    fileReader.onload = (function(file){
+        var text = fileReader.result;
+        var sText = text.split("\n");
+        numBots = sText.length - 1;
+        commands = [];
+        for (i=0;i<numBots;i++) {
+            instruBinder.push([]);
+            instruBinder[i].push([]);
+            var exitProtocol = sText[i].split('#')[0];
+            var commandProtocol = sText[i].split('#')[1];
+
+            var exitComms = exitProtocol.split('*');
+            var regularComms = commandProtocol.split('|');
+
+
+            for (j=0;j<exitComms.length-1;j++){
+                var command = exitComms.split(' ')[0];
+                var args = []
+                for (x=1;x<exitComms.split(' ');x++){
+                    args.push(exitComms.split(' ')[x]);
+                }
+                if (args == []){
+                    args = [null];
+                }
+                instruBinder[i][0].push([command, args]);
+            }
+            for (k=0;k<regularComms.length-1;k++){
+                var command = regularComms.split(' ')[0];
+                var args = []
+                for (x=1;x<regularComms.split(' ');x++){
+                    args.push(regularComms.split(' ')[x]);
+                }
+                if (args == []){
+                    args = [null];
+                }
+                instruBinder[i].push([command, args]);
+            }
+
+        /*
+
+            var outerCommand = sText[i].split('|');
+            for (j=0;j<outerCommand.length-1;j++){
+                var innerCommand = outerCommand[j].split(":");
+                var comm = parseInt(innerCommand[0]);
+                for (c=comparator.length;c>=0;c--){
+                    if (comm == c) {
+                        comm = comparator[c];
+                        break;
+                    }
+                }
+                innerCommand[1] = innerCommand[1].replace(' null', '');
+                if (commands[i] == null){
+                    commands[i] = [];
+                }
+                commands[i].push(''+comm+''+innerCommand[1]);
+            }
+
+        */
+        }
+
+        window.full = true;
+        updateList();
+        Reset();
+    });
+    fileReader.readAsText(file);
+
+}

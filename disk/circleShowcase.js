@@ -28,17 +28,18 @@ var instruBinder = [
                      [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [190]], ["FollowWall", ["right"]]],
                      [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]]
                    ];
+var algorithmName = "Priority 1 ";
 var tourColors = [];
 
 var fieldSVG; //0:Background - 1:Line - 2:Bots - 3:Overlay
-var tourists = [];
-var tourPoints = [];
-var tourLine = [];
+tourists = [];
+tourPoints = [];
+tourLine = [];
 
 var graphSVG; //0:Background - 1:Line - 2:Bots - 3:Overlay
-var graphDots = [];
-var graphPoints = [];
-var graphLine = [];
+graphDots = [];
+graphPoints = [];
+graphLine = [];
 var exitFoundLine = null;
 var allExitedLine = null;
 
@@ -465,10 +466,16 @@ function Load() {
 
 
 function LoadField() {
+  if (wireless){
+      w = "Wireless";
+  }
+  else{
+      w = "Face-to-Face";
+  }
   fieldSVG.select(".backGround").append("text").attr("x",  center[0]).attr("y", unit2Px * (1 / 5))
           .style("text-anchor", "middle").style("font-size", unit2Px * (1 / 5)).text("Search and Exit");
   fieldSVG.select(".backGround").append("text").attr("x",  center[0]).attr("y", unit2Px * (3 / 10))
-          .style("text-anchor", "middle").style("font-size", unit2Px * (1 / 10)).text(shapes[degrees - 1] + " Wireless");
+          .style("text-anchor", "middle").style("font-size", unit2Px * (1 / 10)).text(algorithmName + w);
   fieldSVG.select(".backGround").append("text").attr("x",  center[0]).attr("y", unit2Px * (5 / 10)).attr("class", "exitText")
           .style("text-anchor", "middle").style("font-size", unit2Px * (2 / 10))
           .text("Left-Click to place exit at ~" + 0 + " degrees");
@@ -572,7 +579,6 @@ function Reset() {
 
     dataBox = null;
 
-    wireless = false;
     touristNum = 0;
     tourColors = [];
 
@@ -801,7 +807,7 @@ function HideDataBox() {
   }
 }
 
-function showAlgorithmDesc(s){
+function showAlgorithmDesc(s, w){
     var color;
     switch(s){
         case 'A':
@@ -810,6 +816,7 @@ function showAlgorithmDesc(s){
                             [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right"]]],
                             [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left"]]]
                         ];
+            algorithmName = "Algorithm A ";
             break;
         case 'B':
             color = '#eef';
@@ -817,6 +824,7 @@ function showAlgorithmDesc(s){
                                  [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
                                  [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
                                ];
+            algorithmName = "Algorithm B ";
             break;
         case 'C':
             color = '#fee';
@@ -824,8 +832,27 @@ function showAlgorithmDesc(s){
                                  [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0] + 70, center[1]+40]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
                                  [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0] - 70, center[1]+40]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
                                ];
+            algorithmName = "Algorithm C ";
+            break;
+        case 'Q1':
+            color = "#efe";
+            instruBinder = [
+                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right"]]],
+                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]]
+                               ];
+            algorithmName = "Algorithm Priority 1 ";
+            break;
+        case 'Q2':
+            color = "#efe";
+            instruBinder = [
+                                  [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [160]], ["FollowWall", ["left", 20]], ["GoToPoint", [center[0] + 30, center[1] + 30]], ["GoToWallAtAngle", [320]], ["Wait", [null]]],
+                                  [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [160]], ["FollowWall", ["right"]]],
+                                  [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]]
+            ];
+            algorithmName = "Algorithm Priority 2 ";
             break;
     }
+    wireless = w;
     d3.selectAll('.desc').style('display', 'none');
     d3.select('.tabtxt').style('background-color', color);
     d3.select('#'+s).style('display', 'inline-block');
@@ -936,7 +963,7 @@ async function LoadAlgorithms(event) {
     });
     fileReader.readAsText(file);
     closeNav();
-    await sleep(1000);
+    wireless = false;
     Reset();
 }
 

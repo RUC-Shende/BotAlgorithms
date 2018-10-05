@@ -86,3 +86,21 @@ Creation of changelog: 08/10/2018
                     svg is only real change
           ICLReader
                     now holds most of the visuals now.
+
+10/05/18: Circle Showcase v1.0
+          CircleShowcase:
+                    Included Algorithms Priority 1 and Priority 2
+                    All algorithms run face-to-face AND wireless.
+                    Select an algorithm from the side menu and see it run.
+                    Add tabs for Priority 1 and 2.
+                    Added names for each algorithm when changing.
+        Circle and F2F:
+                    Fixed a bug where loading an ICL file caused the program to crash.
+                    Introduced a bug where sometimes the loaded ICL file will crash the program, but for a different reason.
+                    TODO: need to determine where to put metadata in ICL file.
+                    TODO: need to implement a priority attribute for tourists and use it to change the algorithm.
+                    TODO: need to implement a way to identify priority by color. Might switch to set list of
+                    contrasting colors soon.
+        F2F is now one app, with 3 algorithms contained in it, A, B and C.
+        Circle is now one app, with 10 total algorithms, F2F and Wireless A, B, C, P1, P2.
+        Generated mp4 files demonstrating the app in motion, not included because filesizes.
