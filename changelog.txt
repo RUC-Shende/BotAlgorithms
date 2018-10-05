@@ -104,3 +104,5 @@ Creation of changelog: 08/10/2018
         F2F is now one app, with 3 algorithms contained in it, A, B and C.
         Circle is now one app, with 10 total algorithms, F2F and Wireless A, B, C, P1, P2.
         Generated mp4 files demonstrating the app in motion, not included because filesizes.
+        Included resources folder for pictures created so far.
+        Moved old files to .old .
