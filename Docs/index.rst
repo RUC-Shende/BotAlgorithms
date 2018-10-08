@@ -13,7 +13,8 @@ This site covers the documentation of our app.
    :caption: Contents:
 
    api
-   references 
+   references
+   detailed-changelog
 
 Intro
 =====
@@ -71,5 +72,18 @@ Showcases
 =========
 Currently, the project showcases these algorithms:
 
+Disk
+----
+
 `Face-to-Face, 2 Robots
 </disk/f2f/f2fshowcase.html>`_.
+
+Face-to-Face, 1 Robot + Priority Robot.
+
+Face-to-Face, 2 Robots + Priority Robot.
+
+Wireless, 2 Robots. Algorithms A, B, and C.
+
+Wireless, 1 Robot + Priority Robot.
+
+Wireless, 2 Robots + Priority Robot.

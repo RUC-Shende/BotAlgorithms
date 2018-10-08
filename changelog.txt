@@ -63,7 +63,7 @@ Creation of changelog: 08/10/2018
 
           ICL Anim V2
           All functions are now methods.
-          All fucctions only require value.
+          All functions only require value.
           Fixed some function errors.
           Fixed exit funtions with wireless.
           Removed the fxs and efxs objects.

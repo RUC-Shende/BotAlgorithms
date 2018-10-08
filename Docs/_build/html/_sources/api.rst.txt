@@ -98,10 +98,10 @@ GoToPoint (x, y)
 
 The robot will go to a specified point on the current (x, y) plane.
 
-InterceptNonBeliever () {Face-to-Face specific}
+Intercept () {Face-to-Face specific}
 -----------------------------------------------
 
-.. js:autofunction:: InterceptNonBeliever
+.. js:autofunction:: Intercept
 
 If the exit is found, or the robot needs to go to another at the point in time, it may calculate the robot's
 trajectory and then calculate a path for itself to directly intercept the robot at the earliest time possible.
@@ -114,12 +114,7 @@ This is most commonly used in the face-to-face algorithms' exit protocols::
 
     (Multi-Robot Exit Protocol)
 
-        1. InterceptNonBeliever  # *see below*
+        1. Intercept  # *see below*
 
 \*Upon finding the exit, the robot will find all of the closest robots to itself and intercept their paths,
 exchanging information about the exit and updated trajectories of other robots, until there are no required exiting robots left.
-
-PursueNonBeliever ()
---------------------
-
-.. js:autofunction:: PursueNonBeliever
