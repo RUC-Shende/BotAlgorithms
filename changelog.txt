@@ -106,3 +106,8 @@ Creation of changelog: 08/10/2018
         Generated mp4 files demonstrating the app in motion, not included because filesizes.
         Included resources folder for pictures created so far.
         Moved old files to .old .
+
+10/08/18: Bug Fixes
+          Fixed a heretofore unknown bug where an improper number of robots would load in because of a glitch in LoadAlgorithm
+          Fixed a bug where the invisible load path would be different from the intended path.
+          

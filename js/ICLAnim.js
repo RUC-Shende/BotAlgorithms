@@ -437,6 +437,7 @@ function Load() {
   LoadGraph();
   for (var i = 0; i < instruBinder.length; i++) {//Add bots, lines, and coordinate collectors.
     tourColors.push(RandomColor());
+    console.log(touristNum);
     tourists.push(new Tourist(fieldSVG.select("#bots").append("circle").attr("cx", center[0]).attr("cy", center[1])
                               .attr("data", touristNum).attr("r", unit2Px / 16).on("mouseover", MoveDataBox)
                               .on("mouseout", HideDataBox).style("fill", tourColors[i])

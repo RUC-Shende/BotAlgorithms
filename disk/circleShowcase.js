@@ -431,6 +431,7 @@ function Load() {
   LoadGraph();
   for (var i = 0; i < instruBinder.length; i++) {//Add bots, lines, and coordinate collectors.
     tourColors.push(RandomColor());
+    console.log(touristNum);
     tourists.push(new Tourist(fieldSVG.select(".bots").append("circle").attr("cx", center[0]).attr("cy", center[1])
                               .attr("data", touristNum).attr("r", unit2Px / 16).on("mouseover", MoveDataBox)
                               .on("mouseout", HideDataBox).style("fill", tourColors[i])
@@ -556,6 +557,7 @@ function LoadGraph() {
 //Reset Animation.
 function Reset() {
 
+
     //TODO: prevent reloading while loading anim.
 
     clearInterval(projector);
@@ -570,7 +572,7 @@ function Reset() {
     timeSlider = null;
 
     //projector = null;
-    degrees = 3;
+    degrees = 360;
     unit2Px = ((window.innerHeight <= window.innerWidth) ?
                         (window.innerHeight) : (window.innerWidth)) / 5;
     center = [unit2Px * 2, unit2Px * 2];
@@ -875,7 +877,7 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function LoadAlgorithms(event) {
+function LoadAlgorithms(event) {
     javascript:void(0);
     var file = event.target.files[0]; //even though it only takes one file, the input type will still be a FileList.
     var fileName = document.getElementById('loadcommands').value;
@@ -883,9 +885,9 @@ async function LoadAlgorithms(event) {
         alert('Please use a proper *.icl file to load your commands. If you think the file name is correct, then it might be corrupted.');
         return;
     }
-    var tempinstruBinder = [];
     var fileReader = new FileReader();
     fileReader.onload = (function(file){
+        var tempinstruBinder = [];
         var text = fileReader.result;
         var sText = text.split("\n");
         numBots = sText.length - 1;
@@ -938,33 +940,15 @@ async function LoadAlgorithms(event) {
                 }
                 tempinstruBinder[i].push([command, args]);
             }
-            instruBinder = tempinstruBinder.slice(0);
-        /*
-
-            var outerCommand = sText[i].split('|');
-            for (j=0;j<outerCommand.length-1;j++){
-                var innerCommand = outerCommand[j].split(":");
-                var comm = parseInt(innerCommand[0]);
-                for (c=comparator.length;c>=0;c--){
-                    if (comm == c) {
-                        comm = comparator[c];
-                        break;
-                    }
-                }
-                innerCommand[1] = innerCommand[1].replace(' null', '');
-                if (commands[i] == null){
-                    commands[i] = [];
-                }
-                commands[i].push(''+comm+''+innerCommand[1]);
-            }
-
-        */
+            window.instruBinder = tempinstruBinder.slice(0);
         }
+        closeNav();
+        wireless = true;
+        Reset();
     });
     fileReader.readAsText(file);
-    closeNav();
-    wireless = false;
-    Reset();
+
+
 }
 
 
