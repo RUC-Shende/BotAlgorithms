@@ -1,7 +1,4 @@
 //////////----------Instantiate Variables----------//////////
-var shapes = ["Vertex", "Line", "Triangle", "Square", "Pentagon", "Hexagon", "Heptagon",
-              "Octagon", "Nonagon", "Decagon", "Undecagon", "Dodecagon", "Circle"];
-
 var exitAlert = false;//Someone learned where the exit is.
 var exitAllow = 0;//How far in a frame was the exit found.
 var wireless = false;
