@@ -110,4 +110,16 @@ Creation of changelog: 08/10/2018
 10/08/18: Bug Fixes
           Fixed a heretofore unknown bug where an improper number of robots would load in because of a glitch in LoadAlgorithm
           Fixed a bug where the invisible load path would be different from the intended path.
+
+10/12/18: Superclass
+          Started work on a superclass to represent more than one instance of a simulation in
+            order to be able to create multiple graphs.
+
+10/17/18: Graph Comparison
+          new code (superclass.js, GraphComparison.html, and ICLFashion.css) is in ~/GraphComparison
+          superclass.js now consists of two complete classes.
+          - iclData contains all the information for a single run through of any given algorithm.
+          - iclVisual contains all the necessary instructions to create visual representations
+            of the iclData using d3.v5.js
+          Replaced ICLReader V25 and ICLAnim V5 to their respective locations.
           

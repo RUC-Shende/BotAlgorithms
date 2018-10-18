@@ -296,7 +296,7 @@ class Tourist {
       var closest = Infinity;
       for (var i = 0; i < this.iclData.touristNum; i++) {
         if ((!this.iclData.tourists[i].knows) && ((this.iclData.tourists[i].hunted == this.number) || (this.iclData.tourists[i].hunted == null))) {
-          for (var j = 0; j < 2 * this.iclData.unit2Px; j++) {
+          for (var j = 0; j < 8 * this.iclData.unit2Px; j++) {
             if (this.iclData.time + j < this.iclData.timeMax) {
               var intercept = this.iclData.tourPoints[i][this.iclData.time + j];
               var bVec = [intercept.x - this.x, intercept.y - this.y];
@@ -329,13 +329,11 @@ class Tourist {
 }
 
 class iclData{
-    constructor(id){
-        console.log("contructing");
+    constructor(id, instruBinder, algorithmName){
         this.exitAlert = false;//Someone learned where the exit is.
         this.exitAllow = 0;//How far in a frame was the exit found.
         this.wireless = false;
         this.id = id;
-        console.log(this.id);
         this.time = 0;
         this.timeDirect = 0;//After loading, play direction.
         this.fps = 60;
@@ -346,16 +344,12 @@ class iclData{
         this.degrees = 3;
         this.unit2Px = 25; //YAY
         this.center = [this.unit2Px * 2, this.unit2Px * 2];
-        this.exitAngle = 0;
-        this.fieldExit = [this.center[0] + this.unit2Px, this.center[1]];
-
+        this.exitAngle = 315;
+        this.fieldExit = [this.center[0] + this.unit2Px * Math.cos(this.exitAngle * Math.PI / 180), this.center[1] - this.unit2Px * Math.sin(this.exitAngle * Math.PI / 180)];
 
         this.touristNum = 0;
-        this.instruBinder = [
-                             [["PursueNonBeliever", [null]], ["GoToWallAtAngle", [190]], ["FollowWall", ["right"]]],
-                             [["PursueNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]]
-                           ];
-        this.algorithmName = "Priority 1 ";
+        this.instruBinder = instruBinder;
+        this.algorithmName = algorithmName;
         this.tourColors = [];
 
         this.fieldSVG; //0:Background - 1:Line - 2:Bots - 3:Overlay
@@ -369,11 +363,6 @@ class iclData{
         this.graphLine = [];
         this.exitFoundLine = null;
         this.allExitedLine = null;
-
-
-
-        console.log("snakes");
-
         this.Start();
     }
 
@@ -480,9 +469,7 @@ class iclData{
         this.AlterAnim();
       }
       this.time = this.timeMax;
-      projectors.push(setInterval((function() {
-          PlayAnim(projectors.length - 1);
-      }), 1000 / this.fps));
+
       this.time = 0;
 
       for (var i = 0; i < this.touristNum; i++) {//Reset for next run through.
@@ -514,7 +501,6 @@ class iclData{
     }
 
     AlterAnim() {
-        console.log(this.fieldExit);
         var saveBuffer = [];
 
         for (var i = 0; i < this.tourists.length; i++) {
@@ -585,6 +571,23 @@ class iclData{
       this.graphPoints[i][this.time] = {x:(this.unit2Px * (10 / 25) + (this.time / this.timeMax) * (80 / 25) * this.unit2Px), y:(dista - this.unit2Px * (10 / 25))};
     }
 
+    PlayAnim() {
+      if (this.timeDirect != 0) {
+        this.time += this.timeDirect;
+        if (this.time < 0) {
+          this.time = 0;
+          this.timeDirect = 0;
+      } else if (this.time > this.timeMax - 1) {
+          this.time = this.timeMax;
+          this.timeDirect = 0;
+        }
+        //UpdateVisuals();
+        //d3.select("#timeSlide").attr("x", (time / timeMax) * (31 / 8) * unit2Px);
+        //d3.select("#timeText").text("Time: " + Math.floor((100 * time) / fps) / 100);
+        //d3.select("#frameText").text("Frame: " + Math.floor(time));
+      }
+    }
+
     AllAtExit() {
       for (var j = 0; j < this.touristNum; j++) {//Check every mobile agent
         if ((this.tourists[j].x != this.fieldExit[0]) || (this.tourists[j].y != this.fieldExit[1])) {//check if not at exit
@@ -607,10 +610,10 @@ class iclVisual {
         this.iclData = iclData;
         this.tourColors = [];
 
-        this.fieldSVG = d3.select("#anim");
+        this.fieldSVG = d3.select("#anim" + this.iclData.id);
         this.tourLine = iclData.tourLine;
 
-        this.graphSVG = d3.select("#graph");
+        this.graphSVG = d3.select("#graph" + this.iclData.id);
         this.graphLine = iclData.graphLine;
 
         this.exitFoundLine = iclData.exitFoundLine;
@@ -644,12 +647,19 @@ class iclVisual {
         this.graphSVG.select("#bots").attr("height", "100%").attr("width", "100%");
         this.graphSVG.select("#overLay").attr("height", "100%").attr("width", "100%");
         this.graphSVG.select("#excess").attr("height", "100%").attr("width", "100%");
+        this.graphSVG.attr("display", "none");
+
+        //var tmp = this;
+        //this.fieldSVG.on("mousemove", this.ChoosExit.call(this, tmp)).on("click", exitChosen.call(this, tmp));
 
         this.Load();
     }
 
     Load() {
+
       this.LoadField();
+      var t = this.iclData;
+      d3.select("#exit").attr("cx", t.fieldExit[0]).attr("cy", t.fieldExit[1]);
       this.LoadGraph();
       for (var i = 0; i < this.iclData.instruBinder.length; i++) {//Add bots, lines, and coordinate collectors.
         this.tourColors.push(this.RandomColor());
@@ -674,8 +684,8 @@ class iclVisual {
     }
 
     LoadField() {
-      var wire = (this.iclDatawireless) ? " Wireless" : " Non-Wireless";
-      d3.select("#Desc").text("Circle" + wire);
+      var wire = (this.iclData.wireless) ? " Wireless" : " Non-Wireless";
+      d3.select("#Desc" + this.iclData.id).text(this.iclData.algorithmName + wire);
       if (this.iclData.degrees == 13) {//If circle, change to 360 degrees.
         thi.iclData.degrees = 360;
       }
@@ -703,18 +713,7 @@ class iclVisual {
     LoadGraph() {
       d3.select("#timeSlide").call(d3.drag().on("start", this.SSlide).on("drag", this.MSlide).on("end", this.ESlide));
       var fo = this.graphSVG.append('foreignObject').attr('x', this.iclData.unit2Px * (1/25)).attr('y', this.iclData.unit2Px * (18/25)).attr('width', this.iclData.unit2Px * 1.5).attr('height', this.iclData.unit2Px * (18/25));
-      var timeButtons = fo.append('xhtml:div');
-      timeButtons.append('input').attr('type', 'submit').property('value', ' ▶▶ Play')
-                 .attr('class', 'reveal play').on('click', () => {this.iclData.timeDirect++;});
-      timeButtons.append('input')
-                .attr('class', 'reveal stop').attr('type', 'submit')
-                .property('value', ' ■ Stop').on('click', () => {this.iclData.timeDirect = 0;});
-      timeButtons.append('input')
-                .attr('class', 'reveal rewind').attr('type', 'submit')
-                .property('value', '◀◀ Rewind').on('click', () => {this.iclData.timeDirect--;});
-      timeButtons.append('input')
-                .attr('class', 'reveal slow').attr('type', 'submit')
-                .property('value', '◀ Slow ▶').on('click', () => {if (this.iclData.timeDirect == 0) {this.iclData.timeDirect += 0.5;} else {this.iclData.timeDirect/=2;}});
+
       for (var i = 0; i < 3; i++) {//Create y-axis labels.
         this.graphSVG.select("#backGround").append("text").attr("x", this.iclData.unit2Px * (8 / 25))
                 .attr("y", this.iclData.unit2Px * (90 / 25) - i * this.iclData.unit2Px * (20 / 25))
@@ -726,8 +725,20 @@ class iclVisual {
                 .style("font-size", this.iclData.unit2Px * (4 / 25)).style("text-anchor", "middle").text(i);
       }
     }
-/*
+
+    cleanUp(){
+        this.tourColors = [];
+
+        this.tourLine = [];
+
+        this.graphLine = [];
+
+        this.exitFoundLine = null;
+        this.allExitedLine = null;
+    }
+
     ChoosExit() {
+
       this.iclData.exitAngle = Math.atan2(d3.mouse(this)[0] - d3.select("#center").attr("cx"), d3.mouse(this)[1] - d3.select("#center").attr("cy")) - (Math.PI / 2);
       if (this.iclData.exitAngle < 0) {this.iclData.exitAngle += 2 * Math.PI;}
       d3.select("#exitText").text("Left-Click to place exit at ~" + Math.floor(this.iclData.exitAngle * 180 * 100 / Math.PI) / 100 + " degrees");
@@ -738,39 +749,146 @@ class iclVisual {
       }
       d3.select("#exit").attr("cx", this.iclData.fieldExit[0]).attr("cy", this.iclData.fieldExit[1]);
     }
-*/
+
+    exitChosen() {
+      d3.select(".exitText").remove();
+      this.fieldSVG.on("mousemove", null).on("click", null);
+      this.projector = setInterval(this.AlterAnim, 1000 / this.fps);
+      this.Load();
+    }
+
     UpdateVisuals() {
         for (var i = 0; i < this.iclData.touristNum; i++) {
             var who = this.iclData.tourists[i];
+            if (this.iclData.time >= 600){
+                break; //OwO - it works.
+            }
             who.visual.attr("cx", this.iclData.tourPoints[i][Math.floor(this.iclData.time)].x).attr("cy", this.iclData.tourPoints[i][Math.floor(this.iclData.time)].y);
             this.iclData.graphDots[i].attr("cx", this.iclData.graphPoints[i][Math.floor(this.iclData.time)].x).attr("cy", this.iclData.graphPoints[i][Math.floor(this.iclData.time)].y);
         }
     }
 }
 
-function PlayAnim(id) {
-  console.log(id);
-  var anim = superlist[id];
-  if (anim.timeDirect != 0) {
-    anim.time += anim.timeDirect;
-    if (anim.time < 0) {
-      anim.time = 0;
-      anim.timeDirect = 0;
-  } else if (anim.time > anim.timeMax) {
-      anim.time = anim.timeMax;
-      anim.timeDirect = 0;
+function Interval(){
+    for (var i = 0; i < 2; i++){
+        if (superlist[i] != null){
+            superlist[i].iclData.PlayAnim();
+            superlist[i].UpdateVisuals();
+        }
     }
-    //UpdateVisuals();
-    //d3.select("#timeSlide").attr("x", (time / timeMax) * (31 / 8) * unit2Px);
-    //d3.select("#timeText").text("Time: " + Math.floor((100 * time) / fps) / 100);
-    //d3.select("#frameText").text("Frame: " + Math.floor(time));
-  }
 }
 
-var superlist  = [];
-var projectors = [];
+function editAnims(s){
+    for (var i = 0; i < 2; i++){
+        if (superlist[i] != null){
+            if (s == "play"){
+                superlist[i].iclData.timeDirect = 1;
+            }
+            else if (s == "rewind"){
+                superlist[i].iclData.timeDirect = -1;
+            }
+            else if (s == "slow"){
+                superlist[i].iclData.timeDirect /= 2;
+            }
+        }
+    }
+}
+
+function showAnims(s){
+    for (var i = 0; i < 2; i++){
+        if (s == "graph"){
+            superlist[i].fieldSVG.attr('display', 'none');
+            superlist[i].graphSVG.attr('display', 'inline-block');
+        }
+        else {
+            superlist[i].graphSVG.attr('display', 'none');
+            superlist[i].fieldSVG.attr('display', 'inline-block');
+        }
+    }
+}
+
+function changeInstructions(n){
+    var e = document.getElementById("alg" + n);
+    var s = e.options[e.selectedIndex].value;
+    console.log(s, n);
+    switch(s) {
+        case 'A':
+            algorithmName = "Algorithm A ";
+            instruBinder = [
+                        [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right"]]],
+                        [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left"]]]
+                    ];
+            break;
+        case 'B':
+            algorithmName = "Algorithm B ";
+            instruBinder = [
+                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [superlist[n].iclData.center[0], superlist[n].iclData.center[1] + 10]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
+                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [superlist[n].iclData.center[0], superlist[n].iclData.center[1] + 10]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
+                               ];
+            break;
+        case 'C':
+            instruBinder = [
+                             [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [superlist[n].iclData.center[0] + 15, superlist[n].iclData.center[1]+10]], ["GoToPoint", [superlist[n].iclData.center[0], superlist[n].iclData.center[1]+10]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
+                             [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [superlist[n].iclData.center[0] - 15, superlist[n].iclData.center[1]+10]], ["GoToPoint", [superlist[n].iclData.center[0], superlist[n].iclData.center[1]+10]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
+                           ];
+            algorithmName = "Algorithm C ";
+            break;
+        case 'P1':
+            instruBinder = [
+                             [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right"]]],
+                             [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]]
+                           ];
+            algorithmName = "Algorithm Priority 1 ";
+            break;
+        case 'P2':
+            instruBinder = [
+                              [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [160]], ["FollowWall", ["left", 20]], ["GoToPoint", [superlist[n].iclData.center[0] + 10, superlist[n].iclData.center[1] + 10]], ["GoToWallAtAngle", [320]], ["Wait", [null]]],
+                              [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [160]], ["FollowWall", ["right"]]],
+                              [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]]
+                          ];
+            algorithmName = "Algorithm Priority 2 ";
+        break;
+
+    }
+
+    superlist[n].fieldSVG.select("#lines").selectAll("path").remove();
+    superlist[n].fieldSVG.select("#bots").selectAll("circle").remove();
+
+    superlist[n].graphSVG.select("#lines").selectAll("path").remove();
+    superlist[n].graphSVG.select("#bots").selectAll("circle").remove();
+
+    superlist[1-n].fieldSVG.select("#lines").selectAll("path").remove();
+    superlist[1-n].fieldSVG.select("#bots").selectAll("circle").remove();
+
+    superlist[1-n].graphSVG.select("#lines").selectAll("path").remove();
+    superlist[1-n].graphSVG.select("#bots").selectAll("circle").remove()
 
 
-console.log("starting");
-superlist.push(new iclData(0));
-var mem = new iclVisual(superlist[0]);
+    var one = new iclData(n, instruBinder, algorithmName);
+
+    var secondInstru = superlist[1-n].iclData.instruBinder;
+    var secondAlgName = superlist[1-n].iclData.algorithmName;
+    var two = new iclData(1-n, secondInstru, secondAlgName);
+
+
+    superlist[n] = new iclVisual(one);
+    superlist[1-n] = new iclVisual(two);
+
+}
+
+var superlist = [null, null];
+var theMotor = setInterval(Interval, 1000 / 60);
+
+var instruBinder = [
+                     [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right"]]],
+                     [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]]
+                   ];
+var leftSide = new iclData(0, instruBinder, "Priority 1");
+superlist[0] = new iclVisual(leftSide);
+
+instruBinder = [
+                            [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right"]]],
+                            [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left"]]]
+                        ];
+var rightSide = new iclData(1, instruBinder, "Algorithm A");
+superlist[1] = new iclVisual(rightSide);
