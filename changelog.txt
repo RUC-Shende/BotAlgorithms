@@ -122,4 +122,4 @@ Creation of changelog: 08/10/2018
           - iclVisual contains all the necessary instructions to create visual representations
             of the iclData using d3.v5.js
           Replaced ICLReader V25 and ICLAnim V5 to their respective locations.
-          
+  
