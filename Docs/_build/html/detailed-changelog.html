@@ -38,6 +38,34 @@
             
   <div class="section" id="project-history">
 <h1>Project History<a class="headerlink" href="#project-history" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="icldata-and-iclvisual-95-complete-we-have-graph-comparison">
+<h2>10/17/18: iclData and iclVisual 95% Complete! We have Graph Comparison!<a class="headerlink" href="#icldata-and-iclvisual-95-complete-we-have-graph-comparison" title="Permalink to this headline">¶</a></h2>
+<p>In this update, we finished the <cite>iclVisual</cite> class, and worked out how to have two graphs on the screen and running at the same time. This was important to the project as being able to compare different
+algorithms in an algorithm visualizer is critical to seeing which one performs faster under certain conditions. As of this update, users can now switch between Graph View and Animation View,
+select different algorithms using the drop down menu above each respective animation, and use three functions: play, rewind, and slow both of the algorithms down at the same time.</p>
+<p>The biggest part of getting the <cite>iclVisual</cite> to work was creating the class in such a way that it calls on its corresponding <cite>iclData</cite> instance for everything. <cite>iclVisual</cite> is making no edits to the way the algorithm
+would normally run, simply emulating it on the screen. We decided in the end to use a few functions outside of either class, to make the process of things like setting the update interval and changing the HTML around.
+One of the glitches we came across during the process of implementing algorithm selection, was that even though the instance of <cite>iclVisual</cite> was being cleared properly in javascript, the paths and circles that represented the
+bots in HTML were not being deleted. This was because they were embedded in the HTML and were not being removed even through the variables they used to create the paths were gone.
+This was solved by simply calling <cite>d3.remove()</cite> on all of the offending paths and circles (as d3 elements) when the algorithm got reset and before a new iclVisual instance was generated. Having fewer window variables proved to
+make things easier in terms of being able to show more than one graph at once, but resulted in a lot more code; we had to change many variable names from ones that were once global to instance variables using <cite>this</cite>.</p>
+<p>As of now, there is very little styling on the page, but this will change next week.</p>
+</div>
+<div class="section" id="id1">
+<h2>10/12/18<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>We began working on a superclass this week, to be able to create multiple instances of a simulation with different instructions and be able to compare them.
+This stems from the <cite>iclData</cite> class, which will now contain just the data of a singular run at a time. This means we can now compare data points of different
+instruction lists and puts us one step closer to visually comparing more than one algorithm. We are also in the process of creating an <cite>iclVisual</cite> class
+to produce the visuals for each instance. For now, we have successfully gotten a static visual of a completed run to show. We are working on making the play and pause
+buttons work, as once the algorithm loads inside an instance of <cite>icldata</cite>, all we need to do is play it back by editing the visuals and we have a working set of objects
+we can use to see multiple graphs at once.</p>
+<p>The reason we had to turn to a superclass is that many of our original variables were global and being used in one run of ICLReader at a time, so if we wanted to create a second
+simulation on screen we would have to make completely new and different global variables for all of the data such as <cite>tourists</cite>, <cite>graphDots</cite>, etc. This was most easily solved by
+just making a class to generate the data and sending it to one that produced the visuals separately. In doing this, we also separated the necessary graphical components from
+necessary data components and we have the ability to use this data for anything now, separately from our visuals. If we wanted to we might be able to create an offline version
+of each of the graphs by plotting the points using PyPlotLib. Of course, one of the other great benefits of moving these things into their own classes is that we free up the already cluttered <cite>window</cite>
+in Javascript by removing all of these global variables. Lesson learned, do not overuse and rely on too many globals, as it does not make things easy as the project expands.</p>
+</div>
 <div class="section" id="firing-events-before-data-is-ready-10-08-18">
 <h2>Firing Events Before Data is Ready (10/08/18)<a class="headerlink" href="#firing-events-before-data-is-ready-10-08-18" title="Permalink to this headline">¶</a></h2>
 <p>Tonight, while testing more .icl files, I noticed an error: the number of robots specified in the file did not match the number that went through the algorithm.
@@ -81,8 +109,8 @@ Not only did this fix the problem of not seeing as many robots as we would have 
 </pre></div>
 </div>
 </div>
-<div class="section" id="id1">
-<h2>10/05/18<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id2">
+<h2>10/05/18<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>In this update, we introduced Circle Showcase v1.0 as a way to show all of the algorithms we have studied to date in action.
 This update includes new algorithms in the circle showcase, Priority Evacuation 1 and Priority Evacuation 2. Previously, these were described as Queen algorithms, but as of recently we have
 classified these as ‘Priority’ (10/03/18). We also introduced the ability to load a file in *.icl format, created by our command generator. Currently, these files assume face-to-face communication
@@ -92,8 +120,8 @@ we will use GoToWallAtAngle in its place. For reference, both angles have approx
 <p>Our current goals are: distinguishing priority robots and modifying the command algorithms to accomadate this, generating animations of the app in action to be shown on this documentation website, and
 a feature to compare two algorithms on the same page. We also plan to make a FAQ section of this documentation website.</p>
 </div>
-<div class="section" id="id2">
-<h2>09/12/18<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h2>09/12/18<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <p>In this update, we introduced the Face-to-Face showcase, featuring algorithms A, B, and C. These algorithms each consist of 2 robots searching for an exit with face-to-face (f2f) communication only.
 To supplement this, we added short descriptions of each of the algorithms and provided images showing the logic behind having the robots take detours. We also show examples of what interception means
 when the robots are using f2f communication. The f2f showcase had been added earlier, but it was mainly for testing and there were not yet descriptions of the algorithms that were clear.</p>
@@ -115,9 +143,11 @@ once they choose their options.</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Project History</a><ul>
+<li><a class="reference internal" href="#icldata-and-iclvisual-95-complete-we-have-graph-comparison">10/17/18: iclData and iclVisual 95% Complete! We have Graph Comparison!</a></li>
+<li><a class="reference internal" href="#id1">10/12/18</a></li>
 <li><a class="reference internal" href="#firing-events-before-data-is-ready-10-08-18">Firing Events Before Data is Ready (10/08/18)</a></li>
-<li><a class="reference internal" href="#id1">10/05/18</a></li>
-<li><a class="reference internal" href="#id2">09/12/18</a></li>
+<li><a class="reference internal" href="#id2">10/05/18</a></li>
+<li><a class="reference internal" href="#id3">09/12/18</a></li>
 </ul>
 </li>
 </ul>

@@ -1,6 +1,40 @@
 Project History
 ===============
 
+10/17/18: iclData and iclVisual 95% Complete! We have Graph Comparison!
+-----------------------------------------------------------------------
+
+In this update, we finished the `iclVisual` class, and worked out how to have two graphs on the screen and running at the same time. This was important to the project as being able to compare different
+algorithms in an algorithm visualizer is critical to seeing which one performs faster under certain conditions. As of this update, users can now switch between Graph View and Animation View,
+select different algorithms using the drop down menu above each respective animation, and use three functions: play, rewind, and slow both of the algorithms down at the same time.
+
+The biggest part of getting the `iclVisual` to work was creating the class in such a way that it calls on its corresponding `iclData` instance for everything. `iclVisual` is making no edits to the way the algorithm
+would normally run, simply emulating it on the screen. We decided in the end to use a few functions outside of either class, to make the process of things like setting the update interval and changing the HTML around.
+One of the glitches we came across during the process of implementing algorithm selection, was that even though the instance of `iclVisual` was being cleared properly in javascript, the paths and circles that represented the
+bots in HTML were not being deleted. This was because they were embedded in the HTML and were not being removed even through the variables they used to create the paths were gone.
+This was solved by simply calling `d3.remove()` on all of the offending paths and circles (as d3 elements) when the algorithm got reset and before a new iclVisual instance was generated. Having fewer window variables proved to
+make things easier in terms of being able to show more than one graph at once, but resulted in a lot more code; we had to change many variable names from ones that were once global to instance variables using `this`.
+
+As of now, there is very little styling on the page, but this will change next week.
+
+
+10/12/18
+--------
+
+We began working on a superclass this week, to be able to create multiple instances of a simulation with different instructions and be able to compare them.
+This stems from the `iclData` class, which will now contain just the data of a singular run at a time. This means we can now compare data points of different
+instruction lists and puts us one step closer to visually comparing more than one algorithm. We are also in the process of creating an `iclVisual` class
+to produce the visuals for each instance. For now, we have successfully gotten a static visual of a completed run to show. We are working on making the play and pause
+buttons work, as once the algorithm loads inside an instance of `icldata`, all we need to do is play it back by editing the visuals and we have a working set of objects
+we can use to see multiple graphs at once.
+
+The reason we had to turn to a superclass is that many of our original variables were global and being used in one run of ICLReader at a time, so if we wanted to create a second
+simulation on screen we would have to make completely new and different global variables for all of the data such as `tourists`, `graphDots`, etc. This was most easily solved by
+just making a class to generate the data and sending it to one that produced the visuals separately. In doing this, we also separated the necessary graphical components from
+necessary data components and we have the ability to use this data for anything now, separately from our visuals. If we wanted to we might be able to create an offline version
+of each of the graphs by plotting the points using PyPlotLib. Of course, one of the other great benefits of moving these things into their own classes is that we free up the already cluttered `window`
+in Javascript by removing all of these global variables. Lesson learned, do not overuse and rely on too many globals, as it does not make things easy as the project expands.
+
 Firing Events Before Data is Ready (10/08/18)
 ---------------------------------------------
 
