@@ -1,6 +1,20 @@
 Project History
 ===============
 
+10/29/18:
+---------
+
+The past week and a half have been small changes. We added the `Tourist1D` class to simulate actions on a one dimensional plane.
+When creating this class, we knew that it needed a few functions such as `GoLeft`, `GoRight`, and `Wait` at the very least.
+Implementing these was as simple as calculating the distance the bot needs to travel each from and then adding that to its data buffer.
+Once we have loaded all of the commands, we run the simulation.
+
+The time delta for a bot to travel the correct distance (1 unit/sec) is calculated by `delta = (distance / 60) * (scale / distance) * velocity`,
+where `scale` is essentially the unit/pixel ratio and `velocity` is the robot's current speed. In implementing this movement, we thought that perhaps
+calculating the time delta once at the start would work, but we still have to modify it at each step of the movement process, to keep the line and robots on the
+screen relatively close to 0. We will implement a system to check if the bot will go off of the line, and adjust the scaling of the line markers and distance traveled
+appropriately.
+
 10/17/18: iclData and iclVisual 95% Complete! We have Graph Comparison!
 -----------------------------------------------------------------------
 

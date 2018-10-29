@@ -38,6 +38,18 @@
             
   <div class="section" id="project-history">
 <h1>Project History<a class="headerlink" href="#project-history" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2>10/29/18:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>The past week and a half have been small changes. We added the <cite>Tourist1D</cite> class to simulate actions on a one dimensional plane.
+When creating this class, we knew that it needed a few functions such as <cite>GoLeft</cite>, <cite>GoRight</cite>, and <cite>Wait</cite> at the very least.
+Implementing these was as simple as calculating the distance the bot needs to travel each from and then adding that to its data buffer.
+Once we have loaded all of the commands, we run the simulation.</p>
+<p>The time delta for a bot to travel the correct distance (1 unit/sec) is calculated by <cite>delta = (distance / 60) * (scale / distance) * velocity</cite>,
+where <cite>scale</cite> is essentially the unit/pixel ratio and <cite>velocity</cite> is the robot’s current speed. In implementing this movement, we thought that perhaps
+calculating the time delta once at the start would work, but we still have to modify it at each step of the movement process, to keep the line and robots on the
+screen relatively close to 0. We will implement a system to check if the bot will go off of the line, and adjust the scaling of the line markers and distance traveled
+appropriately.</p>
+</div>
 <div class="section" id="icldata-and-iclvisual-95-complete-we-have-graph-comparison">
 <h2>10/17/18: iclData and iclVisual 95% Complete! We have Graph Comparison!<a class="headerlink" href="#icldata-and-iclvisual-95-complete-we-have-graph-comparison" title="Permalink to this headline">¶</a></h2>
 <p>In this update, we finished the <cite>iclVisual</cite> class, and worked out how to have two graphs on the screen and running at the same time. This was important to the project as being able to compare different
@@ -51,8 +63,8 @@ This was solved by simply calling <cite>d3.remove()</cite> on all of the offendi
 make things easier in terms of being able to show more than one graph at once, but resulted in a lot more code; we had to change many variable names from ones that were once global to instance variables using <cite>this</cite>.</p>
 <p>As of now, there is very little styling on the page, but this will change next week.</p>
 </div>
-<div class="section" id="id1">
-<h2>10/12/18<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id2">
+<h2>10/12/18<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>We began working on a superclass this week, to be able to create multiple instances of a simulation with different instructions and be able to compare them.
 This stems from the <cite>iclData</cite> class, which will now contain just the data of a singular run at a time. This means we can now compare data points of different
 instruction lists and puts us one step closer to visually comparing more than one algorithm. We are also in the process of creating an <cite>iclVisual</cite> class
@@ -109,8 +121,8 @@ Not only did this fix the problem of not seeing as many robots as we would have 
 </pre></div>
 </div>
 </div>
-<div class="section" id="id2">
-<h2>10/05/18<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h2>10/05/18<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <p>In this update, we introduced Circle Showcase v1.0 as a way to show all of the algorithms we have studied to date in action.
 This update includes new algorithms in the circle showcase, Priority Evacuation 1 and Priority Evacuation 2. Previously, these were described as Queen algorithms, but as of recently we have
 classified these as ‘Priority’ (10/03/18). We also introduced the ability to load a file in *.icl format, created by our command generator. Currently, these files assume face-to-face communication
@@ -120,8 +132,8 @@ we will use GoToWallAtAngle in its place. For reference, both angles have approx
 <p>Our current goals are: distinguishing priority robots and modifying the command algorithms to accomadate this, generating animations of the app in action to be shown on this documentation website, and
 a feature to compare two algorithms on the same page. We also plan to make a FAQ section of this documentation website.</p>
 </div>
-<div class="section" id="id3">
-<h2>09/12/18<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id4">
+<h2>09/12/18<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <p>In this update, we introduced the Face-to-Face showcase, featuring algorithms A, B, and C. These algorithms each consist of 2 robots searching for an exit with face-to-face (f2f) communication only.
 To supplement this, we added short descriptions of each of the algorithms and provided images showing the logic behind having the robots take detours. We also show examples of what interception means
 when the robots are using f2f communication. The f2f showcase had been added earlier, but it was mainly for testing and there were not yet descriptions of the algorithms that were clear.</p>
@@ -143,11 +155,12 @@ once they choose their options.</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Project History</a><ul>
+<li><a class="reference internal" href="#id1">10/29/18:</a></li>
 <li><a class="reference internal" href="#icldata-and-iclvisual-95-complete-we-have-graph-comparison">10/17/18: iclData and iclVisual 95% Complete! We have Graph Comparison!</a></li>
-<li><a class="reference internal" href="#id1">10/12/18</a></li>
+<li><a class="reference internal" href="#id2">10/12/18</a></li>
 <li><a class="reference internal" href="#firing-events-before-data-is-ready-10-08-18">Firing Events Before Data is Ready (10/08/18)</a></li>
-<li><a class="reference internal" href="#id2">10/05/18</a></li>
-<li><a class="reference internal" href="#id3">09/12/18</a></li>
+<li><a class="reference internal" href="#id3">10/05/18</a></li>
+<li><a class="reference internal" href="#id4">09/12/18</a></li>
 </ul>
 </li>
 </ul>

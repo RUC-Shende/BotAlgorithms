@@ -122,4 +122,11 @@ Creation of changelog: 08/10/2018
           - iclVisual contains all the necessary instructions to create visual representations
             of the iclData using d3.v5.js
           Replaced ICLReader V25 and ICLAnim V5 to their respective locations.
+
+10/26/18: Merge alpha into master
+          Updated Documentation: Project History
+
+10/29/18: Create Tourist1D class.
+          Simple demo of tourist1d operating on a line.
+          3 tourist1d directives: GoLeft, GoRight, Wait.
           
