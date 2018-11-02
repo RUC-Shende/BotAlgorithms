@@ -22,8 +22,8 @@ var lineFx = d3.line().x((d) => {return(d.x);}).y((d) => {return(d.y);});
 
 var touristNum = 0;
 var instruBinder = [
-                     [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [190]], ["FollowWall", ["right"]]],
-                     [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]]
+                     [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]],
+                     [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [190]], ["FollowWall", ["right"]]]
                    ];
 var algorithmName = "Priority 1 ";
 var tourColors = [];
@@ -39,6 +39,7 @@ graphPoints = [];
 graphLine = [];
 var exitFoundLine = null;
 var allExitedLine = null;
+var priorityExitedLine = null;
 
 var b = d3.select('body').append('div');
 
@@ -78,7 +79,7 @@ function ESlide() {
 * @param {Circle} visual Represents the visual related to the bot.
 */
 class Tourist {
-  constructor (visual) {
+  constructor (visual, p) {
     this.visual = visual;
     /** The tourist's ID as an integer. */
     this.number = touristNum;
@@ -102,6 +103,8 @@ class Tourist {
     this.x = center[0];
     /** Tourist's current y position. */
     this.y = center[1];
+
+    this.priority = p;
   }
 
   WallAtAngle(angle) {
@@ -340,7 +343,7 @@ class Tourist {
         }
       }
     }
-    if (this.target == null) {
+    if (this.priority || this.target == null) {
       this.GoToExit(value);
     } else {
       tourists[this.target].hunted = this.number;
@@ -369,8 +372,10 @@ class Tourist {
     if (((this.target == null) || !this.target) && (!wireless)) {// this.target was being undefined, instead of null, so !this.target fixed it..... how do we explain this weird phenomenon
       var holdTime = 0;
       var closest = Infinity;
+      outer:
       for (var i = 0; i < touristNum; i++) {
         if ((!tourists[i].knows) && ((tourists[i].hunted == this.number) || (tourists[i].hunted == null))) {
+          inner:
           for (var j = 0; j < 2 * unit2Px; j++) {
             if (time + j < timeMax) {
               var intercept = tourPoints[i][time + j];
@@ -378,15 +383,22 @@ class Tourist {
               var botDist = Math.sqrt(Math.pow(bVec[1], 2) + Math.pow(bVec[0], 2));
               if ((Math.abs(j * unit2Px / fps - botDist) <= this.velocity * unit2Px / (2 * fps)) && (botDist < closest)) {
                 this.target = [i, intercept];
+                if (tourists[i].priority){
+                    console.log("found priorityy");
+                    break outer;
+                }
                 closest = botDist;
+
               }
             }
           }
         }
       }
     }
-    if (this.target == null) {
+    if (this.priority || this.target == null) {
+      this.DirectToExit(fieldExit[0], fieldExit[1]); //gives the bot a trajectory for the rest of time
       this.GoToExit(value);
+
     } else {
       tourists[this.target[0]].hunted = this.number;
       var pVec = [this.target[1].x - this.x, this.target[1].y - this.y];
@@ -429,10 +441,11 @@ function Load() {
   for (var i = 0; i < instruBinder.length; i++) {//Add bots, lines, and coordinate collectors.
     tourColors.push(RandomColor());
     console.log(touristNum);
+    var p = (i==0) ? true : false;
     tourists.push(new Tourist(fieldSVG.select(".bots").append("circle").attr("cx", center[0]).attr("cy", center[1])
                               .attr("data", touristNum).attr("r", unit2Px / 16).on("mouseover", MoveDataBox)
                               .on("mouseout", HideDataBox).style("fill", tourColors[i])
-                              .style("stroke", "#ffffff").style("stroke-width", (1 / 100) * unit2Px)));
+                              .style("stroke", "#ffffff").style("stroke-width", (1 / 100) * unit2Px), p));
     tourPoints.push([]);
     graphDots.push(graphSVG.select(".bots").append("circle").attr("cx", unit2Px * (10 / 25))
                    .attr("cy", unit2Px * 4 * (20 / 25) - unit2Px * (10 / 25)).attr("r", unit2Px / 16)
@@ -676,6 +689,9 @@ function AlterAnim() {
         var exitDist = Math.sqrt(Math.pow(eVec[1], 2) + Math.pow(eVec[0], 2));
         if (exitDist <= who.velocity * unit2Px / (2 * fps)) {
           exitAlert = who.knows = true;
+          if (who.priority){
+              break;
+          }
           exitAllow = exitDist;
         }
       }
@@ -719,6 +735,7 @@ function AlterAnim() {
       }
       exitAlert = false;
     }
+    AllAtExit();
     UpdateVisuals();
     time++;
     timeSlider.attr("x", (time / timeMax) * (31 / 8) * unit2Px);
@@ -742,15 +759,25 @@ function AlterLines(i) {
 
 //Determine if all at exit, O(n) time
 function AllAtExit() {
+  console.log("Running allatexit");
   for (var j = 0; j < touristNum; j++) {//Check every mobile agent
     if ((tourists[j].x != fieldExit[0]) || (tourists[j].y != fieldExit[1])) {//check if not at exit
       return;
     }
+    else if (!priorityExitedLine && tourists[j].priority){//assuming also at exit...
+        var holdP = (unit2Px * (10 / 25) + ((time + exitAllow) / timeMax) * (80/25) * unit2Px);
+        priorityExitedLine = graphSVG.select(".overLay").append("line").attr("x1", holdP).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
+                          .attr("x2", holdP).attr("y2", 1.75 * unit2Px).style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px)
+                          .style("stroke-opacity", 0.5);
+    }
   }
-  var holdX = (unit2Px * (10 / 25) + ((time + exitAllow) / timeMax) * (80 / 25) * unit2Px);
-  allExitedLine = graphSVG.select(".overLay").append("line").attr("x1", holdX).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
+  if (!allExitedLine){
+    var holdX = (unit2Px * (10 / 25) + ((time + exitAllow) / timeMax) * (80 / 25) * unit2Px);
+    allExitedLine = graphSVG.select(".overLay").append("line").attr("x1", holdX).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
                   .attr("x2", holdX).attr("y2", 2 * unit2Px).style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px)
                   .style("stroke-opacity", 0.5);
+  }
+
   console.log(Math.floor((100 * time) / fps) / 100);
 }
 
@@ -836,15 +863,15 @@ function showAlgorithmDesc(s, w){
         case 'Q1':
             color = "#efe";
             instruBinder = [
-                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right"]]],
-                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]]
+                                 [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]],
+                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right"]]]
                                ];
             algorithmName = "Algorithm Priority 1 ";
             break;
         case 'Q2':
             color = "#efe";
             instruBinder = [
-                                  [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [160]], ["FollowWall", ["left", 20]], ["GoToPoint", [center[0] + 30, center[1] + 30]], ["GoToWallAtAngle", [320]], ["Wait", [null]]],
+                                  [["GoToExit", [null]], ["GoToWallAtAngle", [160]], ["FollowWall", ["left", 20]], ["GoToPoint", [center[0] + 30, center[1] + 30]], ["GoToWallAtAngle", [320]], ["Wait", [null]]],
                                   [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [160]], ["FollowWall", ["right"]]],
                                   [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]]
             ];
