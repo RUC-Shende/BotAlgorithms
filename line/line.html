@@ -5,8 +5,8 @@
     <script src="https://d3js.org/d3.v5.min.js"></script>
 </head>
 <body>
-    <div id="board" style="width: 900px; height: 900px; margin:0 auto;">
-        <svg id="anim" height=900px width=900px>
+    <div id="board" style="width: 900px; height: 500px; margin:0 auto;">
+        <svg id="anim" height=500px width=900px>
             <line x1=0 y1=200 x2=900 y2=200 style="stroke:#000000;stroke-width:.25"></line>
             <line x1=50 y1=100 x2=50 y2=300 style="stroke:#000000;stroke-width:.25"></line>
             <line x1=150 y1=100 x2=150 y2=300 style="stroke:#000000;stroke-width:.25"></line>
@@ -21,6 +21,28 @@
 
         </svg>
     </div>
+    <!-- DEBUG
+    <div class="info" style="width:450px; height:100px; margin: 0 auto; display: inline-block;">
+        <h3>
+            Tourist 0:
+        </h3>
+        <p class="location">
+            Current Location: 0px
+        </p>
+        <p class="exittrue">
+            Exit found?
+        </p>
+    </div>
+    <div class="info" style="width:450px; height:100px; margin: 0 auto; display: inline-block;">
+        <h3>Tourist 1:</h3>
+        <p class="location">
+            Current Location: 0px
+        </p>
+        <p class="exittrue">
+            Exit found?
+        </p>
+    </div>
+    -->
     <script src="tourist1d.js"></script>
 </body>
 </html>

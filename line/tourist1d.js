@@ -17,6 +17,10 @@ TODO: calculate if the current distance given will make the bot go off the line,
 adjust the delta accordingly to make it fit AT THE BEGINNING.
 */
 
+const EXIT = -1; // local exit
+const SCALE = 100; // unit =>  px;
+const GLOBAL_CENTER = [450, 200]; // center in pixels
+const GLOBAL_EXIT = GLOBAL_CENTER[0] + (EXIT * SCALE); // exit in pixels
 
 
 class Tourist1D {
@@ -28,10 +32,11 @@ class Tourist1D {
         this.velocity = 1;
         this.allowance = 0;
         this.tourPoints = [];
+        // tourist knows of the exit location.
+        this.knows = false;
         // scale is essentially unit2Px.
-        this.scale = 100;
+        this.scale = SCALE;
         this.projector = null;
-        console.log(this);
     }
 
     Wait(time) {
@@ -44,30 +49,59 @@ class Tourist1D {
     }
 
     GoRight(distance){
-        var current = 0;
-        var delta = this.velocity * (distance / 60) * (this.scale) / distance;
-        while (current < distance * this.scale){
-            this.x += delta;
-            current += delta;
-            this.tourPoints.push(this.x);
+        if (!this.knows){
+            var current = 0;
+            var delta = this.velocity * (distance / 60) * (this.scale) / distance;
+            update:
+            while (current < distance * this.scale){
+                this.x += delta;
+                current += delta;
+                this.tourPoints.push(this.x);
+                // check for exit condition.
+                if (this.x <= GLOBAL_EXIT + 0.1 && this.x >= GLOBAL_EXIT - 0.1){
+                    this.knows = true;
+                    console.log("Found exit.");
+                    break update;
+                }
+            }
+            // wait for the rest of the command.
+            // temporary, until we make an interception function.
+            this.Wait(distance - current);
+        }
+        else{
+            // also temporary until we make an interception function.
+            this.Wait(distance);
         }
     }
 
     GoLeft(distance){
-        distance = -distance;
-        var current = 0;
-        var delta = this.velocity * (distance / 60) * (this.scale) / -distance;
-        while (current > distance * this.scale){
-            this.x += delta;
-            current += delta;
-            this.tourPoints.push(this.x);
+        if (!this.knows){
+            distance = -distance;
+            var current = 0;
+            var delta = this.velocity * (distance / 60) * (this.scale) / -distance;
+            update:
+            while (current > distance * this.scale){
+                this.x += delta;
+                current += delta;
+                this.tourPoints.push(this.x);
+                if (this.x >= GLOBAL_EXIT - 0.1 && this.x <= GLOBAL_EXIT + 0.1){
+                    this.knows = true;
+                    console.log("Found exit.");
+                    break update;
+                }
+            }
+        }
+        else {
+            this.Wait(distance);
         }
     }
+
 
     UpdateAnim(i){
         if (i < this.tourPoints.length){
             this.visual.attr("cx", this.tourPoints[i]);
         }
+        //d3.selectAll(".location").text("Current Location: " + this.tourPoints[i] + "px");
     }
 
 
@@ -88,16 +122,22 @@ tourists[1].GoLeft(2);
 tourists[0].GoLeft(1);
 tourists[1].Wait(1);
 
-tourists[0].GoRight(2);
-tourists[1].GoRight(1);
+tourists[0].GoRight(1);
+tourists[1].GoRight(7);
 
-tourists[1].GoLeft(3);
+tourists[1].GoLeft(1);
 
-var count = 0
+tourists[0].Wait(1);
+tourists[1].Wait(1);
+
+var frame = 0;
+
+// now that we created our data we play our saved trajectories back.
 var m = setInterval(function(){
     for (var i = 0; i < tourists.length; i++){
-        tourists[i].UpdateAnim(count);
+        tourists[i].UpdateAnim(frame);
+
     }
-    count ++;
-    console.log(count/60);
+    frame ++;
+    //console.log(frame/60);
 }, 1000/60);

@@ -396,7 +396,6 @@ class Tourist {
       }
     }
     if (this.priority || this.target == null) {
-      this.DirectToExit(fieldExit[0], fieldExit[1]); //gives the bot a trajectory for the rest of time
       this.GoToExit(value);
 
     } else {
