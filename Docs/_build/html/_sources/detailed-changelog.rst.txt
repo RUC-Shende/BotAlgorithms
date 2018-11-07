@@ -1,6 +1,28 @@
 Project History
 ===============
 
+11/06/18:
+---------
+
+After improving it a bit more, the basics of Line searching have been implemented, and the `Tourist1D` class has been created. `Tourist1D` is a simplified version of `Tourist` seen in the circle algorithms.
+With this update, the `Tourist1D` can now find the exit based on the exit position given by `GLOBAL_EXIT`. With the addition of `GLOBAL_EXIT`, a few more global vars were needed, so we added `SCALE`, `EXIT`,
+and `GLOBAL_CENTER`. Our `EXIT` is defined using a number line value, usually an integer, and used with `GLOBAL_CENTER` and `SCALE` to calculate our `GLOBAL_EXIT` with the formula: `GLOBAL_CENTER + (EXIT * SCALE)`.
+
+In the next update, we will improve scaling the line as a `Tourist1D` moves off screen and getting the relative position of the `Tourist1D` as it goes to bigber values. 
+
+11/02/18:
+---------
+
+[EDIT]
+
+We implemented priority search exiting, with the priority robot being given instructions to simply Wait after finding the exit.
+We also added a visual to let the user know that the priority robot has found the exit. We also implemented in Intercept, a condition for which bots will only target the priority
+robot upon finding the exit. Since the priority robot is usually closest to an exit at a given time, it is the most likely choice for the exit-finder to target first, but as such
+the priority will not target closer robots but instead move directly to the exit, leaving the servant to head for the other evacuees.
+
+Even though the goal is to evacuate the priority robot and end the algorithm, we show all robots finding the exit in CircleShowcase. It is simpler in the case of this showcase to
+show all robots exiting, because with 2 and 3 robots, the predicted trajectories of the robots are about the same as they are without a priority robot.
+
 10/29/18:
 ---------
 

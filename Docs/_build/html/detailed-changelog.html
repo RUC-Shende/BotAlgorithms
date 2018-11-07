@@ -39,7 +39,24 @@
   <div class="section" id="project-history">
 <h1>Project History<a class="headerlink" href="#project-history" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="id1">
-<h2>10/29/18:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<h2>11/06/18:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>After improving it a bit more, the basics of Line searching have been implemented, and the <cite>Tourist1D</cite> class has been created. <cite>Tourist1D</cite> is a simplified version of <cite>Tourist</cite> seen in the circle algorithms.
+With this update, the <cite>Tourist1D</cite> can now find the exit based on the exit position given by <cite>GLOBAL_EXIT</cite>. With the addition of <cite>GLOBAL_EXIT</cite>, a few more global vars were needed, so we added <cite>SCALE</cite>, <cite>EXIT</cite>,
+and <cite>GLOBAL_CENTER</cite>. Our <cite>EXIT</cite> is defined using a number line value, usually an integer, and used with <cite>GLOBAL_CENTER</cite> and <cite>SCALE</cite> to calculate our <cite>GLOBAL_EXIT</cite> with the formula: <cite>GLOBAL_CENTER + (EXIT * SCALE)</cite>.</p>
+<p>In the next update, we will improve scaling the line as a <cite>Tourist1D</cite> moves off screen and getting the relative position of the <cite>Tourist1D</cite> as it goes to bigber values.</p>
+</div>
+<div class="section" id="id2">
+<h2>11/02/18:<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>[EDIT]</p>
+<p>We implemented priority search exiting, with the priority robot being given instructions to simply Wait after finding the exit.
+We also added a visual to let the user know that the priority robot has found the exit. We also implemented in Intercept, a condition for which bots will only target the priority
+robot upon finding the exit. Since the priority robot is usually closest to an exit at a given time, it is the most likely choice for the exit-finder to target first, but as such
+the priority will not target closer robots but instead move directly to the exit, leaving the servant to head for the other evacuees.</p>
+<p>Even though the goal is to evacuate the priority robot and end the algorithm, we show all robots finding the exit in CircleShowcase. It is simpler in the case of this showcase to
+show all robots exiting, because with 2 and 3 robots, the predicted trajectories of the robots are about the same as they are without a priority robot.</p>
+</div>
+<div class="section" id="id3">
+<h2>10/29/18:<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <p>The past week and a half have been small changes. We added the <cite>Tourist1D</cite> class to simulate actions on a one dimensional plane.
 When creating this class, we knew that it needed a few functions such as <cite>GoLeft</cite>, <cite>GoRight</cite>, and <cite>Wait</cite> at the very least.
 Implementing these was as simple as calculating the distance the bot needs to travel each from and then adding that to its data buffer.
@@ -63,8 +80,8 @@ This was solved by simply calling <cite>d3.remove()</cite> on all of the offendi
 make things easier in terms of being able to show more than one graph at once, but resulted in a lot more code; we had to change many variable names from ones that were once global to instance variables using <cite>this</cite>.</p>
 <p>As of now, there is very little styling on the page, but this will change next week.</p>
 </div>
-<div class="section" id="id2">
-<h2>10/12/18<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id4">
+<h2>10/12/18<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <p>We began working on a superclass this week, to be able to create multiple instances of a simulation with different instructions and be able to compare them.
 This stems from the <cite>iclData</cite> class, which will now contain just the data of a singular run at a time. This means we can now compare data points of different
 instruction lists and puts us one step closer to visually comparing more than one algorithm. We are also in the process of creating an <cite>iclVisual</cite> class
@@ -121,8 +138,8 @@ Not only did this fix the problem of not seeing as many robots as we would have 
 </pre></div>
 </div>
 </div>
-<div class="section" id="id3">
-<h2>10/05/18<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id5">
+<h2>10/05/18<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
 <p>In this update, we introduced Circle Showcase v1.0 as a way to show all of the algorithms we have studied to date in action.
 This update includes new algorithms in the circle showcase, Priority Evacuation 1 and Priority Evacuation 2. Previously, these were described as Queen algorithms, but as of recently we have
 classified these as ‘Priority’ (10/03/18). We also introduced the ability to load a file in *.icl format, created by our command generator. Currently, these files assume face-to-face communication
@@ -132,8 +149,8 @@ we will use GoToWallAtAngle in its place. For reference, both angles have approx
 <p>Our current goals are: distinguishing priority robots and modifying the command algorithms to accomadate this, generating animations of the app in action to be shown on this documentation website, and
 a feature to compare two algorithms on the same page. We also plan to make a FAQ section of this documentation website.</p>
 </div>
-<div class="section" id="id4">
-<h2>09/12/18<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id6">
+<h2>09/12/18<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
 <p>In this update, we introduced the Face-to-Face showcase, featuring algorithms A, B, and C. These algorithms each consist of 2 robots searching for an exit with face-to-face (f2f) communication only.
 To supplement this, we added short descriptions of each of the algorithms and provided images showing the logic behind having the robots take detours. We also show examples of what interception means
 when the robots are using f2f communication. The f2f showcase had been added earlier, but it was mainly for testing and there were not yet descriptions of the algorithms that were clear.</p>
@@ -155,12 +172,14 @@ once they choose their options.</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Project History</a><ul>
-<li><a class="reference internal" href="#id1">10/29/18:</a></li>
+<li><a class="reference internal" href="#id1">11/06/18:</a></li>
+<li><a class="reference internal" href="#id2">11/02/18:</a></li>
+<li><a class="reference internal" href="#id3">10/29/18:</a></li>
 <li><a class="reference internal" href="#icldata-and-iclvisual-95-complete-we-have-graph-comparison">10/17/18: iclData and iclVisual 95% Complete! We have Graph Comparison!</a></li>
-<li><a class="reference internal" href="#id2">10/12/18</a></li>
+<li><a class="reference internal" href="#id4">10/12/18</a></li>
 <li><a class="reference internal" href="#firing-events-before-data-is-ready-10-08-18">Firing Events Before Data is Ready (10/08/18)</a></li>
-<li><a class="reference internal" href="#id3">10/05/18</a></li>
-<li><a class="reference internal" href="#id4">09/12/18</a></li>
+<li><a class="reference internal" href="#id5">10/05/18</a></li>
+<li><a class="reference internal" href="#id6">09/12/18</a></li>
 </ul>
 </li>
 </ul>
