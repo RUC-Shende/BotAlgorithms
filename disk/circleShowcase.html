@@ -22,12 +22,18 @@
         <a href="#AlgC" onclick="showAlgorithmDesc('C', true)">Algorithm C(X, Φ, λ)</a>
         <a onclick="showAlgorithmDesc('Q1', true)">Priority Search 1</a>
         <a onclick="showAlgorithmDesc('Q2', true)">Priority Search 2</a>
+        <a href="#AlgA" onclick="showAlgorithmDesc('2Q1S', true)">2 Queens + 1 Servant (1)</a>
+        <a href="#AlgA" onclick="showAlgorithmDesc('1Q1S1Q', true)">2 Queens + 1 Servant (2)</a>
+        <a href="#AlgA" onclick="showAlgorithmDesc('1Q4S', true)">1 Queen + 4 Servants</a>
+        <a href="#AlgA" onclick="showAlgorithmDesc('1Q8S', true)">1 Queen + 8 Servants</a>
+        
         <h3>Face-to-Face Algorithms</h3>
         <a href="#AlgA" onclick="showAlgorithmDesc('A', false)">Algorithm A</a>
-        <a href="#AlgA" onclick="showAlgorithmDesc('B', false)">Algorithm B(X, Φ)</a>
-        <a href="#AlgA" onclick="showAlgorithmDesc('C', false)">Algorithm C(X, Φ, λ)</a>
+        <a href="#AlgB" onclick="showAlgorithmDesc('B', false)">Algorithm B(X, Φ)</a>
+        <a href="#AlgC" onclick="showAlgorithmDesc('C', false)">Algorithm C(X, Φ, λ)</a>
         <a href="#AlgA" onclick="showAlgorithmDesc('Q1', false)">Priority Search 1</a>
         <a href="#AlgA" onclick="showAlgorithmDesc('Q2', false)">Priority Search 2</a>
+
         <h3>Load ICL File</h3>
         <input style='color:white;' type='file' class='copypaste' id='loadcommands' value='Load Commands' accept='.icl' onchange='LoadAlgorithms(event)' />
 
@@ -55,7 +61,7 @@
         <a href="#AlgB"><button id="AlgB" class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("B", false)'/>Algorithm <b>B(X, Φ)</b></button></a>
         <a href="#AlgC"><button id="AlgC" class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("C", false)'/>Algorithm <b>C(X, Φ, λ)</b></button></a>
         <a href="#AlgA"><button id='AlgA' class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("Q1", false)'/>Algorithm <b>Priority 1</b></button></a>
-        <a href="#AlgA"><button id='AlgA' class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("Q1", false)'/>Algorithm <b>Priority 2</b></button></a>
+        <a href="#AlgA"><button id='AlgA' class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("Q2", false)'/>Algorithm <b>Priority 2</b></button></a>
     </div>
     <div class='tabtxt'>
         These algorithms focus on evacuating two robots using the <span class='tooltip'>Face to Face communication model.<span class='tooltiptext'>The robots can only communicate by physically being next to each other.</span></span>

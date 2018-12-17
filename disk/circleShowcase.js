@@ -44,6 +44,7 @@ var priorityExitedLine = null;
 var b = d3.select('body').append('div');
 
 
+
 //////////--------Instantiate Call Functions--------//////////
 //Drag function, updates tourists and graph dots relative to lines
 function SSlide() {
@@ -105,6 +106,7 @@ class Tourist {
     this.y = center[1];
 
     this.priority = p;
+    this.atExit = false;
   }
 
   WallAtAngle(angle) {
@@ -139,6 +141,13 @@ class Tourist {
         this.y = this.y + (this.velocity * unit2Px / fps) * Math.sin(ang);
       }
       this.allowance = 0;
+    }
+    if (this.x == fieldExit[0] && this.y == fieldExit[1] && !this.atExit) {
+        console.log("Robot " + this.number + " exits at " + (Math.floor((100 * time) / fps) / 100));
+        this.atExit = true;
+        graphSVG.select(".overLay").append("line").attr("x1", graphDots[this.number].attr("cx")).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
+                      .attr("x2", graphDots[this.number].attr("cx")).attr("y2", 2 * unit2Px).style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px)
+                      .style("stroke-opacity", 0.5);
     }
   }
 
@@ -314,12 +323,15 @@ class Tourist {
   GoToExit(value) {
     if ((this.x == fieldExit[0]) && (this.y == fieldExit[1])) {
       this.Wait([null]);
+      this.atExit = true;
       if (allExitedLine == null) {
         AllAtExit();
       }
     } else {
       this.DirectTo(fieldExit);
+      //console.log(Math.floor((100 * time) / fps) / 100);
     }
+    //console.log(Math.floor((100 * time) / fps) / 100);
   }
 
   /**
@@ -383,7 +395,7 @@ class Tourist {
               var botDist = Math.sqrt(Math.pow(bVec[1], 2) + Math.pow(bVec[0], 2));
               if ((Math.abs(j * unit2Px / fps - botDist) <= this.velocity * unit2Px / (2 * fps)) && (botDist < closest)) {
                 this.target = [i, intercept];
-                if (tourists[i].priority){
+                if (value && value[0] == i){
                     console.log("found priorityy");
                     break outer;
                 }
@@ -404,6 +416,7 @@ class Tourist {
       var pointDist = Math.sqrt(Math.pow(pVec[1], 2) + Math.pow(pVec[0], 2));
       if (pointDist <= this.velocity * unit2Px / fps) {
         exitAlert = tourists[this.target[0]].knows = true;
+        //console.log(Math.floor((100 * time) / fps) / 100);
         exitAllow = pointDist;
       }
       this.DirectTo([this.target[1].x, this.target[1].y]);
@@ -412,6 +425,13 @@ class Tourist {
       }
     }
   }
+
+  SetVelocity(value){
+      if (value){
+          this.velocity = value[0];
+      }
+  }
+
 }
 
 //////////----------Instantiate Functions----------//////////
@@ -438,9 +458,10 @@ function Load() {
   LoadField();
   LoadGraph();
   for (var i = 0; i < instruBinder.length; i++) {//Add bots, lines, and coordinate collectors.
-    tourColors.push(RandomColor());
+    tourColors.push(RandomColor(i));
     console.log(touristNum);
-    var p = (i==0) ? true : false;
+    var p = (i==0 || i==1) ? true : false;
+    //var p = false;
     tourists.push(new Tourist(fieldSVG.select(".bots").append("circle").attr("cx", center[0]).attr("cy", center[1])
                               .attr("data", touristNum).attr("r", unit2Px / 16).on("mouseover", MoveDataBox)
                               .on("mouseout", HideDataBox).style("fill", tourColors[i])
@@ -529,10 +550,17 @@ function LoadGraph() {
   timeSlider = graphSVG.select(".backGround").append("rect").attr("width", unit2Px / 8).attr("height", unit2Px / 8)
                .attr("class", "reveal").style("fill", "#888888")
                .call(d3.drag().on("start", SSlide).on("drag", MSlide).on("end", ESlide));
-  var fo = graphSVG.append('foreignObject').attr('x', unit2Px * (1/25)).attr('y', unit2Px * (18/25)).attr('width', unit2Px * 1.5).attr('height', unit2Px * (18/25));
-  var timeButtons = fo.append('xhtml:div');
-  timeButtons.append('input').attr('type', 'submit').property('value', ' ▶▶ Play')
-             .attr('class', 'reveal play').on('click', () => {timeDirect++;});
+  //var fo = graphSVG.append('foreignObject').attr('x', unit2Px * (1/25)).attr('y', unit2Px * (18/25)).attr('width', unit2Px * 1.5).attr('height', unit2Px * (18/25));
+ // var timeButtons = fo.append('xhtml:div');
+  graphSVG.select(".overLay").append('text').attr("x", unit2Px * (1/25)).attr("y", unit2Px * 1).text(' ▶▶ Play').style('font-size', unit2Px * 5/25).attr('fill', 'green')
+            .attr('class', 'reveal play').style('box-sizing', 'border-box').attr('cursor', 'pointer').on('click', () => {timeDirect++;});
+  graphSVG.select(".overLay").append('text').attr("x", unit2Px * (1/25)).attr("y", unit2Px * 1.2).text(' ■ Stop').style('cursor', 'pointer').style('font-size', unit2Px * 5/25).attr('fill', 'red')
+            .attr('class', 'reveal play').on('click', () => {timeDirect = 0;});
+  graphSVG.select(".overLay").append('text').attr("x", unit2Px * (1/25)).attr("y", unit2Px * 1.4).text(' ◀◀ Rewind').style('cursor', 'pointer').style('font-size', unit2Px * 5/25).attr('fill', 'blue')
+            .attr('class', 'reveal play').on('click', () => {timeDirect--;});
+  graphSVG.select(".overLay").append('text').attr("x", unit2Px * (1/25)).attr("y", unit2Px * 1.6).text(' ◀ Slow ▶').style('cursor', 'pointer').style('font-size', unit2Px * 5/25).attr('fill', 'cyan')
+            .attr('class', 'reveal play').on('click', () => {if (timeDirect == 0) {timeDirect += 0.5;} else {timeDirect/=2;}});
+/*
   timeButtons.append('input')
             .attr('class', 'reveal stop').attr('type', 'submit')
             .property('value', ' ■ Stop').on('click', () => {timeDirect = 0;});
@@ -542,6 +570,7 @@ function LoadGraph() {
   timeButtons.append('input')
             .attr('class', 'reveal slow').attr('type', 'submit')
             .property('value', '◀ Slow ▶').on('click', () => {if (timeDirect == 0) {timeDirect += 0.5;} else {timeDirect/=2;}});
+*/
   graphSVG.select(".backGround").append("path").attr("d", 'M' + unit2Px * (10 / 25) + ',' + unit2Px * (50 / 25)
                                                         + 'L' + unit2Px * (10 / 25) + ',' + unit2Px * (90 / 25)
                                                         + 'L' + unit2Px * (90 / 25) + ',' + unit2Px * (90 / 25))
@@ -611,15 +640,13 @@ function Reset() {
 
 }
 
-
-//Create a random hexadecimal color
-function RandomColor() {
-  var RGB = ["00", "00", "00"];
-  RGB[0] = Math.floor(Math.random() * 256).toString(16);
-  RGB[1] = Math.floor(Math.random() * 256).toString(16);
-  RGB[2] = Math.floor(Math.random() * 256).toString(16);
-  for (j = 0; j < 3; j++) {if (RGB[j].length == 1) {RGB[j] = '0' + RGB[j];}}//Add a zero in front of single digit hex.
-  return('#' + RGB[0] + RGB[1] + RGB[2]);
+function RandomColor(i) {
+    var colorPalette = ["#fe447d", "#f78f2e", "#fedc0c", "#fedc0c",
+                        "#5cd05b", "#03c1cd", "#0e10e6", "#9208e7",
+                        "#f84c00", "#f3f354", "#bff1e5", "#3bc335",
+                        "#7af5ca", "#448bff", "#101ab3", "#d645c8",
+                        "#0afe15", "#0acdfe", "#ff9600", "#b21ca1"];
+    return colorPalette[(i + 4) % 20];
 }
 
 //Controls exit positioning for user's choice, relative to mouse and svg.
@@ -688,6 +715,7 @@ function AlterAnim() {
         var exitDist = Math.sqrt(Math.pow(eVec[1], 2) + Math.pow(eVec[0], 2));
         if (exitDist <= who.velocity * unit2Px / (2 * fps)) {
           exitAlert = who.knows = true;
+          //console.log(Math.floor((100 * time) / fps) / 100);
           if (who.priority){
               break;
           }
@@ -710,6 +738,7 @@ function AlterAnim() {
         who.on = saveBuffer[i][3];
         if (wireless) {
           who.knows = true;
+          //console.log(Math.floor((100 * time) / fps) / 100);
         }
         who.allowance = exitAllow;
         while (who.allowance > 0) {
@@ -758,7 +787,6 @@ function AlterLines(i) {
 
 //Determine if all at exit, O(n) time
 function AllAtExit() {
-  console.log("Running allatexit");
   for (var j = 0; j < touristNum; j++) {//Check every mobile agent
     if ((tourists[j].x != fieldExit[0]) || (tourists[j].y != fieldExit[1])) {//check if not at exit
       return;
@@ -776,8 +804,7 @@ function AllAtExit() {
                   .attr("x2", holdX).attr("y2", 2 * unit2Px).style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px)
                   .style("stroke-opacity", 0.5);
   }
-
-  console.log(Math.floor((100 * time) / fps) / 100);
+  //console.log(Math.floor((100 * time) / fps) / 100);
 }
 
 function PlayAnim() {
@@ -876,11 +903,70 @@ function showAlgorithmDesc(s, w){
             ];
             algorithmName = "Algorithm Priority 2 ";
             break;
+        case '2Q1S':
+            color = "#eee";
+            instruBinder = [
+                [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]],
+                [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right", 45]], ["GoToPoint", [center[0] + (unit2Px * 0.65), center[1]]], ["GoToWallAtAngle", [337.5]], ["FollowWall", ["left"]]],
+                [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [135]], ["FollowWall", ["right"]]]
+                /*
+                [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 65]], ["GoToPoint", [center[0], center[1]]], ["GoToWallAtAngle", [245]], ["FollowWall", ["left"]]],
+                [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right", 65]], ["GoToPoint", [center[0], center[1]]], ["GoToWallAtAngle", [115]], ["FollowWall", ["right"]]],
+                [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [60]], ["FollowWall", ["right"]]]
+                */
+                /*
+                [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]],
+                [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right"]]],
+
+                [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [60]], ["FollowWall", ["right"]]]
+                */
+
+            ];
+            algorithmName = "2 Priority + 1 Servant (1)";
+            break;
+
+        case '1Q1S1Q':
+            color = "#eee";
+            instruBinder = [
+                [["GoToExit", [null]], ["GoToWallAtAngle", [180]] ,["FollowWall", ["right"]]],
+                [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", 180], ["FollowWall", ["left"]]],
+                [["GoToExit", [null]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right"]]]
+            ];
+            algorithmName = "2 Priority + 1 Servant (2)";
+            break;
+
+        case '1Q4S':
+            color = "#eee";
+            instruBinder = [
+                [["GoToExit", [null]], ["Wait", [(1 + (Math.PI / 2))]], ["GoToWallAtAngle", [180]]],
+                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left", 75]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right", 75]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [75]], ["FollowWall", ["left"]]],
+                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [285]], ["FollowWall", ["right"]]]
+            ];
+            algorithmName = "1 Priority + 4 Servants";
+            break;
+
+        case '1Q8S':
+            color = "#eee";
+            instruBinder = [
+                [["GoToExit", [null]], ["Wait", [(1+(Math.PI / 2))]], ["GoToWallAtAngle", [180]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left", 60]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [60]], ["FollowWall", ["left", 30]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 30]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [120]], ["FollowWall", ["left"]]],
+                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right", 60]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [300]], ["FollowWall", ["right", 30]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [270]], ["FollowWall", ["right", 30]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [240]], ["FollowWall", ["right"]], ["Wait", [null]]]
+            ];
+            algorithmName = "1 Priority + 8 Servants";
+            break;
     }
     wireless = w;
     d3.selectAll('.desc').style('display', 'none');
     d3.select('.tabtxt').style('background-color', color);
-    d3.select('#'+s).style('display', 'inline-block');
+    //d3.select('#'+s).style('display', 'inline-block');
     closeNav();
     Reset();
 }
