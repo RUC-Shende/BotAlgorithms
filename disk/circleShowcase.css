@@ -56,6 +56,12 @@ input[type=submit]:active{
     transition: 0.3s;
 }
 
+/* Used for the subheader that shows algorithm name. */
+h2 {
+    padding-bottom: 0px;
+}
+
+/* Used for the pullout menu on the side. */
 h3 {
     color: white;
 }
@@ -106,6 +112,7 @@ h3 {
     font-size: 24px;
     display: none;
     font-family: "Ubuntu", "Roboto Condensed", Verdana, sans-serif;
+    
 }
 
 .tooltip {
@@ -168,6 +175,7 @@ h3 {
      border: 1px solid #ccf;
      border-radius: 6px;
      padding: 15px;
+     display: inline-block;
  }
 
 .tab button {

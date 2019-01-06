@@ -1,7 +1,7 @@
 //////////----------Instantiate Variables----------//////////
 var exitAlert = false;//Someone learned where the exit is.
 var exitAllow = 0;//How far in a frame was the exit found.
-var wireless = false;
+var wireless = true;
 
 var time = 0;
 var timeDirect = 0;//After loading, play direction.
@@ -460,8 +460,7 @@ function Load() {
   for (var i = 0; i < instruBinder.length; i++) {//Add bots, lines, and coordinate collectors.
     tourColors.push(RandomColor(i));
     console.log(touristNum);
-    var p = (i==0 || i==1) ? true : false;
-    //var p = false;
+    var p = false;
     tourists.push(new Tourist(fieldSVG.select(".bots").append("circle").attr("cx", center[0]).attr("cy", center[1])
                               .attr("data", touristNum).attr("r", unit2Px / 16).on("mouseover", MoveDataBox)
                               .on("mouseout", HideDataBox).style("fill", tourColors[i])
@@ -497,16 +496,13 @@ function Load() {
 
 
 function LoadField() {
-  if (wireless){
-      w = "Wireless";
-  }
-  else{
-      w = "Face-to-Face";
-  }
+  // decide how to display wireless status
+  w = wireless ? "Wireless" : "Face-To-Face";
+  // update subheader
+  d3.select("#subheader").text(algorithmName + w);
+  d3.select("#descriptiontitle").text(algorithmName + " Description:");
   fieldSVG.select(".backGround").append("text").attr("x",  center[0]).attr("y", unit2Px * (1 / 5))
-          .style("text-anchor", "middle").style("font-size", unit2Px * (1 / 5)).text("Search and Exit");
-  fieldSVG.select(".backGround").append("text").attr("x",  center[0]).attr("y", unit2Px * (3 / 10))
-          .style("text-anchor", "middle").style("font-size", unit2Px * (1 / 10)).text(algorithmName + w);
+          .style("text-anchor", "middle").style("font-size", unit2Px * (1 / 5)).text(algorithmName + w);
   fieldSVG.select(".backGround").append("text").attr("x",  center[0]).attr("y", unit2Px * (5 / 10)).attr("class", "exitText")
           .style("text-anchor", "middle").style("font-size", unit2Px * (2 / 10))
           .text("Left-Click to place exit at ~" + 0 + " degrees");
@@ -541,14 +537,17 @@ function LoadField() {
 }
 
 function LoadGraph() {
-  timeText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1/ 25)).attr("y", unit2Px * .4)
-             .style("font-size", unit2Px * (8 / 25)).style("text-anchor", "start").text("Time: 0");
-  frameText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1/ 25)).attr("y", unit2Px * .7)
-              .style("font-size", unit2Px * (8 / 25)).style("text-anchor", "start").text("Frame: 0");
+  w = wireless ? "Wireless" : "Face-To-Face";
+  algNameText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1/25)).attr("y", unit2Px * .35)
+                .style("font-size", unit2Px * (6 / 25)).style("text-anchor", "start").text(algorithmName + w);
+  timeText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1/ 25)).attr("y", unit2Px * .6)
+             .style("font-size", unit2Px * (4 / 25)).style("text-anchor", "start").text("Time: 0");
+  frameText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1/ 25)).attr("y", unit2Px * .8)
+              .style("font-size", unit2Px * (4 / 25)).style("text-anchor", "start").text("Frame: 0");
   graphSVG.select(".backGround").append("rect").attr("width", 4 * unit2Px).attr("height", unit2Px / 8)
           .attr("fill-opacity", 0.0).style("stroke", "#000000");
   timeSlider = graphSVG.select(".backGround").append("rect").attr("width", unit2Px / 8).attr("height", unit2Px / 8)
-               .attr("class", "reveal").style("fill", "#888888")
+               .style("fill", "#888888")
                .call(d3.drag().on("start", SSlide).on("drag", MSlide).on("end", ESlide));
   //var fo = graphSVG.append('foreignObject').attr('x', unit2Px * (1/25)).attr('y', unit2Px * (18/25)).attr('width', unit2Px * 1.5).attr('height', unit2Px * (18/25));
  // var timeButtons = fo.append('xhtml:div');
@@ -922,7 +921,7 @@ function showAlgorithmDesc(s, w){
                 */
 
             ];
-            algorithmName = "2 Priority + 1 Servant (1)";
+            algorithmName = "2 Priority + 1 Servant (1) ";
             break;
 
         case '1Q1S1Q':
@@ -932,7 +931,7 @@ function showAlgorithmDesc(s, w){
                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", 180], ["FollowWall", ["left"]]],
                 [["GoToExit", [null]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right"]]]
             ];
-            algorithmName = "2 Priority + 1 Servant (2)";
+            algorithmName = "2 Priority + 1 Servant (2) ";
             break;
 
         case '1Q4S':
@@ -944,7 +943,7 @@ function showAlgorithmDesc(s, w){
                 [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [75]], ["FollowWall", ["left"]]],
                 [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [285]], ["FollowWall", ["right"]]]
             ];
-            algorithmName = "1 Priority + 4 Servants";
+            algorithmName = "1 Priority + 4 Servants ";
             break;
 
         case '1Q8S':
@@ -960,13 +959,13 @@ function showAlgorithmDesc(s, w){
                 [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [270]], ["FollowWall", ["right", 30]], ["Wait", [null]]],
                 [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [240]], ["FollowWall", ["right"]], ["Wait", [null]]]
             ];
-            algorithmName = "1 Priority + 8 Servants";
+            algorithmName = "1 Priority + 8 Servants ";
             break;
     }
     wireless = w;
     d3.selectAll('.desc').style('display', 'none');
     d3.select('.tabtxt').style('background-color', color);
-    //d3.select('#'+s).style('display', 'inline-block');
+    d3.select('#'+s).style('display', 'inline-block');
     closeNav();
     Reset();
 }

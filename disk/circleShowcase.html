@@ -15,24 +15,24 @@
 <body>
 
     <div id="mySidenav" class="sidenav">
-        <h3 >Wireless Algorithms</h3>
+        <!-- These three are the only face-to-face algorithms. The rest in this list are wireless. -->
+        <h3 >Normal Algorithms (Face-To-Face)</h3>
+        <a href="#AlgA" onclick="showAlgorithmDesc('A', false)">Algorithm A</a>
+        <a href="#AlgB" onclick="showAlgorithmDesc('B', false)">Algorithm B(X, Φ)</a>
+        <a href="#AlgC" onclick="showAlgorithmDesc('C', false)">Algorithm C(X, Φ, λ)</a>
+        <h3 >Normal Algorithms (Wireless)</h3>
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">Close &times;</a>
         <a href="#AlgA" onclick="showAlgorithmDesc('A', true)">Algorithm A</a>
         <a href="#AlgB" onclick="showAlgorithmDesc('B', true)">Algorithm B(X, Φ)</a>
         <a href="#AlgC" onclick="showAlgorithmDesc('C', true)">Algorithm C(X, Φ, λ)</a>
-        <a onclick="showAlgorithmDesc('Q1', true)">Priority Search 1</a>
-        <a onclick="showAlgorithmDesc('Q2', true)">Priority Search 2</a>
-        <a href="#AlgA" onclick="showAlgorithmDesc('2Q1S', true)">2 Queens + 1 Servant (1)</a>
-        <a href="#AlgA" onclick="showAlgorithmDesc('1Q1S1Q', true)">2 Queens + 1 Servant (2)</a>
+        <h3>Priority Algorithms (1 Queen)</h3>
+        <a onclick="showAlgorithmDesc('Q1', true)">1 Queen + 1 Servant</a>
+        <a onclick="showAlgorithmDesc('Q2', true)">1 Queen + 2 Servants</a>
         <a href="#AlgA" onclick="showAlgorithmDesc('1Q4S', true)">1 Queen + 4 Servants</a>
         <a href="#AlgA" onclick="showAlgorithmDesc('1Q8S', true)">1 Queen + 8 Servants</a>
-        
-        <h3>Face-to-Face Algorithms</h3>
-        <a href="#AlgA" onclick="showAlgorithmDesc('A', false)">Algorithm A</a>
-        <a href="#AlgB" onclick="showAlgorithmDesc('B', false)">Algorithm B(X, Φ)</a>
-        <a href="#AlgC" onclick="showAlgorithmDesc('C', false)">Algorithm C(X, Φ, λ)</a>
-        <a href="#AlgA" onclick="showAlgorithmDesc('Q1', false)">Priority Search 1</a>
-        <a href="#AlgA" onclick="showAlgorithmDesc('Q2', false)">Priority Search 2</a>
+        <h3>Multiple Priority (2+ Queens)</h3>
+        <a href="#AlgA" onclick="showAlgorithmDesc('2Q1S', true)">2 Queens + 1 Servant (1)</a>
+        <a href="#AlgA" onclick="showAlgorithmDesc('1Q1S1Q', true)">2 Queens + 1 Servant (2)</a>
 
         <h3>Load ICL File</h3>
         <input style='color:white;' type='file' class='copypaste' id='loadcommands' value='Load Commands' accept='.icl' onchange='LoadAlgorithms(event)' />
@@ -43,6 +43,8 @@
     </div>
 
     <h1>Robots Evacuating a Disk</h1>
+    <!-- Contains the algorithm name and wireless status -->
+    <h2 id="subheader"></h2>
     <script src='circleShowcase.js'></script>
 
 
@@ -56,16 +58,8 @@
 
     </p>-->
 
-    <div class='tab'>
-        <a href="#AlgA"><button id='AlgA' class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("A", false)'/>Algorithm <b>A</b></button></a>
-        <a href="#AlgB"><button id="AlgB" class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("B", false)'/>Algorithm <b>B(X, Φ)</b></button></a>
-        <a href="#AlgC"><button id="AlgC" class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("C", false)'/>Algorithm <b>C(X, Φ, λ)</b></button></a>
-        <a href="#AlgA"><button id='AlgA' class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("Q1", false)'/>Algorithm <b>Priority 1</b></button></a>
-        <a href="#AlgA"><button id='AlgA' class='tablinks' type='submit' action='javascript:void(0)' onClick='showAlgorithmDesc("Q2", false)'/>Algorithm <b>Priority 2</b></button></a>
-    </div>
-    <div class='tabtxt'>
-        These algorithms focus on evacuating two robots using the <span class='tooltip'>Face to Face communication model.<span class='tooltiptext'>The robots can only communicate by physically being next to each other.</span></span>
-        <br />
+    <div class="tabtxt">
+        <b><em><span id="descriptiontitle">Description:</span></em></b>
         <a><div id="A" class='desc'></a>
             <ol><b><em><u>Steps:</u></em></b>
                 <li>
@@ -86,7 +80,6 @@
                 <em>R1 intercepting R2 after finding the exit.</em>
             </p>
         </div>
-
         <a><div id="B" class='desc'></a>
             <br />
             This algorithm takes two arguments, B(X, Φ); X being the arc length travelled before taking <span class='tooltip'>a detour<span class='tooltiptext'>The robot will go away from the perimeter at an angle Φ, and travel toward and stop at the vertical axis of origin. If it has not been intercepted or notified about the exit at the point, it will return to the perimeter.</span></span>, and Φ being the angle to take the detour at.
@@ -111,10 +104,9 @@
             This method takes advantage of the detour phase to provide a slightly faster evacuation time in the event that the exit is found quickly. The robot which finds the exit will travel less distance to intercept the other if it is currently in its detour phase, thus lowering the overall time. The only time which this does not apply is for a smaller set of exit positions, which are observed after the detour phase.
 
         </div>
-
         <a id="AlgC"><div id="C" class='desc'>
             <br />
-            This algorithm takes two arguments, C(X, Φ, λ); X being the arc length travelled before taking <span class='tooltip'>a triangular detour<span class='tooltiptext'>The robot will go away from the perimeter at an angle Φ for time λ, and then travel DIRECTLY toward and stop at the vertical axis of origin. If it has not been intercepted or notified about the exit at the point, it will return to the perimeter using the shortest path back to the point it came from.</span></span>, Φ being the angle to take the detour at, and λ being the time for at which the robot starts to travel directly to the central axis from its detour.
+            This algorithm takes three arguments, C(X, Φ, λ); X being the arc length travelled before taking <span class='tooltip'>a triangular detour<span class='tooltiptext'>The robot will go away from the perimeter at an angle Φ for time λ, and then travel DIRECTLY toward and stop at the vertical axis of origin. If it has not been intercepted or notified about the exit at the point, it will return to the perimeter using the shortest path back to the point it came from.</span></span>, Φ being the angle to take the detour at, and λ being the time for at which the robot starts to travel directly to the central axis from its detour.
             This algorithm shares the same first three steps as Algorithm A.
             <ol><b><em><u>Steps (Algorithm C):</u></em></b>
                 <li>
@@ -137,6 +129,6 @@
 
         </div>
     </div>
-
+    
 </body>
 </html>
