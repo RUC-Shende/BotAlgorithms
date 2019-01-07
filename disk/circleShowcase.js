@@ -490,16 +490,18 @@ function Load() {
     
     var holdA = 'M' + (tourPoints[i][0].x + ',' + (tourPoints[i][0].y));
     var holdG = 'M' + (graphPoints[i][0].x + ',' + (graphPoints[i][0].y));
+    /*
     for (var j = 1; j < timeMax; j++) {
       holdA += 'L' + (tourPoints[i][j].x + ',' + (tourPoints[i][j].y));
       holdG += 'L' + (graphPoints[i][j].x + ',' + (graphPoints[i][j].y));
 
     }
-    
+    */
     tourLine[i] = fieldSVG.select(".lines").append("path").attr("d", holdA)
                   .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
     graphLine[i] = graphSVG.select(".lines").append("path").attr("d", holdG)
                    .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
+    
   }
 }
 
@@ -792,7 +794,7 @@ function AlterLines(i) {
   
   var holdA = 'M' + (tourPoints[i][0].x + ',' + (tourPoints[i][0].y));
   var holdG = 'M' + (graphPoints[i][0].x + ',' + (graphPoints[i][0].y));
-  for (var j = 1; j < timeMax; j++) {
+  for (var j = 1; j < time; j++) {
     holdA += 'L' + (tourPoints[i][j].x + ',' + (tourPoints[i][j].y));
     holdG += 'L' + (graphPoints[i][j].x + ',' + (graphPoints[i][j].y));
 
