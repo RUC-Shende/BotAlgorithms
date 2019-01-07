@@ -48,6 +48,7 @@ var b = d3.select('body').append('div');
 function SSlide() {
   d3.select(this).style("fill", "orange");
   d3.select(this).classed("active", true);
+  d3.selectAll(".sliderhelp").style("visibility", "hidden");
 }
 
 function MSlide() {
@@ -67,6 +68,7 @@ function MSlide() {
 function ESlide() {
   d3.select(this).style("fill", "#888888");
   d3.select(this).classed("active", false);
+  d3.selectAll(".sliderhelp").style("visibility", "visible");
 }
 
 //////////---------- Instantiate Classes ----------//////////
@@ -471,6 +473,35 @@ function Load() {
     graphPoints.push([]);
     touristNum++;
   }
+  
+  
+  var touristCount = 0;
+  outer: 
+  for (var i = 0; i <= 2; i++){
+      if (touristCount + 1 == instruBinder.length){
+          break outer;
+      }
+      for (var j = 0; j <= 2; j++) {
+          graphSVG.select(".overLay").append("circle")
+                  .attr("cx", (2*unit2Px) + (j * (2/3 * unit2Px)))
+                  .attr("cy", (unit2Px * 0.6) + (i * (1/4 * unit2Px)))
+                  .attr("r", unit2Px / 16)
+                  .style("fill", tourColors[touristCount])
+                  .style("stroke", "#ffffff")
+                  .style("stroke-width", (1/100 * unit2Px));
+          graphSVG.select(".overLay").append("text")
+                  .attr("x", (2*unit2Px) + (unit2Px / 15) + (j * (2/3 * unit2Px)))
+                  .attr("y", (unit2Px * 0.6) + (unit2Px/32) +  (i * (1/4 * unit2Px)))
+                  .style("font-size", unit2Px * (3/25))
+                  .text("Bot " + touristCount + ((instruBinder[touristCount][0][1][1] == true) ? " (Q)" : ""));
+          if (touristCount + 1 == instruBinder.length){
+              break outer;
+          }
+          touristCount ++;
+                  
+      }
+  }
+  
 
   dataBox = fieldSVG.select(".overLay").append("svg").attr("width", 2 * unit2Px).attr("height", unit2Px).attr("visibility", "hidden");
   for (var i = 0; i < tourists.length; i++){
@@ -548,8 +579,9 @@ function LoadField() {
 
 function LoadGraph() {
   w = wireless ? "Wireless" : "Face-To-Face";
-  algNameText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1/25)).attr("y", unit2Px * .35)
-                .style("font-size", unit2Px * (6 / 25)).style("text-anchor", "start").text(algorithmName + w);
+  algNameText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (2)).attr("y", unit2Px * (1/5))
+                .style("font-size", unit2Px * (1 / 5)).style("text-anchor", "start").style("text-anchor", "middle")
+                .text(algorithmName + w);
   timeText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1/ 25)).attr("y", unit2Px * .6)
              .style("font-size", unit2Px * (4 / 25)).style("text-anchor", "start").text("Time: 0");
   frameText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1/ 25)).attr("y", unit2Px * .8)
@@ -601,6 +633,7 @@ function LoadGraph() {
           .style("font-size", unit2Px * (5 / 25)).style("fill", "#000000").text("Distance from Exit");
   graphSVG.select(".backGround").append("text").attr("x", unit2Px * 2).attr("y", unit2Px * (395 / 100)).attr("text-anchor", "middle")
           .style("font-size", unit2Px * (5 / 25)).style("fill", "#000000").text("Time");
+  
 }
 
 //Reset Animation.
@@ -721,9 +754,13 @@ function AlterAnim() {
               .attr("y", unit2Px * (94 / 25))
               .style("font-size", unit2Px * (4 / 25)).style("text-anchor", "middle").text(i);
     }
-    graphSVG.select(".backGround").append("text").attr("x", (unit2Px * 75/25)).attr("y", unit2Px * (1.8))
-                                                 .style("font-size", unit2Px * (4/25))
-                                                 .text("End: " + Math.floor((100 * time) / fps) / 100 + " sec");
+    graphSVG.select(".backGround").append("text").attr("x", (unit2Px * 65/25)).attr("y", unit2Px * (1.7))
+            .style("font-size", unit2Px * (4/25))
+            .text("End: " + Math.floor((100 * time) / fps) / 100 + " sec");
+    graphSVG.select(".overLay").append('text').attr("x", unit2Px * 65/25).attr("y", unit2Px * 1.83)
+            .attr("class", "sliderhelp").style("font-size", unit2Px * (3/25)).text("Click and drag gray bar");
+    graphSVG.select(".overLay").append('text').attr("x", unit2Px * 65/25).attr("y", unit2Px * 1.95)
+            .attr("class", "sliderhelp").style("font-size", unit2Px * (3/25)).text("to see the timeline");
   } else {
     var saveBuffer = [];
 
@@ -913,45 +950,45 @@ function showAlgorithmDesc(s, w){
         case 'A':
             color = "#efe";
             instruBinder = [
-                            [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right"]]],
-                            [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left"]]]
+                            [["InterceptNonBeliever", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right"]]],
+                            [["InterceptNonBeliever", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left"]]]
                         ];
             algorithmName = "Algorithm A ";
             break;
         case 'B':
             color = '#eef';
             instruBinder = [
-                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
-                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
+                                 [["InterceptNonBeliever", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
+                                 [["InterceptNonBeliever", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
                                ];
             algorithmName = "Algorithm B ";
             break;
         case 'C':
             color = '#fee';
             instruBinder = [
-                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0] + 70, center[1]+40]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
-                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0] - 70, center[1]+40]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
+                                 [["InterceptNonBeliever", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0] + 70, center[1]+40]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
+                                 [["InterceptNonBeliever", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0] - 70, center[1]+40]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
                                ];
             algorithmName = "Algorithm C ";
             break;
         case 'Q1':
             color = "#efe";
             instruBinder = [
-                                 [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]],
-                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right"]]]
+                                 [["GoToExit", [null, true, "#fe447d"]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]],
+                                 [["InterceptNonBeliever", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right"]]]
                                ];
             algorithmName = "Algorithm Priority 1 ";
             break;
         case 'Q2':
             color = "#efe";
             instruBinder = [
-                                  [["GoToExit", [null, true]], ["GoToWallAtAngle", [160]], ["FollowWall", ["left", 20]], ["GoToPoint", [center[0] + 30, center[1] + 30]], ["GoToWallAtAngle", [320]], ["Wait", [null]]],
-                                  [["InterceptNonBeliever", [null, false]], ["GoToWallAtAngle", [160]], ["FollowWall", ["right"]]],
+                                  [["GoToExit", [null, true, "#fe447d"]], ["GoToWallAtAngle", [160]], ["FollowWall", ["left", 20]], ["GoToPoint", [center[0] + 30, center[1] + 30]], ["GoToWallAtAngle", [320]], ["Wait", [null]]],
+                                  [["InterceptNonBeliever", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [160]], ["FollowWall", ["right"]]],
                                   [["InterceptNonBeliever", [null, false]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]]
             ];
             algorithmName = "Algorithm Priority 2 ";
             break;
-        case '2Q1S':
+        case 'Q2S1':
             color = "#eee";
             instruBinder = [
                 [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]],
@@ -973,7 +1010,7 @@ function showAlgorithmDesc(s, w){
             algorithmName = "2 Priority + 1 Servant (1) ";
             break;
 
-        case '1Q1S1Q':
+        case 'Q1S1Q1':
             color = "#eee";
             instruBinder = [
                 [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]] ,["FollowWall", ["right"]]],
@@ -983,7 +1020,7 @@ function showAlgorithmDesc(s, w){
             algorithmName = "2 Priority + 1 Servant (2) ";
             break;
 
-        case '1Q4S':
+        case 'Q1S4':
             color = "#eee";
             instruBinder = [
                 [["GoToExit", [null, true]], ["Wait", [(1 + (Math.PI / 2))]], ["GoToWallAtAngle", [180]]],
@@ -995,7 +1032,7 @@ function showAlgorithmDesc(s, w){
             algorithmName = "1 Priority + 4 Servants ";
             break;
 
-        case '1Q8S':
+        case 'Q1S8':
             color = "#eee";
             instruBinder = [
                 [["GoToExit", [null, true]], ["Wait", [(1+(Math.PI / 2))]], ["GoToWallAtAngle", [180]], ["Wait", [null]]],

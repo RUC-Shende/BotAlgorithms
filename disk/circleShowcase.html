@@ -28,11 +28,11 @@
         <h3>Priority Algorithms (1 Queen)</h3>
         <a onclick="showAlgorithmDesc('Q1', true)">1 Queen + 1 Servant</a>
         <a onclick="showAlgorithmDesc('Q2', true)">1 Queen + 2 Servants</a>
-        <a href="#AlgA" onclick="showAlgorithmDesc('1Q4S', true)">1 Queen + 4 Servants</a>
-        <a href="#AlgA" onclick="showAlgorithmDesc('1Q8S', true)">1 Queen + 8 Servants</a>
+        <a onclick="showAlgorithmDesc('Q1S4', true)">1 Queen + 4 Servants</a>
+        <a onclick="showAlgorithmDesc('Q1S8', true)">1 Queen + 8 Servants</a>
         <h3>Multiple Priority (2+ Queens)</h3>
-        <a href="#AlgA" onclick="showAlgorithmDesc('2Q1S', true)">2 Queens + 1 Servant (1)</a>
-        <a href="#AlgA" onclick="showAlgorithmDesc('1Q1S1Q', true)">2 Queens + 1 Servant (2)</a>
+        <a onclick="showAlgorithmDesc('Q2S1', true)">2 Queens + 1 Servant (1)</a>
+        <a onclick="showAlgorithmDesc('Q1S1Q1', true)">2 Queens + 1 Servant (2)</a>
 
         <h3>Load ICL File</h3>
         <input style='color:white;' type='file' class='copypaste' id='loadcommands' value='Load Commands' accept='.icl' onchange='LoadAlgorithms(event)' />
@@ -60,7 +60,7 @@
 
     <div class="tabtxt">
         <b><em><span id="descriptiontitle">Description:</span></em></b>
-        <a><div id="A" class='desc'></a>
+        <a id="AlgA"><div id="A" class='desc'></a>
             <ol><b><em><u>Steps:</u></em></b>
                 <li>
                     The robots go to the perimeter at the same angle.
@@ -80,7 +80,7 @@
                 <em>R1 intercepting R2 after finding the exit.</em>
             </p>
         </div>
-        <a><div id="B" class='desc'></a>
+        <a id="AlgB"><div id="B" class='desc'></a>
             <br />
             This algorithm takes two arguments, B(X, Φ); X being the arc length travelled before taking <span class='tooltip'>a detour<span class='tooltiptext'>The robot will go away from the perimeter at an angle Φ, and travel toward and stop at the vertical axis of origin. If it has not been intercepted or notified about the exit at the point, it will return to the perimeter.</span></span>, and Φ being the angle to take the detour at.
             This algorithms shares the same first three steps as algorithm A.
@@ -128,6 +128,21 @@
             This method takes advantage of the triangular detour phase to provide a slightly faster evacuation time in the event that the exit is found quickly. The robot which finds the exit will travel less distance to intercept the other if it is currently in its detour phase, thus lowering the overall time. The only time which this does not apply is for a smaller set of exit positions, which are observed after the detour phase.
 
         </div>
+
+        <a id="AlgQ1"><div id="Q1" class='desc'>Q1</a>
+        </div>
+        <a id="AlgQ2"><div id="Q2" class='desc'>Q2</a>
+        </div>
+        <a id="Alg2Q1S"><div id="Q2S1" class='desc'>2Q1S</a>
+        </div>
+        <a id="Alg1Q1S1Q"><div id="Q1S1Q1" class='desc'>1Q1S1Q</a>
+        </div>
+        <a id="Alg1Q4S"><div id="Q1S4" class='desc'>1Q4S</a>
+        </div>
+        <a id="Alg1Q8S"><div id="Q1S8" class='desc'>1Q8S</a>
+        </div>
+
+
     </div>
 
     <div class="footer">
