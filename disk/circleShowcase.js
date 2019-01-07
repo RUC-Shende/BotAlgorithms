@@ -18,12 +18,10 @@ var exitAngle = 0;
 var fieldExit = [center[0] + unit2Px, center[1]];
 
 var dataBox;
-var lineFx = d3.line().x((d) => {return d.x;}).y((d) => {return(d.y);});
-
 var touristNum = 0;
 var instruBinder = [
-                     [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]],
-                     [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [190]], ["FollowWall", ["right"]]]
+                     [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]],
+                     [["InterceptNonBeliever", [null, false]], ["GoToWallAtAngle", [190]], ["FollowWall", ["right"]]]
                    ];
 var algorithmName = "Priority 1 ";
 var tourColors = [];
@@ -145,9 +143,11 @@ class Tourist {
     if (this.x == fieldExit[0] && this.y == fieldExit[1] && !this.atExit) {
         console.log("Robot " + this.number + " exits at " + (Math.floor((100 * time) / fps) / 100));
         this.atExit = true;
+        /*
         graphSVG.select(".overLay").append("line").attr("x1", graphDots[this.number].attr("cx")).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
                       .attr("x2", graphDots[this.number].attr("cx")).attr("y2", 2 * unit2Px).style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px)
                       .style("stroke-opacity", 0.5);
+        */
     }
   }
 
@@ -460,11 +460,10 @@ function Load() {
   for (var i = 0; i < instruBinder.length; i++) {//Add bots, lines, and coordinate collectors.
     tourColors.push(RandomColor(i));
     console.log(touristNum);
-    var p = false;
     tourists.push(new Tourist(fieldSVG.select(".bots").append("circle").attr("cx", center[0]).attr("cy", center[1])
                               .attr("data", touristNum).attr("r", unit2Px / 16).on("mouseover", MoveDataBox)
                               .on("mouseout", HideDataBox).style("fill", tourColors[i])
-                              .style("stroke", "#ffffff").style("stroke-width", (1 / 100) * unit2Px), p));
+                              .style("stroke", "#ffffff").style("stroke-width", (1 / 100) * unit2Px), instruBinder[i][0][1][1]));
     tourPoints.push([]);
     graphDots.push(graphSVG.select(".bots").append("circle").attr("cx", unit2Px * (10 / 25))
                    .attr("cy", unit2Px * 4 * (20 / 25) - unit2Px * (10 / 25)).attr("r", unit2Px / 16)
@@ -555,8 +554,6 @@ function LoadGraph() {
              .style("font-size", unit2Px * (4 / 25)).style("text-anchor", "start").text("Time: 0");
   frameText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1/ 25)).attr("y", unit2Px * .8)
               .style("font-size", unit2Px * (4 / 25)).style("text-anchor", "start").text("Frame: 0");
-  graphSVG.select(".backGround").append("rect").attr("width", 4 * unit2Px).attr("height", unit2Px / 8)
-          .attr("fill-opacity", 0.0).style("stroke", "#000000");
   timeSlider = graphSVG.select(".backGround").append("rect").attr("width", unit2Px / 20).attr("height", unit2Px * (31/20))
                .attr("y", unit2Px * 2).attr("x", unit2Px * (10/25))
                .style("fill", "#888888").style("fill-opacity", .5)
@@ -591,11 +588,14 @@ function LoadGraph() {
             .attr("y", unit2Px * (90 / 25) - i * unit2Px * (20 / 25))
             .style("font-size", unit2Px * (4 / 25)).style("text-anchor", "middle").text(i + 'r');
   }
+  
   for (var i = 0; i < 11; i++) {//Create x-axis labels.
     graphSVG.select(".backGround").append("text").attr("x", unit2Px * (10 / 25) + i * unit2Px * (8 / 25))
             .attr("y", unit2Px * (94 / 25))
-            .style("font-size", unit2Px * (4 / 25)).style("text-anchor", "middle").text(i);
+            .style("font-size", unit2Px * (4 / 25)).style("text-anchor", "middle").text(i)
+            .attr("class", "graphnum");
   }
+  
   graphSVG.select(".backGround").append("text").attr("x", unit2Px * (5 / 25)).attr("y", unit2Px * (70 / 25)).attr("text-anchor", "middle")
           .attr("transform", "rotate(-90," + unit2Px * (5 / 25) + ',' + unit2Px * (70 / 25) + ')')
           .style("font-size", unit2Px * (5 / 25)).style("fill", "#000000").text("Distance from Exit");
@@ -706,9 +706,24 @@ function AlterAnim() {
     time = timeMax;
     clearInterval(projector);
     projector = setInterval(PlayAnim, 1000 / fps);
+    
+    for (var i = 0; i < 11; i++) {//Create x-axis labels.
+      graphSVG.selectAll(".graphnum").style("display", "none");
+    }
+    
     for (i = 0; i < touristNum; i++){
         AlterLines(i);
+        
     }
+    
+    for (var i = 0; i <= Math.floor((100 * time) / fps) / 100; i++) {//Create x-axis labels.
+      graphSVG.select(".backGround").append("text").attr("x", (10/25 + (i / (Math.floor((100 * time) / fps) / 100)) * 80/25) * unit2Px)//unit2Px * (10 / 25) + ((Math.floor(timeMax) - i) * 80/25) * unit2Px)
+              .attr("y", unit2Px * (94 / 25))
+              .style("font-size", unit2Px * (4 / 25)).style("text-anchor", "middle").text(i);
+    }
+    graphSVG.select(".backGround").append("text").attr("x", (unit2Px * 75/25)).attr("y", unit2Px * (1.8))
+                                                 .style("font-size", unit2Px * (4/25))
+                                                 .text("End: " + Math.floor((100 * time) / fps) / 100 + " sec");
   } else {
     var saveBuffer = [];
 
@@ -740,9 +755,13 @@ function AlterAnim() {
     if (exitAlert) {
       if (exitFoundLine == null) {
         var holdX = (unit2Px * (10 / 25) + ((time + exitAllow) / timeMax) * (80 / 25) * unit2Px);
-        exitFoundLine = graphSVG.select(".overLay").append("line").attr("x1", holdX).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
+        exitFoundLine = 1;
+                            
+                        /*
+                        graphSVG.select(".overLay").append("line").attr("x1", holdX).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
                         .attr("x2", holdX).attr("y2", 2 * unit2Px).style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px)
                         .style("stroke-opacity", 0.5);
+                        */
       }
       for (var i = 0; i < tourists.length; i++) {//reset bots
         var who = tourists[i];
@@ -793,16 +812,16 @@ function AlterLines(i) {
   tourLine[i].remove();
   
   var holdA = 'M' + (tourPoints[i][0].x + ',' + (tourPoints[i][0].y));
-  var holdG = 'M' + (graphPoints[i][0].x + ',' + (graphPoints[i][0].y));
+  var holdG = 'M' + (10/25) * unit2Px + ',' + (graphPoints[i][0].y);
   for (var j = 1; j < time; j++) {
     holdA += 'L' + (tourPoints[i][j].x + ',' + (tourPoints[i][j].y));
-    holdG += 'L' + (graphPoints[i][j].x + ',' + (graphPoints[i][j].y));
-
+    holdG += 'L' + ((10/25) + ((graphPoints[i][j].x / timeMax) * (63/20))) * unit2Px  + ',' + (graphPoints[i][j].y);
+    //((10/25) + (graphPoints[i][j].x / timeMax) * (63/20)) * unit2Px)
   }
   
   tourLine[i] = fieldSVG.select(".lines").append("path").attr("d", holdA)
                 .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
-  graphPoints[i][time] = {x:(unit2Px * (10 / 25) + (time / timeMax) * (80 / 25) * unit2Px), y:(dista - unit2Px * (10 / 25))};
+  graphPoints[i][time] = {x:time, y:(dista - unit2Px * (10 / 25))};
   graphLine[i].remove();
   graphLine[i] = graphSVG.select(".lines").append("path").attr("d", holdG)
                  .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
@@ -816,16 +835,21 @@ function AllAtExit() {
     }
     else if (!priorityExitedLine && tourists[j].priority){//assuming also at exit...
         var holdP = (unit2Px * (10 / 25) + ((time + exitAllow) / timeMax) * (80/25) * unit2Px);
-        priorityExitedLine = graphSVG.select(".overLay").append("line").attr("x1", holdP).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
+        priorityExitedLine = 1;
+                            /*graphSVG.select(".overLay").append("line").attr("x1", holdP).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
                           .attr("x2", holdP).attr("y2", 1.75 * unit2Px).style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px)
-                          .style("stroke-opacity", 0.5);
+                          .style("stroke-opacity", 0.5);*/
+        
+        timeMax = time; //to account for the extra bot getting to its next point 
     }
   }
   if (!allExitedLine){
     var holdX = (unit2Px * (10 / 25) + ((time + exitAllow) / timeMax) * (80 / 25) * unit2Px);
-    allExitedLine = graphSVG.select(".overLay").append("line").attr("x1", holdX).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
+    
+    allExitedLine = 1;
+                    /*graphSVG.select(".overLay").append("line").attr("x1", holdX).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
                   .attr("x2", holdX).attr("y2", 2 * unit2Px).style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px)
-                  .style("stroke-opacity", 0.5);
+                  .style("stroke-opacity", 0.5);*/
     timeMax = time;
   }
   //console.log(Math.floor((100 * time) / fps) / 100);
@@ -852,7 +876,7 @@ function UpdateVisuals() {
   for (var i = 0; i < touristNum; i++) {
     var who = tourists[i];
     who.visual.attr("cx", tourPoints[i][Math.floor(time)].x).attr("cy", tourPoints[i][Math.floor(time)].y);
-    graphDots[i].attr("cx", graphPoints[i][Math.floor(time)].x).attr("cy", graphPoints[i][Math.floor(time)].y);
+    graphDots[i].attr("cx", ((10/25) + ((graphPoints[i][Math.floor(time)].x / timeMax) * (63/20))) * unit2Px).attr("cy", graphPoints[i][Math.floor(time)].y);
   }
 }
 
@@ -921,18 +945,18 @@ function showAlgorithmDesc(s, w){
         case 'Q2':
             color = "#efe";
             instruBinder = [
-                                  [["GoToExit", [null]], ["GoToWallAtAngle", [160]], ["FollowWall", ["left", 20]], ["GoToPoint", [center[0] + 30, center[1] + 30]], ["GoToWallAtAngle", [320]], ["Wait", [null]]],
-                                  [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [160]], ["FollowWall", ["right"]]],
-                                  [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]]
+                                  [["GoToExit", [null, true]], ["GoToWallAtAngle", [160]], ["FollowWall", ["left", 20]], ["GoToPoint", [center[0] + 30, center[1] + 30]], ["GoToWallAtAngle", [320]], ["Wait", [null]]],
+                                  [["InterceptNonBeliever", [null, false]], ["GoToWallAtAngle", [160]], ["FollowWall", ["right"]]],
+                                  [["InterceptNonBeliever", [null, false]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]]
             ];
             algorithmName = "Algorithm Priority 2 ";
             break;
         case '2Q1S':
             color = "#eee";
             instruBinder = [
-                [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]],
-                [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right", 45]], ["GoToPoint", [center[0] + (unit2Px * 0.65), center[1]]], ["GoToWallAtAngle", [337.5]], ["FollowWall", ["left"]]],
-                [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [135]], ["FollowWall", ["right"]]]
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]],
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right", 45]], ["GoToPoint", [center[0] + (unit2Px * 0.65), center[1]]], ["GoToWallAtAngle", [337.5]], ["FollowWall", ["left"]]],
+                [["InterceptNonBeliever", [null, false]], ["GoToWallAtAngle", [135]], ["FollowWall", ["right"]]]
                 /*
                 [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 65]], ["GoToPoint", [center[0], center[1]]], ["GoToWallAtAngle", [245]], ["FollowWall", ["left"]]],
                 [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right", 65]], ["GoToPoint", [center[0], center[1]]], ["GoToWallAtAngle", [115]], ["FollowWall", ["right"]]],
@@ -952,9 +976,9 @@ function showAlgorithmDesc(s, w){
         case '1Q1S1Q':
             color = "#eee";
             instruBinder = [
-                [["GoToExit", [null]], ["GoToWallAtAngle", [180]] ,["FollowWall", ["right"]]],
-                [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", 180], ["FollowWall", ["left"]]],
-                [["GoToExit", [null]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right"]]]
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]] ,["FollowWall", ["right"]]],
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right"]]],
+                [["InterceptNonBeliever", [null, false]], ["GoToWallAtAngle", 180], ["FollowWall", ["left"]]]
             ];
             algorithmName = "2 Priority + 1 Servant (2) ";
             break;
@@ -962,11 +986,11 @@ function showAlgorithmDesc(s, w){
         case '1Q4S':
             color = "#eee";
             instruBinder = [
-                [["GoToExit", [null]], ["Wait", [(1 + (Math.PI / 2))]], ["GoToWallAtAngle", [180]]],
-                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left", 75]], ["Wait", [null]]],
-                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right", 75]], ["Wait", [null]]],
-                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [75]], ["FollowWall", ["left"]]],
-                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [285]], ["FollowWall", ["right"]]]
+                [["GoToExit", [null, true]], ["Wait", [(1 + (Math.PI / 2))]], ["GoToWallAtAngle", [180]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left", 75]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right", 75]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [75]], ["FollowWall", ["left"]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [285]], ["FollowWall", ["right"]]]
             ];
             algorithmName = "1 Priority + 4 Servants ";
             break;
@@ -974,15 +998,15 @@ function showAlgorithmDesc(s, w){
         case '1Q8S':
             color = "#eee";
             instruBinder = [
-                [["GoToExit", [null]], ["Wait", [(1+(Math.PI / 2))]], ["GoToWallAtAngle", [180]], ["Wait", [null]]],
-                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left", 60]], ["Wait", [null]]],
-                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [60]], ["FollowWall", ["left", 30]], ["Wait", [null]]],
-                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 30]], ["Wait", [null]]],
-                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [120]], ["FollowWall", ["left"]]],
-                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right", 60]], ["Wait", [null]]],
-                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [300]], ["FollowWall", ["right", 30]], ["Wait", [null]]],
-                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [270]], ["FollowWall", ["right", 30]], ["Wait", [null]]],
-                [["InterceptNonBeliever", [0]], ["GoToWallAtAngle", [240]], ["FollowWall", ["right"]], ["Wait", [null]]]
+                [["GoToExit", [null, true]], ["Wait", [(1+(Math.PI / 2))]], ["GoToWallAtAngle", [180]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left", 60]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [60]], ["FollowWall", ["left", 30]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 30]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [120]], ["FollowWall", ["left"]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right", 60]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [300]], ["FollowWall", ["right", 30]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [270]], ["FollowWall", ["right", 30]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [240]], ["FollowWall", ["right"]], ["Wait", [null]]]
             ];
             algorithmName = "1 Priority + 8 Servants ";
             break;
