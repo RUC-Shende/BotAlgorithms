@@ -18,7 +18,7 @@ var exitAngle = 0;
 var fieldExit = [center[0] + unit2Px, center[1]];
 
 var dataBox;
-var lineFx = d3.line().x((d) => {return(d.x);}).y((d) => {return(d.y);});
+var lineFx = d3.line().x((d) => {return d.x;}).y((d) => {return(d.y);});
 
 var touristNum = 0;
 var instruBinder = [
@@ -54,13 +54,13 @@ function SSlide() {
 
 function MSlide() {
   var mousePos = d3.event.x;
-  if (mousePos < 0) {
-    mousePos = 0;
-  } else if (mousePos > (31 / 8) * unit2Px) {
-    mousePos = (31 / 8) * unit2Px;
+  if (mousePos < unit2Px * (10/25)) {
+    mousePos = unit2Px * (10/25);
+} else if (mousePos > (71 / 20) * unit2Px) {
+    mousePos = (71 / 20) * unit2Px;
   }
   d3.select(this).attr("x", mousePos);
-  time = Math.round((mousePos / ((31 / 8) * unit2Px)) * timeMax);
+  time = Math.round(((mousePos - (unit2Px * 10/25)) / ((63 / 20) * unit2Px)) * timeMax);
   timeText.text("Time: " + Math.floor((100 * time) / fps) / 100);
   frameText.text("Frame: " + Math.floor(time));
   UpdateVisuals();
@@ -487,9 +487,18 @@ function Load() {
     tourists[i].a = 0;
     tourists[i].x = center[0];
     tourists[i].y = center[1];
-    tourLine[i] = fieldSVG.select(".lines").append("path").attr("d", lineFx(tourPoints[i]))
+    
+    var holdA = 'M' + (tourPoints[i][0].x + ',' + (tourPoints[i][0].y));
+    var holdG = 'M' + (graphPoints[i][0].x + ',' + (graphPoints[i][0].y));
+    for (var j = 1; j < timeMax; j++) {
+      holdA += 'L' + (tourPoints[i][j].x + ',' + (tourPoints[i][j].y));
+      holdG += 'L' + (graphPoints[i][j].x + ',' + (graphPoints[i][j].y));
+
+    }
+    
+    tourLine[i] = fieldSVG.select(".lines").append("path").attr("d", holdA)
                   .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
-    graphLine[i] = graphSVG.select(".lines").append("path").attr("d", lineFx(graphPoints[i]))
+    graphLine[i] = graphSVG.select(".lines").append("path").attr("d", holdG)
                    .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
   }
 }
@@ -546,8 +555,9 @@ function LoadGraph() {
               .style("font-size", unit2Px * (4 / 25)).style("text-anchor", "start").text("Frame: 0");
   graphSVG.select(".backGround").append("rect").attr("width", 4 * unit2Px).attr("height", unit2Px / 8)
           .attr("fill-opacity", 0.0).style("stroke", "#000000");
-  timeSlider = graphSVG.select(".backGround").append("rect").attr("width", unit2Px / 8).attr("height", unit2Px / 8)
-               .style("fill", "#888888")
+  timeSlider = graphSVG.select(".backGround").append("rect").attr("width", unit2Px / 20).attr("height", unit2Px * (31/20))
+               .attr("y", unit2Px * 2).attr("x", unit2Px * (10/25))
+               .style("fill", "#888888").style("fill-opacity", .5)
                .call(d3.drag().on("start", SSlide).on("drag", MSlide).on("end", ESlide));
   //var fo = graphSVG.append('foreignObject').attr('x', unit2Px * (1/25)).attr('y', unit2Px * (18/25)).attr('width', unit2Px * 1.5).attr('height', unit2Px * (18/25));
  // var timeButtons = fo.append('xhtml:div');
@@ -694,6 +704,9 @@ function AlterAnim() {
     time = timeMax;
     clearInterval(projector);
     projector = setInterval(PlayAnim, 1000 / fps);
+    for (i = 0; i < touristNum; i++){
+        AlterLines(i);
+    }
   } else {
     var saveBuffer = [];
 
@@ -765,7 +778,7 @@ function AlterAnim() {
     AllAtExit();
     UpdateVisuals();
     time++;
-    timeSlider.attr("x", (time / timeMax) * (31 / 8) * unit2Px);
+    timeSlider.attr("x", ((10/25) + (time / timeMax) * (63/20)) * unit2Px);
   }
   timeText.text("Time: " + Math.floor((100 * time) / fps) / 100);
   frameText.text("Frame: " + time);
@@ -776,11 +789,20 @@ function AlterLines(i) {
   var dista = unit2Px * 4 - Math.abs((Math.sqrt(Math.pow(fieldExit[0] - tourists[i].x, 2) + Math.pow(fieldExit[1] - tourists[i].y, 2)) * (20 / 25)));
   tourPoints[i][time] = {x:tourists[i].x, y:tourists[i].y};
   tourLine[i].remove();
-  tourLine[i] = fieldSVG.select(".lines").append("path").attr("d", lineFx(tourPoints[i]))
+  
+  var holdA = 'M' + (tourPoints[i][0].x + ',' + (tourPoints[i][0].y));
+  var holdG = 'M' + (graphPoints[i][0].x + ',' + (graphPoints[i][0].y));
+  for (var j = 1; j < timeMax; j++) {
+    holdA += 'L' + (tourPoints[i][j].x + ',' + (tourPoints[i][j].y));
+    holdG += 'L' + (graphPoints[i][j].x + ',' + (graphPoints[i][j].y));
+
+  }
+  
+  tourLine[i] = fieldSVG.select(".lines").append("path").attr("d", holdA)
                 .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
   graphPoints[i][time] = {x:(unit2Px * (10 / 25) + (time / timeMax) * (80 / 25) * unit2Px), y:(dista - unit2Px * (10 / 25))};
   graphLine[i].remove();
-  graphLine[i] = graphSVG.select(".lines").append("path").attr("d", lineFx(graphPoints[i]))
+  graphLine[i] = graphSVG.select(".lines").append("path").attr("d", holdG)
                  .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
 }
 
@@ -802,6 +824,7 @@ function AllAtExit() {
     allExitedLine = graphSVG.select(".overLay").append("line").attr("x1", holdX).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
                   .attr("x2", holdX).attr("y2", 2 * unit2Px).style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px)
                   .style("stroke-opacity", 0.5);
+    timeMax = time;
   }
   //console.log(Math.floor((100 * time) / fps) / 100);
 }
@@ -817,7 +840,7 @@ function PlayAnim() {
       timeDirect = 0;
     }
     UpdateVisuals();
-    timeSlider.attr("x", (time / timeMax) * (31 / 8) * unit2Px);
+    timeSlider.attr("x", ((10/25) + (time / timeMax) * (63/20)) * unit2Px);
     timeText.text("Time: " + Math.floor((100 * time) / fps) / 100);
     frameText.text("Frame: " + Math.floor(time));
   }

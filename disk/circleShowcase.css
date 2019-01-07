@@ -112,7 +112,7 @@ h3 {
     font-size: 24px;
     display: none;
     font-family: "Ubuntu", "Roboto Condensed", Verdana, sans-serif;
-    
+
 }
 
 .tooltip {
@@ -269,6 +269,23 @@ h3 {
     font-size: 30px;
     width: 100%;
     text-align: center;
+}
+
+.footer {
+    width: 90%;
+    height: 120px;
+    margin: 0 auto;
+    margin-top: 30px;
+    background-color: #bbbbcc;
+    border-radius: 15px 15px 0px 0px;
+    bottom: 0;
+}
+
+.footer a {
+    text-decoration: underline;
+    color: blue;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 #A, #B, #C {
