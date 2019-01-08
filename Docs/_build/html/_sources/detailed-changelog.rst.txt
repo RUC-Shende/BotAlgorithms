@@ -1,17 +1,34 @@
 Project History
 ===============
 
-11/06/18:
----------
+01/07/19: Circle Showcase
+-------------------------
+
+We have made many major and minor improvements to the Circle Showcase in this update.
+
+In terms of bigger improvements and bug fixes, one of the more notable ones was making it so that the graph shown on the right scales to be in proportion with the whole viewport when the algorithm is finished.
+Doing this meant removing the lines left over from the rest of the algorithm (when the algorithm went for a full ten seconds.) We only do this once the algorithm has finished because when it is running, it
+is doing a live simulation of the algorithm with the given exit, so we do not know until the end how big we should make it.
+
+Another leftover from running a pre-simulation was removed in this update as well. Previously, when an algorithm was freshly selected we would run it with no exit anywhere on the circle, to set up all of our necessary
+variables, ensure it was working, etc. Now, the lines from pre-loading are no longer drawn as they were not necessary and made following the graph and animation harder.
+
+Some of the minor improvements and fixes are as follows: added a way to determine priority (queen) in instruBinder, made algorithm names clearly stated in multiple places, reorganized the layout of the sidebar,
+removed the selection tabs, added a footer with links to documentation, and added a legend with priority (queen) indicator.
+
+Next will be more improvments to the documentation and GraphComparison module.
+
+11/06/18
+--------
 
 After improving it a bit more, the basics of Line searching have been implemented, and the `Tourist1D` class has been created. `Tourist1D` is a simplified version of `Tourist` seen in the circle algorithms.
 With this update, the `Tourist1D` can now find the exit based on the exit position given by `GLOBAL_EXIT`. With the addition of `GLOBAL_EXIT`, a few more global vars were needed, so we added `SCALE`, `EXIT`,
 and `GLOBAL_CENTER`. Our `EXIT` is defined using a number line value, usually an integer, and used with `GLOBAL_CENTER` and `SCALE` to calculate our `GLOBAL_EXIT` with the formula: `GLOBAL_CENTER + (EXIT * SCALE)`.
 
-In the next update, we will improve scaling the line as a `Tourist1D` moves off screen and getting the relative position of the `Tourist1D` as it goes to bigber values. 
+In the next update, we will improve scaling the line as a `Tourist1D` moves off screen and getting the relative position of the `Tourist1D` as it goes to bigger values.
 
-11/02/18:
----------
+11/02/18
+--------
 
 [EDIT]
 
@@ -23,8 +40,8 @@ the priority will not target closer robots but instead move directly to the exit
 Even though the goal is to evacuate the priority robot and end the algorithm, we show all robots finding the exit in CircleShowcase. It is simpler in the case of this showcase to
 show all robots exiting, because with 2 and 3 robots, the predicted trajectories of the robots are about the same as they are without a priority robot.
 
-10/29/18:
----------
+10/29/18
+--------
 
 The past week and a half have been small changes. We added the `Tourist1D` class to simulate actions on a one dimensional plane.
 When creating this class, we knew that it needed a few functions such as `GoLeft`, `GoRight`, and `Wait` at the very least.

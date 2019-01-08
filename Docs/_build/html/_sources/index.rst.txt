@@ -15,6 +15,7 @@ This site covers the documentation of our app.
    api
    references
    detailed-changelog
+   project-summary
 
 Intro
 =====

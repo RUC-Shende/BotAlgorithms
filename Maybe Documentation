@@ -1,11 +1,17 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! Moved into `Docs/project-summary.rst` !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+David Bushta - Dec 2018
+
 Summary: Ideas and planning placed in one location, whether they worked, didn't work, or haven't been implemented yet.
          Sometimes an idea doesn't work for a problem, but instead could work for a later problem; Just don't know it yet.
-         
+
 Contents:
          What is a mobile agent, and what defines it.
          What are some problems, and solution ideas.
          Plans for later.
-         
+
 What is a mobile Agent?:
          (Lets call them bots, out of lazingess, for now)
          A bot atleast is an object that has the capacity to move around and wait.
@@ -26,7 +32,7 @@ What is a mobile Agent?:
                                     x: the line x = some real value given
                                     y: the line y = some real value given
                                     (x,y): is the intersection of both lines, or the point of destination
-                                    
+
          How does time effect motion?
                   Since time isn't incremental but computers are, motion also has to be incremented into steps.
                   Each step is one length of motion for a bot.
@@ -38,7 +44,7 @@ What is a mobile Agent?:
                                     Note: This idea came about to save fractions of a second
                                              1. lost by reaching destination and waiting
                                              2. waiting a full allowance, when only half was required
-                                             
+
          What are area specific instructions and conditions?
                   Instructions:
                            A convex room would require that no bots can leave the room, and can recognize walls
@@ -50,7 +56,7 @@ What is a mobile Agent?:
                            A line
                                     1. Follow line with angle.
                                              -> angle that defines when to go backwards and forwards with time
-                           
+
                   Conditions:
                            Exit in 1D or 2D
                                     1. Only one bot must find it
@@ -58,7 +64,7 @@ What is a mobile Agent?:
                                     3. A specific bot must reach it
                                     4. A specific subset of bots must reach it
                                     5. A specific amount of bots must reach it
-                                    
+
          What happends in a non-wireless communictation?
                   Each bot has an exit instruction, an advanced instruction to tell others of where the exit is
                   An exit instruction, includes locating meeting telling, and finally going to an exit.
@@ -73,7 +79,7 @@ What is a mobile Agent?:
                            Ignore exit
                                    Do not use any special instructions, keep going along normal instructions
                                             -> Tell anyone nearby where exit it while traveling
-                                            
+
          What about wireless communictation?
                   The moment a bot finds the exit, all other bots know where it is
                   This has led to an interesting effect, specifically
@@ -82,7 +88,7 @@ What is a mobile Agent?:
                                     -> Remember what all bots did a step ago, and reset knowing when exit was found
                            -> But what if the exit is found ealrier on the (n/2 + 1)th bot?
                                     -> Full step is calculated, so an earlier time will be found as exit time.
-                                    
+
          Classification of Functions and bot
                   Physical Functions
                                     1. Wait - Indefinitely wait at position, or wait for some amount of time
@@ -114,7 +120,7 @@ What is a mobile Agent?:
                   2D Functions Room
                                     1. Go to Wall at Angle - Go to a part of the wall at an angle realtive to center
                                     2. Follow Wall - follow wall indefinitely or for limited time
-         
+
 Problems that occurred:
          1. User uses 2D instructions on line
          2. User tells bot to leave bounds
@@ -126,7 +132,7 @@ Problems that occurred:
          5. What should be a minimum for a side that no bots travel across?
          6. Will the positive y axis going downwards have an affect on what is left and right for travel along wall in 2D, 1D
          7. What happens in non-wireless when a bot is traveling to infinity, and it needs to go to exit?
-         
+
 Solutions/ideas:
          1.
                   a. Create new 1D functions
@@ -161,13 +167,3 @@ Plans:
          6. actives can have a lifetime, that determines when they are visible
          7. change overlay to a graphics editor, such as drawing lines, arrows, and even words.
          8. alterante to 7. Instructions create visuals as they run
-
-
-
-
-
-
-
-
-
-

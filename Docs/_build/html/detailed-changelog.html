@@ -6,16 +6,19 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Project History &#8212; Search and Exit Algorithms 1.2a documentation</title>
+    <title>Project History &#8212; Search and Exit Algorithms 1.3a documentation</title>
     <link rel="stylesheet" href="_static/style.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Project Summary and Notes:" href="project-summary.html" />
     <link rel="prev" title="References and Bibliography" href="references.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -25,9 +28,12 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="project-summary.html" title="Project Summary and Notes:"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
           <a href="references.html" title="References and Bibliography"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 1.2a documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 1.3a documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -38,15 +44,27 @@
             
   <div class="section" id="project-history">
 <h1>Project History<a class="headerlink" href="#project-history" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="circle-showcase">
+<h2>01/07/19: Circle Showcase<a class="headerlink" href="#circle-showcase" title="Permalink to this headline">¶</a></h2>
+<p>We have made many major and minor improvements to the Circle Showcase in this update.</p>
+<p>In terms of bigger improvements and bug fixes, one of the more notable ones was making it so that the graph shown on the right scales to be in proportion with the whole viewport when the algorithm is finished.
+Doing this meant removing the lines left over from the rest of the algorithm (when the algorithm went for a full ten seconds.) We only do this once the algorithm has finished because when it is running, it
+is doing a live simulation of the algorithm with the given exit, so we do not know until the end how big we should make it.</p>
+<p>Another leftover from running a pre-simulation was removed in this update as well. Previously, when an algorithm was freshly selected we would run it with no exit anywhere on the circle, to set up all of our necessary
+variables, ensure it was working, etc. Now, the lines from pre-loading are no longer drawn as they were not necessary and made following the graph and animation harder.</p>
+<p>Some of the minor improvements and fixes are as follows: added a way to determine priority (queen) in instruBinder, made algorithm names clearly stated in multiple places, reorganized the layout of the sidebar,
+removed the selection tabs, added a footer with links to documentation, and added a legend with priority (queen) indicator.</p>
+<p>Next will be more improvments to the documentation and GraphComparison module.</p>
+</div>
 <div class="section" id="id1">
-<h2>11/06/18:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<h2>11/06/18<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <p>After improving it a bit more, the basics of Line searching have been implemented, and the <cite>Tourist1D</cite> class has been created. <cite>Tourist1D</cite> is a simplified version of <cite>Tourist</cite> seen in the circle algorithms.
 With this update, the <cite>Tourist1D</cite> can now find the exit based on the exit position given by <cite>GLOBAL_EXIT</cite>. With the addition of <cite>GLOBAL_EXIT</cite>, a few more global vars were needed, so we added <cite>SCALE</cite>, <cite>EXIT</cite>,
 and <cite>GLOBAL_CENTER</cite>. Our <cite>EXIT</cite> is defined using a number line value, usually an integer, and used with <cite>GLOBAL_CENTER</cite> and <cite>SCALE</cite> to calculate our <cite>GLOBAL_EXIT</cite> with the formula: <cite>GLOBAL_CENTER + (EXIT * SCALE)</cite>.</p>
-<p>In the next update, we will improve scaling the line as a <cite>Tourist1D</cite> moves off screen and getting the relative position of the <cite>Tourist1D</cite> as it goes to bigber values.</p>
+<p>In the next update, we will improve scaling the line as a <cite>Tourist1D</cite> moves off screen and getting the relative position of the <cite>Tourist1D</cite> as it goes to bigger values.</p>
 </div>
 <div class="section" id="id2">
-<h2>11/02/18:<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<h2>11/02/18<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <p>[EDIT]</p>
 <p>We implemented priority search exiting, with the priority robot being given instructions to simply Wait after finding the exit.
 We also added a visual to let the user know that the priority robot has found the exit. We also implemented in Intercept, a condition for which bots will only target the priority
@@ -56,7 +74,7 @@ the priority will not target closer robots but instead move directly to the exit
 show all robots exiting, because with 2 and 3 robots, the predicted trajectories of the robots are about the same as they are without a priority robot.</p>
 </div>
 <div class="section" id="id3">
-<h2>10/29/18:<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<h2>10/29/18<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <p>The past week and a half have been small changes. We added the <cite>Tourist1D</cite> class to simulate actions on a one dimensional plane.
 When creating this class, we knew that it needed a few functions such as <cite>GoLeft</cite>, <cite>GoRight</cite>, and <cite>Wait</cite> at the very least.
 Implementing these was as simple as calculating the distance the bot needs to travel each from and then adding that to its data buffer.
@@ -169,12 +187,13 @@ once they choose their options.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Project History</a><ul>
-<li><a class="reference internal" href="#id1">11/06/18:</a></li>
-<li><a class="reference internal" href="#id2">11/02/18:</a></li>
-<li><a class="reference internal" href="#id3">10/29/18:</a></li>
+<li><a class="reference internal" href="#circle-showcase">01/07/19: Circle Showcase</a></li>
+<li><a class="reference internal" href="#id1">11/06/18</a></li>
+<li><a class="reference internal" href="#id2">11/02/18</a></li>
+<li><a class="reference internal" href="#id3">10/29/18</a></li>
 <li><a class="reference internal" href="#icldata-and-iclvisual-95-complete-we-have-graph-comparison">10/17/18: iclData and iclVisual 95% Complete! We have Graph Comparison!</a></li>
 <li><a class="reference internal" href="#id4">10/12/18</a></li>
 <li><a class="reference internal" href="#firing-events-before-data-is-ready-10-08-18">Firing Events Before Data is Ready (10/08/18)</a></li>
@@ -187,6 +206,9 @@ once they choose their options.</p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="references.html"
                         title="previous chapter">References and Bibliography</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="project-summary.html"
+                        title="next chapter">Project Summary and Notes:</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -217,14 +239,17 @@ once they choose their options.</p>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
+          <a href="project-summary.html" title="Project Summary and Notes:"
+             >next</a> |</li>
+        <li class="right" >
           <a href="references.html" title="References and Bibliography"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 1.2a documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 1.3a documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Chris Till, David Bushta.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
     </div>
   </body>
 </html>
