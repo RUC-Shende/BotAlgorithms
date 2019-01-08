@@ -21,7 +21,7 @@ var dataBox;
 var touristNum = 0;
 var instruBinder = [
                      [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]],
-                     [["InterceptNonBeliever", [null, false]], ["GoToWallAtAngle", [190]], ["FollowWall", ["right"]]]
+                     [["InterceptNonBeliever", [null, false]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right"]]]
                    ];
 var algorithmName = "Priority 1 ";
 var tourColors = [];
