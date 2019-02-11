@@ -291,3 +291,26 @@ h3 {
 #A, #B, #C {
     background-color: inherit;
 }
+
+.line {
+    fill: none;
+    stroke: #ffab00;
+    stroke-width: 3;
+}
+
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+/* Style the dots by assigning a fill and stroke */
+.dot {
+    fill: #ffab00;
+    stroke: #fff;
+    stroke-width: 0.1;
+}
+
+.focus circle {
+  fill: none;
+  stroke: steelblue;
+}
