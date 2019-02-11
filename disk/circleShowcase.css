@@ -56,6 +56,12 @@ input[type=submit]:active{
     transition: 0.3s;
 }
 
+/* Used for the subheader that shows algorithm name. */
+h2 {
+    padding-bottom: 0px;
+}
+
+/* Used for the pullout menu on the side. */
 h3 {
     color: white;
 }
@@ -106,6 +112,7 @@ h3 {
     font-size: 24px;
     display: none;
     font-family: "Ubuntu", "Roboto Condensed", Verdana, sans-serif;
+
 }
 
 .tooltip {
@@ -168,6 +175,7 @@ h3 {
      border: 1px solid #ccf;
      border-radius: 6px;
      padding: 15px;
+     display: inline-block;
  }
 
 .tab button {
@@ -263,6 +271,46 @@ h3 {
     text-align: center;
 }
 
+.footer {
+    width: 90%;
+    height: 120px;
+    margin: 0 auto;
+    margin-top: 30px;
+    background-color: #bbbbcc;
+    border-radius: 15px 15px 0px 0px;
+    bottom: 0;
+}
+
+.footer a {
+    text-decoration: underline;
+    color: blue;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 #A, #B, #C {
     background-color: inherit;
+}
+
+.line {
+    fill: none;
+    stroke: #ffab00;
+    stroke-width: 3;
+}
+
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+/* Style the dots by assigning a fill and stroke */
+.dot {
+    fill: #ffab00;
+    stroke: #fff;
+    stroke-width: 0.1;
+}
+
+.focus circle {
+  fill: none;
+  stroke: steelblue;
 }

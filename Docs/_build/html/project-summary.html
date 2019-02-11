@@ -1,0 +1,438 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Project Summary and Notes: &#8212; Search and Exit Algorithms 1.3a documentation</title>
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Project History" href="detailed-changelog.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="detailed-changelog.html" title="Project History"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 1.3a documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="project-summary-and-notes">
+<h1>Project Summary and Notes:<a class="headerlink" href="#project-summary-and-notes" title="Permalink to this headline">¶</a></h1>
+<p>Ideas and planning placed in one location, whether they worked, didn’t work, or haven’t been implemented yet.
+Sometimes an idea doesn’t work for a problem, but instead could work for a later problem; Just don’t know it yet.</p>
+<p>-David</p>
+<div class="section" id="contents">
+<h2>Contents:<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
+<p>What is a mobile agent, and what defines it.
+What are some problems, and solution ideas.
+Plans for later.</p>
+</div>
+<div class="section" id="what-is-a-mobile-agent">
+<h2>What is a mobile Agent?:<a class="headerlink" href="#what-is-a-mobile-agent" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>(Lets call them bots, out of laziness, for now)
+A bot atleast is an object that has the capacity to move around and wait.
+In 1D space?</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Bound to a line.</li>
+<li>Moves along a line for some distance or time.</li>
+<li>Can go backwards, not limited to following the line one way.</li>
+</ol>
+</div></blockquote>
+<p>In 2D space?</p>
+<blockquote>
+<div><p>Top left is the point (0,0), and right is zero degrees.
+Can move bi-directionally from where it is.</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p class="first">Such as move along relative polar coordinate (d, a)</p>
+<blockquote>
+<div><p>d: distance</p>
+<p>a: angle realtive to screen</p>
+</div></blockquote>
+</li>
+<li><p class="first">Move along a vector (dx,dy)</p>
+<blockquote>
+<div><p>dx: is the displacement along the x direction</p>
+<p>dy: is the displacement along the y direction</p>
+</div></blockquote>
+</li>
+<li><p class="first">Move to a point on the screen, any point relative to (x,y)</p>
+<blockquote>
+<div><p>x: the line x = some real value given</p>
+<p>y: the line y = some real value given</p>
+<p>(x,y): is the intersection of both lines, or the point of destination</p>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+</div></blockquote>
+<p>How does time effect motion?</p>
+<blockquote>
+<div><p>Since time isn’t incremental but computers are, motion also has to be incremented into steps.</p>
+<dl class="docutils">
+<dt>Each step is one length of motion for a bot.</dt>
+<dd><p class="first">A length of motion is defines as an allowance that a bot must travel or spend each step.</p>
+<p>If a bot waits, then the amount of time waiting is removed from allowance.</p>
+<p>If a bot reaches its instruction destination with half allowace, and has more instruction:</p>
+<blockquote class="last">
+<div><p>-&gt; use the remaing allowance to begin the next instruction</p>
+<p>-&gt; allowance, in some cases, can be divided among many steps</p>
+<p>Note: This idea came about to save fractions of a second:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>lost by reaching destination and waiting</li>
+<li>waiting a full allowance, when only half was required</li>
+</ol>
+</div></blockquote>
+</div></blockquote>
+</dd>
+</dl>
+</div></blockquote>
+<p>What are area specific instructions and conditions?</p>
+<blockquote>
+<div><p>Instructions:</p>
+<blockquote>
+<div><p>A convex room would require that no bots can leave the room, and can recognize walls.</p>
+<blockquote>
+<div><ol class="arabic">
+<li><dl class="first docutils">
+<dt>Go to wall at angle</dt>
+<dd><p class="first">-&gt; the convex room encapsulates the center</p>
+<p class="last">-&gt; a position on the wall is defined by a polar coordinate</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">Go to center, a position located in the middle of the room</p>
+</li>
+<li><p class="first">Go to exit, go to the point on the wall of the room labelled exit.</p>
+</li>
+</ol>
+</div></blockquote>
+<p>A line</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p class="first">Follow line with angle.</p>
+<blockquote>
+<div><p>-&gt; angle that defines when to go backwards and forwards with time</p>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+</div></blockquote>
+<p>Conditions:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Exit in 1D or 2D</dt>
+<dd><ol class="first last arabic simple">
+<li>Only one bot must find it</li>
+<li>All bots must each it</li>
+<li>A specific bot must reach it</li>
+<li>A specific subset of bots must reach it</li>
+<li>A specific amount of bots must reach it</li>
+</ol>
+</dd>
+</dl>
+</div></blockquote>
+</div></blockquote>
+<p>What happens in a non-wireless communication?</p>
+<blockquote>
+<div><p>Each bot has an exit instruction, an advanced instruction to tell others of where the exit is.
+An exit instruction, includes locating meeting telling, and finally going to an exit.</p>
+<p>Locating meeting telling instructions:</p>
+<blockquote>
+<div><p>Pursue bot</p>
+<blockquote>
+<div><p>Finds a bot that is not being chased and doesn’t know exit location</p>
+<p>Problem, bot might never be able to catch up, as they travel at same speed.</p>
+</div></blockquote>
+<p>Intercept bot</p>
+<blockquote>
+<div><p>Almost like pursue, except it looks ahead of the other bot and goes there to intercept</p>
+<p>If the bot it wants to intercept, cannot be intercepted, then it looks at another</p>
+<blockquote>
+<div>-&gt; This happens if a bot has got through the wall and is leaving screen.</div></blockquote>
+</div></blockquote>
+<p>Ignore exit</p>
+<blockquote>
+<div><p>Do not use any special instructions, keep going along normal instructions</p>
+<blockquote>
+<div>-&gt; Tell anyone nearby where exit it while traveling</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+<p>What about wireless communication?</p>
+<blockquote>
+<div><p>The moment a bot finds the exit, all other bots know where it is.
+This has led to an interesting effect, specifically:</p>
+<blockquote>
+<div><p>-&gt; Each bot is updated one at a time, rather than simultaneously</p>
+<p>-&gt; What if the exit is found on the (n/2)th bot?</p>
+<blockquote>
+<div>-&gt; Remember what all bots did a step ago, and reset knowing when exit was found</div></blockquote>
+<p>-&gt; But what if the exit is found earlier on the (n/2 + 1)th bot?</p>
+<blockquote>
+<div>-&gt; Full step is calculated, so an earlier time will be found as exit time.</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="classification-of-functions-and-bot">
+<h2>Classification of Functions and bot<a class="headerlink" href="#classification-of-functions-and-bot" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><dl class="docutils">
+<dt>Physical Functions</dt>
+<dd><blockquote class="first">
+<div><ol class="arabic simple">
+<li>Wait - Indefinitely wait at position, or wait for some amount of time</li>
+<li>Move - Move towards a given point</li>
+</ol>
+</div></blockquote>
+<p>Properties</p>
+<blockquote class="last">
+<div><ol class="arabic simple">
+<li>Color</li>
+<li>Instructions (either written or possible inputed by keyboard)</li>
+</ol>
+</div></blockquote>
+</dd>
+<dt>Basic Functions</dt>
+<dd><blockquote class="first">
+<div><ol class="arabic simple">
+<li>Go to Point - (x,y), go to point</li>
+<li>Go at Vector - (dx, dy), use change in position to figure out point relative to location</li>
+<li>Go at Angle - (d, a), move at a relative angle a at a distance d</li>
+<li>Pursue Bot - follow closest bot</li>
+<li>Intercept Bot - Look where bot is going and meet it there</li>
+</ol>
+</div></blockquote>
+<p>Properties</p>
+<blockquote class="last">
+<div><ol class="arabic simple">
+<li>Knows other bots</li>
+</ol>
+</div></blockquote>
+</dd>
+</dl>
+<p>AnyD Functions</p>
+<blockquote>
+<div><blockquote>
+<div><ol class="arabic">
+<li><p class="first">Go to Center - go to center</p>
+</li>
+<li><p class="first">Go to Exit - an exit function, go to exit</p>
+</li>
+<li><p class="first">Check all pairs of bots using randomization or divide and conquer to determine when they talk</p>
+<blockquote>
+<div><p>-&gt; Share exit location</p>
+<p>-&gt; Share info on other bots</p>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+<p>Properties</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Exit knowledge</li>
+<li>Priority color, color of border to stand out better</li>
+</ol>
+</div></blockquote>
+</div></blockquote>
+<p>1D Functions Line</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p class="first">Follow Wall Right - Go left or right along x axis</p>
+</li>
+<li><p class="first">Travel at Angle - From a time vs position graph of the bots traveling back and forth</p>
+<blockquote>
+<div><p>-&gt;have the bots follow this pattern</p>
+</div></blockquote>
+</li>
+</ol>
+</div></blockquote>
+<p>2D Functions Room</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Go to Wall at Angle - Go to a part of the wall at an angle realtive to center</li>
+<li>Follow Wall - follow wall indefinitely or for limited time</li>
+</ol>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="problems-that-occurred">
+<h2>Problems that occurred<a class="headerlink" href="#problems-that-occurred" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ol class="arabic">
+<li><p class="first">User uses 2D instructions on line</p>
+</li>
+<li><p class="first">User tells bot to leave bounds</p>
+</li>
+<li><p class="first">An infinite line on a finite screen</p>
+<blockquote>
+<div><p>3a. How to know how far a bot has travelled along the line, or gone back and reduced furthest</p>
+<p>3b. Best way to find furthest from center, without too much processing.</p>
+</div></blockquote>
+</li>
+<li><p class="first">Mobile agents have a position (x,y), that determines where to render</p>
+<blockquote>
+<div><p>-&gt; but on a finite infinite line, how to render a bot that should be off-screen</p>
+</div></blockquote>
+</li>
+<li><p class="first">What should be a minimum for a side that no bots travel across?</p>
+</li>
+<li><p class="first">Will the positive y axis going downwards have an affect on what is left and right for travel along wall in 2D, 1D</p>
+</li>
+<li><p class="first">What happens in non-wireless when a bot is traveling to infinity, and it needs to go to exit?</p>
+</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="solutions-ideas">
+<h2>Solutions/ideas<a class="headerlink" href="#solutions-ideas" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ol class="arabic">
+<li><ol class="first loweralpha simple">
+<li>Create new 1D functions</li>
+<li>Edit all function to have 1D equivalent instructions</li>
+<li>Change all 2D functions in instruction list to 1D equivalent during load</li>
+</ol>
+</li>
+<li><ol class="first loweralpha simple">
+<li>Create boundary limits, such as checking if a bot has left bounds, push back to bounds.</li>
+<li>Give all functions a boundary condition when executing</li>
+</ol>
+</li>
+<li><ol class="first loweralpha simple">
+<li>Look at the x-coordinates of all bots in n - 1 to find furthest in positive and negative.</li>
+</ol>
+</li>
+<li><ol class="first loweralpha" start="2">
+<li><p class="first">Take the furthest, and the x-coordiante of a bot</p>
+<blockquote>
+<div><p>-&gt; find the ratio and that’s the radius distance from center along the infinite finite line</p>
+</div></blockquote>
+</li>
+</ol>
+</li>
+<li><ol class="first loweralpha simple">
+<li>Symmetric to the longest side</li>
+<li>Zero</li>
+<li>One radius to retain the visual distance of center to left side</li>
+</ol>
+</li>
+<li><p class="first">Left will have to mean both counter-clockwise and literally left</p>
+<p>-&gt; Left is negative along the x-axis, and counter-clockwise is positive</p>
+</li>
+<li><p class="first">Need a way to slow them down, such as, well slowing them down while not knowing exit location</p>
+</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="plans">
+<h2>Plans<a class="headerlink" href="#plans" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ol class="arabic simple">
+<li>The graph will not have predetermined numbers, and will be made relative to unique points</li>
+<li>Constantly check bots close together</li>
+<li>When all bots know exit, use boolean integer to stop checks</li>
+<li>Make nice buttons that Chris would like</li>
+<li><dl class="first docutils">
+<dt>Create a property called actives and inactives</dt>
+<dd>actives: save information with time
+inactives: no need to save or update</dd>
+</dl>
+</li>
+<li>actives can have a lifetime, that determines when they are visible</li>
+<li>change overlay to a graphics editor, such as drawing lines, arrows, and even words.</li>
+<li>alterante to 7. Instructions create visuals as they run</li>
+</ol>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Project Summary and Notes:</a><ul>
+<li><a class="reference internal" href="#contents">Contents:</a></li>
+<li><a class="reference internal" href="#what-is-a-mobile-agent">What is a mobile Agent?:</a></li>
+<li><a class="reference internal" href="#classification-of-functions-and-bot">Classification of Functions and bot</a></li>
+<li><a class="reference internal" href="#problems-that-occurred">Problems that occurred</a></li>
+<li><a class="reference internal" href="#solutions-ideas">Solutions/ideas</a></li>
+<li><a class="reference internal" href="#plans">Plans</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="detailed-changelog.html"
+                        title="previous chapter">Project History</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/project-summary.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="detailed-changelog.html" title="Project History"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 1.3a documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Chris Till, David Bushta.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
+    </div>
+  </body>
+</html>

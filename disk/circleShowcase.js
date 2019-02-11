@@ -1,7 +1,7 @@
 //////////----------Instantiate Variables----------//////////
 var exitAlert = false;//Someone learned where the exit is.
 var exitAllow = 0;//How far in a frame was the exit found.
-var wireless = false;
+var wireless = true;
 
 var time = 0;
 var timeDirect = 0;//After loading, play direction.
@@ -18,12 +18,10 @@ var exitAngle = 0;
 var fieldExit = [center[0] + unit2Px, center[1]];
 
 var dataBox;
-var lineFx = d3.line().x((d) => {return(d.x);}).y((d) => {return(d.y);});
-
 var touristNum = 0;
 var instruBinder = [
-                     [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [190]], ["FollowWall", ["right"]]],
-                     [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]]
+                     [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]],
+                     [["InterceptNonBeliever", [null, false]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right"]]]
                    ];
 var algorithmName = "Priority 1 ";
 var tourColors = [];
@@ -37,10 +35,17 @@ var graphSVG; //0:Background - 1:Line - 2:Bots - 3:Overlay
 graphDots = [];
 graphPoints = [];
 graphLine = [];
+
+var distanceFromSVG;
+
 var exitFoundLine = null;
 var allExitedLine = null;
+var priorityExitedLine = null;
+
+var distanceFromServant = [];
 
 var b = d3.select('body').append('div');
+
 
 
 //////////--------Instantiate Call Functions--------//////////
@@ -48,17 +53,18 @@ var b = d3.select('body').append('div');
 function SSlide() {
   d3.select(this).style("fill", "orange");
   d3.select(this).classed("active", true);
+  d3.selectAll(".sliderhelp").style("visibility", "hidden");
 }
 
 function MSlide() {
   var mousePos = d3.event.x;
-  if (mousePos < 0) {
-    mousePos = 0;
-  } else if (mousePos > (31 / 8) * unit2Px) {
-    mousePos = (31 / 8) * unit2Px;
+  if (mousePos < unit2Px * (10/25)) {
+    mousePos = unit2Px * (10/25);
+  } else if (mousePos > (71 / 20) * unit2Px) {
+    mousePos = (71 / 20) * unit2Px;
   }
   d3.select(this).attr("x", mousePos);
-  time = Math.round((mousePos / ((31 / 8) * unit2Px)) * timeMax);
+  time = Math.round(((mousePos - (unit2Px * 10/25)) / ((63 / 20) * unit2Px)) * timeMax);
   timeText.text("Time: " + Math.floor((100 * time) / fps) / 100);
   frameText.text("Frame: " + Math.floor(time));
   UpdateVisuals();
@@ -67,6 +73,7 @@ function MSlide() {
 function ESlide() {
   d3.select(this).style("fill", "#888888");
   d3.select(this).classed("active", false);
+  d3.selectAll(".sliderhelp").style("visibility", "visible");
 }
 
 //////////---------- Instantiate Classes ----------//////////
@@ -78,7 +85,7 @@ function ESlide() {
 * @param {Circle} visual Represents the visual related to the bot.
 */
 class Tourist {
-  constructor (visual) {
+  constructor (visual, p) {
     this.visual = visual;
     /** The tourist's ID as an integer. */
     this.number = touristNum;
@@ -102,6 +109,9 @@ class Tourist {
     this.x = center[0];
     /** Tourist's current y position. */
     this.y = center[1];
+
+    this.priority = p;
+    this.atExit = false;
   }
 
   WallAtAngle(angle) {
@@ -136,6 +146,16 @@ class Tourist {
         this.y = this.y + (this.velocity * unit2Px / fps) * Math.sin(ang);
       }
       this.allowance = 0;
+    }
+    if (this.x == fieldExit[0] && this.y == fieldExit[1] && !this.atExit) {
+
+        console.log("Robot " + this.number + " exits at " + (Math.floor((100 * time) / fps) / 100) + (this.p ? "(Priority)" : ""));
+        this.atExit = true;
+        /*
+        graphSVG.select(".overLay").append("line").attr("x1", graphDots[this.number].attr("cx")).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
+                      .attr("x2", graphDots[this.number].attr("cx")).attr("y2", 2 * unit2Px).style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px)
+                      .style("stroke-opacity", 0.5);
+        */
     }
   }
 
@@ -311,12 +331,15 @@ class Tourist {
   GoToExit(value) {
     if ((this.x == fieldExit[0]) && (this.y == fieldExit[1])) {
       this.Wait([null]);
+      this.atExit = true;
       if (allExitedLine == null) {
         AllAtExit();
       }
     } else {
       this.DirectTo(fieldExit);
+      //console.log(Math.floor((100 * time) / fps) / 100);
     }
+    //console.log(Math.floor((100 * time) / fps) / 100);
   }
 
   /**
@@ -340,7 +363,7 @@ class Tourist {
         }
       }
     }
-    if (this.target == null) {
+    if (this.priority || this.target == null) {
       this.GoToExit(value);
     } else {
       tourists[this.target].hunted = this.number;
@@ -369,8 +392,10 @@ class Tourist {
     if (((this.target == null) || !this.target) && (!wireless)) {// this.target was being undefined, instead of null, so !this.target fixed it..... how do we explain this weird phenomenon
       var holdTime = 0;
       var closest = Infinity;
+      outer:
       for (var i = 0; i < touristNum; i++) {
         if ((!tourists[i].knows) && ((tourists[i].hunted == this.number) || (tourists[i].hunted == null))) {
+          inner:
           for (var j = 0; j < 2 * unit2Px; j++) {
             if (time + j < timeMax) {
               var intercept = tourPoints[i][time + j];
@@ -378,21 +403,28 @@ class Tourist {
               var botDist = Math.sqrt(Math.pow(bVec[1], 2) + Math.pow(bVec[0], 2));
               if ((Math.abs(j * unit2Px / fps - botDist) <= this.velocity * unit2Px / (2 * fps)) && (botDist < closest)) {
                 this.target = [i, intercept];
+                if (value && value[0] == i){
+                    console.log("found priorityy");
+                    break outer;
+                }
                 closest = botDist;
+
               }
             }
           }
         }
       }
     }
-    if (this.target == null) {
+    if (this.priority || this.target == null) {
       this.GoToExit(value);
+
     } else {
       tourists[this.target[0]].hunted = this.number;
       var pVec = [this.target[1].x - this.x, this.target[1].y - this.y];
       var pointDist = Math.sqrt(Math.pow(pVec[1], 2) + Math.pow(pVec[0], 2));
       if (pointDist <= this.velocity * unit2Px / fps) {
         exitAlert = tourists[this.target[0]].knows = true;
+        //console.log(Math.floor((100 * time) / fps) / 100);
         exitAllow = pointDist;
       }
       this.DirectTo([this.target[1].x, this.target[1].y]);
@@ -401,6 +433,13 @@ class Tourist {
       }
     }
   }
+
+  SetVelocity(value){
+      if (value){
+          this.velocity = value[0];
+      }
+  }
+
 }
 
 //////////----------Instantiate Functions----------//////////
@@ -417,6 +456,8 @@ function Load() {
                .on("mousemove", ChoosExit).on("click", exitChosen);
   graphSVG = b.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
                .style("float", "left").style("border", "1px solid black");
+  distanceFromSVG = b.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 2)
+               .style("float", "left").style("border", "1px solid black").attr("class", "distanceFrom");
   var classes = ["backGround", "lines", "bots", "overLay"];
   for (var i = 0; i < classes.length; i++) {//Create layers
     fieldSVG.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
@@ -427,12 +468,12 @@ function Load() {
   LoadField();
   LoadGraph();
   for (var i = 0; i < instruBinder.length; i++) {//Add bots, lines, and coordinate collectors.
-    tourColors.push(RandomColor());
+    tourColors.push(RandomColor(i));
     console.log(touristNum);
     tourists.push(new Tourist(fieldSVG.select(".bots").append("circle").attr("cx", center[0]).attr("cy", center[1])
                               .attr("data", touristNum).attr("r", unit2Px / 16).on("mouseover", MoveDataBox)
                               .on("mouseout", HideDataBox).style("fill", tourColors[i])
-                              .style("stroke", "#ffffff").style("stroke-width", (1 / 100) * unit2Px)));
+                              .style("stroke", "#ffffff").style("stroke-width", (1 / 100) * unit2Px), instruBinder[i][0][1][1]));
     tourPoints.push([]);
     graphDots.push(graphSVG.select(".bots").append("circle").attr("cx", unit2Px * (10 / 25))
                    .attr("cy", unit2Px * 4 * (20 / 25) - unit2Px * (10 / 25)).attr("r", unit2Px / 16)
@@ -440,6 +481,35 @@ function Load() {
     graphPoints.push([]);
     touristNum++;
   }
+
+
+  var touristCount = 0;
+  outer:
+  for (var i = 0; i <= 2; i++){
+      if (touristCount + 1 == instruBinder.length){
+          break outer;
+      }
+      for (var j = 0; j <= 2; j++) {
+          graphSVG.select(".overLay").append("circle")
+                  .attr("cx", (2*unit2Px) + (j * (2/3 * unit2Px)))
+                  .attr("cy", (unit2Px * 0.6) + (i * (1/4 * unit2Px)))
+                  .attr("r", unit2Px / 16)
+                  .style("fill", tourColors[touristCount])
+                  .style("stroke", "#ffffff")
+                  .style("stroke-width", (1/100 * unit2Px));
+          graphSVG.select(".overLay").append("text")
+                  .attr("x", (2*unit2Px) + (unit2Px / 15) + (j * (2/3 * unit2Px)))
+                  .attr("y", (unit2Px * 0.6) + (unit2Px/32) +  (i * (1/4 * unit2Px)))
+                  .style("font-size", unit2Px * (3/25))
+                  .text("Bot " + touristCount + ((instruBinder[touristCount][0][1][1] == true) ? " (Q)" : ""));
+          if (touristCount + 1 == instruBinder.length){
+              break outer;
+          }
+          touristCount ++;
+
+      }
+  }
+
 
   dataBox = fieldSVG.select(".overLay").append("svg").attr("width", 2 * unit2Px).attr("height", unit2Px).attr("visibility", "hidden");
   for (var i = 0; i < tourists.length; i++){
@@ -449,31 +519,175 @@ function Load() {
     LoadAnim();
   }
 
+  console.log(distanceFromServant);
+
+
   time = 0;
   for (var i = 0; i < touristNum; i++) {//Reset for next run through.
     tourists[i].on = 1;
     tourists[i].a = 0;
     tourists[i].x = center[0];
     tourists[i].y = center[1];
-    tourLine[i] = fieldSVG.select(".lines").append("path").attr("d", lineFx(tourPoints[i]))
+
+    var holdA = 'M' + (tourPoints[i][0].x + ',' + (tourPoints[i][0].y));
+    var holdG = 'M' + (graphPoints[i][0].x + ',' + (graphPoints[i][0].y));
+    /*
+    for (var j = 1; j < timeMax; j++) {
+      holdA += 'L' + (tourPoints[i][j].x + ',' + (tourPoints[i][j].y));
+      holdG += 'L' + (graphPoints[i][j].x + ',' + (graphPoints[i][j].y));
+
+    }
+    */
+    tourLine[i] = fieldSVG.select(".lines").append("path").attr("d", holdA)
                   .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
-    graphLine[i] = graphSVG.select(".lines").append("path").attr("d", lineFx(graphPoints[i]))
+    graphLine[i] = graphSVG.select(".lines").append("path").attr("d", holdG)
                    .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
+
   }
+
+  for (var i = 0; i < distanceFromServant.length; i++){
+      distanceFromServant[i] = 4 * (1 -  (distanceFromServant[i] / (unit2Px * 4)));
+  }
+
+  console.log(distanceFromServant);
+
+  // 2. Use the margin convention practice
+  var margin = {top: 50, right: 50, bottom: 50, left: 50}
+    , width = (unit2Px * 4) - margin.left - margin.right // Use the window's width
+    , height = (unit2Px * 2) - margin.top - margin.bottom; // Use the window's height
+
+  // The number of datapoints
+  var n = 600;
+
+  // 5. X scale will use the index of our data
+  var xScale = d3.scaleLinear()
+      .domain([0, n-1]) // input
+      .range([0, width]); // output
+
+  // 6. Y scale will use the randomly generate number
+  var yScale = d3.scaleLinear()
+      .domain([0, 2]) // input
+      .range([height, 0]); // output
+
+  // 7. d3's line generator
+  var line = d3.line()
+      .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
+      .y(function(d) { return yScale(d.y); }) // set the y values for the line generator
+      .curve(d3.curveMonotoneX) // apply smoothing to the line
+
+  // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
+  var dataset = [];
+  for (var i = 0; i < distanceFromServant.length; i++){
+      dataset.push({"y" : distanceFromServant[i]});
+  }
+
+  // 1. Add the SVG to the page and employ #2
+  distanceFromSVG
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  // 3. Call the x axis in a group tag
+  distanceFromSVG.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(75," + (height + 25) + ")")
+      .call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
+
+  // 4. Call the y axis in a group tag
+  distanceFromSVG.append("g")
+      .attr("class", "y axis")
+      .attr("transform", "translate(75, 25)")
+      .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
+
+  distanceFromSVG.append("text")
+      .attr("class", "x axis label")
+      .attr("text-align", "center")
+      .attr("x", (2 * unit2Px) - 45)
+      .attr("y", height + 75)
+      .text("Time (Frames)");
+
+  distanceFromSVG.append("text")
+      .attr("class", "y axis label")
+      .attr("text-align", "center")
+      .attr("x", -height)
+      .attr("y", 25)
+      .attr("transform", "rotate(-90)")
+      .text("Distance From Servant (Units)");
+
+  distanceFromSVG.append("text")
+      .attr("class", "distance from title")
+      .attr("text-align", "center")
+      .attr("x", (unit2Px))
+      .attr("y", 30)
+      .text("Priority Bot 1 Distance From Servant (No-Exit Simulation)")
+
+  // 9. Append the path, bind the data, and call the line generator
+  distanceFromSVG.append("path")
+      .datum(dataset) // 10. Binds data to the line
+      .attr("class", "line") // Assign a class for styling
+      .attr("transform", "translate(75, 25)")
+      .attr("d", line); // 11. Calls the line generator
+
+  var focus = distanceFromSVG.append("g")
+      .attr("transform", "translate(0, 25)")
+      .attr("class", "focus")
+      .style("display", "none");
+
+  focus.append("circle")
+      .attr("r", 4.5);
+
+  focus.append("text")
+      .attr("x", 9)
+      .attr("dy", ".35em");
+
+  distanceFromSVG.append("rect")
+      .attr("class", "overlay")
+      .attr("width", distanceFromSVG.attr("width"))
+      .attr("height", distanceFromSVG.attr("height"))
+      .attr("transform", "translate(75, 25)")
+      .on("mouseover", function() { focus.style("display", null); })
+      .on("mouseout", function() { focus.style("display", "none"); })
+      .on("mousemove", mousemove);
+
+  var formatValue = d3.format(",.3f");
+
+  function mousemove() {
+    var coords = d3.mouse(this);
+    //console.log(xScale.invert(coords[0]));
+    var x0 = xScale.invert(coords[0]),
+        i = Math.floor(x0)
+        d0 = dataset[i - 1],
+        d1 = dataset[i],
+        d = x0 - d0 > d1 - x0 ? d1 : d0;
+    console.log((height - (d1 * unit2Px * 2)));
+    if (i < 1 || i > 599){
+        focus.attr("display", "none");
+    }
+    else{
+        focus.attr("display", "null");
+        focus.attr("transform", "translate(" + (coords[0] + 75) + "," + (yScale(d.y) + 25) + ")");
+        focus.select("text").text(i + ", " + formatValue(dataset[i].y));
+    }
+
+  }
+
+  if (distanceFromServant.length < 600){
+      distanceFromSVG.attr("display", "none");
+  }
+
 }
 
 
+
+
+
 function LoadField() {
-  if (wireless){
-      w = "Wireless";
-  }
-  else{
-      w = "Face-to-Face";
-  }
+  // decide how to display wireless status
+  w = wireless ? "Wireless" : "Face-To-Face";
+  // update subheader
+  d3.select("#subheader").text(algorithmName + w);
+  d3.select("#descriptiontitle").text(algorithmName + " Description:");
   fieldSVG.select(".backGround").append("text").attr("x",  center[0]).attr("y", unit2Px * (1 / 5))
-          .style("text-anchor", "middle").style("font-size", unit2Px * (1 / 5)).text("Search and Exit");
-  fieldSVG.select(".backGround").append("text").attr("x",  center[0]).attr("y", unit2Px * (3 / 10))
-          .style("text-anchor", "middle").style("font-size", unit2Px * (1 / 10)).text(algorithmName + w);
+          .style("text-anchor", "middle").style("font-size", unit2Px * (1 / 5)).text(algorithmName + w);
   fieldSVG.select(".backGround").append("text").attr("x",  center[0]).attr("y", unit2Px * (5 / 10)).attr("class", "exitText")
           .style("text-anchor", "middle").style("font-size", unit2Px * (2 / 10))
           .text("Left-Click to place exit at ~" + 0 + " degrees");
@@ -508,19 +722,29 @@ function LoadField() {
 }
 
 function LoadGraph() {
-  timeText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1/ 25)).attr("y", unit2Px * .4)
-             .style("font-size", unit2Px * (8 / 25)).style("text-anchor", "start").text("Time: 0");
-  frameText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1/ 25)).attr("y", unit2Px * .7)
-              .style("font-size", unit2Px * (8 / 25)).style("text-anchor", "start").text("Frame: 0");
-  graphSVG.select(".backGround").append("rect").attr("width", 4 * unit2Px).attr("height", unit2Px / 8)
-          .attr("fill-opacity", 0.0).style("stroke", "#000000");
-  timeSlider = graphSVG.select(".backGround").append("rect").attr("width", unit2Px / 8).attr("height", unit2Px / 8)
-               .attr("class", "reveal").style("fill", "#888888")
+  w = wireless ? "Wireless" : "Face-To-Face";
+  algNameText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (2)).attr("y", unit2Px * (1/5))
+                .style("font-size", unit2Px * (1 / 5)).style("text-anchor", "start").style("text-anchor", "middle")
+                .text(algorithmName + w);
+  timeText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1/ 25)).attr("y", unit2Px * .6)
+             .style("font-size", unit2Px * (4 / 25)).style("text-anchor", "start").text("Time: 0");
+  frameText = graphSVG.select(".backGround").append("text").attr("x", unit2Px * (1/ 25)).attr("y", unit2Px * .8)
+              .style("font-size", unit2Px * (4 / 25)).style("text-anchor", "start").text("Frame: 0");
+  timeSlider = graphSVG.select(".backGround").append("rect").attr("width", unit2Px / 20).attr("height", unit2Px * (31/20))
+               .attr("y", unit2Px * 2).attr("x", unit2Px * (10/25))
+               .style("fill", "#888888").style("fill-opacity", .5)
                .call(d3.drag().on("start", SSlide).on("drag", MSlide).on("end", ESlide));
-  var fo = graphSVG.append('foreignObject').attr('x', unit2Px * (1/25)).attr('y', unit2Px * (18/25)).attr('width', unit2Px * 1.5).attr('height', unit2Px * (18/25));
-  var timeButtons = fo.append('xhtml:div');
-  timeButtons.append('input').attr('type', 'submit').property('value', ' ▶▶ Play')
-             .attr('class', 'reveal play').on('click', () => {timeDirect++;});
+  //var fo = graphSVG.append('foreignObject').attr('x', unit2Px * (1/25)).attr('y', unit2Px * (18/25)).attr('width', unit2Px * 1.5).attr('height', unit2Px * (18/25));
+ // var timeButtons = fo.append('xhtml:div');
+  graphSVG.select(".overLay").append('text').attr("x", unit2Px * (1/25)).attr("y", unit2Px * 1).text(' ▶▶ Play').style('font-size', unit2Px * 5/25).attr('fill', 'green')
+            .attr('class', 'reveal play').style('box-sizing', 'border-box').attr('cursor', 'pointer').on('click', () => {timeDirect++;});
+  graphSVG.select(".overLay").append('text').attr("x", unit2Px * (1/25)).attr("y", unit2Px * 1.2).text(' ■ Stop').style('cursor', 'pointer').style('font-size', unit2Px * 5/25).attr('fill', 'red')
+            .attr('class', 'reveal play').on('click', () => {timeDirect = 0;});
+  graphSVG.select(".overLay").append('text').attr("x", unit2Px * (1/25)).attr("y", unit2Px * 1.4).text(' ◀◀ Rewind').style('cursor', 'pointer').style('font-size', unit2Px * 5/25).attr('fill', 'blue')
+            .attr('class', 'reveal play').on('click', () => {timeDirect--;});
+  graphSVG.select(".overLay").append('text').attr("x", unit2Px * (1/25)).attr("y", unit2Px * 1.6).text(' ◀ Slow ▶').style('cursor', 'pointer').style('font-size', unit2Px * 5/25).attr('fill', 'cyan')
+            .attr('class', 'reveal play').on('click', () => {if (timeDirect == 0) {timeDirect += 0.5;} else {timeDirect/=2;}});
+/*
   timeButtons.append('input')
             .attr('class', 'reveal stop').attr('type', 'submit')
             .property('value', ' ■ Stop').on('click', () => {timeDirect = 0;});
@@ -530,6 +754,7 @@ function LoadGraph() {
   timeButtons.append('input')
             .attr('class', 'reveal slow').attr('type', 'submit')
             .property('value', '◀ Slow ▶').on('click', () => {if (timeDirect == 0) {timeDirect += 0.5;} else {timeDirect/=2;}});
+*/
   graphSVG.select(".backGround").append("path").attr("d", 'M' + unit2Px * (10 / 25) + ',' + unit2Px * (50 / 25)
                                                         + 'L' + unit2Px * (10 / 25) + ',' + unit2Px * (90 / 25)
                                                         + 'L' + unit2Px * (90 / 25) + ',' + unit2Px * (90 / 25))
@@ -539,16 +764,20 @@ function LoadGraph() {
             .attr("y", unit2Px * (90 / 25) - i * unit2Px * (20 / 25))
             .style("font-size", unit2Px * (4 / 25)).style("text-anchor", "middle").text(i + 'r');
   }
+
   for (var i = 0; i < 11; i++) {//Create x-axis labels.
     graphSVG.select(".backGround").append("text").attr("x", unit2Px * (10 / 25) + i * unit2Px * (8 / 25))
             .attr("y", unit2Px * (94 / 25))
-            .style("font-size", unit2Px * (4 / 25)).style("text-anchor", "middle").text(i);
+            .style("font-size", unit2Px * (4 / 25)).style("text-anchor", "middle").text(i)
+            .attr("class", "graphnum");
   }
+
   graphSVG.select(".backGround").append("text").attr("x", unit2Px * (5 / 25)).attr("y", unit2Px * (70 / 25)).attr("text-anchor", "middle")
           .attr("transform", "rotate(-90," + unit2Px * (5 / 25) + ',' + unit2Px * (70 / 25) + ')')
           .style("font-size", unit2Px * (5 / 25)).style("fill", "#000000").text("Distance from Exit");
   graphSVG.select(".backGround").append("text").attr("x", unit2Px * 2).attr("y", unit2Px * (395 / 100)).attr("text-anchor", "middle")
           .style("font-size", unit2Px * (5 / 25)).style("fill", "#000000").text("Time");
+
 }
 
 //Reset Animation.
@@ -581,6 +810,11 @@ function Reset() {
     touristNum = 0;
     tourColors = [];
 
+    //distanceFromSVG.selectAll('g').remove();
+    distanceFromSVG.remove();
+
+    distanceFromServant = [];
+
     fieldSVG.selectAll('svg').remove();
     fieldSVG.remove();
     tourists = [];
@@ -595,19 +829,19 @@ function Reset() {
     exitFoundLine = null;
     allExitedLine = null;
 
+
+
     Start();
 
 }
 
-
-//Create a random hexadecimal color
-function RandomColor() {
-  var RGB = ["00", "00", "00"];
-  RGB[0] = Math.floor(Math.random() * 256).toString(16);
-  RGB[1] = Math.floor(Math.random() * 256).toString(16);
-  RGB[2] = Math.floor(Math.random() * 256).toString(16);
-  for (j = 0; j < 3; j++) {if (RGB[j].length == 1) {RGB[j] = '0' + RGB[j];}}//Add a zero in front of single digit hex.
-  return('#' + RGB[0] + RGB[1] + RGB[2]);
+function RandomColor(i) {
+    var colorPalette = ["#fe447d", "#f78f2e", "#fedc0c", "#fedc0c",
+                        "#5cd05b", "#03c1cd", "#0e10e6", "#9208e7",
+                        "#f84c00", "#f3f354", "#bff1e5", "#3bc335",
+                        "#7af5ca", "#448bff", "#101ab3", "#d645c8",
+                        "#0afe15", "#0acdfe", "#ff9600", "#b21ca1"];
+    return colorPalette[(i + 4) % 20];
 }
 
 //Controls exit positioning for user's choice, relative to mouse and svg.
@@ -648,6 +882,9 @@ function LoadPoints(i) {
   var dista = unit2Px * 4 - (Math.sqrt(Math.pow(fieldExit[0] - tourists[i].x, 2) + Math.pow(fieldExit[1] - tourists[i].y, 2)) * (20 / 25));
   tourPoints[i].push({x:tourists[i].x, y:tourists[i].y});
   graphPoints[i].push({x:(unit2Px * (10 / 25) + (time / timeMax) * (80 / 25) * unit2Px), y:(dista - unit2Px * (10 / 25))});
+  if (i==2){
+      distanceFromServant.push(unit2Px * 4 - (Math.sqrt(Math.pow(tourPoints[2][tourPoints[2].length-1].x - this.tourPoints[1][tourPoints[1].length-1].x, 2) + Math.pow(tourPoints[2][tourPoints[2].length-1].y - tourPoints[1][tourPoints[1].length-1].y, 2)) * (20 / 25)));
+  }
 }
 
 //Control times, and update bots.
@@ -656,6 +893,29 @@ function AlterAnim() {
     time = timeMax;
     clearInterval(projector);
     projector = setInterval(PlayAnim, 1000 / fps);
+
+    for (var i = 0; i < 11; i++) {//Create x-axis labels.
+      graphSVG.selectAll(".graphnum").style("display", "none");
+    }
+
+    for (i = 0; i < touristNum; i++){
+        AlterLines(i);
+
+
+    }
+
+    for (var i = 0; i <= Math.floor((100 * time) / fps) / 100; i++) {//Create x-axis labels.
+      graphSVG.select(".backGround").append("text").attr("x", (10/25 + (i / (Math.floor((100 * time) / fps) / 100)) * 80/25) * unit2Px)//unit2Px * (10 / 25) + ((Math.floor(timeMax) - i) * 80/25) * unit2Px)
+              .attr("y", unit2Px * (94 / 25))
+              .style("font-size", unit2Px * (4 / 25)).style("text-anchor", "middle").text(i);
+    }
+    graphSVG.select(".backGround").append("text").attr("x", (unit2Px * 65/25)).attr("y", unit2Px * (1.7))
+            .style("font-size", unit2Px * (4/25))
+            .text("End: " + Math.floor((100 * time) / fps) / 100 + " sec");
+    graphSVG.select(".overLay").append('text').attr("x", unit2Px * 65/25).attr("y", unit2Px * 1.83)
+            .attr("class", "sliderhelp").style("font-size", unit2Px * (3/25)).text("Click and drag gray bar");
+    graphSVG.select(".overLay").append('text').attr("x", unit2Px * 65/25).attr("y", unit2Px * 1.95)
+            .attr("class", "sliderhelp").style("font-size", unit2Px * (3/25)).text("to see the timeline");
   } else {
     var saveBuffer = [];
 
@@ -676,16 +936,25 @@ function AlterAnim() {
         var exitDist = Math.sqrt(Math.pow(eVec[1], 2) + Math.pow(eVec[0], 2));
         if (exitDist <= who.velocity * unit2Px / (2 * fps)) {
           exitAlert = who.knows = true;
+          //console.log(Math.floor((100 * time) / fps) / 100);
+          if (who.priority){
+              break;
+          }
           exitAllow = exitDist;
         }
       }
     }
+
     if (exitAlert) {
       if (exitFoundLine == null) {
         var holdX = (unit2Px * (10 / 25) + ((time + exitAllow) / timeMax) * (80 / 25) * unit2Px);
-        exitFoundLine = graphSVG.select(".overLay").append("line").attr("x1", holdX).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
+        exitFoundLine = 1;
+
+                        /*
+                        graphSVG.select(".overLay").append("line").attr("x1", holdX).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
                         .attr("x2", holdX).attr("y2", 2 * unit2Px).style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px)
                         .style("stroke-opacity", 0.5);
+                        */
       }
       for (var i = 0; i < tourists.length; i++) {//reset bots
         var who = tourists[i];
@@ -695,6 +964,7 @@ function AlterAnim() {
         who.on = saveBuffer[i][3];
         if (wireless) {
           who.knows = true;
+          //console.log(Math.floor((100 * time) / fps) / 100);
         }
         who.allowance = exitAllow;
         while (who.allowance > 0) {
@@ -719,9 +989,10 @@ function AlterAnim() {
       }
       exitAlert = false;
     }
+    AllAtExit();
     UpdateVisuals();
     time++;
-    timeSlider.attr("x", (time / timeMax) * (31 / 8) * unit2Px);
+    timeSlider.attr("x", ((10/25) + (time / timeMax) * (63/20)) * unit2Px);
   }
   timeText.text("Time: " + Math.floor((100 * time) / fps) / 100);
   frameText.text("Frame: " + time);
@@ -732,11 +1003,20 @@ function AlterLines(i) {
   var dista = unit2Px * 4 - Math.abs((Math.sqrt(Math.pow(fieldExit[0] - tourists[i].x, 2) + Math.pow(fieldExit[1] - tourists[i].y, 2)) * (20 / 25)));
   tourPoints[i][time] = {x:tourists[i].x, y:tourists[i].y};
   tourLine[i].remove();
-  tourLine[i] = fieldSVG.select(".lines").append("path").attr("d", lineFx(tourPoints[i]))
+
+  var holdA = 'M' + (tourPoints[i][0].x + ',' + (tourPoints[i][0].y));
+  var holdG = 'M' + (10/25) * unit2Px + ',' + (graphPoints[i][0].y);
+  for (var j = 1; j < time; j++) {
+    holdA += 'L' + (tourPoints[i][j].x + ',' + (tourPoints[i][j].y));
+    holdG += 'L' + ((10/25) + ((graphPoints[i][j].x / timeMax) * (63/20))) * unit2Px  + ',' + (graphPoints[i][j].y);
+    //((10/25) + (graphPoints[i][j].x / timeMax) * (63/20)) * unit2Px)
+  }
+
+  tourLine[i] = fieldSVG.select(".lines").append("path").attr("d", holdA)
                 .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
-  graphPoints[i][time] = {x:(unit2Px * (10 / 25) + (time / timeMax) * (80 / 25) * unit2Px), y:(dista - unit2Px * (10 / 25))};
+  graphPoints[i][time] = {x:time, y:(dista - unit2Px * (10 / 25))};
   graphLine[i].remove();
-  graphLine[i] = graphSVG.select(".lines").append("path").attr("d", lineFx(graphPoints[i]))
+  graphLine[i] = graphSVG.select(".lines").append("path").attr("d", holdG)
                  .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
 }
 
@@ -746,12 +1026,26 @@ function AllAtExit() {
     if ((tourists[j].x != fieldExit[0]) || (tourists[j].y != fieldExit[1])) {//check if not at exit
       return;
     }
+    else if (!priorityExitedLine && tourists[j].priority){//assuming also at exit...
+        var holdP = (unit2Px * (10 / 25) + ((time + exitAllow) / timeMax) * (80/25) * unit2Px);
+        priorityExitedLine = 1;
+                            /*graphSVG.select(".overLay").append("line").attr("x1", holdP).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
+                          .attr("x2", holdP).attr("y2", 1.75 * unit2Px).style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px)
+                          .style("stroke-opacity", 0.5);*/
+
+        timeMax = time; //to account for the extra bot getting to its next point
+    }
   }
-  var holdX = (unit2Px * (10 / 25) + ((time + exitAllow) / timeMax) * (80 / 25) * unit2Px);
-  allExitedLine = graphSVG.select(".overLay").append("line").attr("x1", holdX).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
+  if (!allExitedLine){
+    var holdX = (unit2Px * (10 / 25) + ((time + exitAllow) / timeMax) * (80 / 25) * unit2Px);
+
+    allExitedLine = 1;
+                    /*graphSVG.select(".overLay").append("line").attr("x1", holdX).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
                   .attr("x2", holdX).attr("y2", 2 * unit2Px).style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px)
-                  .style("stroke-opacity", 0.5);
-  console.log(Math.floor((100 * time) / fps) / 100);
+                  .style("stroke-opacity", 0.5);*/
+    timeMax = time;
+  }
+  //console.log(Math.floor((100 * time) / fps) / 100);
 }
 
 function PlayAnim() {
@@ -765,7 +1059,7 @@ function PlayAnim() {
       timeDirect = 0;
     }
     UpdateVisuals();
-    timeSlider.attr("x", (time / timeMax) * (31 / 8) * unit2Px);
+    timeSlider.attr("x", ((10/25) + (time / timeMax) * (63/20)) * unit2Px);
     timeText.text("Time: " + Math.floor((100 * time) / fps) / 100);
     frameText.text("Frame: " + Math.floor(time));
   }
@@ -775,7 +1069,7 @@ function UpdateVisuals() {
   for (var i = 0; i < touristNum; i++) {
     var who = tourists[i];
     who.visual.attr("cx", tourPoints[i][Math.floor(time)].x).attr("cy", tourPoints[i][Math.floor(time)].y);
-    graphDots[i].attr("cx", graphPoints[i][Math.floor(time)].x).attr("cy", graphPoints[i][Math.floor(time)].y);
+    graphDots[i].attr("cx", ((10/25) + ((graphPoints[i][Math.floor(time)].x / timeMax) * (63/20))) * unit2Px).attr("cy", graphPoints[i][Math.floor(time)].y);
   }
 }
 
@@ -812,43 +1106,122 @@ function showAlgorithmDesc(s, w){
         case 'A':
             color = "#efe";
             instruBinder = [
-                            [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right"]]],
-                            [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left"]]]
+                            [["InterceptNonBeliever", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right"]]],
+                            [["InterceptNonBeliever", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left"]]]
                         ];
             algorithmName = "Algorithm A ";
             break;
         case 'B':
             color = '#eef';
             instruBinder = [
-                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
-                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
+                                 [["InterceptNonBeliever", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
+                                 [["InterceptNonBeliever", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
                                ];
             algorithmName = "Algorithm B ";
             break;
         case 'C':
             color = '#fee';
             instruBinder = [
-                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0] + 70, center[1]+40]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
-                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0] - 70, center[1]+40]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
+                                 [["InterceptNonBeliever", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0] + 70, center[1]+40]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
+                                 [["InterceptNonBeliever", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0] - 70, center[1]+40]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
                                ];
             algorithmName = "Algorithm C ";
             break;
         case 'Q1':
             color = "#efe";
             instruBinder = [
-                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right"]]],
-                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]]
+                                 [["GoToExit", [null, true, "#fe447d"]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]],
+                                 [["InterceptNonBeliever", [0, false, "#5cd05b"]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right"]]]
                                ];
             algorithmName = "Algorithm Priority 1 ";
             break;
         case 'Q2':
             color = "#efe";
             instruBinder = [
-                                  [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [160]], ["FollowWall", ["left", 20]], ["GoToPoint", [center[0] + 30, center[1] + 30]], ["GoToWallAtAngle", [320]], ["Wait", [null]]],
-                                  [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [160]], ["FollowWall", ["right"]]],
-                                  [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]]
+                                  [["GoToExit", [null, true, "#fe447d"]], ["GoToWallAtAngle", [144]], ["FollowWall", ["left", 36]], ["GoToPoint", [center[0] + (unit2Px * 0.65), center[1] + 30]], ["GoToWallAtAngle", [345]], ["FollowWall", ["left"]]],
+                                  [["InterceptNonBeliever", [0, false, "#5cd05b"]], ["GoToWallAtAngle", [160]], ["FollowWall", ["right"]]],
+                                  [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]]
             ];
             algorithmName = "Algorithm Priority 2 ";
+            break;
+        case 'Q2S1':
+            color = "#eee";
+            instruBinder = [
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [53]], ["FollowWall", ["left"]]],
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left"]]],
+                [["InterceptNonBeliever", [[0, 1], false]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right"]]]
+                /*
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left"]]],
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [240]], ["FollowWall", ["left"]]],
+                [["InterceptNonBeliever", [[0, 1], false]], ["GoToWallAtAngle", [240]], ["FollowWall", ["right"]]]
+                */
+                /*
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]],
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right", 36.5]], ["GoToWallAtAngle", [350]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [[0, 1], false]], ["GoToWallAtAngle", [143.5]], ["FollowWall", ["right"]]]
+                */
+                /*
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]],
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right", 45]], ["GoToWallAtAngle", [340]], ["FollowWall", ["left"]]],
+                [["InterceptNonBeliever", [null, false]], ["GoToWallAtAngle", [135]], ["FollowWall", ["right"]]]
+                */
+                /*
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]],
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right", 45]], ["GoToPoint", [center[0] + (unit2Px * 0.65), center[1]]], ["GoToWallAtAngle", [337.5]], ["FollowWall", ["left"]]],
+                [["InterceptNonBeliever", [null, false]], ["GoToWallAtAngle", [135]], ["FollowWall", ["right"]]]
+                */
+                /*
+                [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 65]], ["GoToPoint", [center[0], center[1]]], ["GoToWallAtAngle", [245]], ["FollowWall", ["left"]]],
+                [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right", 65]], ["GoToPoint", [center[0], center[1]]], ["GoToWallAtAngle", [115]], ["FollowWall", ["right"]]],
+                [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [60]], ["FollowWall", ["right"]]]
+                */
+                /*
+                [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]],
+                [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right"]]],
+
+                [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [60]], ["FollowWall", ["right"]]]
+                */
+
+            ];
+            algorithmName = "2 Priority + 1 Servant (1) ";
+            break;
+
+        case 'Q1S1Q1':
+            color = "#eee";
+            instruBinder = [
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]] ,["FollowWall", ["right"]]],
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right"]]],
+                [["InterceptNonBeliever", [[0,1], false]], ["GoToWallAtAngle", 180], ["FollowWall", ["left"]]]
+            ];
+            algorithmName = "2 Priority + 1 Servant (2) ";
+            break;
+
+        case 'Q1S4':
+            color = "#eee";
+            instruBinder = [
+                [["GoToExit", [null, true]], ["Wait", [(1 + (Math.PI / 2))]], ["GoToWallAtAngle", [180]]],
+                [["InterceptNonBeliever", [null, false]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left", 75]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [null, false]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right", 75]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [null, false]], ["GoToWallAtAngle", [75]], ["FollowWall", ["left"]]],
+                [["InterceptNonBeliever", [null, false]], ["GoToWallAtAngle", [285]], ["FollowWall", ["right"]]]
+            ];
+            algorithmName = "1 Priority + 4 Servants ";
+            break;
+
+        case 'Q1S8':
+            color = "#eee";
+            instruBinder = [
+                [["GoToExit", [null, true]], ["Wait", [(1+(Math.PI / 2))]], ["GoToWallAtAngle", [180]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left", 60]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [60]], ["FollowWall", ["left", 30]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 30]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [120]], ["FollowWall", ["left"]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right", 60]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [300]], ["FollowWall", ["right", 30]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [270]], ["FollowWall", ["right", 30]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [240]], ["FollowWall", ["right"]], ["Wait", [null]]]
+            ];
+            algorithmName = "1 Priority + 8 Servants ";
             break;
     }
     wireless = w;

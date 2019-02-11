@@ -344,7 +344,7 @@ class iclData{
         this.degrees = 3;
         this.unit2Px = 25; //YAY
         this.center = [this.unit2Px * 2, this.unit2Px * 2];
-        this.exitAngle = 315;
+        this.exitAngle = 270;
         this.fieldExit = [this.center[0] + this.unit2Px * Math.cos(this.exitAngle * Math.PI / 180), this.center[1] - this.unit2Px * Math.sin(this.exitAngle * Math.PI / 180)];
 
         this.touristNum = 0;
@@ -847,7 +847,22 @@ function changeInstructions(n){
                               [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]]
                           ];
             algorithmName = "Algorithm Priority 2 ";
-        break;
+            break;
+        case '2Q1S' :
+            instruBinder = [
+                [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]],
+                [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right", 45]], ["GoToWallAtAngle", [0]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [135]], ["FollowWall", ["right"]]]];
+            algorithmName = "2 Priority + 1 Servant (1)";
+            break;
+        case '1Q1S1Q':
+            instruBinder = [
+                [["GoToExit", [null]], ["GoToWallAtAngle", [180]] ,["FollowWall", ["right"]]],
+                [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", 180], ["FollowWall", ["left"]]],
+                [["GoToExit", [null]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right"]]]
+            ];
+            algorithmName = "2 Priority + 1 Servant (2)";
+            break;
 
     }
 
