@@ -14,8 +14,8 @@ var degrees = 3;
 var unit2Px = ((window.innerHeight <= window.innerWidth) ?
                     (window.innerHeight) : (window.innerWidth)) / 5;
 var center = [unit2Px * 2, unit2Px * 2];
-var exitAngle = 0;
-var fieldExit = [center[0] + unit2Px, center[1]];
+var exitAngle = null;
+var fieldExit = [1, 1];
 
 var dataBox;
 var touristNum = 0;
@@ -36,13 +36,15 @@ graphDots = [];
 graphPoints = [];
 graphLine = [];
 
-var distanceFromSVG;
+var distanceFromSVGone;
+var distanceFromSVGtwo;
 
 var exitFoundLine = null;
 var allExitedLine = null;
 var priorityExitedLine = null;
 
 var distanceFromServant = [];
+var disGraphDrawn = false;
 
 var b = d3.select('body').append('div');
 
@@ -149,13 +151,16 @@ class Tourist {
     }
     if (this.x == fieldExit[0] && this.y == fieldExit[1] && !this.atExit) {
 
-        console.log("Robot " + this.number + " exits at " + (Math.floor((100 * time) / fps) / 100) + (this.p ? "(Priority)" : ""));
+        console.log("Robot " + this.number + " exits at " + (Math.floor((100 * time) / fps) / 100) + (this.priority ? " (Priority)" : ""));
         this.atExit = true;
         /*
         graphSVG.select(".overLay").append("line").attr("x1", graphDots[this.number].attr("cx")).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
                       .attr("x2", graphDots[this.number].attr("cx")).attr("y2", 2 * unit2Px).style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px)
                       .style("stroke-opacity", 0.5);
         */
+        if (this.priority){
+            AllAtExit();
+        }
     }
   }
 
@@ -456,8 +461,10 @@ function Load() {
                .on("mousemove", ChoosExit).on("click", exitChosen);
   graphSVG = b.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
                .style("float", "left").style("border", "1px solid black");
-  distanceFromSVG = b.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 2)
-               .style("float", "left").style("border", "1px solid black").attr("class", "distanceFrom");
+  distanceFromSVGone = b.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 2)
+               .style("float", "left").style("border", "1px solid black").attr("class", "distanceFrom1").attr("display", "none");
+  distanceFromSVGtwo = b.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 2)
+               .style("float", "left").style("border", "1px solid black").attr("class", "distanceFrom2").attr("display", "none");
   var classes = ["backGround", "lines", "bots", "overLay"];
   for (var i = 0; i < classes.length; i++) {//Create layers
     fieldSVG.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
@@ -480,6 +487,10 @@ function Load() {
                    .style("fill", tourColors[i]).style("stroke", "#ffffff").style("stroke-width", (1 / 100) * unit2Px));
     graphPoints.push([]);
     touristNum++;
+
+    if (instruBinder[i][0][1][1]){
+        distanceFromServant.push([]);
+    }
   }
 
 
@@ -515,9 +526,12 @@ function Load() {
   for (var i = 0; i < tourists.length; i++){
       tourists[i].target = null;
   }
+
+  console.log("GOING INTO LOADANIM")
   while (time < timeMax) {//Load one run through.
     LoadAnim();
   }
+  console.log("LEAVING LOADANIM")
 
   console.log(distanceFromServant);
 
@@ -545,11 +559,24 @@ function Load() {
 
   }
 
-  for (var i = 0; i < distanceFromServant.length; i++){
-      distanceFromServant[i] = 4 * (1 -  (distanceFromServant[i] / (unit2Px * 4)));
-  }
 
-  console.log(distanceFromServant);
+  var datasetone = [];
+  var datasettwo = [];
+
+  if (distanceFromServant[0].length > 0){
+      for (var i = 0; i < distanceFromServant[0].length; i++){
+        distanceFromServant[0][i] = 4 * (1 - (distanceFromServant[0][i] / (unit2Px * 4)));
+        datasetone.push({"y" : distanceFromServant[0][i]});
+
+      }
+  if (distanceFromServant[1] && distanceFromServant[1].length > 0){
+      for (var i = 0; i < distanceFromServant[1].length; i++){
+        distanceFromServant[1][i] = 4 * (1 - (distanceFromServant[1][i] / (unit2Px * 4)));
+        datasettwo.push({"y" : distanceFromServant[1][i]});
+
+      }
+  }
+  console.log(datasetone);
 
   // 2. Use the margin convention practice
   var margin = {top: 50, right: 50, bottom: 50, left: 50}
@@ -575,37 +602,60 @@ function Load() {
       .y(function(d) { return yScale(d.y); }) // set the y values for the line generator
       .curve(d3.curveMonotoneX) // apply smoothing to the line
 
-  // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
-  var dataset = [];
-  for (var i = 0; i < distanceFromServant.length; i++){
-      dataset.push({"y" : distanceFromServant[i]});
+  if (tourists[0].priority){
+      distanceFromSVGone.attr("display", "null");
+  }
+
+  if (tourists[1].priority){
+      distanceFromSVGtwo.attr("display", "null");
   }
 
   // 1. Add the SVG to the page and employ #2
-  distanceFromSVG
+  distanceFromSVGone
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  distanceFromSVGtwo
     .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   // 3. Call the x axis in a group tag
-  distanceFromSVG.append("g")
+  distanceFromSVGone.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate(75," + (height + 25) + ")")
+      .attr("transform", "translate(75," + (height + 50) + ")")
+      .call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
+
+  distanceFromSVGtwo.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(75," + (height + 50) + ")")
       .call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
 
   // 4. Call the y axis in a group tag
-  distanceFromSVG.append("g")
+  distanceFromSVGone.append("g")
       .attr("class", "y axis")
-      .attr("transform", "translate(75, 25)")
+      .attr("transform", "translate(75, 50)")
       .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
 
-  distanceFromSVG.append("text")
+  distanceFromSVGtwo.append("g")
+      .attr("class", "y axis")
+      .attr("transform", "translate(75, 50)")
+      .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
+
+  distanceFromSVGone.append("text")
       .attr("class", "x axis label")
       .attr("text-align", "center")
       .attr("x", (2 * unit2Px) - 45)
-      .attr("y", height + 75)
+      .attr("y", height + 90)
       .text("Time (Frames)");
 
-  distanceFromSVG.append("text")
+  distanceFromSVGtwo.append("text")
+      .attr("class", "x axis label")
+      .attr("text-align", "center")
+      .attr("x", (2 * unit2Px) - 45)
+      .attr("y", height + 90)
+      .text("Time (Frames)");
+
+  distanceFromSVGone.append("text")
       .attr("class", "y axis label")
       .attr("text-align", "center")
       .attr("x", -height)
@@ -613,69 +663,127 @@ function Load() {
       .attr("transform", "rotate(-90)")
       .text("Distance From Servant (Units)");
 
-  distanceFromSVG.append("text")
+  distanceFromSVGtwo.append("text")
+      .attr("class", "y axis label")
+      .attr("text-align", "center")
+      .attr("x", -height)
+      .attr("y", 25)
+      .attr("transform", "rotate(-90)")
+      .text("Distance From Servant (Units)");
+
+  distanceFromSVGone.append("text")
       .attr("class", "distance from title")
       .attr("text-align", "center")
       .attr("x", (unit2Px))
       .attr("y", 30)
-      .text("Priority Bot 1 Distance From Servant (No-Exit Simulation)")
+      .text("Priority Bot 0 Distance From Servant Bot 2 (No-Exit Simulation)")
+
+  distanceFromSVGtwo.append("text")
+      .attr("class", "distance from title")
+      .attr("text-align", "center")
+      .attr("x", (unit2Px))
+      .attr("y", 30)
+      .text("Priority Bot 1 Distance From Servant Bot 2 (No-Exit Simulation)")
 
   // 9. Append the path, bind the data, and call the line generator
-  distanceFromSVG.append("path")
-      .datum(dataset) // 10. Binds data to the line
-      .attr("class", "line") // Assign a class for styling
-      .attr("transform", "translate(75, 25)")
+  distanceFromSVGone.append("path")
+      .datum(datasetone) // 10. Binds data to the line
+      .attr("class", "line1") // Assign a class for styling
+      .attr("transform", "translate(75, 50)")
       .attr("d", line); // 11. Calls the line generator
 
-  var focus = distanceFromSVG.append("g")
-      .attr("transform", "translate(0, 25)")
+  distanceFromSVGtwo.append("path")
+      .datum(datasettwo) // 10. Binds data to the line
+      .attr("class", "line2") // Assign a class for styling
+      .attr("transform", "translate(75, 50)")
+      .attr("d", line); // 11. Calls the line generator
+
+  var focusone = distanceFromSVGone.append("g")
+      .attr("class", "envelope")
+      .attr("transform", "translate(0, 50)")
       .attr("class", "focus")
       .style("display", "none");
 
-  focus.append("circle")
+  var focustwo = distanceFromSVGtwo.append("g")
+      .attr("class", "envelope")
+      .attr("transform", "translate(0, 50)")
+      .attr("class", "focus")
+      .style("display", "none");
+
+  focusone.append("circle")
       .attr("r", 4.5);
 
-  focus.append("text")
+  focustwo.append("circle")
+      .attr("r", 4.5);
+
+  focusone.append("text")
+      .attr("class", "envelope")
       .attr("x", 9)
       .attr("dy", ".35em");
 
-  distanceFromSVG.append("rect")
+  focustwo.append("text")
+      .attr("class", "envelope")
+      .attr("x", 9)
+      .attr("dy", ".35em");
+
+  distanceFromSVGone.append("rect")
       .attr("class", "overlay")
-      .attr("width", distanceFromSVG.attr("width"))
-      .attr("height", distanceFromSVG.attr("height"))
+      .attr("width", distanceFromSVGone.attr("width"))
+      .attr("height", distanceFromSVGone.attr("height"))
       .attr("transform", "translate(75, 25)")
-      .on("mouseover", function() { focus.style("display", null); })
-      .on("mouseout", function() { focus.style("display", "none"); })
+      .on("mouseover", function() { focusone.style("display", null); })
+      .on("mouseout", function() { focusone.style("display", "none"); })
+      .on("mousemove", mousemove);
+
+  distanceFromSVGtwo.append("rect")
+      .attr("class", "overlay")
+      .attr("width", distanceFromSVGtwo.attr("width"))
+      .attr("height", distanceFromSVGtwo.attr("height"))
+      .attr("transform", "translate(75, 25)")
+      .on("mouseover", function() { focustwo.style("display", null); })
+      .on("mouseout", function() { focustwo.style("display", "none"); })
       .on("mousemove", mousemove);
 
   var formatValue = d3.format(",.3f");
 
   function mousemove() {
     var coords = d3.mouse(this);
+    var dataset = (d3.select(this.parentNode).attr("class") == "distanceFrom1" ? datasetone : datasettwo);
+    console.log(d3.select(this.parentNode).attr("class"));
     //console.log(xScale.invert(coords[0]));
     var x0 = xScale.invert(coords[0]),
         i = Math.floor(x0)
         d0 = dataset[i - 1],
         d1 = dataset[i],
         d = x0 - d0 > d1 - x0 ? d1 : d0;
-    console.log((height - (d1 * unit2Px * 2)));
-    if (i < 1 || i > 599){
+    var focus = d3.select(this.parentNode).select(".focus");
+    if (i < 0 || i > 600){
         focus.attr("display", "none");
     }
     else{
         focus.attr("display", "null");
-        focus.attr("transform", "translate(" + (coords[0] + 75) + "," + (yScale(d.y) + 25) + ")");
-        focus.select("text").text(i + ", " + formatValue(dataset[i].y));
+        focus.attr("transform", "translate(" + (coords[0] + 75) + "," + (yScale(d.y) + 50) + ")");
+        focus.select("text").text(i + ", " + formatValue(dataset[i].y) + ", " + formatValue((100 * i) / fps / 100 + dataset[i].y));
+        if (i > 500){
+            focus.select("text").attr("x", (focus.attr("x") - (3/4 * unit2Px)));
+        }
+        else {
+            focus.select("text").attr("x", (focus.attr("x") + 15));
+        }
     }
 
   }
 
-  if (distanceFromServant.length < 600){
-      distanceFromSVG.attr("display", "none");
+  if (distanceFromServant[0].length < 1){
+      distanceFromSVGone.attr("display", "null");
+  }
+
+  if (distanceFromServant[1].length < 1){
+      distanceFromSVGtwo.attr("display", "null");
   }
 
 }
-
+}
 
 
 
@@ -802,8 +910,8 @@ function Reset() {
     unit2Px = ((window.innerHeight <= window.innerWidth) ?
                         (window.innerHeight) : (window.innerWidth)) / 5;
     center = [unit2Px * 2, unit2Px * 2];
-    exitAngle = 0;
-    fieldExit = [center[0] + unit2Px, center[1]];
+    exitAngle = null;
+    fieldExit = [1,1];
 
     dataBox = null;
 
@@ -811,12 +919,13 @@ function Reset() {
     tourColors = [];
 
     //distanceFromSVG.selectAll('g').remove();
-    distanceFromSVG.remove();
+    distanceFromSVGone.remove();
+    distanceFromSVGtwo.remove();
 
     distanceFromServant = [];
 
     fieldSVG.selectAll('svg').remove();
-    fieldSVG.remove();
+    fieldSVG.remove();37, 0.000, 0.617
     tourists = [];
     tourPoints = [];
     tourLine = [];
@@ -882,8 +991,11 @@ function LoadPoints(i) {
   var dista = unit2Px * 4 - (Math.sqrt(Math.pow(fieldExit[0] - tourists[i].x, 2) + Math.pow(fieldExit[1] - tourists[i].y, 2)) * (20 / 25));
   tourPoints[i].push({x:tourists[i].x, y:tourists[i].y});
   graphPoints[i].push({x:(unit2Px * (10 / 25) + (time / timeMax) * (80 / 25) * unit2Px), y:(dista - unit2Px * (10 / 25))});
-  if (i==2){
-      distanceFromServant.push(unit2Px * 4 - (Math.sqrt(Math.pow(tourPoints[2][tourPoints[2].length-1].x - this.tourPoints[1][tourPoints[1].length-1].x, 2) + Math.pow(tourPoints[2][tourPoints[2].length-1].y - tourPoints[1][tourPoints[1].length-1].y, 2)) * (20 / 25)));
+  if (i == 2 && tourists[0].priority){
+      distanceFromServant[0].push(unit2Px * 4 - (Math.sqrt(Math.pow(tourPoints[2][tourPoints[2].length-1].x - this.tourPoints[0][tourPoints[0].length-1].x, 2) + Math.pow(tourPoints[2][tourPoints[2].length-1].y - tourPoints[0][tourPoints[0].length-1].y, 2))));
+  }
+  if (i == 2 && tourists[1].priority){
+      distanceFromServant[1].push(unit2Px * 4 - (Math.sqrt(Math.pow(tourPoints[2][tourPoints[2].length-1].x - this.tourPoints[1][tourPoints[1].length-1].x, 2) + Math.pow(tourPoints[2][tourPoints[2].length-1].y - tourPoints[1][tourPoints[1].length-1].y, 2))));
   }
 }
 
@@ -1020,8 +1132,16 @@ function AlterLines(i) {
                  .style("stroke", tourColors[i]).style("stroke-width", unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
 }
 
-//Determine if all at exit, O(n) time
 function AllAtExit() {
+
+    if (exitAlert){ // check to see if any priority have exited.
+        for (var p = 0; p < touristNum; p++){
+            if (tourists[p].priority && tourists[p].atExit){
+                allExitedLine = 1;
+                timeMax = time;
+            }
+        }
+    }
   for (var j = 0; j < touristNum; j++) {//Check every mobile agent
     if ((tourists[j].x != fieldExit[0]) || (tourists[j].y != fieldExit[1])) {//check if not at exit
       return;
@@ -1139,7 +1259,7 @@ function showAlgorithmDesc(s, w){
             color = "#efe";
             instruBinder = [
                                   [["GoToExit", [null, true, "#fe447d"]], ["GoToWallAtAngle", [144]], ["FollowWall", ["left", 36]], ["GoToPoint", [center[0] + (unit2Px * 0.65), center[1] + 30]], ["GoToWallAtAngle", [345]], ["FollowWall", ["left"]]],
-                                  [["InterceptNonBeliever", [0, false, "#5cd05b"]], ["GoToWallAtAngle", [160]], ["FollowWall", ["right"]]],
+                                  [["InterceptNonBeliever", [0, false, "#5cd05b"]], ["GoToWallAtAngle", [144]], ["FollowWall", ["right"]]],
                                   [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]]
             ];
             algorithmName = "Algorithm Priority 2 ";
@@ -1147,9 +1267,9 @@ function showAlgorithmDesc(s, w){
         case 'Q2S1':
             color = "#eee";
             instruBinder = [
-                [["GoToExit", [null, true]], ["GoToWallAtAngle", [53]], ["FollowWall", ["left"]]],
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [213.8]], ["FollowWall", ["left"]]],
                 [["GoToExit", [null, true]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left"]]],
-                [["InterceptNonBeliever", [[0, 1], false]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right"]]]
+                [["InterceptNonBeliever", [[0, 1], false]], ["GoToWallAtAngle", [213.8]], ["FollowWall", ["right"]]]
                 /*
                 [["GoToExit", [null, true]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left"]]],
                 [["GoToExit", [null, true]], ["GoToWallAtAngle", [240]], ["FollowWall", ["left"]]],
@@ -1199,11 +1319,11 @@ function showAlgorithmDesc(s, w){
         case 'Q1S4':
             color = "#eee";
             instruBinder = [
-                [["GoToExit", [null, true]], ["Wait", [(1 + (Math.PI / 2))]], ["GoToWallAtAngle", [180]]],
-                [["InterceptNonBeliever", [null, false]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left", 75]], ["Wait", [null]]],
-                [["InterceptNonBeliever", [null, false]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right", 75]], ["Wait", [null]]],
-                [["InterceptNonBeliever", [null, false]], ["GoToWallAtAngle", [75]], ["FollowWall", ["left"]]],
-                [["InterceptNonBeliever", [null, false]], ["GoToWallAtAngle", [285]], ["FollowWall", ["right"]]]
+                [["GoToExit", [null, true]], ["Wait", [(1 + (Math.PI / 2))]], ["GoToWallAtAngle", [180]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left", 75]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right", 75]], ["Wait", [null]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [75]], ["FollowWall", ["left"]]],
+                [["InterceptNonBeliever", [0, false]], ["GoToWallAtAngle", [285]], ["FollowWall", ["right"]]]
             ];
             algorithmName = "1 Priority + 4 Servants ";
             break;

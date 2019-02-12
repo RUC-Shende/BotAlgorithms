@@ -292,10 +292,16 @@ h3 {
     background-color: inherit;
 }
 
-.line {
+.line1 {
     fill: none;
-    stroke: #ffab00;
-    stroke-width: 3;
+    stroke: #5cd05b;
+    stroke-width: 5;
+}
+
+.line2 {
+    fill: none;
+    stroke: #03c1cd;
+    stroke-width: 5;
 }
 
 .overlay {
@@ -313,4 +319,8 @@ h3 {
 .focus circle {
   fill: none;
   stroke: steelblue;
+}
+
+.envelope {
+    z-index: 10;
 }
