@@ -1,6 +1,7 @@
 //////////----------Instantiate Variables----------//////////
 var exitAlert = false;//Someone learned where the exit is.
 var exitAllow = 0;//How far in a frame was the exit found.
+var exitFoundFrame = 0;
 var wireless = true;
 
 var time = 0;
@@ -37,8 +38,6 @@ graphPoints = [];
 graphLine = [];
 
 var distanceFromSVGone;
-var distanceFromSVGtwo;
-
 var exitFoundLine = null;
 var allExitedLine = null;
 var priorityExitedLine = null;
@@ -376,6 +375,7 @@ class Tourist {
       var botDist = Math.sqrt(Math.pow(bVec[1], 2) + Math.pow(bVec[0], 2));
       if (botDist <= this.velocity * unit2Px / fps) {
         exitAlert = tourists[this.target].knows = true;
+        exitFoundFrame = time;
         exitAllow = botDist;
       }
       this.DirectTo([tourists[this.target].x, tourists[this.target].y]);
@@ -429,6 +429,7 @@ class Tourist {
       var pointDist = Math.sqrt(Math.pow(pVec[1], 2) + Math.pow(pVec[0], 2));
       if (pointDist <= this.velocity * unit2Px / fps) {
         exitAlert = tourists[this.target[0]].knows = true;
+        exitFoundFrame = time;
         //console.log(Math.floor((100 * time) / fps) / 100);
         exitAllow = pointDist;
       }
@@ -461,10 +462,8 @@ function Load() {
                .on("mousemove", ChoosExit).on("click", exitChosen);
   graphSVG = b.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
                .style("float", "left").style("border", "1px solid black");
-  distanceFromSVGone = b.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 2)
+  distanceFromSVGone = b.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 3)
                .style("float", "left").style("border", "1px solid black").attr("class", "distanceFrom1").attr("display", "none");
-  distanceFromSVGtwo = b.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 2)
-               .style("float", "left").style("border", "1px solid black").attr("class", "distanceFrom2").attr("display", "none");
   var classes = ["backGround", "lines", "bots", "overLay"];
   for (var i = 0; i < classes.length; i++) {//Create layers
     fieldSVG.append("svg").attr("width", unit2Px * 4).attr("height", unit2Px * 4)
@@ -527,11 +526,9 @@ function Load() {
       tourists[i].target = null;
   }
 
-  console.log("GOING INTO LOADANIM")
   while (time < timeMax) {//Load one run through.
     LoadAnim();
   }
-  console.log("LEAVING LOADANIM")
 
   console.log(distanceFromServant);
 
@@ -606,26 +603,18 @@ function Load() {
       distanceFromSVGone.attr("display", "null");
   }
 
-  if (tourists[1].priority){
-      distanceFromSVGtwo.attr("display", "null");
-  }
-
   // 1. Add the SVG to the page and employ #2
   distanceFromSVGone
     .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-  distanceFromSVGtwo
-    .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
+      
   // 3. Call the x axis in a group tag
   distanceFromSVGone.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(75," + (height + 50) + ")")
       .call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
 
-  distanceFromSVGtwo.append("g")
+  distanceFromSVGone.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(75," + (height + 50) + ")")
       .call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
@@ -636,7 +625,7 @@ function Load() {
       .attr("transform", "translate(75, 50)")
       .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
 
-  distanceFromSVGtwo.append("g")
+  distanceFromSVGone.append("g")
       .attr("class", "y axis")
       .attr("transform", "translate(75, 50)")
       .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
@@ -648,22 +637,7 @@ function Load() {
       .attr("y", height + 90)
       .text("Time (Frames)");
 
-  distanceFromSVGtwo.append("text")
-      .attr("class", "x axis label")
-      .attr("text-align", "center")
-      .attr("x", (2 * unit2Px) - 45)
-      .attr("y", height + 90)
-      .text("Time (Frames)");
-
   distanceFromSVGone.append("text")
-      .attr("class", "y axis label")
-      .attr("text-align", "center")
-      .attr("x", -height)
-      .attr("y", 25)
-      .attr("transform", "rotate(-90)")
-      .text("Distance From Servant (Units)");
-
-  distanceFromSVGtwo.append("text")
       .attr("class", "y axis label")
       .attr("text-align", "center")
       .attr("x", -height)
@@ -676,14 +650,7 @@ function Load() {
       .attr("text-align", "center")
       .attr("x", (unit2Px))
       .attr("y", 30)
-      .text("Priority Bot 0 Distance From Servant Bot 2 (No-Exit Simulation)")
-
-  distanceFromSVGtwo.append("text")
-      .attr("class", "distance from title")
-      .attr("text-align", "center")
-      .attr("x", (unit2Px))
-      .attr("y", 30)
-      .text("Priority Bot 1 Distance From Servant Bot 2 (No-Exit Simulation)")
+      .text("Priority Bots Distance From Servant Bot 2 (No-Exit Simulation)")
 
   // 9. Append the path, bind the data, and call the line generator
   distanceFromSVGone.append("path")
@@ -692,22 +659,60 @@ function Load() {
       .attr("transform", "translate(75, 50)")
       .attr("d", line); // 11. Calls the line generator
 
-  distanceFromSVGtwo.append("path")
+  distanceFromSVGone.append("path")
       .datum(datasettwo) // 10. Binds data to the line
       .attr("class", "line2") // Assign a class for styling
       .attr("transform", "translate(75, 50)")
       .attr("d", line); // 11. Calls the line generator
 
+// Supposed to be an informational element, once it works
+/*
+  distanceFromSVGone.append("text")
+      .attr("x", unit2Px * 3.8)
+      .attr("y", 20)
+      .attr("dy", ".5em")
+      .attr("class", "tooltip")
+      .text("🛈")
+      .html("<span class='tooltiptext'>The values shown are: the current frame, the priority bot's distance from a servant, and the time it would take that bot to reach the exit if the servant found it on that frame.</span>");
+*/
+
+  distanceFromSVGone.append("text")
+      .attr("x", 0.5 * unit2Px)
+      .attr("y", 2.2 * unit2Px)
+      .attr("dy", ".5em")
+      .attr("class", "distext0")
+      .text("");
+
+  distanceFromSVGone.append("text")
+      .attr("x", 0.5 * unit2Px)
+      .attr("y", 2.5 * unit2Px)
+      .attr("dy", ".5em")
+      .attr("class", "distext1")
+      .text("");
+     
+    for (var i = 0; i < tourists.length; i++){
+        if (tourists[i].priority){
+            distanceFromSVGone.append("circle")
+                .attr("cx", 0.4 * unit2Px)
+                .attr("cy", (2.2 + (0.3 * i)) * unit2Px)
+                .attr("r", unit2Px / 16)
+                .style("fill", tourColors[i])
+                .style("stroke", "#ffffff")
+                .style("stroke-width", (1 / 100) * unit2Px);
+        }
+    }
+ 
+
   var focusone = distanceFromSVGone.append("g")
       .attr("class", "envelope")
       .attr("transform", "translate(0, 50)")
-      .attr("class", "focus")
+      .attr("class", "focus0")
       .style("display", "none");
 
-  var focustwo = distanceFromSVGtwo.append("g")
+  var focustwo = distanceFromSVGone.append("g")
       .attr("class", "envelope")
       .attr("transform", "translate(0, 50)")
-      .attr("class", "focus")
+      .attr("class", "focus1")
       .style("display", "none");
 
   focusone.append("circle")
@@ -731,46 +736,52 @@ function Load() {
       .attr("width", distanceFromSVGone.attr("width"))
       .attr("height", distanceFromSVGone.attr("height"))
       .attr("transform", "translate(75, 25)")
-      .on("mouseover", function() { focusone.style("display", null); })
-      .on("mouseout", function() { focusone.style("display", "none"); })
-      .on("mousemove", mousemove);
-
-  distanceFromSVGtwo.append("rect")
-      .attr("class", "overlay")
-      .attr("width", distanceFromSVGtwo.attr("width"))
-      .attr("height", distanceFromSVGtwo.attr("height"))
-      .attr("transform", "translate(75, 25)")
-      .on("mouseover", function() { focustwo.style("display", null); })
-      .on("mouseout", function() { focustwo.style("display", "none"); })
+      .on("mouseover", function() { 
+          focusone.style("display", null); 
+          focustwo.style("display", null);
+      })
+      .on("mouseout", function() {
+           focusone.style("display", "none");
+           focustwo.style("display", "none"); 
+       })
       .on("mousemove", mousemove);
 
   var formatValue = d3.format(",.3f");
 
   function mousemove() {
     var coords = d3.mouse(this);
-    var dataset = (d3.select(this.parentNode).attr("class") == "distanceFrom1" ? datasetone : datasettwo);
+    //var dataset = (d3.select(this.parentNode).attr("class") == "distanceFrom1" ? datasetone : datasettwo);
     console.log(d3.select(this.parentNode).attr("class"));
     //console.log(xScale.invert(coords[0]));
-    var x0 = xScale.invert(coords[0]),
-        i = Math.floor(x0)
-        d0 = dataset[i - 1],
-        d1 = dataset[i],
-        d = x0 - d0 > d1 - x0 ? d1 : d0;
-    var focus = d3.select(this.parentNode).select(".focus");
-    if (i < 0 || i > 600){
-        focus.attr("display", "none");
-    }
-    else{
-        focus.attr("display", "null");
-        focus.attr("transform", "translate(" + (coords[0] + 75) + "," + (yScale(d.y) + 50) + ")");
-        focus.select("text").text(i + ", " + formatValue(dataset[i].y) + ", " + formatValue((100 * i) / fps / 100 + dataset[i].y));
-        if (i > 500){
-            focus.select("text").attr("x", (focus.attr("x") - (3/4 * unit2Px)));
+    var ds = [datasetone, datasettwo];
+    for (var j = 0; j < 2; j++){
+        var x0 = xScale.invert(coords[0]),
+            i = Math.floor(x0)
+            d0 = ds[j][i - 1],
+            d1 = ds[j][i],
+            d = x0 - d0 > d1 - x0 ? d1 : d0;
+        var focus = d3.select(this.parentNode).select(".focus" + j);
+        console.log(focus);
+        console.log(j);
+        
+        if (i < 1 || i > 600){
+            focus.attr("display", "none");
         }
-        else {
-            focus.select("text").attr("x", (focus.attr("x") + 15));
+        else{
+            focus.attr("display", "null");
+            focus.attr("transform", "translate(" + (coords[0] + 75) + "," + (yScale(d.y) + 50) + ")");
+            focus.select("text").text(i);
+            d3.select(".distext" + j).text("Frame: " + i + ", Distance From Servant: " + formatValue(ds[j][i].y) + ", Time To Finish: " + formatValue((100 * i) / fps / 100 + ds[j][i].y));
+
+            if (i > 500){
+                focus.select("text").attr("x", (focus.attr("x") - (0.2 * unit2Px)));
+            }
+            else {
+                focus.select("text").attr("x", (focus.attr("x") + (0.05 * unit2Px)));
+            }
         }
     }
+    
 
   }
 
@@ -779,7 +790,7 @@ function Load() {
   }
 
   if (distanceFromServant[1].length < 1){
-      distanceFromSVGtwo.attr("display", "null");
+      distanceFromSVGone.attr("display", "null");
   }
 
 }
@@ -898,6 +909,7 @@ function Reset() {
 
     exitAlert = false;//Someone learned where the exit is.
     exitAllow = 0;//How far in a frame was the exit found.
+    exitFoundFrame = 0;
 
     time = 0;
     timeDirect = 0;//After loading, play direction.
@@ -920,7 +932,6 @@ function Reset() {
 
     //distanceFromSVG.selectAll('g').remove();
     distanceFromSVGone.remove();
-    distanceFromSVGtwo.remove();
 
     distanceFromServant = [];
 
@@ -1024,10 +1035,17 @@ function AlterAnim() {
     graphSVG.select(".backGround").append("text").attr("x", (unit2Px * 65/25)).attr("y", unit2Px * (1.7))
             .style("font-size", unit2Px * (4/25))
             .text("End: " + Math.floor((100 * time) / fps) / 100 + " sec");
+    if (exitFoundFrame > 0){
+        graphSVG.select(".backGround").append("text").attr("x", (unit2Px * 65/25)).attr("y", (unit2Px * (1.55)))
+            .style("font-size", unit2Px * (2/25))
+            .text("Exit found frame: " + exitFoundFrame);
+    }
     graphSVG.select(".overLay").append('text').attr("x", unit2Px * 65/25).attr("y", unit2Px * 1.83)
-            .attr("class", "sliderhelp").style("font-size", unit2Px * (3/25)).text("Click and drag gray bar");
+            .attr("class", "sliderhelp").style("font-size", unit2Px * (3/25)).text("Click and drag gray bar")
+            .style("fill", "#bbbbaa");
     graphSVG.select(".overLay").append('text').attr("x", unit2Px * 65/25).attr("y", unit2Px * 1.95)
-            .attr("class", "sliderhelp").style("font-size", unit2Px * (3/25)).text("to see the timeline");
+            .attr("class", "sliderhelp").style("font-size", unit2Px * (3/25)).text("to see the timeline")
+            .style("fill", "#bbbbaa");
   } else {
     var saveBuffer = [];
 
@@ -1048,6 +1066,7 @@ function AlterAnim() {
         var exitDist = Math.sqrt(Math.pow(eVec[1], 2) + Math.pow(eVec[0], 2));
         if (exitDist <= who.velocity * unit2Px / (2 * fps)) {
           exitAlert = who.knows = true;
+          exitFoundFrame = time;
           //console.log(Math.floor((100 * time) / fps) / 100);
           if (who.priority){
               break;
