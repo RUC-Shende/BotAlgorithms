@@ -1,13 +1,11 @@
-/**
-* Represents a robot on the field searching for the exit.
-*
-* @param {Circle} visual Represents the visual related to the bot.
-*/
 class Tourist {
-  constructor (visual) {
-    this.visual = visual;
+
+  constructor (iclData) {
+    this.visual = null;
+    /** This holds all of what used to be global variables!  */
+    this.iclData = iclData;
     /** The tourist's ID as an integer. */
-    this.number = touristNum;
+    this.number = this.iclData.touristNum;
     /** The tourist has learned of the exit on this frame. */
     this.knows = false;
     /** The tourist has known of the exit for more than one frame. */
@@ -25,42 +23,36 @@ class Tourist {
     /** Tourist's current angle. */
     this.a = 0;
     /** Tourist's current x position. */
-    this.x = center[0];
+    this.x = this.iclData.center[0];
     /** Tourist's current y position. */
-    this.y = center[1];
+    this.y = this.iclData.center[1];
   }
 
   WallAtAngle(angle) {
-    var unitAngle = (2 * Math.PI) / degrees;//Angle segment length.
-    var angleUnit = Math.floor(angle / unitAngle);//Which length of segment.
-    var unitPos = [unit2Px * Math.cos(angle), -unit2Px * Math.sin(angle)];//Point on unit circle
-    var vertOne = [unit2Px * Math.cos(angleUnit * unitAngle), -unit2Px * Math.sin(angleUnit * unitAngle)];//Start point of segment
-    var vertTwo = [unit2Px * Math.cos((angleUnit + 1) * unitAngle),
-                  -unit2Px * Math.sin((angleUnit + 1) * unitAngle)];//End point of segment
+    var unitAngle = (2 * Math.PI) / this.iclData.degrees;										//Angle segment length.
+    var angleUnit = Math.floor(angle / unitAngle);											//Which length of segment.
+    var unitPos = [Math.cos(angle), -Math.sin(angle)];											//End point on unit circle segment
+    var vertOne = [Math.cos(angleUnit * unitAngle), -Math.sin(angleUnit * unitAngle)];							//Start point of segment
+    var vertTwo = [Math.cos((angleUnit + 1) * unitAngle), -Math.sin((angleUnit + 1) * unitAngle)];					//End point of segment
     var a2 = vertOne[1] - vertTwo[1];
     var b2 = vertTwo[0] - vertOne[0];
     var c2 = vertOne[1] * vertTwo[0] - vertOne[0] * vertTwo[1];
-    var wallLoc = [center[0] - (unitPos[0] * c2) / -(unitPos[1] * b2 + unitPos[0] * a2),
-                   center[1] - (unitPos[1] * c2) / -(unitPos[1] * b2 + unitPos[0] * a2)];//Cramer's Law
+    var wallLoc = [this.iclData.center[0] + this.iclData.unit2Px * (unitPos[0] * c2) / (unitPos[1] * b2 + unitPos[0] * a2),
+                   this.iclData.center[1] + this.iclData.unit2Px * (unitPos[1] * c2) / (unitPos[1] * b2 + unitPos[0] * a2)];		//Cramer's Law
     return(wallLoc);
   }
 
   DirectTo(value) {
     var dLoc = [value[0] - this.x, value[1] - this.y];
-    var dist = Math.sqrt(Math.pow(dLoc[1], 2) + Math.pow(dLoc[0], 2));
-    if (dist < this.velocity * unit2Px / fps) {
+    var dist = Math.hypot(dLoc[1], dLoc[0]);
+    if (dist < this.allowance) {
       this.x = value[0];
       this.y = value[1];
       this.allowance -= dist;
     } else {
       var ang = Math.atan2(dLoc[1], dLoc[0]);
-      if (this.allowance < this.velocity * unit2Px / fps) {
-        this.x = this.x + this.velocity * Math.cos(ang) * (this.allowance / (this.velocity * unit2Px / fps));
-        this.y = this.y + this.velocity * Math.sin(ang) * (this.allowance / (this.velocity * unit2Px / fps));
-      } else {
-        this.x = this.x + (this.velocity * unit2Px / fps) * Math.cos(ang);
-        this.y = this.y + (this.velocity * unit2Px / fps) * Math.sin(ang);
-      }
+      this.x += Math.cos(ang) * this.allowance;
+      this.y += Math.sin(ang) * this.allowance;
       this.allowance = 0;
     }
   }
@@ -90,7 +82,8 @@ class Tourist {
   * Robot is required to be in the interior (not in perimeter) of the object.
   *
   *@param {Tourist} who Robot to follow command
-  *@param {integer} value Angle on the shape of the perimeter
+  *@param {integer} = [0] value Angle on the shape of the perimeter
+  *@param {double} = [1] value Percent Distance of a radius
   *
   *
   */
@@ -120,11 +113,11 @@ class Tourist {
       this.allowance = 0;
     } else {
       if (this.target == null) {
-        this.target = time + value[0] * fps;
+        this.target = this.iclData.time + value[0] * this.iclData.fps;
       }
-      if (time >= this.target) {
+      if (this.iclData.time >= this.target) {
         this.on++;
-        this.allowance -= this.velocity * (unit2Px / fps) - (time - this.target);
+        this.allowance -= this.velocity * (this.iclData.unit2Px / this.iclData.fps) - (this.iclData.time - this.target);
         this.target = null;
       } else {
         this.allowance = 0;
@@ -144,28 +137,28 @@ class Tourist {
   */
   FollowWall(value) {
     var dir = (value[0] == "left") ? (1) : (-1);
-    if (value[1] == null) {
-      this.a += (1 / (fps * unit2Px)) * dir;
-      this.DirectTo(this.WallAtAngle(this.a));
+    var del = (1 / (this.iclData.fps * this.iclData.unit2Px)) * dir;
+    if (value[1] == null || isNaN(value[1])) {
+      this.a += del;
     } else {
       if (this.target == null) {
         this.target = this.a + value[1] * (Math.PI / 180) * dir;
       }
-      var leftCondition = this.a + (1 / (fps * unit2Px)) * dir;
+      var leftCondition = this.a + del;
       var rightCondition = this.target;
       if (dir < 0) {
+        rightCondition = leftCondition;
         leftCondition = this.target;
-        rightCondition = this.a + (1 / (fps * unit2Px)) * dir;
       }
       if (leftCondition > rightCondition) {
         this.on++;
         this.a = this.target;
         this.target = null;
       } else {
-        this.a += (1 / (fps * unit2Px)) * dir;
+        this.a += del;
       }
-      this.DirectTo(this.WallAtAngle(this.a));
     }
+    this.DirectTo(this.WallAtAngle(this.a));
   }
 
   /**
@@ -177,10 +170,10 @@ class Tourist {
   *
   */
   GoToCenter(value) {
-    if ((this.x == center[0]) && (this.y == center[1])) {
+    if ((this.x == this.iclData.center[0]) && (this.y == this.iclData.center[1])) {
       this.on++;
     } else {
-      this.DirectTo(center);
+      this.DirectTo(this.iclData.center);
     }
   }
 
@@ -195,11 +188,11 @@ class Tourist {
   WaitAverage(value) {
     var sumPosition = [0, 0];
     var totalNum = 0;
-    for (var i = 0; i < tourists.length; i++) {
-      if (instruBinder[i][tourists[i].on][0] != "WaitAverage") {
+    for (var i = 0; i < this.iclData.tourists.length; i++) {
+      if (this.iclData.instruBinder[i][this.iclData.tourists[i].on][0] != "WaitAverage") {
         totalNum++;
-        sumPosition[0] += tourists[i].x;
-        sumPosition[1] += tourists[i].y;
+        sumPosition[0] += this.iclData.tourists[i].x;
+        sumPosition[1] += this.iclData.tourists[i].y;
       }
     }
     sumPosition[0] /= totalNum;
@@ -235,13 +228,13 @@ class Tourist {
   *@param {Array} value value[0]: float, x position -- value[1]: float, y positions
   */
   GoToExit(value) {
-    if ((this.x == fieldExit[0]) && (this.y == fieldExit[1])) {
+    if ((this.x == this.iclData.fieldExit[0]) && (this.y == this.iclData.fieldExit[1])) {
       this.Wait([null]);
-      if (allExitedLine == null) {
-        AllAtExit();
+      if (this.iclData.allExitedLine == null) {
+        this.iclData.AllAtExit();
       }
     } else {
-      this.DirectTo(fieldExit);
+      this.DirectTo(this.iclData.fieldExit);
     }
   }
 
@@ -252,13 +245,15 @@ class Tourist {
   *@param {Tourist} who Robot to follow command.
   *@param value null
   */
-  PursueNonBeliever(value) {
-    if ((this.target == null) && (!wireless)) {
+  Pursue(value) {
+    if ((this.target == null) && (!this.iclData.wireless)) {
       var closest = Infinity;
-      for (var i = 0; i < touristNum; i++) {
-        if ((!tourists[i].knows) && ((tourists[i].hunted == this.number) || (tourists[i].hunted == null))) {
-          var eVec = [tourists[i].x - this.x, tourists[i].y - this.y];
-          var exitDist = Math.sqrt(Math.pow(eVec[1], 2) + Math.pow(eVec[0], 2));
+      for (var i = 0; i < this.iclData.touristNum; i++) {
+        if (this.iclData.instruBinder[i][this.iclData.tourists[i].on][0] == "WaitAverage") {
+          continue;
+        }
+        if ((!this.iclData.tourists[i].knows) && (this.iclData.tourists[i].hunted == null)) {
+          var exitDist = Math.hypot(this.iclData.tourists[i].y - this.y, this.iclData.tourists[i].x - this.x);
           if (exitDist < closest) {
             this.target = i;
             closest = exitDist;
@@ -269,15 +264,14 @@ class Tourist {
     if (this.target == null) {
       this.GoToExit(value);
     } else {
-      tourists[this.target].hunted = this.number;
-      var bVec = [tourists[this.target].x - this.x, tourists[this.target].y - this.y];
-      var botDist = Math.sqrt(Math.pow(bVec[1], 2) + Math.pow(bVec[0], 2));
-      if (botDist <= this.velocity * unit2Px / fps) {
-        exitAlert = tourists[this.target].knows = true;
-        exitAllow = botDist;
+      this.iclData.tourists[this.target].hunted = this.number;
+      var botDist = hypot(this.iclData.tourists[this.target].y - this.y, this.iclData.tourists[this.target].x - this.x);
+      if (botDist <= this.velocity * this.iclData.unit2Px / this.iclData.fps) {
+        this.iclData.exitAlert = this.iclData.tourists[this.target].knows = true;
+        this.iclData.exitAllow = botDist;
       }
-      this.DirectTo([tourists[this.target].x, tourists[this.target].y]);
-      if (tourists[this.target].knows) {
+      this.DirectTo([this.iclData.tourists[this.target].x, this.iclData.tourists[this.target].y]);
+      if (this.iclData.tourists[this.target].knows) {
         this.target = null;
       }
     }
@@ -291,18 +285,19 @@ class Tourist {
   *@param {Tourist} who Robot to follow command.
   *@param value null
   */
-  InterceptNonBeliever(value) {
-    if ((this.target == null) && (!wireless)) {
-      var holdTime = 0;
+  Intercept(value) {
+    if (((this.target == null) || !this.target) && (!this.iclData.wireless)) {
       var closest = Infinity;
-      for (var i = 0; i < touristNum; i++) {
-        if ((!tourists[i].knows) && ((tourists[i].hunted == this.number) || (tourists[i].hunted == null))) {
-          for (var j = 0; j < 2 * unit2Px; j++) {
-            if (time + j < timeMax) {
-              var intercept = tourPoints[i][time + j];
-              var bVec = [intercept.x - this.x, intercept.y - this.y];
-              var botDist = Math.sqrt(Math.pow(bVec[1], 2) + Math.pow(bVec[0], 2));
-              if ((Math.abs(j * unit2Px / fps - botDist) <= this.velocity * unit2Px / (2 * fps)) && (botDist < closest)) {
+      for (var i = 0; i < this.iclData.touristNum; i++) {
+        if (this.iclData.instruBinder[i][this.iclData.tourists[i].on][0] == "WaitAverage") {
+          continue;
+        }
+        if ((!this.iclData.tourists[i].knows) && (this.iclData.tourists[i].hunted == null)) {
+          for (var j = 0; j < 8 * this.iclData.unit2Px; j++) {
+            if (this.iclData.time + j < this.iclData.timeMax) {
+              var intercept = this.iclData.tourPoints[i][this.iclData.time + j];
+              var botDist = Math.hypot(intercept.y - this.y, intercept.x - this.x);
+              if ((Math.abs(j - botDist * this.iclData.fps / this.iclData.unit2Px) <= this.velocity / 2) && (botDist < closest)) {
                 this.target = [i, intercept];
                 closest = botDist;
               }
@@ -314,16 +309,14 @@ class Tourist {
     if (this.target == null) {
       this.GoToExit(value);
     } else {
-      tourists[this.target[0]].hunted = this.number;
-      var pVec = [this.target[1].x - this.x, this.target[1].y - this.y];
-      var pointDist = Math.sqrt(Math.pow(pVec[1], 2) + Math.pow(pVec[0], 2));
-      if (pointDist <= this.velocity * unit2Px / fps) {
-        exitAlert = tourists[this.target[0]].knows = true;
-        exitAllow = pointDist;
-      }
-      this.DirectTo([this.target[1].x, this.target[1].y]);
-      if (tourists[this.target[0]].knows) {
+      this.iclData.tourists[this.target[0]].hunted = this.number;
+      var pointDist = Math.hypot(this.target[1].y - this.y, this.target[1].x - this.x);
+      if (pointDist <= this.velocity * this.iclData.unit2Px / (2 * this.iclData.fps)) {
+        this.iclData.exitAlert = this.iclData.tourists[this.target[0]].knows = true;
         this.target = null;
+        this.iclData.exitAllow = pointDist;
+      } else {
+        this.DirectTo([this.target[1].x, this.target[1].y]);
       }
     }
   }

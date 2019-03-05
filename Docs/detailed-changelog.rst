@@ -1,6 +1,16 @@
 Project History
 ===============
 
+03/05/19: Circle Showcase
+-------------------------
+
+In this update of Circle Showcase we have added a few smaller features.
+
+One of the additions to our priority algorithm section was a graph that shows the distance of either one or both priority robots from the servant robot
+at any given time. In adding this graph we now have a general idea of what the finishing time would be depending on where the servant robot finds the exit.
+We have been able to use this data to prove that our newest algorithm, 2 priority 1 servant (1) would have a finishing time of 3.55 time units.
+
+
 01/07/19: Circle Showcase
 -------------------------
 
@@ -16,7 +26,7 @@ variables, ensure it was working, etc. Now, the lines from pre-loading are no lo
 Some of the minor improvements and fixes are as follows: added a way to determine priority (queen) in instruBinder, made algorithm names clearly stated in multiple places, reorganized the layout of the sidebar,
 removed the selection tabs, added a footer with links to documentation, and added a legend with priority (queen) indicator.
 
-Next will be more improvments to the documentation and GraphComparison module.
+Next will be more improvements to the documentation and GraphComparison module.
 
 11/06/18
 --------

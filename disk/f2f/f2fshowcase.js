@@ -25,8 +25,8 @@ var lineFx = d3.line().x((d) => {return(d.x);}).y((d) => {return(d.y);});
 
 var touristNum = 0;
 var instruBinder = [
-                     [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [190]], ["FollowWall", ["right"]]],
-                     [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]]
+                     [["Intercept", [null]], ["GoToWallAtAngle", [190]], ["FollowWall", ["right"]]],
+                     [["Intercept", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]]
                    ];
 var tourColors = [];
 
@@ -328,7 +328,7 @@ class Tourist {
   *@param {Tourist} who Robot to follow command.
   *@param value null
   */
-  PursueNonBeliever(value) {
+  Pursue(value) {
     if ((this.target == null) && (!wireless)) {
       var closest = Infinity;
       for (var i = 0; i < touristNum; i++) {
@@ -367,7 +367,7 @@ class Tourist {
   *@param {Tourist} who Robot to follow command.
   *@param value null
   */
-  InterceptNonBeliever(value) {
+  Intercept(value) {
     if (((this.target == null) || !this.target) && (!wireless)) {// this.target was being undefined, instead of null, so !this.target fixed it..... how do we explain this weird phenomenon
       var holdTime = 0;
       var closest = Infinity;
@@ -807,22 +807,22 @@ function showAlgorithmDesc(s){
         case 'A':
             color = "#efe";
             instruBinder = [
-                            [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right"]]],
-                            [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left"]]]
+                            [["Intercept", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right"]]],
+                            [["Intercept", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left"]]]
                         ];
             break;
         case 'B':
             color = '#eef';
             instruBinder = [
-                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
-                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
+                                 [["Intercept", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
+                                 [["Intercept", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
                                ];
             break;
         case 'C':
             color = '#fee';
             instruBinder = [
-                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0] + 70, center[1]+40]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
-                                 [["InterceptNonBeliever", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0] - 70, center[1]+40]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
+                                 [["Intercept", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0] + 70, center[1]+40]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
+                                 [["Intercept", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0] - 70, center[1]+40]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
                                ];
             break;
     }
