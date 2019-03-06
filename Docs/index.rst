@@ -20,6 +20,8 @@ This site covers the documentation of our app.
 Intro
 =====
 
+This research is supported by the National Science Foundation under grant # CCF-AF 1813940 (RUI: Search, Evacuation and Reconfiguration with Coordinated Mobile Agents).
+
 This app was designed to simulate mobile agents, or robots, in an area, searching for an exit along the perimeter of the area.
 The goal of this app is to allow users to test out different algorithms by writing their own instructions for the
 robots, and try to decrease the lower bound of how long it takes for different numbers of robots to find the exit.
