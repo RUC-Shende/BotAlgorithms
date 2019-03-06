@@ -77,22 +77,22 @@ Disk
 ----
 
 `Face-to-Face, 2 Robots
-<../../../disk/circleShowcase.html>`_.
+</BotAlgorithms/disk/circleShowcase.html>`_.
 
 `Face-to-Face, 1 Robot + Priority Robot.
-<../../../disk/circleShowcase.html>`_.
+</BotAlgorithms/disk/circleShowcase.html>`_.
 
 `Face-to-Face, 2 Robots + Priority Robot.
-<../../../disk/circleShowcase.html>`_.
+</BotAlgorithms/disk/circleShowcase.html>`_.
 
 `Wireless, 2 Robots. Algorithms A, B, and C.
-<../../../disk/circleShowcase.html>`_.
+</BotAlgorithms/disk/circleShowcase.html>`_.
 
 `Wireless, 1 Robot + Priority Robot.
-<../../../disk/circleShowcase.html>`_.
+</BotAlgorithms/disk/circleShowcase.html>`_.
 
 `Wireless, 2 Robots + Priority Robot.
-<../../../disk/circleShowcase.html>`_.
+</BotAlgorithms/disk/circleShowcase.html>`_.
 
 `Wireless, 1 Robot + 2 Priority
-<../../../disk/circleShowcase.html>`_.
+</BotAlgorithms/disk/circleShowcase.html>`_.
