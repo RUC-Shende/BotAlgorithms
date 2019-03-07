@@ -581,7 +581,7 @@ function Load() {
     , height = (unit2Px * 2) - margin.top - margin.bottom; // Use the window's height
 
   // The number of datapoints
-  var n = 300;
+  var n = fps * 10;
 
   // 5. X scale will use the index of our data
   var xScale = d3.scaleLinear()
