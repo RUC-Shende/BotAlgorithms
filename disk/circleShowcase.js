@@ -20,11 +20,12 @@ var fieldExit = [1, 1];
 
 var dataBox;
 var touristNum = 0;
-var instruBinder = [
-                     [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]],
-                     [["Intercept", [null, false]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right"]]]
-                   ];
-var algorithmName = "Priority 1 ";
+
+var firstTime = true;
+
+var instruBinder = [];
+var algorithmName = "";
+
 var tourColors = [];
 
 var fieldSVG; //0:Background - 1:Line - 2:Bots - 3:Overlay
@@ -581,7 +582,7 @@ function Load() {
     , height = (unit2Px * 2) - margin.top - margin.bottom; // Use the window's height
 
   // The number of datapoints
-  var n = fps * 10;
+  var n = (fps * 5);
 
   // 5. X scale will use the index of our data
   var xScale = d3.scaleLinear()
@@ -654,13 +655,13 @@ function Load() {
 
   // 9. Append the path, bind the data, and call the line generator
   distanceFromSVGone.append("path")
-      .datum(datasetone.slice(0, 300)) // 10. Binds data to the line
+      .datum(datasetone.slice(0, fps * 5)) // 10. Binds data to the line
       .attr("class", "line1") // Assign a class for styling
       .attr("transform", "translate(75, 50)")
       .attr("d", line); // 11. Calls the line generator
 
   distanceFromSVGone.append("path")
-      .datum(datasettwo.slice(0, 300)) // 10. Binds data to the line
+      .datum(datasettwo.slice(0, fps * 5)) // 10. Binds data to the line
       .attr("class", "line2") // Assign a class for styling
       .attr("transform", "translate(75, 50)")
       .attr("d", line); // 11. Calls the line generator
@@ -764,7 +765,7 @@ function Load() {
         console.log(focus);
         console.log(j);
 
-        if (i < 1 || i > 300){
+        if (i < 1 || i > fps * 5){
             focus.attr("display", "none");
         }
         else{
@@ -773,7 +774,7 @@ function Load() {
             focus.select("text").text(i);
             d3.select(".distext" + j).text("Frame: " + i + ", Distance From Servant: " + formatValue(ds[j][i].y) + ", Time To Finish: " + formatValue((100 * i) / fps / 100 + ds[j][i].y));
 
-            if (i > 250){
+            if (i > (fps * 5) - 50){
                 focus.select("text").attr("x", (focus.attr("x") - (0.2 * unit2Px)));
             }
             else {
@@ -1274,7 +1275,7 @@ function showAlgorithmDesc(s, w){
             algorithmName = "Algorithm Priority 1 ";
             break;
         case 'Q2':
-            color = "#efe";
+            color = "#eef";
             instruBinder = [
                                   [["GoToExit", [null, true, "#fe447d"]], ["GoToWallAtAngle", [144]], ["FollowWall", ["left", 36]], ["GoToPoint", [center[0] + (unit2Px * 0.65), center[1] + 30]], ["GoToWallAtAngle", [345]], ["FollowWall", ["left"]]],
                                   [["Intercept", [0, false, "#5cd05b"]], ["GoToWallAtAngle", [144]], ["FollowWall", ["right"]]],
@@ -1283,7 +1284,7 @@ function showAlgorithmDesc(s, w){
             algorithmName = "Algorithm Priority 2 ";
             break;
         case 'Q2S1':
-            color = "#eee";
+            color = "#fee";
             instruBinder = [
                 [["GoToExit", [null, true]], ["GoToWallAtAngle", [213.8]], ["FollowWall", ["left"]]],
                 [["GoToExit", [null, true]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left"]]],
@@ -1325,7 +1326,7 @@ function showAlgorithmDesc(s, w){
             break;
 
         case 'Q1S1Q1':
-            color = "#eee";
+            color = "#efe";
             instruBinder = [
                 [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]] ,["FollowWall", ["right"]]],
                 [["GoToExit", [null, true]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right"]]],
@@ -1335,7 +1336,7 @@ function showAlgorithmDesc(s, w){
             break;
 
         case 'Q1S4':
-            color = "#eee";
+            color = "#eef";
             instruBinder = [
                 [["GoToExit", [null, true]], ["Wait", [(1 + (Math.PI / 2))]], ["GoToWallAtAngle", [180]], ["Wait", [null]]],
                 [["Intercept", [0, false]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left", 75]], ["Wait", [null]]],
@@ -1347,7 +1348,7 @@ function showAlgorithmDesc(s, w){
             break;
 
         case 'Q1S8':
-            color = "#eee";
+            color = "#fee";
             instruBinder = [
                 [["GoToExit", [null, true]], ["Wait", [(1+(Math.PI / 2))]], ["GoToWallAtAngle", [180]], ["Wait", [null]]],
                 [["Intercept", [0, false]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left", 60]], ["Wait", [null]]],
@@ -1367,7 +1368,12 @@ function showAlgorithmDesc(s, w){
     d3.select('.tabtxt').style('background-color', color);
     d3.select('#'+s).style('display', 'inline-block');
     closeNav();
-    Reset();
+    if (firstTime){
+        firstTime = false;
+    }
+    else {
+        Reset();
+    }
 }
 
 function openNav() {
@@ -1461,4 +1467,15 @@ function LoadAlgorithms(event) {
 
 
 //////////----------Initial Function Call----------//////////
+var algSelector;
+var algRequested = window.location.href.includes("#");
+if (algRequested) {
+    algSelector = window.location.href.indexOf("#");
+    var l = window.location.href.length;
+    console.log(window.location.href.slice(algSelector + 1, l));
+    showAlgorithmDesc(window.location.href.slice(algSelector + 1, l), true);
+}
+else {
+    showAlgorithmDesc("A", false);
+}
 Start();

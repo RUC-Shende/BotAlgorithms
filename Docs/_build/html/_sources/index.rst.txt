@@ -78,23 +78,17 @@ Currently, the project showcases these algorithms:
 Disk
 ----
 
-`Face-to-Face, 2 Robots
-</BotAlgorithms/disk/circleShowcase.html>`_.
-
-`Face-to-Face, 1 Robot + Priority Robot.
-</BotAlgorithms/disk/circleShowcase.html>`_.
-
-`Face-to-Face, 2 Robots + Priority Robot.
+`Face-to-Face, 2 Robots. Algorithms A, B, and C.
 </BotAlgorithms/disk/circleShowcase.html>`_.
 
 `Wireless, 2 Robots. Algorithms A, B, and C.
-</BotAlgorithms/disk/circleShowcase.html>`_.
+</BotAlgorithms/disk/circleShowcase.html#A>`_.
 
 `Wireless, 1 Robot + Priority Robot.
-</BotAlgorithms/disk/circleShowcase.html>`_.
+</BotAlgorithms/disk/circleShowcase.html#Q1>`_.
 
 `Wireless, 2 Robots + Priority Robot.
-</BotAlgorithms/disk/circleShowcase.html>`_.
+</BotAlgorithms/disk/circleShowcase.html#Q2>`_.
 
-`Wireless, 1 Robot + 2 Priority
-</BotAlgorithms/disk/circleShowcase.html>`_.
+`Wireless, 1 Robot + 2 Priority.
+</BotAlgorithms/disk/circleShowcase.html#Q2S1>`_.
