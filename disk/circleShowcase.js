@@ -512,7 +512,7 @@ function Load() {
                   .attr("x", (2*unit2Px) + (unit2Px / 15) + (j * (2/3 * unit2Px)))
                   .attr("y", (unit2Px * 0.6) + (unit2Px/32) +  (i * (1/4 * unit2Px)))
                   .style("font-size", unit2Px * (3/25))
-                  .text("Bot " + touristCount + ((instruBinder[touristCount][0][1][1] == true) ? " (Q)" : ""));
+                  .text("Bot " + touristCount + ((instruBinder[touristCount][0][1][1] == true) ? " (P)" : ""));
           if (touristCount + 1 == instruBinder.length){
               break outer;
           }
