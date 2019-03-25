@@ -1,0 +1,61 @@
+ <!doctype html>
+
+<html>
+  <head>
+    <script src = "d3.min.js"></script>
+  </head>
+
+  <body>
+    <!--<script type = "module" src = "linefillmod.mjs"></script>-->
+    <!--<script nomodule src = "linefill.js"></script>-->
+    <script src = "linefill.js"></script>
+    <script>
+
+
+
+      //GLOBAL VARIABLES
+
+      var length = ( window.innerWidth < window.innerHeight ) ?
+        ( window.innerWidth ) : ( window.innerHeight );
+      var u2p = length / 4;
+      var polygonSVG = d3.select( "body" ).append( "svg" )
+        .attr( "width", length ).attr( "height", length )
+        .style( "border", "1px solid black" );
+      var pathSVG = d3.select( "body" ).append( "svg" )
+        .attr( "width", length ).attr( "height", length )
+        .style( "border", "1px solid black" );
+      var fps = 100;
+
+      var sides = 360;
+      var P = [
+        [ u2p, 0 ], [ u2p, u2p ], [ -u2p, u2p ], [ 0, 0 ],
+        [ -u2p, -u2p ], [ -u2p, -u2p ], [ u2p, 0 ]
+      ];
+
+
+
+      //Actual Code using classes
+
+      var load = new polygonfill( polygonSVG, fps, sides );
+      var load2 = new pathfill( pathSVG, fps, P );
+
+
+
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
