@@ -1,0 +1,48 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Compiling this file via: LATEX,  then DVItoPS then PStoPDF will produce a nice pdf file
+% which you can include it later as a picture in a file with the \includegraphics...
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[12pt]{article}
+
+\usepackage{ps4pdf,pstricks,pstricks-add}
+
+\begin{document}
+
+   \PSforPDF{\psset{unit=1cm}
+              \begin{pspicture}(-2.7,-1.5)(5.5,2.5)
+                \psset{gridcolor=green,subgridcolor=yellow}
+                       \psgrid[gridlabels=0pt]
+                       \let\psgrid\relax
+                       \psdots[dotsize=6pt](-2,1)(-1,1)(-1,2)(0,1)(0,2)(1,1)(2,1)(3,1)(4,1)(5,1)(-1,-1)(-1,0)(0,-1)(0,0)(1,0)(2,0)(3,0)(4,0)(4,-1)
+                       \psline[linewidth=2pt]{-}(-2,1)(5,1)
+                       \psline[linewidth=2pt]{-}(-2,1)(-1,0)
+                       \psline[linewidth=2pt]{-}(-1,0)(4,0)
+                       \psline[linewidth=2pt]{-}(-1,1)(-1,2)
+                       \psline[linewidth=2pt]{-}(4,1)(4,-1)
+                       \psline[linewidth=2pt]{-}(0,0)(0,-1)
+                       \psline[linewidth=2pt]{-}(0,1)(0,2)
+                       \psline[linewidth=2pt]{-}(-1,0)(-1,-1)
+                       \rput[l](-2.5,1){$e$}
+                       \rput[t](-1.5,1.5){\tiny (5 6)}
+                       \rput[t](-.75,1.75){\tiny(1 6)}
+                       \rput[t](-.5,1.5){\tiny(2 6)}
+                       \rput[t](.25,1.75){\tiny(4 6)}
+                       \rput[t](.5,1.5){\tiny(3 6)}
+                       \rput[t](1.5,1.5){\tiny(5 6)}
+                       \rput[t](2.5,1.5){\tiny(2 6)}
+                       \rput[t](4.5,.5){\tiny(5 6)}
+                       \rput[t](3.5,1.5){\tiny(3 6)}
+                       \rput[t](-.25,-.5){\tiny(4 6)}
+                       \rput[t](.5,.25){\tiny(2 6)}
+                       \rput[t](-.5,.25){\tiny(3 6)}
+                       \rput[l](.25,-.75){\tiny(6 1)}
+                       \rput[t](1.5,.25){\tiny(5 6)}
+                       \rput[b](2.5,-.25){\tiny(3 6)}
+                       \rput[b](3.5,-.25){\tiny(2 6)}
+                       \rput[t](4.5,1.5){\tiny(1 6)}
+                       \rput[t](4.5,-.75){\tiny(4 6)}
+                \end{pspicture}
+              }
+
+\end{document} 

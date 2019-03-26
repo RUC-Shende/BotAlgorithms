@@ -1,0 +1,70 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Compile this file with PDFLATEX or PDFTeXify
+% Multiplicative domain poster
+% Created by Nathaniel Johnston, modified by Jorge Garcia, April 27/2010
+% Edited by David Bushta, Chris Till, March 11/2019
+% http://www.nathanieljohnston.com/index.php/2009/08/latex-poster-template/
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[final]{beamer}
+\input mypostersettings                       % Go to this file, mypostersettings.tex
+                                              % and edit your blocks: the main pieces of your poster!
+\title{Visualizing and Designing Multi Agent Search Algorithms}
+\author{David Bushta, Chris Till}
+\institute{Rutgers University, Camden}
+\toplogo{8in}{temp.jpg}
+\extrainfo{\includegraphics[width=3in]{mypics/temp.jpg}} % If something here they type: \extrainfo{\ }
+\moreinfo{\ }                          % If something here they type: \moreinfo{Advisor: Dr. Garcia}
+
+\begin{document}
+
+%------------------------------------------------------------------------------------------
+%------------------    This part regards ONLY the organization of the poster     ----------
+%------------------------------------------------------------------------------------------
+\newSingle{Opening}{                             % This creates a single column with
+           \BlockIntroduction      \vskip2ex     % A block   on the top
+           \AlertMainProblem       \vskip2ex     % An Alert  underneath
+           \BlockDefinitions       \vskip2ex     % A block   underneath
+           }
+%------------------------------------------------------------------------------------------
+\newSingle{Description}{                             % This creates a single column with
+           \BlockDescription                         % Only one block
+           }
+%------------------------------------------------------------------------------------------
+\newSingle{Work}{                          % This creates a single column with
+           \BlockWork                      % Only one block
+           }
+%------------------------------------------------------------------------------------------
+\newSingle{Closing}{                          % This creates a single column with
+           \BlockConclusions     \vskip2ex    % A block on the top
+           \BlockAcknowledgements      \vskip2ex    % A block underneath
+           \BlockBibliography    \vskip2ex    % A block underneath
+           \BlockLogo                         % A block at the bottom
+           }
+%------------------------------------------------------------------------------------------
+
+%---------------------------------------------% USE THE ABOVE TO CREATE THE FOLLOWING -----
+\newTwin{DescWork}{                           % This creates a Twin Column with
+           \SingleDescription                 % A previous single column on the left
+           \SingleWork                        % A previous single column on the right
+           }
+%-----------------------------------------------% USE THE ABOVE TO CREATE THE FOLLOWING -----
+\newMarried{MainTopic}{                         % This creates a column (twice in size) with
+           \AlertMainTopic \vspace{-.35in}      % An long alert block (twice in size)
+           \TwinDescWork   \vskip2.5ex          % A previous Twin Column  underneath
+           \AlertConjectures                    % An long alert block at the bottom
+           }
+%------------------------------------------------------------------------------------------
+
+
+\begin{frame}[t]
+  \begin{columns}[t]          \spacer    % This example consists of three columns only
+        \SingleOpening        \spacer    % Single column on the left
+        \MarriedMainTopic     \spacer    % Long column in the middle
+        \SingleClosing        \spacer    % Single column on the right.
+  \end{columns}
+\end{frame}
+
+
+
+\end{document}

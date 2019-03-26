@@ -1,0 +1,345 @@
+%-----------------------------------------------------------
+% These packages are essential to produce the poster
+%-----------------------------------------------------------
+\usepackage[scale=1.24]{beamerposter}
+\usepackage{graphicx,amsfonts}
+\newcounter{figura}
+\setcounter{figura}{1}
+
+%-----------------------------------------------------------
+% Custom commands that I use frequently
+%-----------------------------------------------------------
+\newcommand{\bb}[1]{\mathbb{#1}}
+\newcommand{\cl}[1]{\mathcal{#1}}
+\newcommand{\fA}{\mathfrak{A}}
+\newcommand{\fB}{\mathfrak{B}}
+\newcommand{\Tr}{{\rm Tr}}
+\newtheorem{thm}{Theorem}
+\newcommand{\captione}[2]{\begin{minipage}[l]{#1}\begin{center} \textit{Figure \thefigura.}\  #2\end{center}\end{minipage}\addtocounter{figura}{1}}
+\newcommand{\spacer}{\begin{column}{\sepwid}\end{column}}
+\newcommand{\toplogo}[2]{\newcommand{\posterlogo}{\includegraphics[width=#1]{mypics/#2}}}
+\newcommand{\extrainfo}[1]{\newcommand{\inforight}{#1}}
+\newcommand{\moreinfo}[1]{\newcommand{\inforightother}{#1}}
+\newcommand{\conjetura}[2]{\\[-8mm]\begin{minipage}[l]{45cm}\emph{#1}\end{minipage}& \,\hspace{2cm} \emph{#2}\hspace{2cm}\,\\[-6mm]  \\ \hline}
+
+
+%-------------------------------------------------------------------------------------------------------------------------------
+% These commands will help me to build new blocks, do not modify!
+%-------------------------------------------------------------------------------------------------------------------------------
+
+\def\newblock#1#2#3{\expandafter\def\csname Block#1\endcsname{\begin{block}{#2}\rmfamily{#3}\end{block}}}
+\def\newAlert#1#2#3{\expandafter\def\csname Alert#1\endcsname{\begin{alertblock}{#2}\rmfamily{#3}\end{alertblock}}}
+\def\newSingle#1#2{\expandafter\def\csname Single#1\endcsname{\begin{column}{\onecolwid}#2\end{column}}}
+\def\newMarried#1#2{\expandafter\def\csname Married#1\endcsname{\begin{column}{\twocolwid}#2\end{column}}}
+\def\newTwin#1#2{\expandafter\def\csname Twin#1\endcsname{\begin{columns}[t,totalwidth=\twocolwid]#2\end{columns}}}
+
+
+
+
+
+%-----------------------------------------------------------
+% Define the column width and poster size
+% To set effective sepwid, onecolwid and twocolwid values, first choose how many columns you want and how much separation you want between columns
+% The separation I chose is 0.024 and I want 4 columns
+% Then set onecolwid to be (1-(4+1)*0.024)/4 = 0.22
+% Set twocolwid to be 2*onecolwid + sepwid = 0.464
+%-----------------------------------------------------------
+
+\newlength{\sepwid}
+\newlength{\onecolwid}
+\newlength{\twocolwid}
+\setlength{\paperwidth}{48in}
+\setlength{\paperheight}{36in}
+\setlength{\sepwid}{0.024\paperwidth}
+\setlength{\onecolwid}{0.22\paperwidth}
+\setlength{\twocolwid}{0.464\paperwidth}
+\setlength{\topmargin}{-0.5in}
+\usetheme{confposter}
+
+%-----------------------------------------------------------
+% Define colours (see beamerthemeconfposter.sty to change these colour definitions)
+%-----------------------------------------------------------
+
+\setbeamercolor{block title}{fg=ngreen,bg=white}
+\setbeamercolor{block body}{fg=black,bg=white}
+\setbeamercolor{block alerted title}{fg=white,bg=dblue!70}
+\setbeamercolor{block alerted body}{fg=black,bg=dblue!10}
+
+
+
+
+
+
+%-----------------------------------------------------------------------------------------------------------------------------------------
+%                               START TYPING YOUR BLOCKS !!
+%-----------------------------------------------------------------------------------------------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  IMPORTANT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  IMPORTANT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   NO EMPTY ROWS. This example shows what you are NOT to do:
+%%%  \newAlert{Main}{Main First Example}{
+%%%             This is the main topic, blah blah blah
+%%%
+%%%             and then blah blah blah
+%%%             }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%             REGULAR    BLOCKS  START          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newblock{Introduction}{Introduction}{
+        The purpose of our research is to study distributed search-and-escape algorithms.
+        These algorithms involve mobile agents (or bots) searching in geometric domains, such as a closed disk or a convex polygon.
+        By working together and communicating with one another, the mobile agents search for an exit hidden on the perimeter.
+        The goal of our research is to create and study exit strategies that terminate as quickly as possible.
+        }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newblock{Definitions}{Definitions}{
+         A  \textbf{distinguished} bot is one that ends the algorithm, when it reaches the exit.
+         A \textbf{helper} bot is one that helps distinguished find the exit.
+         An \textbf{exit} is a point unknown to the algorithm, that is located on an edge.
+         The exit is \textbf{found} if a bot's coordinates match the exit locations.
+         The algorithm \textbf{terminates} if a specified subset of bots shares a position with the exit.
+         }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newblock{Description}{Algorithm Description}{
+	A distinguished and helper bot move together at some $\alpha$ below the negative x axis, where then the helper travels clockwise, and the distinguished counter. The other distinguished travels along the positive x axis, where it then travels counter clockwise.
+         }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%	the exit is unknown, and that this is an animation of a distributed algorithm,
+%	and in the is distibuted algoirithm, we have a multiple bots trying to find an  exit,
+%	where two are distinguished and one is a helper, where only one distinguish must reach.
+%	crab.rutgers.edu/~shende/ rutgers library system first and search for them, or look through articles, by a link that says do you want an onlune version, which will give access to al l the source, as in the pdf, but not directly.
+%	2018 God save the queen
+%	fun with algorithms - god saves the queen
+%
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newblock{Work}{Future Work}{
+	Later on we will study further distributed algorithms of search and escape, such as lines or triangles.
+        }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newblock{Conclusions}{Conclusions}{
+	This algorithm has an upper bound of blank, being faster than an algorithm of one distinguished and two helpers with an upper bound of 3.83.
+             \begin{center}
+                 \includegraphics[width=8in]{mypics/temp.jpg}\\[.2cm]
+                 \captione{10in}{Temp 4}
+             \end{center}
+       }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newblock{Bibliography}{References}{\small
+      \begin{thebibliography}{99}
+         \bibitem{JLTED 2014} Jurek Czyzowicz,  et. al., Evacuating Robots via Unknown Exit in a Disk, Springer-Verlag Berlin Heidelberg; 2014.
+         \bibitem{JKREDLJS 2018} Jurek Czyzowicz, et. al., Fun with Algorithms, arXiv:1804.06011v1 [cs.MA] 17 Apr 2018.
+      \end{thebibliography}
+             \begin{center}
+                 \includegraphics[width=8in]{mypics/temp.jpg}\\[.2cm]
+                 \captione{10in}{Temp 5}
+             \end{center}
+      }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newblock{Acknowledgements}{Acknowledgements}{\small
+      This research is supported by the National Science Foundation under grant \# CCf-AF 1813940 (RUI: Search, Evacuation and Reconfiguration with Coordinated Mobile Agents).
+      }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newblock{Logo}{}{\vspace{-4cm}
+      \begin{center}
+          \includegraphics[width=1.5in]{mypics/temp.jpg}
+      \end{center}
+      }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%          REGULAR   BLOCKS     FINISH                   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                  ALERT BLOCKS START                         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newAlert{MainTopic}{Main Topic}{
+                     \begin{center}
+                         \includegraphics[width=2.5in]{mypics/temp.jpg}\hspace{1cm}\includegraphics[width=7in]{mypics/temp.jpg}\hspace{1cm}  \\[.2cm]
+                         \captione{15in}{Temp 2}
+                     \end{center}
+                     \begin{center}
+                         \includegraphics[width=5in]{mypics/temp.jpg}\hspace{1cm}\includegraphics[width=7in]{mypics/temp.jpg}\hspace{1cm}  \\[.2cm]
+                         \captione{15in}{Temp 3}
+                     \end{center}
+            }
+
+\newAlert{MainProblem}{Main Problem(Proposition)}{
+            The purpose of our research is to propose an algorithm for two distinguished and a helper bot to find an unknown exit on a disk.
+%             \begin{thm}
+%                $$\tau \in G^\sigma \Leftrightarrow \sigma \in G^\tau$$
+%             \end{thm}
+             \begin{center}
+                 \includegraphics[width=8in]{mypics/temp.JPG}\\[.2cm]
+                 \captione{8in}{Temp 1}
+             \end{center}
+            }
+
+\newAlert{Conjectures}{Our Conjectures and Analysis}{
+            \begin{tabular}{lr}
+              \conjetura{This algorithm does not have the best lower bound.}{True}
+              \conjetura{If the game is linear with $n$ squares then its graph is a path with $n$ vertices. }{True}
+              \conjetura {If a game is non-linear its graph must have a vertex degree 2 or more. }{True}
+              \conjetura{If a game is non-linear its graph must have at least one vertex with degree three.}{False}
+              \conjetura{There is a non-linear game whose graph is almost a path.}{True}
+              \conjetura{Any game with 3 or less squares is linear.}{True}
+            \end{tabular}
+            }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%         ALERT BLOCKS  FINISH                           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   TIPS  TO MAKE A NICE POSTER  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Common mistakes when compiling
+% 1) There is an empty row in one of the blocks, remove it.
+% 2) You forgot to close the brace } at the end of the block, close it.
+% 3) The name of a block does not agree, for example you have \newSingle{Description}{\BlockDescription}
+%                           and when you call it to form the main columns, you may have typed \SingleDescripption
+%                           hence you should have typed  \SingleDescription, correct it.
+% 4) It can not find a picture, perhaps you have it in the wrong folder.
+% 5) Maybe it doesn't find mypostersettings.tex, it should be in the same folder as CoolPoster.tex
+%
+%
+%%%%%  General Recomendations when typing your poster:
+%%%%%  Your regular blocks MUST be short, two or three sentences each, see the examples above.
+%%%%%  If your graph contains graphs, first genererate the pdf versions of each graph via LATEX,  then DVItoPS then PStoPDF
+%%%%%                   as shown in the tex files contained in the folder mypics
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   END OF TIPS  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
