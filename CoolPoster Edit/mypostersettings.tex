@@ -125,11 +125,12 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newblock{Definitions}{Definitions}{
-         A  \textbf{distinguished} bot is one that ends the algorithm, when it reaches the exit.
-         A \textbf{helper} bot is one that helps distinguished find the exit.
-         An \textbf{exit} is a point unknown to the algorithm, that is located on an edge.
-         The exit is \textbf{found} if a bot's coordinates match the exit locations.
-         The algorithm \textbf{terminates} if a specified subset of bots shares a position with the exit.
+         An \textbf{exit} is a point unknown to the agents, that is located on an perimeter on the domain.
+         The agents must find the exit for the algorithm to finish.
+         A  \textbf{priority} agent is one that must reach the exit for the algorithm to terminate.
+         A \textbf{helper} agent is one that simply assists the priority agent(s) in finding the exit.
+         The exit is \textbf{found} if an agent's coordinates match the exit location.
+         The algorithm \textbf{terminates} if a specified subset of agents shares a position with the exit.
          }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -142,7 +143,13 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newblock{Description}{Algorithm Description}{
-	A distinguished and helper bot move together at some $\alpha$ below the negative x axis, where then the helper travels clockwise, and the distinguished counter. The other distinguished travels along the positive x axis, where it then travels counter clockwise.
+         In our algorithm, we use two \textbf{priority} agents and one \textbf{helper} agent.
+         The termination condition in our algorithm is reached when either one of the two priority agents reaches the exit.
+         % INCLUDE A FRAME OF REFERENCE. 0 DEGREES IS AT 3:00. %
+         We send one priority and one helper to some angle $\alpha$ on the perimeter of the shape, in the third quadrant.
+         The priority agent travels counter-clockwise, and the helper travels clockwise.
+         The other priority agent travels to 0 radians and travels counter-clockwise.
+         % INCLUDE A FRAME OF REFERENCE. 0 DEGREES IS AT 3:00. %
          }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -159,7 +166,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newblock{Work}{Future Work}{
-	Later on we will study further distributed algorithms of search and escape, such as lines or triangles.
+	    Later on we will study further distributed algorithms of search and escape, such as lines or triangles.
         }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
