@@ -25,6 +25,7 @@ var firstTime = true;
 
 var instruBinder = [];
 var algorithmName = "";
+var algShortName = "";
 
 var tourColors = [];
 
@@ -454,6 +455,7 @@ class Tourist {
 function Start() {
   degrees = 360;
   Load();
+  showHelp("start");
 }
 
 //Load visuals and bots.(Might be changed to its own script later, to split visual and functional)
@@ -1363,6 +1365,7 @@ function showAlgorithmDesc(s, w){
             algorithmName = "1 Priority + 8 Servants ";
             break;
     }
+    algShortName = s;
     wireless = w;
     d3.selectAll('.desc').style('display', 'none');
     d3.select('.tabtxt').style('background-color', color);
@@ -1370,9 +1373,11 @@ function showAlgorithmDesc(s, w){
     closeNav();
     if (firstTime){
         firstTime = false;
+        showHelp("start");
     }
     else {
         Reset();
+        showHelp('steps');
     }
 }
 
@@ -1385,6 +1390,19 @@ function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
     document.getElementById("navdiv").style.display = "block";
 
+}
+
+function showHelp(s) {
+    d3.selectAll(".w3-display-container").style("display", "none");
+    switch (s) {
+        case "steps":
+            document.getElementById(algShortName).style.display = "block";
+            break;
+        default:
+            document.getElementById(s).style.display = "block";
+            break;
+    }
+    return;
 }
 
 function sleep(ms) {
