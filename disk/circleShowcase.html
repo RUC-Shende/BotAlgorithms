@@ -53,59 +53,13 @@
     <!-- Contains the algorithm name and wireless status -->
     <h2 id="subheader"></h2>
 
-    <!-- Splash page for release soon. Need to make it more informative and less wide -->
-<!--
-    <button id="showhelp" class="w3-btn" style="display:none; background-color:'green'; color:'white'" onclick="document.getElementById('splash').style.display='inline-block'; this.style.display='none'"><span style="font-size: '2em'">🛈</span> Show Help</button>
-    <div id="splash" class="w3-panel w3-green w3-display-container" style="display:inline-block; width: 50%;">
-        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
-        <div style="font-size: 14px;">
-            <p style="font-size: 1.75em;">Click on the Menu Icon in the top left to see available algorithms.</p>
-            <br />
-            <p style="font-size: 1.25em;">
-                The Main 2 panels you will see below are both different visual representations of the same algorithm.
-            </p>
-            <br />
-
-            <p style="font-size: 1.25em;">
-                The panel on the left, which we refer to as the "Field" shows the actual position of the robots at
-                any given time on their trajectories.
-                The reference point of 0 degrees occurs at x=1 on the unit disk shown below.
-                Before an algorithm starts, you must select a location for the exit by hovering around the disk, and clicking
-                when you find a suitable exit location. The algorithm will then begin.
-            </p>
-            <br />
-
-            <p style="font-size: 1.25em;">
-                The panel on the right, which we refer to as the "Graph", show the absolute distance of each robot from the current
-                exit position, in units.
-                The current time and number of frames that the animation has played for will be displayed in the top left.
-                Below the time, are four buttons which can be used to replay, slow, rewind, and stop the animation playback,
-                once it has finished. Clicking "Slow" more than once can slow the animation down more
-                in whichever direction it is currently playing.
-                In the top right of the Graph is the robot legend. This shows the Robot ID number, color, and whether or not the robot is
-                designated as priority. If it is a priority robot, it will be shown with a (P).
-            </p>
-            <br />
-
-            <p style="font-size: 1.25em;">
-                Finally, when there priority robots in the algorithm, an extra panel will show below the Field and Graph.
-                This is a special graph that we call the Worst Case Graph.
-                It shows the distance of the priority from one of the servants in a simulation of the algorithm where no exit is present.
-                This graph allows us to see the time it would take the algorithm to finish, based on the frame number.
-                If the SERVANT were to find the exit on any of the given frame numbers, the "Time to Finish" datapoint
-                will show us the worst case time that the algorithm would finish based on how far the priority currently
-                is from the servant which found the exit.
-            </p>
-        </div>
-    </div>
--->
-
     <div class="w3-bar w3-gray" style="width:90%; float:left; margin-left:2%;">
         <button class="w3-bar-item w3-button" onclick="showHelp('start');">Getting Started</button>
         <button class="w3-bar-item w3-button" onclick="showHelp('field');">Field Info</button>
         <button class="w3-bar-item w3-button" onclick="showHelp('graph');">Graph Info</button>
         <button class="w3-bar-item w3-button" onclick="showHelp('worstcase');">Worst Case Visualizer</button>
         <button class="w3-bar-item w3-button" onclick="showHelp('steps');">Algorithm Steps</button>
+        <button class="w3-bar-item w3-button" onclick="showHelp('docs');">View Documentation</button>
         <button class="w3-bar-item w3-button" onclick="showHelp('acknowledgement');">Acknowledgements</button>
     </div>
     <div id="start" class="w3-display-container infobox">
@@ -174,7 +128,16 @@
             </p>
         </div>
     </div>
-
+    <div id="docs" class="w3-display-container infobox">
+        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
+        <div>
+            <h2 style="color:black;">View Documentation</h2>
+            <p>
+                <a href="../Docs/_build/html/" target="_blank" style="color:blue; text-decoration:underline;">Click here</a>
+                to view the full documentation. This will open a new tab.
+            </p>
+        </div>
+    </div>
     <a id="AlgA"><div id="A" class='w3-display-container desc'></a>
         <span onclick="this.parentElement.style.display='none'" class="w3-button w3-display-topright">X</span>
         <h2 style="color:black;">Algorithm Steps:</h2>
