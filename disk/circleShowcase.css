@@ -15,7 +15,7 @@ div {
 svg {
     background-color: #fff;
     border-radius: 6px;
-    margin: 10px;
+    margin: 2%;
     text-align: center;
     box-shadow: 3px 4px 3px #888;
 }
@@ -109,10 +109,30 @@ h3 {
 }
 
 .desc {
-    font-size: 24px;
+    background-color: white;
+    margin-left:2%;
+    width:90%;
+    float:left;
+    border: 2px solid black;
     display: none;
+    text-align: left;
+    font-size: 1.25em;
+    padding: 2%;
     font-family: "Ubuntu", "Roboto Condensed", Verdana, sans-serif;
 
+}
+
+.infobox {
+    background-color: white;
+    margin-left:2%;
+    width:90%;
+    float:left;
+    border: 2px solid black;
+    display: none;
+    text-align: left;
+    font-size: 1.25em;
+    padding: 2%;
+    font-family: "Ubuntu", "Roboto Condensed", Verdana, sans-serif;
 }
 
 .tooltip {
@@ -275,10 +295,10 @@ h3 {
     width: 90%;
     height: 120px;
     margin: 0 auto;
-    margin-top: 30px;
     background-color: #bbbbcc;
     border-radius: 15px 15px 0px 0px;
-    bottom: 0;
+    bottom: 0px;
+    top: 90%;
 }
 
 .footer a {
@@ -286,10 +306,6 @@ h3 {
     color: blue;
     margin-top: 10px;
     margin-bottom: 10px;
-}
-
-#A, #B, #C {
-    background-color: inherit;
 }
 
 .line1 {
