@@ -394,34 +394,34 @@ INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmssbx10.tfm
 INPUT /usr/share/texmf/tex/latex/lm/t1lmr.fd
 INPUT /usr/share/texmf/tex/latex/lm/t1lmr.fd
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmr17.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/rm-lmr17.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/rm-lmr17.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/rm-lmr17.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/lmmi12.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/lmmi12.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/lmmi12.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/lmsy10.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/lmsy10.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/lmsy10.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
 INPUT /usr/share/texmf/tex/latex/lm/t1lmtt.fd
 INPUT /usr/share/texmf/tex/latex/lm/t1lmtt.fd
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmtt12.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmri12.tfm
-INPUT /usr/share/texmf/fonts/tfm/public/lm/rm-lmr17.tfm
-INPUT /usr/share/texmf/fonts/tfm/public/lm/rm-lmr17.tfm
-INPUT /usr/share/texmf/fonts/tfm/public/lm/rm-lmr17.tfm
-INPUT /usr/share/texmf/fonts/tfm/public/lm/lmmi12.tfm
-INPUT /usr/share/texmf/fonts/tfm/public/lm/lmmi12.tfm
-INPUT /usr/share/texmf/fonts/tfm/public/lm/lmmi12.tfm
-INPUT /usr/share/texmf/fonts/tfm/public/lm/lmsy10.tfm
-INPUT /usr/share/texmf/fonts/tfm/public/lm/lmsy10.tfm
-INPUT /usr/share/texmf/fonts/tfm/public/lm/lmsy10.tfm
-INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
-INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
-INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
-INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
-INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
-INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/temp.jpg
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/temp.jpg
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/temp.jpg
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/temp.jpg
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/temp.jpg
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/temp.jpg
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/temp.jpg
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/temp.jpg
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmbx12.tfm
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/temp.jpg
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/temp.jpg
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/temp.jpg
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/temp.jpg
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/temp.jpg
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/temp.jpg
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/temp.jpg
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/temp.jpg
 INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/temp.jpg
 INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/temp.jpg
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmr17.tfm
@@ -457,12 +457,15 @@ OUTPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolP
 INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.aux
 INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.out
 INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.out
+INPUT /usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc
 INPUT /usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc
 INPUT /usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc
+INPUT /usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc
 INPUT /usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb
 INPUT /usr/share/texmf/fonts/type1/public/lm/lmmi12.pfb
 INPUT /usr/share/texmf/fonts/type1/public/lm/lmr17.pfb
 INPUT /usr/share/texmf/fonts/type1/public/lm/lmri12.pfb
 INPUT /usr/share/texmf/fonts/type1/public/lm/lmss17.pfb
 INPUT /usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb
+INPUT /usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb
 INPUT /usr/share/texmf/fonts/type1/public/lm/lmtt12.pfb

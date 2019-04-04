@@ -125,12 +125,12 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newblock{Definitions}{Definitions}{
-         An \textbf{exit} is a point unknown to the agents, that is located on an perimeter on the domain.
-         The agents must find the exit for the algorithm to finish.
-         A  \textbf{priority} agent is one that must reach the exit for the algorithm to terminate.
-         A \textbf{helper} agent is one that simply assists the priority agent(s) in finding the exit.
-         The exit is \textbf{found} if an agent's coordinates match the exit location.
-         The algorithm \textbf{terminates} if a specified subset of agents shares a position with the exit.
+         \begin{description}[font=$\bullet$~\normalfont\textbf]
+             \item[$\bullet$ An exit] is a point unknown to the agents, that is located on an perimeter on the domain. The agents must find the exit for the algorithm to finish.
+             \item[$\bullet$ A priority] agent is one that must reach the exit for the algorithm to terminate.
+             \item[$\bullet$ A helper]   agent is one that simply assists the priority agent(s) in finding the exit.
+             \item[$\bullet$ Algorithm termination] occurs if a specified subset of agents shares a position with the exit.
+         \end{description}
          }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -181,7 +181,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newblock{Conclusions}{Conclusions}{
-	This algorithm has an upper bound of blank, being faster than an algorithm of one distinguished and two helpers with an upper bound of 3.83.
+	This algorithm has an upper bound of 3.55 time units, being faster than an algorithm of one distinguished and two helpers with an upper bound of 3.83 time units.
              \begin{center}
                  \includegraphics[width=8in]{mypics/temp.jpg}\\[.2cm]
                  \captione{10in}{Temp 4}
@@ -299,26 +299,32 @@
                      \end{center}
             }
 
-\newAlert{MainProblem}{Main Problem(Proposition)}{
-            The purpose of our research is to propose an algorithm for two distinguished and a helper bot to find an unknown exit on a disk.
-%             \begin{thm}
-%                $$\tau \in G^\sigma \Leftrightarrow \sigma \in G^\tau$$
-%             \end{thm}
+\newAlert{MainProblem}{Main Result}{
+            The purpose of our research is to propose an algorithm for two
+            distinguished agents and a helper agent to find an unknown
+            exit on a disk. We show that this can be achieved in no more than
+            3.55 time units. This result does not represent all algorithms using
+            3 agents, nor does it represent all algorithms using distinguished agents.
              \begin{center}
-                 \includegraphics[width=8in]{mypics/temp.JPG}\\[.2cm]
-                 \captione{8in}{Temp 1}
+                 \includegraphics[width=5in]{mypics/temp.JPG}\\[.2cm]
+                 \captione{5in}{Temp 1}
              \end{center}
             }
 
 \newAlert{Conjectures}{Our Conjectures and Analysis}{
-            \begin{tabular}{lr}
-              \conjetura{This algorithm does not have the best lower bound.}{True}
-              \conjetura{If the game is linear with $n$ squares then its graph is a path with $n$ vertices. }{True}
-              \conjetura {If a game is non-linear its graph must have a vertex degree 2 or more. }{True}
-              \conjetura{If a game is non-linear its graph must have at least one vertex with degree three.}{False}
-              \conjetura{There is a non-linear game whose graph is almost a path.}{True}
-              \conjetura{Any game with 3 or less squares is linear.}{True}
-            \end{tabular}
+            \indent In this algorithm, we observe two worst case situations. In one, the priority
+            robot assigned to the third and fourth quadrant travels the entire distance
+            of its arc, until it reaches the exit a small distance before 0 radians (Fig. 3 above).
+            In the other, the helper agent finds the exit at a point such that the closest priority
+            agent would have to travel along a chord to reach it (Fig. 4 above). \newline
+            \indent We analyze the case in which the helper agent finds the exit in the second quadrant.
+            Say that there is an angle of $\theta$ between the closest priority and the helper agent, so that
+            the shortest distance between the two agents is $\[ 2 \sin (\theta / 2)$ . The angle $\theta$ that
+            would produce the longest distance between the priority agent along the top and the helper, is $\theta = 2 \pi / 3$.
+            Therefore, the termination time for the algorithm in this case is $\[ 1 + \alpha + 2 \sin (\theta / 2)$, where $\alpha$ is the
+            circumfrential distance already traveled by each robot. We can set this result equal to the termination time of the agent that explores the
+            bottom part of the circle, which is $\[ 1 + \gamma$, where $\gamma$ is a distance traveled by the priority agent such that
+            it finds the exit a small distance before angle 0.
             }
 
 
