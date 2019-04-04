@@ -164,7 +164,9 @@
         </p>
 
         <b><em><u>Algorithm referenced in: </u></em></b><br />
-        <em>Jurek Czyzowicz et al (2015). Evacuating Robots From a Disk Using Face-To-Face Communication.</em>
+        <em>Jurek Czyzowicz et al. (2014). Evacuating Robots via Unknown Exit in a Disk. Proceesings of DISC 2014, LNCS 8784, pp. 122–136, 2014</em>
+        <br />
+        <em>Jurek Czyzowicz et al. (2015). Evacuating Robots From a Disk Using Face-To-Face Communication. Proceesings of CIAC, 2015 p. 140-152, 2015.</em>
     </div>
 
     <a id="AlgB"><div id="B" class='w3-display-container desc'>
@@ -199,7 +201,9 @@
         <br />
         <br />
         <b><em><u>Algorithm referenced in: </u></em></b><br />
-        <em>Jurek Czyzowicz et al (2015). Evacuating Robots From a Disk Using Face-To-Face Communication.</em>
+        <em>Jurek Czyzowicz et al. (2014). Evacuating Robots via Unknown Exit in a Disk. Proceesings of DISC 2014, LNCS 8784, pp. 122–136, 2014</em>
+        <br />
+        <em>Jurek Czyzowicz et al. (2015). Evacuating Robots From a Disk Using Face-To-Face Communication. Proceesings of CIAC, 2015 p. 140-152, 2015.</em>
     </div></a>
 
     <!-- NORMAL ALGORITHM -->
@@ -242,126 +246,133 @@
         <br />
         <br />
         <b><em><u>Algorithm referenced in: </u></em></b><br />
-        <em>Jurek Czyzowicz et al (2015). Evacuating Robots From a Disk Using Face-To-Face Communication.</em>
+        <em>Jurek Czyzowicz et al. (2014). Evacuating Robots via Unknown Exit in a Disk. Proceesings of DISC 2014, LNCS 8784, pp. 122–136, 2014</em>
+        <br />
+        <em>Jurek Czyzowicz et al. (2015). Evacuating Robots From a Disk Using Face-To-Face Communication. Proceesings of CIAC, 2015 p. 140-152, 2015.</em>
     </div>
 
-        <!-- PRIORITY ALGORITHM -->
-        <a id="AlgQ1"><div id="Q1" class='w3-display-container desc'></a>
-            <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
-            <h2 style="color:black;">Algorithm Steps:</h2>
-            This algorithm takes two arguments, Q(α, β): α being this arc length that the priority robot will take until it makes a small detour, β being the angle (α + β) on the unit disk that the priority robot travels to,
-            creating a chord. After this, the priority robot will travel in the opposite direction, back towards the point where it originally made the detour.
-            <ol><b><em><u>Steps (Algorithm Priority 1):</u></em></b>
-                <ol>
-                    <li>
-                        The robots go out to the perimeter at the same angle.
-                    </li>
-                    <li>
-                        The servant will travel clockwise around the circle until it finds the exit and notifies the priority of its location.
-                    </li>
-                    <li>
-                        The priority will travel counter-clockwise for time α, at which point it will make its detour.
-                    </li>
-                    <li>
-                        The priority will travel to the angle (α + β).
-                    </li>
-                    <li>
-                        The priority will travel clockwise until the exit is found.
-                    </li>
-                </ol>
+    <!-- PRIORITY ALGORITHM -->
+    <a id="AlgQ1"><div id="Q1" class='w3-display-container desc'></a>
+        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
+        <h2 style="color:black;">Algorithm Steps:</h2>
+        This algorithm takes two arguments, Q(α, β): α being this arc length that the priority robot will take until it makes a small detour, β being the angle (α + β) on the unit disk that the priority robot travels to,
+        creating a chord. After this, the priority robot will travel in the opposite direction, back towards the point where it originally made the detour.
+        <ol><b><em><u>Steps (Algorithm Priority 1):</u></em></b>
+            <ol>
+                <li>
+                    The robots go out to the perimeter at the same angle.
+                </li>
+                <li>
+                    The servant will travel clockwise around the circle until it finds the exit and notifies the priority of its location.
+                </li>
+                <li>
+                    The priority will travel counter-clockwise for time α, at which point it will make its detour.
+                </li>
+                <li>
+                    The priority will travel to the angle (α + β).
+                </li>
+                <li>
+                    The priority will travel clockwise until the exit is found.
+                </li>
             </ol>
+        </ol>
 
-            <br />
+        <br />
 
-            <b><em><u>Algorithm referenced in: </u></em></b><br />
-            <em>Jurek Czyzowicz et al (2018). God Save the Queen. In FUN, pp. 16:1–16:20.</em>
-        </div>
+        <b><em><u>Algorithm referenced in: </u></em></b><br />
+        <em>Jurek Czyzowicz et al (2018). God Save the Queen. In Proceedings of FUN, pp. 16:1–16:20.</em>
+    </div>
 
-        <!-- PRIORITY ALGORITHM -->
-        <a id="AlgQ2"><div id="Q2" class='w3-display-container desc'></a>
-            <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
-            <h2 style="color:black;">Algorithm Steps:</h2>
-            This algorithm takes two arguments, Q(α, ρ): α being the angle the priority robot will travel before moving directly across the disk to point
-            ρ, which is the y-value of the point K(α/2, ρ). This is the point where the priority will diverge and travel toward the angle -α/2 on the disk.
-            We will denote the servants in this algorithm as S1 and S2, and the priority as P.
-            <ol><b><em><u>Steps (Algorithm Priority 2):</u></em></b>
-                <ol>
-                    <li>
-                        S1 and P will go out to the perimeter at angle (π - α). S2 will go out to the perimeter at angle π.
-                    </li>
-                    <li>
-                        S1 travels clockwise until it finds the exit. S2 travels counter-clockwise until ti finds the exit.
-                    </li>
-                    <li>
-                        The priority P will travel counter-clockwise for time α, at which point it will make its detour.
-                    </li>
-                    <li>
-                        The priority will travel to the point K(α/2 + ρ) on the interior of the disk.
-                    </li>
-                    <li>
-                        The priority will then travel to angle (2π - α/2) on the perimeter and wait until the exit is found.
-                    </li>
-                </ol>
-                <br />
-            </ol>
-            <b><em><u>Algorithm referenced in: </u></em></b><br />
-            <em>Jurek Czyzowicz et al (2018). God Save the Queen. In FUN, pp. 16:1–16:20.</em>
-        </div>
-
-        <!-- PRIORITY ALGORITHM -->
-        <a id="AlgQ2S1"><div id="Q2S1" class='w3-display-container desc'></a>
-            <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
-            <h2 style="color:black;">Algorithm Steps:</h2>
-            <ol><b><em><u>Steps (Algorithm 2 Priority + 1 Servant):</u></em></b>
-                In this algorithm, we designate two of the robots as priority, and only one as the servant.
-                The algorithm terminates when at least one of the priority robots finds the exit.
-                The algorithm takes one argument, Q(α). α is the angle at which one servant and one priority will travel toward the perimeter.
-                We will denote the servant as S, and the two priority robots as P1 and P2.
-                14*pi/9 - 2*sqrt(3)/3
-                <ol>
-                    <li>
-                        The robots S and P1 will travel to the perimeter at <span class="tooltip">angle α.<span class="tooltiptext">This is usually an angle located between (π, 3π/2)</span></span>
-                        P2 will travel to the perimeter at angle 0.
-                    </li>
-                    <li>
-                        P1 travels counter-clockwise until it finds the exit. P2 travels counter-clockwise until it finds the exit. Finally, S travels clockwise until it finds the exit.
-                    </li>
-                </ol>
+    <!-- PRIORITY ALGORITHM -->
+    <a id="AlgQ2"><div id="Q2" class='w3-display-container desc'></a>
+        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
+        <h2 style="color:black;">Algorithm Steps:</h2>
+        This algorithm takes two arguments, Q(α, ρ): α being the angle the priority robot will travel before moving directly across the disk to point
+        ρ, which is the y-value of the point K(α/2, ρ). This is the point where the priority will diverge and travel toward the angle -α/2 on the disk.
+        We will denote the servants in this algorithm as S1 and S2, and the priority as P.
+        <ol><b><em><u>Steps (Algorithm Priority 2):</u></em></b>
+            <ol>
+                <li>
+                    S1 and P will go out to the perimeter at angle (π - α). S2 will go out to the perimeter at angle π.
+                </li>
+                <li>
+                    S1 travels clockwise until it finds the exit. S2 travels counter-clockwise until ti finds the exit.
+                </li>
+                <li>
+                    The priority P will travel counter-clockwise for time α, at which point it will make its detour.
+                </li>
+                <li>
+                    The priority will travel to the point K(α/2 + ρ) on the interior of the disk.
+                </li>
+                <li>
+                    The priority will then travel to angle (2π - α/2) on the perimeter and wait until the exit is found.
+                </li>
             </ol>
             <br />
+        </ol>
+        <b><em><u>Algorithm referenced in: </u></em></b><br />
+        <em>Jurek Czyzowicz et al (2018). God Save the Queen. In FUN, pp. 16:1–16:20.</em>
+    </div>
 
-            We can show that this algorithm has an upper bound of 3.55 time units for angle α = 14π/9 - 2√3/3. The two worst-cases for the exit location in this
-            algorithm are: 2π - θ for some very small θ, or π - ((6√3 - 2)/9).
-        </div>
+    <!-- PRIORITY ALGORITHM -->
+    <a id="AlgQ2S1"><div id="Q2S1" class='w3-display-container desc'></a>
+        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
+        <h2 style="color:black;">Algorithm Steps:</h2>
+        <ol><b><em><u>Steps (Algorithm 2 Priority + 1 Servant):</u></em></b>
+            In this algorithm, we designate two of the robots as priority, and only one as the servant.
+            The algorithm terminates when at least one of the priority robots finds the exit.
+            The algorithm takes one argument, Q(α). α is the angle at which one servant and one priority will travel toward the perimeter.
+            We will denote the servant as S, and the two priority robots as P1 and P2.
+            14*pi/9 - 2*sqrt(3)/3
+            <ol>
+                <li>
+                    The robots S and P1 will travel to the perimeter at <span class="tooltip">angle α.<span class="tooltiptext">This is usually an angle located between (π, 3π/2)</span></span>
+                    P2 will travel to the perimeter at angle 0.
+                </li>
+                <li>
+                    P1 travels counter-clockwise until it finds the exit. P2 travels counter-clockwise until it finds the exit. Finally, S travels clockwise until it finds the exit.
+                </li>
+            </ol>
+        </ol>
+        <br />
 
-        <!-- PRIORITY ALGORITHM -->
-        <a id="AlgQ1S1Q1"><div id="Q1S1Q1" class='w3-display-container desc'>1Q1S1Q</a>
-            <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
-            <h2 style="color:black;">Algorithm Steps:</h2>
-            <p>
-                Coming soon.
-            </p>
-        </div>
+        We can show that this algorithm has an upper bound of 3.55 time units for angle α = 14π/9 - 2√3/3. The two worst-cases for the exit location in this
+        algorithm are: 2π - θ for some very small θ, or π - ((6√3 - 2)/9).
+    </div>
 
-        <!-- PRIORITY ALGORITHM -->
-        <a id="AlgQ1S4"><div id="Q1S4" class='w3-display-container desc'>Q1S4</a>
-            <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
-            <h2 style="color:black;">Algorithm Steps:</h2>
-            <p>
-                Coming soon.
-            </p>
-            <b><em><u>Algorithm referenced in: </u></em></b><br />
-            <em>Jurek Czyzowicz et al (2018). Priority Evacuation from a Disk Using Mobile Robots.</em>
-        </div>
+    <!-- PRIORITY ALGORITHM -->
+    <a id="AlgQ1S1Q1"><div id="Q1S1Q1" class='w3-display-container desc'>1Q1S1Q</a>
+        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
+        <h2 style="color:black;">Algorithm Steps:</h2>
+        <p>
+            Coming soon.
+        </p>
+        <b><em><u>Algorithm referenced in: </u></em></b><br />
+        <em>Jurek Czyzowicz et al (2018). God Save the Queen. In Proceedings of FUN, pp. 16:1–16:20.</em>
+    </div>
 
-        <!-- PRIORITY ALGORITHM -->
-        <a id="AlgQ1S8"><div id="Q1S8" class='w3-display-container desc'>1Q8S</a>
-            <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
-            <h2 style="color:black;">Algorithm Steps:</h2>
-            <p>
-                Coming soon.
-            </p>
-        </div>
+    <!-- PRIORITY ALGORITHM -->
+    <a id="AlgQ1S4"><div id="Q1S4" class='w3-display-container desc'>Q1S4</a>
+        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
+        <h2 style="color:black;">Algorithm Steps:</h2>
+        <p>
+            Coming soon.
+        </p>
+        <b><em><u>Algorithm referenced in: </u></em></b><br />
+        <em>Jurek Czyzowicz et al (2018). Priority Evacuation from a Disk Using Mobile Robots. Proceedings of SIROCCO, pages 392-407, 2018.</em>
+    </div>
+
+    <!-- PRIORITY ALGORITHM -->
+    <a id="AlgQ1S8"><div id="Q1S8" class='w3-display-container desc'>1Q8S</a>
+        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
+        <h2 style="color:black;">Algorithm Steps:</h2>
+        <p>
+            Coming soon.
+        </p>
+        <p>
+        <b><em><u>Algorithm referenced in: </u></em></b><br />
+        <em>Jurek Czyzowicz et al (2018). Priority Evacuation from a Disk Using Mobile Robots. Proceedings of SIROCCO, pages 392-407, 2018.</em>
+    </div>
 
     </div>
     <script src='circleShowcase.js'></script>
