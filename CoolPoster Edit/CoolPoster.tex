@@ -7,13 +7,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \documentclass[final]{beamer}
-\input mypostersettings                       % Go to this file, mypostersettings.tex
+\input mypostersettings
+\usepackage{pdfpages}                    % Go to this file, mypostersettings.tex
                                               % and edit your blocks: the main pieces of your poster!
 \title{Visualizing and Designing Multi Agent Search Algorithms}
 \author{David Bushta, Chris Till}
 \institute{Rutgers University, Camden}
-\toplogo{8in}{temp.jpg}
-\extrainfo{\includegraphics[width=3in]{mypics/temp.jpg}} % If something here they type: \extrainfo{\ }
+\toplogo{4in}{rutgerslogo.png}
+\extrainfo{\includegraphics[height=4in, width=7in]{mypics/rutgers.jpeg}} % If something here they type: \extrainfo{\ }
 \moreinfo{\ }                          % If something here they type: \moreinfo{Advisor: Dr. Garcia}
 
 \begin{document}
@@ -30,6 +31,9 @@
 \newSingle{Description}{                             % This creates a single column with
            \BlockDescription                         % Only one block
            }
+\newSingle{DescriptionDos}
+           \BlockDescriptionDos
+           }
 %------------------------------------------------------------------------------------------
 \newSingle{Work}{                          % This creates a single column with
            \BlockWork                      % Only one block
@@ -37,6 +41,7 @@
 %------------------------------------------------------------------------------------------
 \newSingle{Closing}{                          % This creates a single column with
            \BlockConclusions     \vskip2ex    % A block on the top
+           \SingleWork           \vskip2ex
            \BlockAcknowledgements      \vskip2ex    % A block underneath
            \BlockBibliography    \vskip2ex    % A block underneath
            \BlockLogo                         % A block at the bottom
@@ -46,7 +51,7 @@
 %---------------------------------------------% USE THE ABOVE TO CREATE THE FOLLOWING -----
 \newTwin{DescWork}{                           % This creates a Twin Column with
            \SingleDescription                 % A previous single column on the left
-           \SingleWork                        % A previous single column on the right
+           \SingleDescriptionDos                       % A previous single column on the right
            }
 %-----------------------------------------------% USE THE ABOVE TO CREATE THE FOLLOWING -----
 \newMarried{MainTopic}{                         % This creates a column (twice in size) with

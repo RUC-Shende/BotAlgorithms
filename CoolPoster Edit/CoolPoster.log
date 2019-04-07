@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.10.21)  4 APR 2019 15:36
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.10.21)  7 APR 2019 00:04
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -617,75 +617,103 @@ Package: fp-upn 1996/10/21
 ) (/usr/share/texlive/texmf-dist/tex/latex/fp/fp-eval.sty
 Package: fp-eval 1995/04/03
 )) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) )
-( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ))
-\c@figura=\count165
-\c@thm=\count166
-\sepwid=\skip57
-\onecolwid=\skip58
-\twocolwid=\skip59
+( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) ) ( FP-UPN ( FP-MUL ) ( FP-ROUND ) )) (/usr/share/texlive/texmf-dist/tex/latex/pdfpages/pdfpages.sty
+Package: pdfpages 2015/09/18 v0.5d Insert pages of external PDF documents (AM)
+ (/usr/share/texlive/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+) (/usr/share/texlive/texmf-dist/tex/latex/tools/calc.sty
+Package: calc 2014/10/28 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count165
+\calc@Bcount=\count166
+\calc@Adimen=\dimen188
+\calc@Bdimen=\dimen189
+\calc@Askip=\skip57
+\calc@Bskip=\skip58
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count167
+\calc@Cskip=\skip59
+) (/usr/share/texlive/texmf-dist/tex/latex/eso-pic/eso-pic.sty
+Package: eso-pic 2015/07/21 v2.0g eso-pic (RN)
+)
+\AM@pagewidth=\dimen190
+\AM@pageheight=\dimen191
+ (/usr/share/texlive/texmf-dist/tex/latex/pdfpages/pppdftex.def
+File: pppdftex.def 2015/09/18 v0.5d Pdfpages driver for pdfTeX (AM)
+)
+\AM@pagebox=\box53
+\AM@toc@title=\toks45
+\c@AM@survey=\count168
+\AM@templatesizebox=\box54
+)
+\c@figura=\count169
+\c@thm=\count170
+\sepwid=\skip60
+\onecolwid=\skip61
+\twocolwid=\skip62
  (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/beamerthemeconfposter.sty
 Package: beamerthemeconfposter 
- (/usr/share/texlive/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty (/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
+
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty (/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
 Package: pgf 2015/08/07 v3.0.1a (rcs-revision 1.15)
  (/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleshapes.code.tex
 File: pgfmoduleshapes.code.tex 2014/03/21  (rcs-revision 1.35)
-\pgfnodeparttextbox=\box53
+\pgfnodeparttextbox=\box55
 ) (/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleplot.code.tex
 File: pgfmoduleplot.code.tex 2015/08/03  (rcs-revision 1.13)
-)
-(/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-0-65.sty
+) (/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-0-65.sty
 Package: pgfcomp-version-0-65 2007/07/03 v3.0.1a (rcs-revision 1.7)
-\pgf@nodesepstart=\dimen188
-\pgf@nodesepend=\dimen189
+\pgf@nodesepstart=\dimen192
+\pgf@nodesepend=\dimen193
 ) (/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-1-18.sty
 Package: pgfcomp-version-1-18 2007/07/23 v3.0.1a (rcs-revision 1.1)
 )) (/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgffor.sty (/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex)) (/usr/share/texlive/texmf-dist/tex/latex/pgf/math/pgfmath.sty (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex
 Package: pgffor 2013/12/13 v3.0.1a (rcs-revision 1.25)
  (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex)
-\pgffor@iter=\dimen190
-\pgffor@skip=\dimen191
-\pgffor@stack=\toks45
-\pgffor@toks=\toks46
-)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
+\pgffor@iter=\dimen194
+\pgffor@skip=\dimen195
+\pgffor@stack=\toks46
+\pgffor@toks=\toks47
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
 Package: tikz 2015/08/07 v3.0.1a (rcs-revision 1.151)
  (/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothandlers.code.tex
 File: pgflibraryplothandlers.code.tex 2013/08/31 v3.0.1a (rcs-revision 1.20)
-\pgf@plot@mark@count=\count167
-\pgfplotmarksize=\dimen192
+\pgf@plot@mark@count=\count171
+\pgfplotmarksize=\dimen196
 )
-\tikz@lastx=\dimen193
-\tikz@lasty=\dimen194
-\tikz@lastxsaved=\dimen195
-\tikz@lastysaved=\dimen196
-\tikzleveldistance=\dimen197
-\tikzsiblingdistance=\dimen198
-\tikz@figbox=\box54
-\tikz@figbox@bg=\box55
-\tikz@tempbox=\box56
-\tikz@tempbox@bg=\box57
-\tikztreelevel=\count168
-\tikznumberofchildren=\count169
-\tikznumberofcurrentchild=\count170
-\tikz@fig@count=\count171
+\tikz@lastx=\dimen197
+\tikz@lasty=\dimen198
+\tikz@lastxsaved=\dimen199
+\tikz@lastysaved=\dimen256
+\tikzleveldistance=\dimen257
+\tikzsiblingdistance=\dimen258
+\tikz@figbox=\box56
+\tikz@figbox@bg=\box57
+\tikz@tempbox=\box58
+\tikz@tempbox@bg=\box59
+\tikztreelevel=\count172
+\tikznumberofchildren=\count173
+\tikznumberofcurrentchild=\count174
+\tikz@fig@count=\count175
  (/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.code.tex
 File: pgfmodulematrix.code.tex 2013/09/17  (rcs-revision 1.8)
-\pgfmatrixcurrentrow=\count172
-\pgfmatrixcurrentcolumn=\count173
-\pgf@matrix@numberofcolumns=\count174
+\pgfmatrixcurrentrow=\count176
+\pgfmatrixcurrentcolumn=\count177
+\pgf@matrix@numberofcolumns=\count178
 )
-\tikz@expandcount=\count175
-
-(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarytopaths.code.tex
+\tikz@expandcount=\count179
+ (/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarytopaths.code.tex
 File: tikzlibrarytopaths.code.tex 2008/06/17 v3.0.1a (rcs-revision 1.2)
 ))) (/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryarrows.code.tex
 File: tikzlibraryarrows.code.tex 2008/01/09 v3.0.1a (rcs-revision 1.1)
  (/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.code.tex
 File: pgflibraryarrows.code.tex 2013/09/23 v3.0.1a (rcs-revision 1.16)
-\arrowsize=\dimen199
+\arrowsize=\dimen259
 )) (/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarybackgrounds.code.tex
 File: tikzlibrarybackgrounds.code.tex 2013/07/18 v3.0.1a (rcs-revision 1.3)
-\pgf@layerbox@background=\box58
-\pgf@layerboxsaved@background=\box59
+\pgf@layerbox@background=\box60
+\pgf@layerboxsaved@background=\box61
 ) (/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty
 Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
  (/usr/share/texlive/texmf-dist/tex/latex/base/t1enc.def
@@ -804,56 +832,56 @@ Package textcomp Info: Setting pplx sub-encoding to TS1/3 on input line 406.
 Package textcomp Info: Setting pplj sub-encoding to TS1/3 on input line 407.
 Package textcomp Info: Setting ptmx sub-encoding to TS1/4 on input line 408.
 Package textcomp Info: Setting ptmj sub-encoding to TS1/4 on input line 409.
-) (/usr/share/texlive/texmf-dist/tex/latex/beamer/themes/font/beamerfontthemeprofessionalfonts.sty
+)
+(/usr/share/texlive/texmf-dist/tex/latex/beamer/themes/font/beamerfontthemeprofessionalfonts.sty
 Package: beamerfontthemeprofessionalfonts 2010/06/17  (rcs-revision d02a7cf4d8ae)
 ) (/usr/share/texlive/texmf-dist/tex/latex/ms/ragged2e.sty
 Package: ragged2e 2009/05/21 v2.1 ragged2e Package (MS)
  (/usr/share/texlive/texmf-dist/tex/latex/ms/everysel.sty
 Package: everysel 2011/10/28 v1.2 EverySelectfont Package (MS)
 )
-\CenteringLeftskip=\skip60
-\RaggedLeftLeftskip=\skip61
-\RaggedRightLeftskip=\skip62
-\CenteringRightskip=\skip63
-\RaggedLeftRightskip=\skip64
-\RaggedRightRightskip=\skip65
-\CenteringParfillskip=\skip66
-\RaggedLeftParfillskip=\skip67
-\RaggedRightParfillskip=\skip68
-\JustifyingParfillskip=\skip69
-\CenteringParindent=\skip70
-\RaggedLeftParindent=\skip71
-\RaggedRightParindent=\skip72
-\JustifyingParindent=\skip73
+\CenteringLeftskip=\skip63
+\RaggedLeftLeftskip=\skip64
+\RaggedRightLeftskip=\skip65
+\CenteringRightskip=\skip66
+\RaggedLeftRightskip=\skip67
+\RaggedRightRightskip=\skip68
+\CenteringParfillskip=\skip69
+\RaggedLeftParfillskip=\skip70
+\RaggedRightParfillskip=\skip71
+\JustifyingParfillskip=\skip72
+\CenteringParindent=\skip73
+\RaggedLeftParindent=\skip74
+\RaggedRightParindent=\skip75
+\JustifyingParindent=\skip76
 )
-\inboxwd=\skip74
-\iinboxwd=\skip75
-\inboxrule=\skip76
+\inboxwd=\skip77
+\iinboxwd=\skip78
+\inboxrule=\skip79
 )) (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.aux)
 \openout1 = `CoolPoster.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 19.
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 19.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 19.
-
-(/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 20.
+LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 20.
+LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 20.
+LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 20.
+LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 20.
+LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 20.
+LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 20.
+LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 20.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 20.
+ (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 19.
-LaTeX Font Info:    Try loading font information for T1+lmss on input line 19.
+LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Try loading font information for T1+lmss on input line 20.
  (/usr/share/texmf/tex/latex/lm/t1lmss.fd
 File: t1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
@@ -893,17 +921,17 @@ File: t1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
 
 (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count176
-\scratchdimen=\dimen256
-\scratchbox=\box60
-\nofMPsegments=\count177
-\nofMParguments=\count178
-\everyMPshowfont=\toks47
-\MPscratchCnt=\count179
-\MPscratchDim=\dimen257
-\MPnumerator=\count180
-\makeMPintoPDFobject=\count181
-\everyMPtoPDFconversion=\toks48
+\scratchcounter=\count180
+\scratchdimen=\dimen260
+\scratchbox=\box62
+\nofMPsegments=\count181
+\nofMParguments=\count182
+\everyMPshowfont=\toks48
+\MPscratchCnt=\count183
+\MPscratchDim=\dimen261
+\MPnumerator=\count184
+\makeMPintoPDFobject=\count185
+\everyMPtoPDFconversion=\toks49
 ) (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
  (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/grfext.sty
@@ -915,18 +943,18 @@ Package grfext Info: Graphics extension search list:
  (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 )) ABD: EveryShipout initializing macros
-\AtBeginShipoutBox=\box61
-Package hyperref Info: Link coloring OFF on input line 19.
+\AtBeginShipoutBox=\box63
+Package hyperref Info: Link coloring OFF on input line 20.
  (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
  (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
-\c@section@level=\count182
+\c@section@level=\count186
 )
-LaTeX Info: Redefining \ref on input line 19.
-LaTeX Info: Redefining \pageref on input line 19.
-LaTeX Info: Redefining \nameref on input line 19.
+LaTeX Info: Redefining \ref on input line 20.
+LaTeX Info: Redefining \pageref on input line 20.
+LaTeX Info: Redefining \nameref on input line 20.
  (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.out) (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.out)
 \@outlinefile=\write5
 \openout5 = `CoolPoster.out'.
@@ -945,57 +973,72 @@ Dictionary: translator-numbers-dictionary, Language: English
 ) (/usr/share/texlive/texmf-dist/tex/latex/beamer/translator/dicts/translator-theorem-dictionary/translator-theorem-dictionary-English.dict
 Dictionary: translator-theorem-dictionary, Language: English 
 )
-LaTeX Info: Redefining \includegraphics on input line 19.
- ABD: EverySelectfont initializing macros
-LaTeX Info: Redefining \selectfont on input line 19.
- (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.nav) <mypics/temp.jpg, id=13, 6.0225pt x 2.409pt>
-File: mypics/temp.jpg Graphic file (type jpg)
- <use mypics/temp.jpg>
-Package pdftex.def Info: mypics/temp.jpg used on input line 19.
-(pdftex.def)             Requested size: 578.15999pt x 232.12793pt.
-LaTeX Font Info:    Calculating math sizes for size <17.86> on input line 19.
-LaTeX Font Info:    Try loading font information for OT1+lmr on input line 19.
+LaTeX Info: Redefining \includegraphics on input line 20.
+ (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/pdflscape.sty
+Package: pdflscape 2008/08/11 v0.10 Display of landscape pages in PDF (HO)
+ (/usr/share/texlive/texmf-dist/tex/latex/graphics/lscape.sty
+Package: lscape 2000/10/22 v3.01 Landscape Pages (DPC)
+)
+Package pdflscape Info: Auto-detected driver: pdftex on input line 80.
+) ABD: EverySelectfont initializing macros
+LaTeX Info: Redefining \selectfont on input line 20.
+ (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.nav) <mypics/rutgerslogo.png, id=13, 301.125pt x 301.125pt>
+File: mypics/rutgerslogo.png Graphic file (type png)
+ <use mypics/rutgerslogo.png>
+Package pdftex.def Info: mypics/rutgerslogo.png used on input line 20.
+(pdftex.def)             Requested size: 289.07999pt x 289.10887pt.
+LaTeX Font Info:    Calculating math sizes for size <17.86> on input line 20.
+LaTeX Font Info:    Try loading font information for OT1+lmr on input line 20.
  (/usr/share/texmf/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OML+lmm on input line 19.
+LaTeX Font Info:    Try loading font information for OML+lmm on input line 20.
  (/usr/share/texmf/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 19.
+LaTeX Font Info:    Try loading font information for OMS+lmsy on input line 20.
  (/usr/share/texmf/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for OMX+lmex on input line 19.
+LaTeX Font Info:    Try loading font information for OMX+lmex on input line 20.
  (/usr/share/texmf/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <17.86> on input line 19.
+(Font)              <17.86> on input line 20.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12.50194> on input line 19.
+(Font)              <12.50194> on input line 20.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8.93> on input line 19.
-File: mypics/temp.jpg Graphic file (type jpg)
- <use mypics/temp.jpg>
-Package pdftex.def Info: mypics/temp.jpg used on input line 19.
-(pdftex.def)             Requested size: 216.81pt x 86.82187pt.
-LaTeX Font Info:    Try loading font information for T1+lmr on input line 66.
- (/usr/share/texmf/tex/latex/lm/t1lmr.fd
+(Font)              <8.93> on input line 20.
+ <mypics/rutgers.jpeg, id=14, 301.125pt x 150.5625pt>
+File: mypics/rutgers.jpeg Graphic file (type jpg)
+
+<use mypics/rutgers.jpeg>
+Package pdftex.def Info: mypics/rutgers.jpeg used on input line 20.
+(pdftex.def)             Requested size: 505.93707pt x 289.13872pt.
+
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:36: Too many }'s.
+l.36            }
+                 
+You've closed more groups than you opened.
+Such booboos are generally harmless, so keep going.
+
+LaTeX Font Info:    Try loading font information for T1+lmr on input line 71.
+(/usr/share/texmf/tex/latex/lm/t1lmr.fd
 File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Calculating math sizes for size <37.03> on input line 66.
+LaTeX Font Info:    Calculating math sizes for size <37.03> on input line 71.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <37.03> on input line 66.
+(Font)              <37.03> on input line 71.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <25.92088> on input line 66.
+(Font)              <25.92088> on input line 71.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <18.515> on input line 66.
+(Font)              <18.515> on input line 71.
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:66: Argument of \textbf  has an extra }.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: Argument of \textbf  has an extra }.
 <inserted text> 
                 \par 
-l.66 \end{frame}
+l.71 \end{frame}
                 
 I've run across a `}' that doesn't seem to match anything.
 For example, `\def\a#1{...}' and `\a}' would produce
@@ -1005,69 +1048,160 @@ argument that might be the root of the problem. But if
 your `}' was spurious, just type `2' and it will go away.
 
 Runaway argument?
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:66: Paragraph ended before \textbf  was complete.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: Paragraph ended before \textbf  was complete.
 <to be read again> 
                    \par 
-l.66 \end{frame}
+l.71 \end{frame}
                 
 I suspect you've forgotten a `}', causing me to apply this
 control sequence to too much text. How can we recover?
 My plan is to forget the whole thing and hope for the best.
 
 
-LaTeX Warning: File `mypics/temp.JPG' not found on input line 66.
-
-
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:66: Package pdftex.def Error: File `mypics/temp.JPG' not found.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.66 \end{frame}
-                
-Using draft setting for this image.
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 66.
-(/usr/share/texmf/tex/latex/lm/t1lmtt.fd
-File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
-)
-File: mypics/temp.jpg Graphic file (type jpg)
- <use mypics/temp.jpg>
-Package pdftex.def Info: mypics/temp.jpg used on input line 66.
-(pdftex.def)             Requested size: 180.67499pt x 72.35153pt.
-File: mypics/temp.jpg Graphic file (type jpg)
- <use mypics/temp.jpg>
-Package pdftex.def Info: mypics/temp.jpg used on input line 66.
-(pdftex.def)             Requested size: 505.89pt x 203.11194pt.
-File: mypics/temp.jpg Graphic file (type jpg)
- <use mypics/temp.jpg>
-Package pdftex.def Info: mypics/temp.jpg used on input line 66.
-(pdftex.def)             Requested size: 361.34999pt x 145.07996pt.
-File: mypics/temp.jpg Graphic file (type jpg)
- <use mypics/temp.jpg>
-Package pdftex.def Info: mypics/temp.jpg used on input line 66.
-(pdftex.def)             Requested size: 505.89pt x 203.11194pt.
-
-
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:66: LaTeX Error: Bad math environment delimiter.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: Environment subfigure undefined.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.66 \end{frame}
+l.71 \end{frame}
                 
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:66: Missing \endgroup inserted.
+<mypics/2Q1S_Initial.pdf, id=17, 167.16452pt x 148.92137pt>
+File: mypics/2Q1S_Initial.pdf Graphic file (type pdf)
+ <use mypics/2Q1S_Initial.pdf>
+Package pdftex.def Info: mypics/2Q1S_Initial.pdf used on input line 71.
+(pdftex.def)             Requested size: 360.38812pt x 321.07228pt.
+
+
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: \begin{center} on input line 71 ended by \end{subfigure}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.71 \end{frame}
+                
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: Environment subfigure undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.71 \end{frame}
+                
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+<mypics/2Q1S_Second_Step.pdf, id=18, 147.39465pt x 155.09242pt>
+File: mypics/2Q1S_Second_Step.pdf Graphic file (type pdf)
+ <use mypics/2Q1S_Second_Step.pdf>
+Package pdftex.def Info: mypics/2Q1S_Second_Step.pdf used on input line 71.
+(pdftex.def)             Requested size: 313.382pt x 329.79066pt.
+
+
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: \begin{center} on input line 71 ended by \end{subfigure}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.71 \end{frame}
+                
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: Environment subfigure undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.71 \end{frame}
+                
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+<mypics/2Q1S_WorstCase_Servant.pdf, id=19, 167.31609pt x 150.59964pt>
+File: mypics/2Q1S_WorstCase_Servant.pdf Graphic file (type pdf)
+ <use mypics/2Q1S_WorstCase_Servant.pdf>
+Package pdftex.def Info: mypics/2Q1S_WorstCase_Servant.pdf used on input line 71.
+(pdftex.def)             Requested size: 344.72739pt x 310.29158pt.
+
+
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: \begin{center} on input line 71 ended by \end{subfigure}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.71 \end{frame}
+                
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: Environment subfigure undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.71 \end{frame}
+                
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+<mypics/2Q1S_WorstCase_Priority.pdf, id=20, 150.5625pt x 154.47412pt>
+File: mypics/2Q1S_WorstCase_Priority.pdf Graphic file (type pdf)
+ <use mypics/2Q1S_WorstCase_Priority.pdf>
+Package pdftex.def Info: mypics/2Q1S_WorstCase_Priority.pdf used on input line 71.
+(pdftex.def)             Requested size: 313.382pt x 321.58847pt.
+
+
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: \begin{center} on input line 71 ended by \end{subfigure}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.71 \end{frame}
+                
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: Bad math environment delimiter.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.71 \end{frame}
+                
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: Missing \endgroup inserted.
 <inserted text> 
                 \endgroup 
-l.66 \end{frame}
+l.71 \end{frame}
                 
 I've inserted something that you may have forgotten.
 (See the <inserted text> above.)
@@ -1076,22 +1210,22 @@ really didn't forget anything, try typing `2' now; then
 my insertion and my current dilemma will both disappear.
 
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:66: LaTeX Error: Bad math environment delimiter.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: Bad math environment delimiter.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.66 \end{frame}
+l.71 \end{frame}
                 
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:66: Missing \endgroup inserted.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: Missing \endgroup inserted.
 <inserted text> 
                 \endgroup 
-l.66 \end{frame}
+l.71 \end{frame}
                 
 I've inserted something that you may have forgotten.
 (See the <inserted text> above.)
@@ -1100,22 +1234,22 @@ really didn't forget anything, try typing `2' now; then
 my insertion and my current dilemma will both disappear.
 
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:66: LaTeX Error: Bad math environment delimiter.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: Bad math environment delimiter.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.66 \end{frame}
+l.71 \end{frame}
                 
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:66: Missing \endgroup inserted.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: Missing \endgroup inserted.
 <inserted text> 
                 \endgroup 
-l.66 \end{frame}
+l.71 \end{frame}
                 
 I've inserted something that you may have forgotten.
 (See the <inserted text> above.)
@@ -1123,38 +1257,28 @@ With luck, this will get me unwedged. But if you
 really didn't forget anything, try typing `2' now; then
 my insertion and my current dilemma will both disappear.
 
+<mypics/temp.jpg, id=21, 6.0225pt x 2.409pt>
 File: mypics/temp.jpg Graphic file (type jpg)
-<use mypics/temp.jpg>
-Package pdftex.def Info: mypics/temp.jpg used on input line 66.
+ <use mypics/temp.jpg>
+Package pdftex.def Info: mypics/temp.jpg used on input line 71.
 (pdftex.def)             Requested size: 578.15999pt x 232.12793pt.
 File: mypics/temp.jpg Graphic file (type jpg)
  <use mypics/temp.jpg>
-Package pdftex.def Info: mypics/temp.jpg used on input line 66.
-(pdftex.def)             Requested size: 578.15999pt x 232.12793pt.
-LaTeX Font Info:    Calculating math sizes for size <30.85> on input line 66.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <30.85> on input line 66.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <21.59491> on input line 66.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <15.425> on input line 66.
-File: mypics/temp.jpg Graphic file (type jpg)
- <use mypics/temp.jpg>
-Package pdftex.def Info: mypics/temp.jpg used on input line 66.
+Package pdftex.def Info: mypics/temp.jpg used on input line 71.
 (pdftex.def)             Requested size: 108.405pt x 43.41093pt.
 
-Overfull \hbox (88.25626pt too wide) detected at line 66
+Overfull \hbox (88.25626pt too wide) detected at line 71
 [][][] [][][][][][][][][] [][][][][][][][][] [][][][][][][][][] [][][][][][][][][] [][][][][][][][][] [][][][][][][][][] [][][][][][][] 
  []
 
-File: mypics/temp.jpg Graphic file (type jpg)
-<use mypics/temp.jpg>
-Package pdftex.def Info: mypics/temp.jpg used on input line 66.
-(pdftex.def)             Requested size: 578.15999pt x 232.12793pt.
-File: mypics/temp.jpg Graphic file (type jpg)
- <use mypics/temp.jpg>
-Package pdftex.def Info: mypics/temp.jpg used on input line 66.
-(pdftex.def)             Requested size: 216.81pt x 86.82187pt.
+File: mypics/rutgerslogo.png Graphic file (type png)
+<use mypics/rutgerslogo.png>
+Package pdftex.def Info: mypics/rutgerslogo.png used on input line 71.
+(pdftex.def)             Requested size: 289.07999pt x 289.10887pt.
+File: mypics/rutgers.jpeg Graphic file (type jpg)
+ <use mypics/rutgers.jpeg>
+Package pdftex.def Info: mypics/rutgers.jpeg used on input line 71.
+(pdftex.def)             Requested size: 505.93707pt x 289.13872pt.
 
 Overfull \hbox (88.20334pt too wide) has occurred while \output is active
 []
@@ -1162,7 +1286,7 @@ Overfull \hbox (88.20334pt too wide) has occurred while \output is active
 
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
- </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/temp.jpg>]
+ </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/rutgerslogo.png> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/rutgers.jpeg> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Initial.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Second_Step.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Servant.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Priority.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/temp.jpg>]
 \tf@nav=\write6
 \openout6 = `CoolPoster.nav'.
 
@@ -1172,28 +1296,28 @@ Overfull \hbox (88.20334pt too wide) has occurred while \output is active
 \tf@snm=\write8
 \openout8 = `CoolPoster.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 70.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 70.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 75.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 75.
  (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 70.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 70.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 75.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 75.
 Package rerunfilecheck Info: File `CoolPoster.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 70.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 75.
  ) 
 Here is how much of TeX's memory you used:
- 22046 strings out of 493029
- 432211 string characters out of 6136233
- 551877 words of memory out of 5000000
- 25026 multiletter control sequences out of 15000+600000
- 81630 words of font info for 77 fonts, out of 8000000 for 9000
+ 22733 strings out of 493029
+ 443464 string characters out of 6136233
+ 568579 words of memory out of 5000000
+ 25686 multiletter control sequences out of 15000+600000
+ 64954 words of font info for 60 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 61i,20n,71p,475b,1432s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}</usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi12.pfb></usr/share/texmf/fonts/type1/public/lm/lmr17.pfb></usr/share/texmf/fonts/type1/public/lm/lmri12.pfb></usr/share/texmf/fonts/type1/public/lm/lmss17.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt12.pfb>
-Output written on "/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.pdf" (1 page, 148930 bytes).
+ 61i,20n,71p,413b,1435s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi12.pfb></usr/share/texmf/fonts/type1/public/lm/lmr17.pfb></usr/share/texmf/fonts/type1/public/lm/lmri12.pfb></usr/share/texmf/fonts/type1/public/lm/lmss17.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb>
+Output written on "/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.pdf" (1 page, 259424 bytes).
 PDF statistics:
- 66 PDF objects out of 1000 (max. 8388607)
- 46 compressed objects within 1 object stream
+ 116 PDF objects out of 1000 (max. 8388607)
+ 77 compressed objects within 1 object stream
  5 named destinations out of 1000 (max. 500000)
- 54 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 84 words of extra memory for PDF output out of 10000 (max. 10000000)
 

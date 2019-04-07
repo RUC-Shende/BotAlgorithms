@@ -3,6 +3,7 @@
 %-----------------------------------------------------------
 \usepackage[scale=1.24]{beamerposter}
 \usepackage{graphicx,amsfonts}
+\usepackage{pdfpages}
 \newcounter{figura}
 \setcounter{figura}{1}
 
@@ -151,6 +152,11 @@
          The other priority agent travels to 0 radians and travels counter-clockwise.
          % INCLUDE A FRAME OF REFERENCE. 0 DEGREES IS AT 3:00. %
          }
+
+ \newblock{DescriptionDos}{Algorithm Description (Cont)}{
+          In our algorithm, we use two \textbf{priority} agents and one \textbf{helper} agent.
+          The termination condition in our algorithm is reached when either one of the two priority agents reaches the exit.
+          }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %	the exit is unknown, and that this is an animation of a distributed algorithm,
@@ -181,7 +187,8 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newblock{Conclusions}{Conclusions}{
-	This algorithm has an upper bound of 3.55 time units, being faster than an algorithm of one distinguished and two helpers with an upper bound of 3.83 time units.
+	This algorithm has an upper bound of 3.55 time units, being faster than an algorithm of one distinguished and two helpers with an upper bound of 3.83 time units. We can achieve this time by sending our Helper and Distinguished agents out at an angle of ($\pi + 5 \pi / 9 - 2\sqrt3$), so that
+    both of the worst case time predictions are equal.
              \begin{center}
                  \includegraphics[width=8in]{mypics/temp.jpg}\\[.2cm]
                  \captione{10in}{Temp 4}
@@ -211,10 +218,6 @@
          \bibitem{JLTED 2014} Jurek Czyzowicz,  et. al., Evacuating Robots via Unknown Exit in a Disk, Springer-Verlag Berlin Heidelberg; 2014.
          \bibitem{JKREDLJS 2018} Jurek Czyzowicz, et. al., Fun with Algorithms, arXiv:1804.06011v1 [cs.MA] 17 Apr 2018.
       \end{thebibliography}
-             \begin{center}
-                 \includegraphics[width=8in]{mypics/temp.jpg}\\[.2cm]
-                 \captione{10in}{Temp 5}
-             \end{center}
       }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -288,15 +291,25 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\newAlert{MainTopic}{Main Topic}{
+\newAlert{MainTopic}{Figures}{
                      \begin{center}
-                         \includegraphics[width=2.5in]{mypics/temp.jpg}\hspace{1cm}\includegraphics[width=7in]{mypics/temp.jpg}\hspace{1cm}  \\[.2cm]
-                         \captione{15in}{Temp 2}
-                     \end{center}
-                     \begin{center}
-                         \includegraphics[width=5in]{mypics/temp.jpg}\hspace{1cm}\includegraphics[width=7in]{mypics/temp.jpg}\hspace{1cm}  \\[.2cm]
-                         \captione{15in}{Temp 3}
-                     \end{center}
+                         \begin{subfigure}
+                             \includegraphics[width=0.23\textwidth]{mypics/2Q1S_Initial.pdf}
+                         \end{subfigure}
+                         \begin{subfigure}
+                             \includegraphics[width=0.2\textwidth]{mypics/2Q1S_Second_Step.pdf}
+                         \end{subfigure}
+                         \begin{subfigure}
+                             \includegraphics[width=0.22\textwidth]{mypics/2Q1S_WorstCase_Servant.pdf}
+                         \end{subfigure}
+                         \begin{subfigure}
+                             \includegraphics[width=0.2\textwidth]{mypics/2Q1S_WorstCase_Priority.pdf}
+                         \end{subfigure}
+%                         \includegraphics[width=3in]{mypics/2Q1S_Initial.png}\hspace{1cm}\includegraphics[width=3in]{mypics/2Q1S_Initial.png}\hspace{1cm}  \\[.2cm]
+%                         \captione{3in}{Inital Steps}
+%                         \includegraphics[width=3in]{mypics/2Q1S_Secondary.png}\hspace{1cm}\includegraphics[width=3in]{mypics/2Q1S_Secondary.png}\hspace{1cm}  \\[.2cm]
+%                         \captione{3in}{Secondary Step: Trajectories}
+                    \end{center}
             }
 
 \newAlert{MainProblem}{Main Result}{
@@ -305,26 +318,23 @@
             exit on a disk. We show that this can be achieved in no more than
             3.55 time units. This result does not represent all algorithms using
             3 agents, nor does it represent all algorithms using distinguished agents.
-             \begin{center}
-                 \includegraphics[width=5in]{mypics/temp.JPG}\\[.2cm]
-                 \captione{5in}{Temp 1}
-             \end{center}
             }
 
 \newAlert{Conjectures}{Our Conjectures and Analysis}{
-            \indent In this algorithm, we observe two worst case situations. In one, the priority
+            In this algorithm, we observe two worst case situations. In one, the priority
             robot assigned to the third and fourth quadrant travels the entire distance
             of its arc, until it reaches the exit a small distance before 0 radians (Fig. 3 above).
             In the other, the helper agent finds the exit at a point such that the closest priority
-            agent would have to travel along a chord to reach it (Fig. 4 above). \newline
-            \indent We analyze the case in which the helper agent finds the exit in the second quadrant.
+            agent would have to travel along a chord to reach it (Fig. 4 above).\vspace{0.5in}\hfill\break % MAKE A NEW LINE WITH A SPACE
+            We analyze the case in which the helper agent finds the exit in the second quadrant.
             Say that there is an angle of $\theta$ between the closest priority and the helper agent, so that
             the shortest distance between the two agents is $\[ 2 \sin (\theta / 2)$ . The angle $\theta$ that
             would produce the longest distance between the priority agent along the top and the helper, is $\theta = 2 \pi / 3$.
             Therefore, the termination time for the algorithm in this case is $\[ 1 + \alpha + 2 \sin (\theta / 2)$, where $\alpha$ is the
             circumfrential distance already traveled by each robot. We can set this result equal to the termination time of the agent that explores the
-            bottom part of the circle, which is $\[ 1 + \gamma$, where $\gamma$ is a distance traveled by the priority agent such that
-            it finds the exit a small distance before angle 0.
+            bottom part of the circle, which is $\[ 1 + \delta$, where $\delta$ is a distance traveled by the priority agent such that
+            it finds the exit a small distance $\gamma$ before angle 0 (Fig. 4 Above.).
+            \vfill
             }
 
 
