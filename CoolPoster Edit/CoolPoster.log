@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.10.21)  7 APR 2019 00:04
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.10.21)  7 APR 2019 19:04
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1023,22 +1023,22 @@ l.36            }
 You've closed more groups than you opened.
 Such booboos are generally harmless, so keep going.
 
-LaTeX Font Info:    Try loading font information for T1+lmr on input line 71.
+LaTeX Font Info:    Try loading font information for T1+lmr on input line 70.
 (/usr/share/texmf/tex/latex/lm/t1lmr.fd
 File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Calculating math sizes for size <37.03> on input line 71.
+LaTeX Font Info:    Calculating math sizes for size <37.03> on input line 70.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <37.03> on input line 71.
+(Font)              <37.03> on input line 70.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <25.92088> on input line 71.
+(Font)              <25.92088> on input line 70.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <18.515> on input line 71.
+(Font)              <18.515> on input line 70.
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: Argument of \textbf  has an extra }.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:70: Argument of \textbf  has an extra }.
 <inserted text> 
                 \par 
-l.71 \end{frame}
+l.70 \end{frame}
                 
 I've run across a `}' that doesn't seem to match anything.
 For example, `\def\a#1{...}' and `\a}' would produce
@@ -1048,160 +1048,166 @@ argument that might be the root of the problem. But if
 your `}' was spurious, just type `2' and it will go away.
 
 Runaway argument?
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: Paragraph ended before \textbf  was complete.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:70: Paragraph ended before \textbf  was complete.
 <to be read again> 
                    \par 
-l.71 \end{frame}
+l.70 \end{frame}
                 
 I suspect you've forgotten a `}', causing me to apply this
 control sequence to too much text. How can we recover?
 My plan is to forget the whole thing and hope for the best.
 
+<mypics/2Q1S_WorstCase_Both.pdf, id=17, 181.36859pt x 150.63376pt>
+File: mypics/2Q1S_WorstCase_Both.pdf Graphic file (type pdf)
+ <use mypics/2Q1S_WorstCase_Both.pdf>
+Package pdftex.def Info: mypics/2Q1S_WorstCase_Both.pdf used on input line 70.
+(pdftex.def)             Requested size: 432.30219pt x 359.09198pt.
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: Environment subfigure undefined.
+
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:70: LaTeX Error: Environment subfigure undefined.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.71 \end{frame}
+l.70 \end{frame}
                 
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-<mypics/2Q1S_Initial.pdf, id=17, 167.16452pt x 148.92137pt>
+<mypics/2Q1S_Initial.pdf, id=18, 167.16452pt x 148.92137pt>
 File: mypics/2Q1S_Initial.pdf Graphic file (type pdf)
  <use mypics/2Q1S_Initial.pdf>
-Package pdftex.def Info: mypics/2Q1S_Initial.pdf used on input line 71.
+Package pdftex.def Info: mypics/2Q1S_Initial.pdf used on input line 70.
 (pdftex.def)             Requested size: 360.38812pt x 321.07228pt.
 
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: \begin{center} on input line 71 ended by \end{subfigure}.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:70: LaTeX Error: \begin{center} on input line 70 ended by \end{subfigure}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.71 \end{frame}
+l.70 \end{frame}
                 
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: Environment subfigure undefined.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:70: LaTeX Error: Environment subfigure undefined.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.71 \end{frame}
+l.70 \end{frame}
                 
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-<mypics/2Q1S_Second_Step.pdf, id=18, 147.39465pt x 155.09242pt>
+<mypics/2Q1S_Second_Step.pdf, id=19, 147.39465pt x 155.09242pt>
 File: mypics/2Q1S_Second_Step.pdf Graphic file (type pdf)
  <use mypics/2Q1S_Second_Step.pdf>
-Package pdftex.def Info: mypics/2Q1S_Second_Step.pdf used on input line 71.
+Package pdftex.def Info: mypics/2Q1S_Second_Step.pdf used on input line 70.
 (pdftex.def)             Requested size: 313.382pt x 329.79066pt.
 
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: \begin{center} on input line 71 ended by \end{subfigure}.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:70: LaTeX Error: \begin{center} on input line 70 ended by \end{subfigure}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.71 \end{frame}
+l.70 \end{frame}
                 
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: Environment subfigure undefined.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:70: LaTeX Error: Environment subfigure undefined.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.71 \end{frame}
+l.70 \end{frame}
                 
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-<mypics/2Q1S_WorstCase_Servant.pdf, id=19, 167.31609pt x 150.59964pt>
+<mypics/2Q1S_WorstCase_Servant.pdf, id=20, 167.31609pt x 150.59964pt>
 File: mypics/2Q1S_WorstCase_Servant.pdf Graphic file (type pdf)
  <use mypics/2Q1S_WorstCase_Servant.pdf>
-Package pdftex.def Info: mypics/2Q1S_WorstCase_Servant.pdf used on input line 71.
+Package pdftex.def Info: mypics/2Q1S_WorstCase_Servant.pdf used on input line 70.
 (pdftex.def)             Requested size: 344.72739pt x 310.29158pt.
 
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: \begin{center} on input line 71 ended by \end{subfigure}.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:70: LaTeX Error: \begin{center} on input line 70 ended by \end{subfigure}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.71 \end{frame}
+l.70 \end{frame}
                 
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: Environment subfigure undefined.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:70: LaTeX Error: Environment subfigure undefined.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.71 \end{frame}
+l.70 \end{frame}
                 
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-<mypics/2Q1S_WorstCase_Priority.pdf, id=20, 150.5625pt x 154.47412pt>
+<mypics/2Q1S_WorstCase_Priority.pdf, id=21, 150.5625pt x 154.47412pt>
 File: mypics/2Q1S_WorstCase_Priority.pdf Graphic file (type pdf)
  <use mypics/2Q1S_WorstCase_Priority.pdf>
-Package pdftex.def Info: mypics/2Q1S_WorstCase_Priority.pdf used on input line 71.
+Package pdftex.def Info: mypics/2Q1S_WorstCase_Priority.pdf used on input line 70.
 (pdftex.def)             Requested size: 313.382pt x 321.58847pt.
 
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: \begin{center} on input line 71 ended by \end{subfigure}.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:70: LaTeX Error: \begin{center} on input line 70 ended by \end{subfigure}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.71 \end{frame}
+l.70 \end{frame}
                 
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: Bad math environment delimiter.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:70: LaTeX Error: Bad math environment delimiter.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.71 \end{frame}
+l.70 \end{frame}
                 
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: Missing \endgroup inserted.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:70: Missing \endgroup inserted.
 <inserted text> 
                 \endgroup 
-l.71 \end{frame}
+l.70 \end{frame}
                 
 I've inserted something that you may have forgotten.
 (See the <inserted text> above.)
@@ -1210,22 +1216,22 @@ really didn't forget anything, try typing `2' now; then
 my insertion and my current dilemma will both disappear.
 
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: Bad math environment delimiter.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:70: LaTeX Error: Bad math environment delimiter.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.71 \end{frame}
+l.70 \end{frame}
                 
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: Missing \endgroup inserted.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:70: Missing \endgroup inserted.
 <inserted text> 
                 \endgroup 
-l.71 \end{frame}
+l.70 \end{frame}
                 
 I've inserted something that you may have forgotten.
 (See the <inserted text> above.)
@@ -1234,22 +1240,22 @@ really didn't forget anything, try typing `2' now; then
 my insertion and my current dilemma will both disappear.
 
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: Bad math environment delimiter.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:70: LaTeX Error: Bad math environment delimiter.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.71 \end{frame}
+l.70 \end{frame}
                 
 Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: Missing \endgroup inserted.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:70: Missing \endgroup inserted.
 <inserted text> 
                 \endgroup 
-l.71 \end{frame}
+l.70 \end{frame}
                 
 I've inserted something that you may have forgotten.
 (See the <inserted text> above.)
@@ -1257,27 +1263,18 @@ With luck, this will get me unwedged. But if you
 really didn't forget anything, try typing `2' now; then
 my insertion and my current dilemma will both disappear.
 
-<mypics/temp.jpg, id=21, 6.0225pt x 2.409pt>
-File: mypics/temp.jpg Graphic file (type jpg)
- <use mypics/temp.jpg>
-Package pdftex.def Info: mypics/temp.jpg used on input line 71.
-(pdftex.def)             Requested size: 578.15999pt x 232.12793pt.
-File: mypics/temp.jpg Graphic file (type jpg)
- <use mypics/temp.jpg>
-Package pdftex.def Info: mypics/temp.jpg used on input line 71.
-(pdftex.def)             Requested size: 108.405pt x 43.41093pt.
 
-Overfull \hbox (88.25626pt too wide) detected at line 71
+Overfull \hbox (88.25626pt too wide) detected at line 70
 [][][] [][][][][][][][][] [][][][][][][][][] [][][][][][][][][] [][][][][][][][][] [][][][][][][][][] [][][][][][][][][] [][][][][][][] 
  []
 
 File: mypics/rutgerslogo.png Graphic file (type png)
 <use mypics/rutgerslogo.png>
-Package pdftex.def Info: mypics/rutgerslogo.png used on input line 71.
+Package pdftex.def Info: mypics/rutgerslogo.png used on input line 70.
 (pdftex.def)             Requested size: 289.07999pt x 289.10887pt.
 File: mypics/rutgers.jpeg Graphic file (type jpg)
  <use mypics/rutgers.jpeg>
-Package pdftex.def Info: mypics/rutgers.jpeg used on input line 71.
+Package pdftex.def Info: mypics/rutgers.jpeg used on input line 70.
 (pdftex.def)             Requested size: 505.93707pt x 289.13872pt.
 
 Overfull \hbox (88.20334pt too wide) has occurred while \output is active
@@ -1286,7 +1283,7 @@ Overfull \hbox (88.20334pt too wide) has occurred while \output is active
 
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
- </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/rutgerslogo.png> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/rutgers.jpeg> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Initial.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Second_Step.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Servant.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Priority.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/temp.jpg>]
+ </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/rutgerslogo.png> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/rutgers.jpeg> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Both.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Initial.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Second_Step.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Servant.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Priority.pdf>]
 \tf@nav=\write6
 \openout6 = `CoolPoster.nav'.
 
@@ -1296,28 +1293,28 @@ Overfull \hbox (88.20334pt too wide) has occurred while \output is active
 \tf@snm=\write8
 \openout8 = `CoolPoster.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 75.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 75.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 74.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 74.
  (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 75.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 75.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 74.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 74.
 Package rerunfilecheck Info: File `CoolPoster.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 75.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 74.
  ) 
 Here is how much of TeX's memory you used:
- 22733 strings out of 493029
- 443464 string characters out of 6136233
- 568579 words of memory out of 5000000
- 25686 multiletter control sequences out of 15000+600000
- 64954 words of font info for 60 fonts, out of 8000000 for 9000
+ 22726 strings out of 493029
+ 443372 string characters out of 6136233
+ 571418 words of memory out of 5000000
+ 25681 multiletter control sequences out of 15000+600000
+ 60692 words of font info for 59 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  61i,20n,71p,413b,1435s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi12.pfb></usr/share/texmf/fonts/type1/public/lm/lmr17.pfb></usr/share/texmf/fonts/type1/public/lm/lmri12.pfb></usr/share/texmf/fonts/type1/public/lm/lmss17.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb>
-Output written on "/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.pdf" (1 page, 259424 bytes).
+{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi12.pfb></usr/share/texmf/fonts/type1/public/lm/lmr17.pfb></usr/share/texmf/fonts/type1/public/lm/lmss17.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb>
+Output written on "/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.pdf" (1 page, 252142 bytes).
 PDF statistics:
- 116 PDF objects out of 1000 (max. 8388607)
- 77 compressed objects within 1 object stream
- 5 named destinations out of 1000 (max. 500000)
+ 122 PDF objects out of 1000 (max. 8388607)
+ 82 compressed objects within 1 object stream
+ 4 named destinations out of 1000 (max. 500000)
  84 words of extra memory for PDF output out of 10000 (max. 10000000)
 

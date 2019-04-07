@@ -111,7 +111,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newblock{Introduction}{Introduction}{
         The purpose of our research is to study distributed search-and-escape algorithms.
-        These algorithms involve mobile agents (or bots) searching in geometric domains, such as a closed disk or a convex polygon.
+        These algorithms involve mobile agents (or robots) searching in geometric domains, such as a closed disk or a convex polygon.
         By working together and communicating with one another, the mobile agents search for an exit hidden on the perimeter.
         The goal of our research is to create and study exit strategies that terminate as quickly as possible.
         }
@@ -154,8 +154,13 @@
          }
 
  \newblock{DescriptionDos}{Algorithm Description (Cont)}{
-          In our algorithm, we use two \textbf{priority} agents and one \textbf{helper} agent.
-          The termination condition in our algorithm is reached when either one of the two priority agents reaches the exit.
+          We may compare this method of sending two agents out together and separating them
+          with a more naive method of sending the agents out at equal distances. If we were
+          to send all agents out at an angle of $\ 2 \pi / 3$ and having them all travel
+          in the same direction, we see that in the worst case, the helper will find the exit
+          and the very end of its searched area and both agents will be equally close to it.
+          This will result in a time of \textbf{$1 + 2 \pi /3 + 2 \sin \pi / 3$}, or \textbf{4.826 time units.}
+          This is significantly longer than our solution of \textbf{3.55 time units}.
           }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -189,10 +194,10 @@
 \newblock{Conclusions}{Conclusions}{
 	This algorithm has an upper bound of 3.55 time units, being faster than an algorithm of one distinguished and two helpers with an upper bound of 3.83 time units. We can achieve this time by sending our Helper and Distinguished agents out at an angle of ($\pi + 5 \pi / 9 - 2\sqrt3$), so that
     both of the worst case time predictions are equal.
-             \begin{center}
-                 \includegraphics[width=8in]{mypics/temp.jpg}\\[.2cm]
-                 \captione{10in}{Temp 4}
-             \end{center}
+    This algorithm and many other like it have real world applications, such as
+    having robots or drones be able to search for a safe exit in a room to evacuate humans in the event
+    a disaster. By using this algorithm we can for example, quickly evacuate 1 of 2 doctors from an area
+    in order to be able to get medical help to others as quickly as possible.
        }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -215,8 +220,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newblock{Bibliography}{References}{\small
       \begin{thebibliography}{99}
-         \bibitem{JLTED 2014} Jurek Czyzowicz,  et. al., Evacuating Robots via Unknown Exit in a Disk, Springer-Verlag Berlin Heidelberg; 2014.
-         \bibitem{JKREDLJS 2018} Jurek Czyzowicz, et. al., Fun with Algorithms, arXiv:1804.06011v1 [cs.MA] 17 Apr 2018.
+         \bibitem{} Jurek Czyzowicz et al. (2014). Evacuating Robots via Unknown Exit in a Disk. Proceesings of DISC 2014, LNCS 8784, pp. 122-136, 2014.
+         \bibitem{} Jurek Czyzowicz et al. (2015). Evacuating Robots From a Disk Using Face-To-Face Communication. Proceesings of CIAC, 2015 p. 140-152, 2015.
+         \bibitem{} Jurek Czyzowicz, et. al., Priority Evacuation from a Disk Using Mobile Robots, Proceedings of SIROCCO, pages 392-407, 2018.
+         \bibitem{} Jurek Czyzowicz, et. al., God Save the Queen. Fun with Algorithms, arXiv:1804.06011v1 [cs.MA] 17 Apr 2018.
       \end{thebibliography}
       }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -318,6 +325,9 @@
             exit on a disk. We show that this can be achieved in no more than
             3.55 time units. This result does not represent all algorithms using
             3 agents, nor does it represent all algorithms using distinguished agents.
+            \begin{center}
+                \includegraphics[width=0.6\textwidth]{mypics/2Q1S_WorstCase_Both.pdf}
+            \end{center}
             }
 
 \newAlert{Conjectures}{Our Conjectures and Analysis}{
