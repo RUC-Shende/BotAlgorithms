@@ -5,7 +5,7 @@ var exitFoundFrame = 0;
 var wireless = true;
 
 var time = 0;
-var timeDirect = 0;//After loading, play direction.
+var timeDirect = 0; //After loading, play direction.
 var fps = 100;
 var timeMax = 10 * fps;
 var timeSlider;
@@ -653,7 +653,7 @@ function Load() {
       .attr("text-align", "center")
       .attr("x", (unit2Px))
       .attr("y", 30)
-      .text("Priority Bots Distance From Servant Bot 2 (No-Exit Simulation)")
+      .text("Priority Bots Distance From Helper 2 (No-Exit Simulation)")
 
   // 9. Append the path, bind the data, and call the line generator
   distanceFromSVGone.append("path")
@@ -774,7 +774,7 @@ function Load() {
             focus.attr("display", "null");
             focus.attr("transform", "translate(" + (coords[0] + 75) + "," + (yScale(d.y) + 50) + ")");
             focus.select("text").text(i);
-            d3.select(".distext" + j).text("Frame: " + i + ", Distance From Servant: " + formatValue(ds[j][i].y) + ", Time To Finish: " + formatValue((100 * i) / fps / 100 + ds[j][i].y));
+            d3.select(".distext" + j).text("Agent P" + (2-j) + ". --- Frame: " + i + ", Distance From Servant: " + formatValue(ds[j][i].y) + ", Time To Finish: " + formatValue((100 * i) / fps / 100 + ds[j][i].y));
 
             if (i > (fps * 5) - 50){
                 focus.select("text").attr("x", (focus.attr("x") - (0.2 * unit2Px)));
@@ -959,7 +959,7 @@ function Reset() {
 
 function RandomColor(i) {
     var colorPalette = ["#fe447d", "#f78f2e", "#fedc0c", "#fedc0c",
-                        "#5cd05b", "#03c1cd", "#0e10e6", "#9208e7",
+                        "#654321", "#ff0000", "#0e10e6", "#9208e7",
                         "#f84c00", "#f3f354", "#bff1e5", "#3bc335",
                         "#7af5ca", "#448bff", "#101ab3", "#d645c8",
                         "#0afe15", "#0acdfe", "#ff9600", "#b21ca1"];

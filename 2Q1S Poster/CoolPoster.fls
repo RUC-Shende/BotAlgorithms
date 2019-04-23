@@ -270,6 +270,12 @@ INPUT /usr/share/texlive/texmf-dist/tex/latex/eso-pic/eso-pic.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/eso-pic/eso-pic.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/pdfpages/pppdftex.def
 INPUT /usr/share/texlive/texmf-dist/tex/latex/pdfpages/pppdftex.def
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/subcaption.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/subcaption.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
 INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/beamerthemeconfposter.sty
 INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/beamerthemeconfposter.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
@@ -424,22 +430,42 @@ INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmssbx10.tfm
 INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Both.pdf
 INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Both.pdf
 INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Both.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Initial.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Initial.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Initial.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Second_Step.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Second_Step.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Second_Step.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Servant.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Servant.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Servant.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Priority.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Priority.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Priority.pdf
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmbx12.tfm
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Initial.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Initial.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Initial.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Second_Step.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Second_Step.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Second_Step.pdf
+INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmr17.tfm
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Servant.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Servant.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Servant.pdf
+INPUT /usr/share/texmf/fonts/tfm/public/lm/rm-lmr17.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/rm-lmr17.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/rm-lmr12.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/lmmi12.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/lmmi12.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/lmmi12.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/lmsy10.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/lmsy10.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/lm/lmsy10.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
+INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Priority.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Priority.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Priority.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_timeGraph.png
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_timeGraph.png
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_timeGraph.png
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmr17.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmss8.tfm
 INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/rutgerslogo.png

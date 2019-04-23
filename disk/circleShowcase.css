@@ -1,6 +1,6 @@
 * {
     box-sizing: border-box;
-    font-family: "Ubuntu", "Roboto Condensed", "Trebuchet MS", sans-serif;
+    font-family: "Helvetica Neue", "Ubuntu", "Roboto Condensed", "Trebuchet MS", sans-serif;
 }
 
 body {
@@ -118,7 +118,7 @@ h3 {
     text-align: left;
     font-size: 1.25em;
     padding: 2%;
-    font-family: "Ubuntu", "Roboto Condensed", Verdana, sans-serif;
+    font-family: "Helvetica Neue", "Ubuntu", "Roboto Condensed", Verdana, sans-serif;
 
 }
 
@@ -132,7 +132,7 @@ h3 {
     text-align: left;
     font-size: 1.25em;
     padding: 2%;
-    font-family: "Ubuntu", "Roboto Condensed", Verdana, sans-serif;
+    font-family: "Helvetica Neue", "Ubuntu", "Roboto Condensed", Verdana, sans-serif;
 }
 
 .tooltip {
@@ -146,7 +146,7 @@ h3 {
     visibility: hidden;
     opacity: 0;
     font-size: 16px;
-    font-family: "Ubuntu", "Roboto Condensed", Verdana, sans-serif;
+    font-family: "Helvetica Neue", "Ubuntu", "Roboto Condensed", Verdana, sans-serif;
     font weight: normal;
     font-style: italic;
     width: 300px;
@@ -187,7 +187,7 @@ h3 {
  .tabtxt {
      transition: 0.3s;
      font-size: 24px;
-     font-family: "Ubuntu", "Roboto Condensed", Verdana, sans-serif;
+     font-family: "Helvetica Neue", "Ubuntu", "Roboto Condensed", Verdana, sans-serif;
      text-align: left;
      margin: 5px auto;
      width: 80%;
@@ -310,13 +310,13 @@ h3 {
 
 .line1 {
     fill: none;
-    stroke: #5cd05b;
+    stroke: #ff0000;
     stroke-width: 5;
 }
 
 .line2 {
     fill: none;
-    stroke: #03c1cd;
+    stroke: #654321;
     stroke-width: 5;
 }
 

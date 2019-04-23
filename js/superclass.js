@@ -1,19 +1,19 @@
 //////////----------Instantiate Variables----------//////////
 class iclData{
     constructor(id, instruBinder, algorithmName){
-        this.exitAlert = false;//Someone learned where the exit is.
-        this.exitAllow = 0;//How far in a frame was the exit found.
+        this.exitAlert = false; //Someone learned where the exit is.
+        this.exitAllow = 0; //How far in a frame was the exit found.
         this.wireless = false;
         this.id = id;
         this.time = 0;
-        this.timeDirect = 0;//After loading, play direction.
+        this.timeDirect = 0; //After loading, play direction.
         this.fps = 60;
         this.timeMax = 10 * this.fps;
         this.timeSlider;
 
         this.projector;
         this.degrees = 3;
-        this.unit2Px = 25; //YAY
+        this.unit2Px = 25;
         this.center = [this.unit2Px * 2, this.unit2Px * 2];
         this.exitAngle = 315;
         this.fieldExit = [this.center[0] + this.unit2Px * Math.cos(this.exitAngle * Math.PI / 180), this.center[1] - this.unit2Px * Math.sin(this.exitAngle * Math.PI / 180)];

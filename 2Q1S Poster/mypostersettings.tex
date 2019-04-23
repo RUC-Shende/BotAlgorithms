@@ -4,6 +4,7 @@
 \usepackage[scale=1.24]{beamerposter}
 \usepackage{graphicx,amsfonts}
 \usepackage{pdfpages}
+\usepackage{subcaption}
 \newcounter{figura}
 \setcounter{figura}{1}
 
@@ -110,7 +111,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newblock{Introduction}{Introduction}{
-        The purpose of our research is to study distributed search-and-escape algorithms.
+        The purpose of our research is to study distributed search-and-evacuation algorithms.
         These algorithms involve mobile agents (or robots) searching in geometric domains, such as a closed disk or a convex polygon.
         By working together and communicating with one another, the mobile agents search for an exit hidden on the perimeter.
         The goal of our research is to create and study exit strategies that terminate as quickly as possible.
@@ -126,11 +127,11 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newblock{Definitions}{Definitions}{
-         \begin{description}[font=$\bullet$~\normalfont\textbf]
-             \item[$\bullet$ An exit] is a point unknown to the agents, that is located on an perimeter on the domain. The agents must find the exit for the algorithm to finish.
-             \item[$\bullet$ A priority] agent is one that must reach the exit for the algorithm to terminate.
-             \item[$\bullet$ A helper]   agent is one that simply assists the priority agent(s) in finding the exit.
-             \item[$\bullet$ Algorithm termination] occurs if a specified subset of agents shares a position with the exit.
+         \begin{description}[font=$\bullet$~\normalfont\textbf{}]
+             \item[$\bullet$ An Exit] is a point unknown to the agents, that is located on the perimeter of a disk.
+             \item[$\bullet$ Priority Agents] P1 and P2.
+             \item[$\bullet$ A Helper] H, is an agent that simply assists the priority agents in finding the exit.
+             \item[$\bullet$ Algorithm Termination] occurs if either P1 or P2 reaches the exit.
          \end{description}
          }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -144,23 +145,35 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newblock{Description}{Algorithm Description}{
-         In our algorithm, we use two \textbf{priority} agents and one \textbf{helper} agent.
-         The termination condition in our algorithm is reached when either one of the two priority agents reaches the exit.
+         %In our algorithm, we use two \textbf{priority} agents and one \textbf{helper} agent.
+         %The termination condition in our algorithm is reached when either one of the two priority agents reaches the exit.
          % INCLUDE A FRAME OF REFERENCE. 0 DEGREES IS AT 3:00. %
-         We send one priority and one helper to some angle $\alpha$ on the perimeter of the shape, in the third quadrant.
-         The priority agent travels counter-clockwise, and the helper travels clockwise.
-         The other priority agent travels to 0 radians and travels counter-clockwise.
+         %We send one priority and one helper to some angle $\alpha$ on the perimeter of the shape, in the third quadrant.
+         %The priority agent travels counter-clockwise, and the helper travels clockwise.
+         %The other priority agent travels to 0 radians and travels counter-clockwise.
          % INCLUDE A FRAME OF REFERENCE. 0 DEGREES IS AT 3:00. %
+         \begin{description}[font=$\bullet$~\normalfont\textbf{}]
+             \item[$\bullet$] The priority agents are \textbf{P1 and P2}. The helper agent is \textbf{H}.
+             \item[$\bullet$] \textbf{P2} along with \textbf{H} go at angle $\alpha$ in the third quadrant to the perimeter. \textbf{H} travels clockwise, and \textbf{P2} travels counterclockwise.
+             \item[$\bullet$] \textbf{P1} travels at angle 0 to the perimeter, and travels counterclockwise.
+             \item[$\bullet$] The algorithm is required to ensure that between the agents,
+             every part of the perimeter will potentially get searched before the exit is found.
+         \end{description}
          }
 
- \newblock{DescriptionDos}{Algorithm Description (Cont)}{
-          We may compare this method of sending two agents out together and separating them
-          with a more naive method of sending the agents out at equal distances. If we were
-          to send all agents out at an angle of $\ 2 \pi / 3$ and having them all travel
-          in the same direction, we see that in the worst case, the helper will find the exit
-          and the very end of its searched area and both agents will be equally close to it.
-          This will result in a time of \textbf{$1 + 2 \pi /3 + 2 \sin \pi / 3$}, or \textbf{4.826 time units.}
-          This is significantly longer than our solution of \textbf{3.55 time units}.
+ \newblock{DescriptionDos}{Algorithm Steps}{
+          \captionsetup[figure]{labelformat=empty}
+          \begin{figure}
+              \centering
+              %\begin{subfigure}
+              \includegraphics[width=0.53\textwidth]{mypics/2Q1S_Initial.pdf}
+              %\caption{Figure 1}
+              %\end{subfigure}
+              %\begin{subfigure}
+              \includegraphics[width=0.45\textwidth]{mypics/2Q1S_Second_Step.pdf}
+              %\caption{Figure 2}
+              %\end{subfigure}
+          \end{figure}
           }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -177,7 +190,11 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newblock{Work}{Future Work}{
-	    Later on we will study further distributed algorithms of search and escape, such as lines or triangles.
+        This is an example of an algorithm that abstracts real world problems,
+        where a specified subset of agents has to evacuate.
+	    In the future we will study further distributed algorithms of search and evacuate on lines and polygons,
+        or even topologies such as arbitrary finite graphs. To analyze these, we have created a web app that
+        shows visualizations and helpful data of all of the algorithms that we have studied. Link to website: \textbf{https://bit.ly/2Vv85OJ}
         }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -192,12 +209,9 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newblock{Conclusions}{Conclusions}{
-	This algorithm has an upper bound of 3.55 time units, being faster than an algorithm of one distinguished and two helpers with an upper bound of 3.83 time units. We can achieve this time by sending our Helper and Distinguished agents out at an angle of ($\pi + 5 \pi / 9 - 2\sqrt3$), so that
-    both of the worst case time predictions are equal.
-    This algorithm and many other like it have real world applications, such as
-    having robots or drones be able to search for a safe exit in a room to evacuate humans in the event
-    a disaster. By using this algorithm we can for example, quickly evacuate 1 of 2 doctors from an area
-    in order to be able to get medical help to others as quickly as possible.
+	This algorithm has an upper bound of 3.55 time units in the worst case. We can achieve this time by sending \textbf{H}
+    and \textbf{P2} out at an angle of $\alpha = 5 \pi / 9 - 2\sqrt3 /3$, and $\beta = ( \pi / 3 - \alpha) / 2$,
+    so that both of the worst case time predictions are equal.
        }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -220,8 +234,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newblock{Bibliography}{References}{\small
       \begin{thebibliography}{99}
-         \bibitem{} Jurek Czyzowicz et al. (2014). Evacuating Robots via Unknown Exit in a Disk. Proceesings of DISC 2014, LNCS 8784, pp. 122-136, 2014.
-         \bibitem{} Jurek Czyzowicz et al. (2015). Evacuating Robots From a Disk Using Face-To-Face Communication. Proceesings of CIAC, 2015 p. 140-152, 2015.
+         \bibitem{} Jurek Czyzowicz, et. al., (2014). Evacuating Robots via Unknown Exit in a Disk. Proceedings of DISC 2014, LNCS 8784, pp. 122-136, 2014.
+         \bibitem{} Jurek Czyzowicz, et. al., (2015). Evacuating Robots From a Disk Using Face-To-Face Communication. Proceedings of CIAC, 2015 p. 140-152, 2015.
          \bibitem{} Jurek Czyzowicz, et. al., Priority Evacuation from a Disk Using Mobile Robots, Proceedings of SIROCCO, pages 392-407, 2018.
          \bibitem{} Jurek Czyzowicz, et. al., God Save the Queen. Fun with Algorithms, arXiv:1804.06011v1 [cs.MA] 17 Apr 2018.
       \end{thebibliography}
@@ -242,7 +256,8 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newblock{Acknowledgements}{Acknowledgements}{\small
-      This research is supported by the National Science Foundation under grant \# CCf-AF 1813940 (RUI: Search, Evacuation and Reconfiguration with Coordinated Mobile Agents).
+      This research is supported by the National Science Foundation under grant \# CCf-AF 1813940 (RUI: Search, Evacuation and Reconfiguration with Coordinated Mobile Agents).\vspace{0.2in}\hfill\break
+      Our faculty advisor is Dr. Sunil Shende.
       }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -312,38 +327,58 @@
                          \begin{subfigure}
                              \includegraphics[width=0.2\textwidth]{mypics/2Q1S_WorstCase_Priority.pdf}
                          \end{subfigure}
-%                         \includegraphics[width=3in]{mypics/2Q1S_Initial.png}\hspace{1cm}\includegraphics[width=3in]{mypics/2Q1S_Initial.png}\hspace{1cm}  \\[.2cm]
-%                         \captione{3in}{Inital Steps}
-%                         \includegraphics[width=3in]{mypics/2Q1S_Secondary.png}\hspace{1cm}\includegraphics[width=3in]{mypics/2Q1S_Secondary.png}\hspace{1cm}  \\[.2cm]
-%                         \captione{3in}{Secondary Step: Trajectories}
                     \end{center}
             }
 
 \newAlert{MainProblem}{Main Result}{
             The purpose of our research is to propose an algorithm for two
-            distinguished agents and a helper agent to find an unknown
+            priority agents and a helper agent to find an unknown
             exit on a disk. We show that this can be achieved in no more than
-            3.55 time units. This result does not represent all algorithms using
-            3 agents, nor does it represent all algorithms using distinguished agents.
-            \begin{center}
+            3.55 time units in the worst case.
+            \vspace{0.5in}
+            \captionsetup[figure]{labelformat=empty}
+            \begin{figure}
+                \centering
                 \includegraphics[width=0.6\textwidth]{mypics/2Q1S_WorstCase_Both.pdf}
-            \end{center}
+                %\caption{Figure 3}
+            \end{figure}
             }
 
-\newAlert{Conjectures}{Our Conjectures and Analysis}{
-            In this algorithm, we observe two worst case situations. In one, the priority
-            robot assigned to the third and fourth quadrant travels the entire distance
-            of its arc, until it reaches the exit a small distance before 0 radians (Fig. 3 above).
-            In the other, the helper agent finds the exit at a point such that the closest priority
-            agent would have to travel along a chord to reach it (Fig. 4 above).\vspace{0.5in}\hfill\break % MAKE A NEW LINE WITH A SPACE
-            We analyze the case in which the helper agent finds the exit in the second quadrant.
-            Say that there is an angle of $\theta$ between the closest priority and the helper agent, so that
-            the shortest distance between the two agents is $\[ 2 \sin (\theta / 2)$ . The angle $\theta$ that
-            would produce the longest distance between the priority agent along the top and the helper, is $\theta = 2 \pi / 3$.
-            Therefore, the termination time for the algorithm in this case is $\[ 1 + \alpha + 2 \sin (\theta / 2)$, where $\alpha$ is the
-            circumfrential distance already traveled by each robot. We can set this result equal to the termination time of the agent that explores the
-            bottom part of the circle, which is $\[ 1 + \delta$, where $\delta$ is a distance traveled by the priority agent such that
-            it finds the exit a small distance $\gamma$ before angle 0 (Fig. 4 Above.).
+\newAlert{Conjectures}{Our Analysis}{
+            In this algorithm, we observe two worst case situations. In one, \textbf{P2} travels the entire distance
+            of its arc, until it reaches the exit a small distance before 0 radians.
+            In the other, \textbf{H} finds the exit at a point such that the closest priority
+            agent (\textbf{P1}) would have to travel along a chord to reach it.\vspace{0.5in}\hfill\break % MAKE A NEW LINE WITH A SPACE
+            We analyze the case in which \textbf{H} finds the exit in the second quadrant, at angle $\pi - \beta$.
+            Say that there is an angle of $\theta$ between \textbf{P1} and \textbf{H}, such that
+            the shortest distance between the two agents is $\[ 2 \sin (\theta / 2)$. The angle $\theta$ that
+            would produce the longest distance between \textbf{P1} and \textbf{H}, is $\theta = 2 \pi / 3$.
+            Therefore, the termination time for the algorithm in this case is $\[ 1 + (\alpha + \beta) + 2 \sin (\theta / 2)$ in the worst case, where $\alpha + \beta$ is the
+            circumferential distance already traveled by each agent.
+            By trading off this worst case with the one in which \textbf{P2} finds the
+            exit at a very small angle below 0, we arrived at a solution for these angles $\alpha$ and
+            $\beta$.
+            \vspace{0.75in}
+            \begin{figure}[H]
+                \captionsetup[subfigure]{labelformat=empty}
+                \footnotesize
+                \begin{subfigure}{0.3\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{mypics/2Q1S_WorstCase_Servant.pdf}
+                    %\caption{Figure 4}
+                \end{subfigure}
+                \begin{subfigure}{0.26\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{mypics/2Q1S_WorstCase_Priority.pdf}
+                    %\caption{Figure 5}
+                \end{subfigure}
+                \hspace{0.1in}
+                \begin{subfigure}{0.3\textwidth}
+                    \centering
+                    \includegraphics[width=\textwidth]{mypics/2Q1S_timeGraph.png}
+                    %\caption{Figure 6}
+                \end{subfigure}
+            \end{figure}
             \vfill
             }
 

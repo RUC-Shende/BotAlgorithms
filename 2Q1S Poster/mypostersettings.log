@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.10.21)  4 APR 2019 14:15
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.10.21)  8 APR 2019 14:10
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -31,13 +31,37 @@ l.5 \usepackage{
 \usepackage may only appear in the document preamble, i.e.,
 between \documentclass and \begin{document}.
 
+
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypostersettings.tex:6: LaTeX Error: \usepackage before \documentclass.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.6 \usepackage{
+                pdfpages}
+\usepackage may only appear in the document preamble, i.e.,
+between \documentclass and \begin{document}.
+
+
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypostersettings.tex:7: LaTeX Error: \usepackage before \documentclass.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.7 \usepackage{
+                subcaption}
+\usepackage may only appear in the document preamble, i.e.,
+between \documentclass and \begin{document}.
+
 \c@figura=\count79
 \c@thm=\count80
 \sepwid=\skip41
 \onecolwid=\skip42
 \twocolwid=\skip43
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypostersettings.tex:57: Undefined control sequence.
-l.57 \usetheme
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypostersettings.tex:59: Undefined control sequence.
+l.59 \usetheme
               {confposter}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -46,13 +70,13 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypostersettings.tex:57: LaTeX Error: Missing \begin{document}.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypostersettings.tex:59: LaTeX Error: Missing \begin{document}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.57 \usetheme{c
+l.59 \usetheme{c
                 onfposter}
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -68,12 +92,12 @@ Missing character: There is no t in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no r in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 57--58
+Overfull \hbox (20.0pt too wide) in paragraph at lines 59--60
 [] 
  []
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypostersettings.tex:63: Undefined control sequence.
-l.63 \setbeamercolor
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypostersettings.tex:65: Undefined control sequence.
+l.65 \setbeamercolor
                     {block title}{fg=ngreen,bg=white}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -82,13 +106,13 @@ spelling (e.g., `I\hbox'). Otherwise just continue,
 and I'll forget about whatever was undefined.
 
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypostersettings.tex:63: LaTeX Error: Missing \begin{document}.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypostersettings.tex:65: LaTeX Error: Missing \begin{document}.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.63 \setbeamercolor{b
+l.65 \setbeamercolor{b
                       lock title}{fg=ngreen,bg=white}
 You're in trouble here.  Try typing  <return>  to proceed.
 If that doesn't work, type  X <return>  to quit.
@@ -121,8 +145,8 @@ Missing character: There is no h in font nullfont!
 Missing character: There is no i in font nullfont!
 Missing character: There is no t in font nullfont!
 Missing character: There is no e in font nullfont!
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypostersettings.tex:64: Undefined control sequence.
-l.64 \setbeamercolor
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypostersettings.tex:66: Undefined control sequence.
+l.66 \setbeamercolor
                     {block body}{fg=black,bg=white}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -156,8 +180,8 @@ Missing character: There is no h in font nullfont!
 Missing character: There is no i in font nullfont!
 Missing character: There is no t in font nullfont!
 Missing character: There is no e in font nullfont!
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypostersettings.tex:65: Undefined control sequence.
-l.65 \setbeamercolor
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypostersettings.tex:67: Undefined control sequence.
+l.67 \setbeamercolor
                     {block alerted title}{fg=white,bg=dblue!70}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -202,8 +226,8 @@ Missing character: There is no e in font nullfont!
 Missing character: There is no ! in font nullfont!
 Missing character: There is no 7 in font nullfont!
 Missing character: There is no 0 in font nullfont!
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypostersettings.tex:66: Undefined control sequence.
-l.66 \setbeamercolor
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypostersettings.tex:68: Undefined control sequence.
+l.68 \setbeamercolor
                     {block alerted body}{fg=black,bg=dblue!10}
 The control sequence at the end of the top line
 of your error message was never \def'ed. If you have
@@ -248,7 +272,7 @@ Missing character: There is no ! in font nullfont!
 Missing character: There is no 1 in font nullfont!
 Missing character: There is no 0 in font nullfont!
 
-Overfull \hbox (20.0pt too wide) in paragraph at lines 63--67
+Overfull \hbox (20.0pt too wide) in paragraph at lines 65--69
 []
  []
 
@@ -260,11 +284,11 @@ Overfull \hbox (20.0pt too wide) in paragraph at lines 63--67
 
  
 Here is how much of TeX's memory you used:
- 54 strings out of 493029
- 866 string characters out of 6136233
- 53084 words of memory out of 5000000
- 3689 multiletter control sequences out of 15000+600000
+ 58 strings out of 493029
+ 910 string characters out of 6136233
+ 55568 words of memory out of 5000000
+ 3693 multiletter control sequences out of 15000+600000
  3640 words of font info for 14 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 9i,0n,14p,253b,16s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 9i,0n,14p,315b,16s stack positions out of 5000i,500n,10000p,200000b,80000s
 !  ==> Fatal error occurred, no output PDF file produced!
