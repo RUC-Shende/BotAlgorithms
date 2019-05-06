@@ -1,0 +1,396 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta charset="ISO-8859-1">
+    <title>Disk Algorithm Showcase</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <!-- <script src='d3.min.js'></script>-->
+    <!--Offline support-->
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel='stylesheet' type='text/css' href='circleShowcase.css' />
+
+
+</head>
+
+<body>
+
+    <div id="mySidenav" class="sidenav">
+        <!-- These three are the only face-to-face algorithms. The rest in this list are wireless. -->
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">Close &times;</a>
+        <h3>Normal Algorithms (Face-To-Face)</h3>
+        <a href="#A" onclick="showAlgorithmDesc('A', false)">Algorithm A</a>
+        <a href="#B" onclick="showAlgorithmDesc('B', false)">Algorithm B(X, Φ)</a>
+        <a href="#C" onclick="showAlgorithmDesc('C', false)">Algorithm C(X, Φ, λ)</a>
+        <h3>Normal Algorithms (Wireless)</h3>
+        <a href="#Awl" onclick="showAlgorithmDesc('Aw', true)">Algorithm A</a>
+        <a href="#Bwl" onclick="showAlgorithmDesc('Bw', true)">Algorithm B(X, Φ)</a>
+        <a href="#Cwl" onclick="showAlgorithmDesc('Cw', true)">Algorithm C(X, Φ, λ)</a>
+        <h3>Priority Algorithms (1 Queen)</h3>
+        <a href="#Q1" onclick="showAlgorithmDesc('Q1', true)">1 Queen + 1 Servant</a>
+        <a href="#Q2" onclick="showAlgorithmDesc('Q2', true)">1 Queen + 2 Servants</a>
+        <a href="#Q1S4" onclick="showAlgorithmDesc('Q1S4', true)">1 Queen + 4 Servants</a>
+        <a href="#Q1S8" onclick="showAlgorithmDesc('Q1S8', true)">1 Queen + 8 Servants</a>
+        <h3>Multiple Priority (2+ Queens)</h3>
+        <a href="#Q2S1" onclick="showAlgorithmDesc('Q2S1', true)">2 Queens + 1 Servant (1)</a>
+        <a href="#Q1S1Q1" onclick="showAlgorithmDesc('Q1S1Q1', true)">2 Queens + 1 Servant (2)</a>
+
+        <!-- DEBUG ONLY
+        <h3>Load ICL File</h3>
+        <input style='color:white;' type='file' class='copypaste' id='loadcommands' value='Load Commands' accept='.icl' onchange='LoadAlgorithms(event)' />
+        -->
+    </div>
+
+    <a href="diskSelect.html" style="all:initial;">
+    <div id="backbutton" class="openNav" style="margin-bottom:5px;">
+        <span style="width: 100%;" class='openButton'>
+            <img src="../resources/back.svg" style="width:1.25em; height:1.25em;" ><img>
+        </span>
+    </div>
+    </a>
+
+    <!--
+
+    <div id="navdiv" class="openNav">
+        <span style="width: 100%;" class='openButton' onclick="openNav()">&#9776;</span>
+    </div>
+
+    -->
+
+    <h1>Robots Evacuating a Unit Disk</h1>
+    <!-- Contains the algorithm name and wireless status -->
+    <h2 id="subheader"></h2>
+
+    <div class="w3-bar w3-gray" style="width:90%; float:left; margin-left:2%;">
+        <button class="w3-bar-item w3-button" onclick="showHelp('field');">Field Info</button>
+        <button class="w3-bar-item w3-button" onclick="showHelp('graph');">Graph Info</button>
+        <!--<button class="w3-bar-item w3-button" onclick="showHelp('worstcase');">Worst Case Visualizer</button>-->
+        <button class="w3-bar-item w3-button" onclick="showHelp('steps');">Algorithm Steps</button>
+        <button class="w3-bar-item w3-button" onclick="showHelp('docs');">View Documentation</button>
+        <button class="w3-bar-item w3-button" onclick="showHelp('acknowledgement');">Acknowledgements</button>
+    </div>
+    <div id="start" class="w3-display-container infobox">
+        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
+        <div>
+            <h2 style="color:black;">Getting Started</h2>
+            <ul>
+                <li>To select an algorithm, click the <span style="font-size: 1.5em">&#9776;</span> in the top left corner of the page.</li>
+                <li>If you would like to know more about the visualization blocks, see the <em><b>Field Info</b></em>, <em><b>Graph Info</b></em> or <em><b>Worst-Case Visualizer</b></em> tabs above.</li>
+                <li>If you would like to see an in-depth description and list of steps for an algorithm, select the <em><b>Algorithm Steps</b></em> tab.</li>
+                <li>You may close this info box by selecting <span style="font-size: 1.5em">X</span> in the top right.</li>
+            </ul>
+        </div>
+    </div>
+    <div id="field" class="w3-display-container infobox">
+        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
+        <div>
+            <h2 style="color:black;">The Field</h2>
+            <p>
+                The panel on the left, which we refer to as the "Field" shows the actual position of the robots at
+                any given time on their trajectories.
+                The reference point of 0 degrees occurs at x=1 on the unit disk shown below.
+                Before an algorithm starts, you must select a location for the exit by hovering around the disk, and clicking
+                when you find a suitable exit location. The algorithm will then begin.
+            </p>
+        </div>
+    </div>
+    <div id="graph" class="w3-display-container infobox">
+        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
+        <div>
+            <h2 style="color:black;">The Graph</h2>
+            <p>
+                The panel on the right, which we refer to as the "Graph", show the absolute distance of each robot from the current
+                exit position, in units.
+                The current time and number of frames that the animation has played for will be displayed in the top left.
+                Below the time, are four buttons which can be used to replay, slow, rewind, and stop the animation playback,
+                once it has finished. Clicking "Slow" more than once can slow the animation down more
+                in whichever direction it is currently playing.
+                In the top right of the Graph is the robot legend. This shows the Robot ID number, color, and whether or not the robot is
+                designated as priority. If it is a priority robot, it will be shown with a (P).
+            </p>
+        </div>
+    </div>
+    <div id="worstcase" class="w3-display-container infobox">
+        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
+        <div>
+            <h2 style="color:black;">The Worst Case Visualizer</h2>
+            <p>
+                When there priority robots in the algorithm, an extra panel will show below the Field and Graph.
+                This is a special graph that we call the Worst Case Visualizer.
+                It shows the distance of the priority from one of the servants in a simulation of the algorithm where no exit is present.
+                This graph allows us to see the time it would take the algorithm to finish, based on the frame number.
+                If the SERVANT were to find the exit on any of the given frame numbers, the "Time to Finish" datapoint
+                will show us the worst case time that the algorithm would finish based on how far the priority currently
+                is from the servant which found the exit.
+            </p>
+        </div>
+    </div>
+    <div id="acknowledgement" class="w3-display-container infobox">
+        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
+        <div>
+            <h2 style="color:black;">Acknowledgements</h2>
+            <p>
+                This research is supported by the National Science Foundation under grant
+                # CCF-AF 1813940 (RUI: Search, Evacuation and Reconfiguration with Coordinated Mobile Agents).
+            </p>
+        </div>
+    </div>
+    <div id="docs" class="w3-display-container infobox">
+        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
+        <div>
+            <h2 style="color:black;">View Documentation</h2>
+            <p>
+                <a href="../Docs/_build/html/" target="_blank" style="color:blue; text-decoration:underline;">Click here</a>
+                to view the full documentation. This will open a new tab.
+            </p>
+        </div>
+    </div>
+    <a id="AlgA"><div id="A" class='w3-display-container desc'></a>
+        <span onclick="this.parentElement.style.display='none'" class="w3-button w3-display-topright">X</span>
+        <h2 style="color:black;">Algorithm Steps:</h2>
+        <ol><b><em><u>Steps:</u></em></b>
+            <ol>
+                <li>
+                    The robots go to the perimeter at the same angle.
+                </li>
+                <li>
+                    They travel opposite directions once they reach the perimeter. e.g, If Robot 1 goes clockwise, Robot 2 goes counter-clockwise.
+                </li>
+                <li>
+                    The robots move along the perimeter until one of them finds the exit, in which case they will <span class='tooltip'>intercept the other's path (in the case of Face-To-Face communication). <span class='tooltiptext'>The robot which
+                            finds the exit will calculate a path (chord) across the circle s.t. the distance of its chord is equal to the arc that the other would have travelled along the perimeter in the time it takes to cross the chord. </span></span>
+                </li>
+                <li>
+                    The robots meet at the end of the point of interception and travel directly back to the exit.
+                </li>
+            </ol>
+        </ol>
+        <img src='../resources/intercept.png' />
+        <p class='center'>
+            <em>R1 intercepting R2 after finding the exit.</em>
+        </p>
+
+        <b><em><u>Algorithm referenced in: </u></em></b><br />
+        <em>Jurek Czyzowicz et al. (2014). Evacuating Robots via Unknown Exit in a Disk. Proceedings of DISC 2014, LNCS 8784, pp. 122–136, 2014</em>
+        <br />
+        <em>Jurek Czyzowicz et al. (2015). Evacuating Robots From a Disk Using Face-To-Face Communication. Proceedings of CIAC, 2015 p. 140-152, 2015.</em>
+    </div>
+
+
+
+    <a id="AlgB"><div id="B" class='w3-display-container desc'></a>
+        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
+        <h2 style="color:black;">Algorithm Steps:</h2>
+        This algorithm takes two arguments, B(X, Φ); X being the arc length travelled before taking <span class='tooltip'>a detour<span class='tooltiptext'>The robot will go away from the perimeter at an angle Φ, and travel toward and stop at the
+                vertical axis of origin. If it has not been intercepted or notified about the exit at the point, it will return to the perimeter.</span></span>, and Φ being the angle to take the detour at.
+        This algorithms shares the same first three steps as algorithm A.
+        <ol><b><em><u>Steps (Algorithm B):</u></em></b>
+            <ol>
+                <li>
+                    The robots follow the same trajectory as they would in <b>Algorithm A</b>, for a certain amount of time X.
+                </li>
+                <li>
+                    If the robots have travelled the distance X without being notified of the exit, they initiate the detour phase at angle Φ relative to the tangent to the circle at that point.
+                </li>
+                <li>
+                    If, after the detour phase the exit has not been found, the robots continue moving around the perimeter and follow the normal interception methods.
+                </li>
+            </ol>
+        </ol>
+
+        <img src='../resources/detour.png' />
+        <p class='center'>
+            <em>Both robots take a detour at angle Φ after searching for distance X.</em>
+        </p>
+
+        This method takes advantage of the detour phase to provide a slightly faster evacuation time in the event that the exit is found quickly.
+        The robot which finds the exit will travel less distance to intercept the other if it is currently in its detour phase,
+        thus lowering the overall time.
+        The only time which this does not apply is for a smaller set of exit positions, which are observed after the detour phase.
+        <br />
+        <br />
+        <b><em><u>Algorithm referenced in: </u></em></b><br />
+        <em>Jurek Czyzowicz et al. (2014). Evacuating Robots via Unknown Exit in a Disk. Proceedings of DISC 2014, LNCS 8784, pp. 122–136, 2014</em>
+        <br />
+        <em>Jurek Czyzowicz et al. (2015). Evacuating Robots From a Disk Using Face-To-Face Communication. Proceedings of CIAC, 2015 p. 140-152, 2015.</em>
+    </div>
+
+    <!-- NORMAL ALGORITHM -->
+    <a id="AlgC"><div id="C" class='w3-display-container desc'></a>
+        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
+        <h2 style="color:black;">Algorithm Steps:</h2>
+        This algorithm takes three arguments, C(X, Φ, λ); X being the arc length travelled before taking <span class='tooltip'>a triangular detour<span class='tooltiptext'>The robot will go away from the perimeter at an angle Φ for time λ, and
+                then travel DIRECTLY toward and stop at the vertical axis of origin. If it has not been intercepted or notified about the exit at the point, it will return to the perimeter using the shortest path back to the point it came from.</span></span>,
+        Φ being the angle to take the detour at, and λ being the time for at which the robot starts to travel directly to the central axis from its detour.
+        This algorithm shares the same first three steps as Algorithm A.
+        <ol><b><em><u>Steps (Algorithm C):</u></em></b>
+            <ol>
+                <li>
+                    The robots follow the same trajectory as they would in <b>Algorithm A</b>, for a certain amount of time X.
+                </li>
+                <li>
+                    If the robots have travelled the distance X without being notified of the exit, they initiate the <span class='tooltip'>triangular detour phase<span class='tooltiptext'>The robot will go away from the perimeter at an angle Φ
+                            for
+                            time λ, and then travel DIRECTLY toward and stop at the vertical axis of origin. If it has not been intercepted or notified about the exit at the point, it will return to the perimeter using the shortest path back to
+                            the
+                            point it came from.</span></span> at angle Φ, for time λ.
+                </li>
+                <li>
+                    If, after the triangular detour phase the exit has not been found, the robots continue moving around the perimeter and follow the normal interception methods.
+                </li>
+            </ol>
+        </ol>
+
+
+        <img src='../resources/tri-detour.png' />
+        <p class='center'>
+            <em>Both robots take a detour at angle Φ after searching for distance X, follow it for λ seconds, then go directly toward the center.</em>
+        </p>
+
+        This method takes advantage of the triangular detour phase to provide a slightly faster evacuation time
+        in the event that the exit is found quickly.
+        The robot which finds the exit will travel less distance to intercept the other if it is currently in its detour phase,
+        thus lowering the overall time.
+        The only time which this does not apply is for a smaller set of exit positions, which are observed after the detour phase.
+        <br />
+        <br />
+        <b><em><u>Algorithm referenced in: </u></em></b><br />
+        <em>Jurek Czyzowicz et al. (2014). Evacuating Robots via Unknown Exit in a Disk. Proceedings of DISC 2014, LNCS 8784, pp. 122–136, 2014</em>
+        <br />
+        <em>Jurek Czyzowicz et al. (2015). Evacuating Robots From a Disk Using Face-To-Face Communication. Proceedings of CIAC, 2015 p. 140-152, 2015.</em>
+    </div>
+
+    <!-- PRIORITY ALGORITHM -->
+    <a id="AlgQ1"><div id="Q1" class='w3-display-container desc'></a>
+        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
+        <h2 style="color:black;">Algorithm Steps:</h2>
+        This algorithm takes two arguments, Q(α, β): α being this arc length that the priority robot will take until it makes a small detour, β being the angle (α + β) on the unit disk that the priority robot travels to,
+        creating a chord. After this, the priority robot will travel in the opposite direction, back towards the point where it originally made the detour.
+        <ol><b><em><u>Steps (Algorithm Priority 1):</u></em></b>
+            <ol>
+                <li>
+                    The robots go out to the perimeter at the same angle.
+                </li>
+                <li>
+                    The servant will travel clockwise around the circle until it finds the exit and notifies the priority of its location.
+                </li>
+                <li>
+                    The priority will travel counter-clockwise for time α, at which point it will make its detour.
+                </li>
+                <li>
+                    The priority will travel to the angle (α + β).
+                </li>
+                <li>
+                    The priority will travel clockwise until the exit is found.
+                </li>
+            </ol>
+        </ol>
+
+        <br />
+
+        <b><em><u>Algorithm referenced in: </u></em></b><br />
+        <em>Jurek Czyzowicz et al (2018). God Save the Queen. In Proceedings of FUN, pp. 16:1–16:20.</em>
+    </div>
+
+    <!-- PRIORITY ALGORITHM -->
+    <a id="AlgQ2"><div id="Q2" class='w3-display-container desc'></a>
+        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
+        <h2 style="color:black;">Algorithm Steps:</h2>
+        This algorithm takes two arguments, Q(α, ρ): α being the angle the priority robot will travel before moving directly across the disk to point
+        ρ, which is the y-value of the point K(α/2, ρ). This is the point where the priority will diverge and travel toward the angle -α/2 on the disk.
+        We will denote the servants in this algorithm as S1 and S2, and the priority as P.
+        <ol><b><em><u>Steps (Algorithm Priority 2):</u></em></b>
+            <ol>
+                <li>
+                    S1 and P will go out to the perimeter at angle (π - α). S2 will go out to the perimeter at angle π.
+                </li>
+                <li>
+                    S1 travels clockwise until it finds the exit. S2 travels counter-clockwise until ti finds the exit.
+                </li>
+                <li>
+                    The priority P will travel counter-clockwise for time α, at which point it will make its detour.
+                </li>
+                <li>
+                    The priority will travel to the point K(α/2 + ρ) on the interior of the disk.
+                </li>
+                <li>
+                    The priority will then travel to angle (2π - α/2) on the perimeter and wait until the exit is found.
+                </li>
+            </ol>
+            <br />
+        </ol>
+        <b><em><u>Algorithm referenced in: </u></em></b><br />
+        <em>Jurek Czyzowicz et al (2018). God Save the Queen. In FUN, pp. 16:1–16:20.</em>
+    </div>
+
+    <!-- PRIORITY ALGORITHM -->
+    <a id="AlgQ2S1"><div id="Q2S1" class='w3-display-container desc'></a>
+        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
+        <h2 style="color:black;">Algorithm Steps:</h2>
+        <ol><b><em><u>Steps (Algorithm 2 Priority + 1 Servant):</u></em></b>
+            In this algorithm, we designate two of the robots as priority, and only one as the servant.
+            The algorithm terminates when at least one of the priority robots finds the exit.
+            The algorithm takes one argument, Q(α). α is the angle at which one servant and one priority will travel toward the perimeter.
+            We will denote the servant as S, and the two priority robots as P1 and P2.
+            14*pi/9 - 2*sqrt(3)/3
+            <ol>
+                <li>
+                    The robots S and P1 will travel to the perimeter at <span class="tooltip">angle α.<span class="tooltiptext">This is usually an angle located between (π, 3π/2)</span></span>
+                    P2 will travel to the perimeter at angle 0.
+                </li>
+                <li>
+                    P1 travels counter-clockwise until it finds the exit. P2 travels counter-clockwise until it finds the exit. Finally, S travels clockwise until it finds the exit.
+                </li>
+            </ol>
+        </ol>
+        <br />
+
+        We can show that this algorithm has an upper bound of 3.55 time units for angle α = 14π/9 - 2√3/3. The two worst-cases for the exit location in this
+        algorithm are: 2π - θ for some very small θ, or π - ((6√3 - 2)/9).
+    </div>
+
+    <!-- PRIORITY ALGORITHM -->
+    <a id="AlgQ1S1Q1"><div id="Q1S1Q1" class='w3-display-container desc'>1Q1S1Q</a>
+        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
+        <h2 style="color:black;">Algorithm Steps:</h2>
+        <p>
+            Coming soon.
+        </p>
+        <b><em><u>Algorithm referenced in: </u></em></b><br />
+        <em>Jurek Czyzowicz et al (2018). God Save the Queen. In Proceedings of FUN, pp. 16:1–16:20.</em>
+    </div>
+
+    <!-- PRIORITY ALGORITHM -->
+    <a id="AlgQ1S4"><div id="Q1S4" class='w3-display-container desc'>Q1S4</a>
+        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
+        <h2 style="color:black;">Algorithm Steps:</h2>
+        <p>
+            Coming soon.
+        </p>
+        <b><em><u>Algorithm referenced in: </u></em></b><br />
+        <em>Jurek Czyzowicz et al (2018). Priority Evacuation from a Disk Using Mobile Robots. Proceedings of SIROCCO, pages 392-407, 2018.</em>
+    </div>
+
+    <!-- PRIORITY ALGORITHM -->
+    <a id="AlgQ1S8"><div id="Q1S8" class='w3-display-container desc'>1Q8S</a>
+        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';" class="w3-button w3-display-topright">X</span>
+        <h2 style="color:black;">Algorithm Steps:</h2>
+        <p>
+            Coming soon.
+        </p>
+        <p>
+        <b><em><u>Algorithm referenced in: </u></em></b><br />
+        <em>Jurek Czyzowicz et al (2018). Priority Evacuation from a Disk Using Mobile Robots. Proceedings of SIROCCO, pages 392-407, 2018.</em>
+    </div>
+
+    </div>
+    <script src='circleShowcase.js'></script>
+
+
+</body>
+
+</html>

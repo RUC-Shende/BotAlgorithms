@@ -21,11 +21,15 @@ svg {
 }
 
 a {
-    color: black;
+    color: blue;
     border: 1px solid transparent;
     text-decoration: none;
     font-size: 24px;
     cursor: pointer;
+}
+
+a:hover {
+    text-decoration: underline;
 }
 
 img {
@@ -136,6 +140,7 @@ h3 {
 }
 
 .tooltip {
+    cursor:pointer;
     position: relative;
     display: inline-block;
     border-bottom: 1px dotted;
@@ -236,6 +241,7 @@ h3 {
     overflow-x: hidden;
     transition: 0.5s;
     padding-top: 60px;
+    float:left;
 }
 
 .sidenav a {
@@ -267,7 +273,7 @@ h3 {
 .openNav {
     width: 6%;
     position: sticky;
-    z-index: 1;
+    z-index: 5;
     top: 0px;
     left: 0px;
     display: block;

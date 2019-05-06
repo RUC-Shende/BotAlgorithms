@@ -1,10 +1,10 @@
-PWD /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit
+PWD /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster
 INPUT /etc/texmf/web2c/texmf.cnf
 INPUT /usr/share/texmf/web2c/texmf.cnf
 INPUT /usr/share/texlive/texmf-dist/web2c/texmf.cnf
 INPUT /var/lib/texmf/web2c/pdftex/pdflatex.fmt
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex
-OUTPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.log
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.tex
+OUTPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.log
 INPUT /usr/share/texlive/texmf-dist/tex/latex/beamer/beamer.cls
 INPUT /usr/share/texlive/texmf-dist/tex/latex/beamer/beamer.cls
 INPUT /usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbasercs.sty
@@ -213,7 +213,7 @@ INPUT /usr/share/texlive/texmf-dist/tex/latex/beamer/themes/color/beamercolorthe
 INPUT /usr/share/texlive/texmf-dist/tex/latex/beamer/themes/inner/beamerinnerthemedefault.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/beamer/themes/inner/beamerinnerthemedefault.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/beamer/art/beamericonbook.pdf
-OUTPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.pdf
+OUTPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.pdf
 INPUT /usr/share/texlive/texmf-dist/tex/latex/beamer/art/beamericonbook.pdf
 INPUT /usr/share/texlive/texmf-dist/tex/latex/beamer/art/beamericonbook.20.pdf
 INPUT /usr/share/texlive/texmf-dist/tex/latex/beamer/art/beamericonbook.20.pdf
@@ -227,9 +227,9 @@ INPUT /usr/share/texlive/texmf-dist/tex/latex/beamer/art/beamericononline.20.pdf
 INPUT /usr/share/texlive/texmf-dist/tex/latex/beamer/art/beamericononline.20.pdf
 INPUT /usr/share/texlive/texmf-dist/tex/latex/beamer/themes/outer/beamerouterthemedefault.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/beamer/themes/outer/beamerouterthemedefault.sty
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypostersettings.tex
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/beamerposter.sty
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/beamerposter.sty
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypostersettings.tex
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/beamerposter.sty
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/beamerposter.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/xkeyval/xkeyval.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/xkeyval/xkeyval.sty
 INPUT /usr/share/texlive/texmf-dist/tex/generic/xkeyval/xkeyval.tex
@@ -276,8 +276,8 @@ INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/beamerthemeconfposter.sty
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/beamerthemeconfposter.sty
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/beamerthemeconfposter.sty
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/beamerthemeconfposter.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
@@ -331,9 +331,9 @@ INPUT /usr/share/texlive/texmf-dist/tex/latex/ms/ragged2e.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/ms/ragged2e.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/ms/everysel.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/ms/everysel.sty
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.aux
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.aux
-OUTPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.aux
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.aux
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.aux
+OUTPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.aux
 INPUT /usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
 INPUT /usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
 INPUT /usr/share/texmf/tex/latex/lm/t1lmss.fd
@@ -351,13 +351,13 @@ INPUT /usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 INPUT /usr/share/texlive/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 INPUT /usr/share/texlive/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.out
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.out
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.out
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.out
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.out
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.out
-OUTPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.out
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.out
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.out
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.out
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.out
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.out
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.out
+OUTPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.out
 INPUT /usr/share/texlive/texmf-dist/tex/latex/beamer/translator/dicts/translator-basic-dictionary/translator-basic-dictionary-English.dict
 INPUT /usr/share/texlive/texmf-dist/tex/latex/beamer/translator/dicts/translator-basic-dictionary/translator-basic-dictionary-English.dict
 INPUT /usr/share/texlive/texmf-dist/tex/latex/beamer/translator/dicts/translator-bibliography-dictionary/translator-bibliography-dictionary-English.dict
@@ -374,14 +374,14 @@ INPUT /usr/share/texlive/texmf-dist/tex/latex/oberdiek/pdflscape.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/oberdiek/pdflscape.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics/lscape.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics/lscape.sty
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.nav
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.nav
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.nav
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.nav
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmss17.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmss17.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmssbx10.tfm
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/rutgerslogo.png
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/rutgerslogo.png
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/rutgerslogo.png
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/rutgerslogo.png
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/rutgerslogo.png
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/rutgerslogo.png
 INPUT /usr/share/texmf/tex/latex/lm/ot1lmr.fd
 INPUT /usr/share/texmf/tex/latex/lm/ot1lmr.fd
 INPUT /usr/share/texmf/fonts/tfm/public/lm/rm-lmr17.tfm
@@ -408,9 +408,9 @@ INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm7.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmss17.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmss17.tfm
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/rutgers.jpeg
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/rutgers.jpeg
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/rutgers.jpeg
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/rutgers.jpeg
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/rutgers.jpeg
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/rutgers.jpeg
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmssbx10.tfm
 INPUT /usr/share/texmf/tex/latex/lm/t1lmr.fd
 INPUT /usr/share/texmf/tex/latex/lm/t1lmr.fd
@@ -431,20 +431,20 @@ INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmssbx10.tfm
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Both.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Both.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Both.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_WorstCase_Both.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_WorstCase_Both.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_WorstCase_Both.pdf
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmbx12.tfm
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Initial.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Initial.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Initial.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Second_Step.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Second_Step.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Second_Step.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_Initial.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_Initial.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_Initial.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_Second_Step.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_Second_Step.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_Second_Step.pdf
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmr17.tfm
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Servant.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Servant.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Servant.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_WorstCase_Servant.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_WorstCase_Servant.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_WorstCase_Servant.pdf
 INPUT /usr/share/texmf/fonts/tfm/public/lm/rm-lmr17.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/lm/rm-lmr17.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/lm/rm-lmr12.tfm
@@ -460,25 +460,25 @@ INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Priority.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Priority.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Priority.pdf
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_timeGraph.png
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_timeGraph.png
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_timeGraph.png
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_WorstCase_Priority.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_WorstCase_Priority.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_WorstCase_Priority.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_timeGraph.png
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_timeGraph.png
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_timeGraph.png
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmr17.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/lm/ec-lmss8.tfm
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/rutgerslogo.png
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/rutgerslogo.png
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/rutgers.jpeg
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/rutgers.jpeg
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/rutgerslogo.png
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/rutgerslogo.png
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/rutgers.jpeg
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/rutgers.jpeg
 INPUT /var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map
-OUTPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.nav
-OUTPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.toc
-OUTPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.snm
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.aux
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.out
-INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.out
+OUTPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.nav
+OUTPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.toc
+OUTPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.snm
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.aux
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.out
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.out
 INPUT /usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc
 INPUT /usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc
 INPUT /usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc

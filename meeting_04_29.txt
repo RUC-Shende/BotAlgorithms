@@ -1,0 +1,40 @@
+Make a landing page that lets someone select a showcase.
+Options: (W) Comm, (F2F) Comm, Priority 1 Queen.
+Only show circle showcase on landing page, and link to it, at what point the menu comes up.
+
+Possibly include snapshot.
+
+
+Once we show  a category of  algorithms, we allow them to be able to compare.
+On hover, show type of comm explanation.
+On click, show the algorithms themselves.
+
+Go to a second page.
+Then show Field, Graph, Alg. Steps, on second page.
+
+Documentation can usually show on multiple pages.
+
+Take out WC Visualizer.
+
+The comparator is in the showcase.
+
+TikZ UML
+Clean up classes, and MAKE BASIC UML diagram.
+Include in doc.
+
+Robots Evacuation  -> Search-and-Evacuation Algorithms (for shape type)
+
+
+
+
+ALGORITHMS:
+
+Edit Alg. C image to show angle PHI.
+Remove hover data boxes.
+Indicate Queen more clearly on graph colors.
+Red as color for queen from here on out.
+Implement IGNORE so that servants don't move toward exit in priority algs.
+(optionally implement wait to use as ignore.)
+
+
+Correct all stuff in algorithms, and reshape pages.

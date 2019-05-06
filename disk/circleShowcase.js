@@ -455,7 +455,6 @@ class Tourist {
 function Start() {
   degrees = 360;
   Load();
-  showHelp("start");
 }
 
 //Load visuals and bots.(Might be changed to its own script later, to split visual and functional)
@@ -514,7 +513,7 @@ function Load() {
                   .attr("x", (2*unit2Px) + (unit2Px / 15) + (j * (2/3 * unit2Px)))
                   .attr("y", (unit2Px * 0.6) + (unit2Px/32) +  (i * (1/4 * unit2Px)))
                   .style("font-size", unit2Px * (3/25))
-                  .text("Bot " + touristCount + ((instruBinder[touristCount][0][1][1] == true) ? " (P)" : ""));
+                  .text("" + ((instruBinder[touristCount][0][1][1] == true) ? "Queen " + touristCount : " Bot " + touristCount));
           if (touristCount + 1 == instruBinder.length){
               break outer;
           }
@@ -1252,7 +1251,23 @@ function showAlgorithmDesc(s, w){
                         ];
             algorithmName = "Algorithm A ";
             break;
+        case 'Awl':
+            color = "#efe";
+            instruBinder = [
+                            [["Intercept", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right"]]],
+                            [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left"]]]
+                        ];
+            algorithmName = "Algorithm A ";
+            break;
         case 'B':
+            color = '#eef';
+            instruBinder = [
+                                 [["Intercept", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
+                                 [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
+                               ];
+            algorithmName = "Algorithm B ";
+            break;
+        case 'Bwl':
             color = '#eef';
             instruBinder = [
                                  [["Intercept", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
@@ -1268,11 +1283,19 @@ function showAlgorithmDesc(s, w){
                                ];
             algorithmName = "Algorithm C ";
             break;
+        case 'Cwl':
+            color = '#fee';
+            instruBinder = [
+                                 [["Intercept", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0] + 70, center[1]+40]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
+                                 [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0] - 70, center[1]+40]], ["GoToPoint", [center[0], center[1]+40]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
+                               ];
+            algorithmName = "Algorithm C ";
+            break;
         case 'Q1':
             color = "#efe";
             instruBinder = [
                                  [["GoToExit", [null, true, "#fe447d"]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]],
-                                 [["Intercept", [0, false, "#5cd05b"]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right"]]]
+                                 [["Wait", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right"]]]
                                ];
             algorithmName = "Algorithm Priority 1 ";
             break;
@@ -1280,8 +1303,8 @@ function showAlgorithmDesc(s, w){
             color = "#eef";
             instruBinder = [
                                   [["GoToExit", [null, true, "#fe447d"]], ["GoToWallAtAngle", [144]], ["FollowWall", ["left", 36]], ["GoToPoint", [center[0] + (unit2Px * 0.65), center[1] + 30]], ["GoToWallAtAngle", [345]], ["FollowWall", ["left"]]],
-                                  [["Intercept", [0, false, "#5cd05b"]], ["GoToWallAtAngle", [144]], ["FollowWall", ["right"]]],
-                                  [["Intercept", [0, false]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]]
+                                  [["Wait", [null]], ["GoToWallAtAngle", [144]], ["FollowWall", ["right"]]],
+                                  [["Wait", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]]
             ];
             algorithmName = "Algorithm Priority 2 ";
             break;
@@ -1290,7 +1313,7 @@ function showAlgorithmDesc(s, w){
             instruBinder = [
                 [["GoToExit", [null, true]], ["GoToWallAtAngle", [213.8]], ["FollowWall", ["left"]]],
                 [["GoToExit", [null, true]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left"]]],
-                [["Intercept", [[0, 1], false]], ["GoToWallAtAngle", [213.8]], ["FollowWall", ["right"]]]
+                [["Wait", [null]], ["GoToWallAtAngle", [213.8]], ["FollowWall", ["right"]]]
                 /*
                 [["GoToExit", [null, true]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left"]]],
                 [["GoToExit", [null, true]], ["GoToWallAtAngle", [240]], ["FollowWall", ["left"]]],
@@ -1332,7 +1355,7 @@ function showAlgorithmDesc(s, w){
             instruBinder = [
                 [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]] ,["FollowWall", ["right"]]],
                 [["GoToExit", [null, true]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right"]]],
-                [["Intercept", [[0,1], false]], ["GoToWallAtAngle", 180], ["FollowWall", ["left"]]]
+                [["Wait", [null]], ["GoToWallAtAngle", 180], ["FollowWall", ["left"]]]
             ];
             algorithmName = "2 Priority + 1 Servant (2) ";
             break;
@@ -1341,10 +1364,10 @@ function showAlgorithmDesc(s, w){
             color = "#eef";
             instruBinder = [
                 [["GoToExit", [null, true]], ["Wait", [(1 + (Math.PI / 2))]], ["GoToWallAtAngle", [180]], ["Wait", [null]]],
-                [["Intercept", [0, false]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left", 75]], ["Wait", [null]]],
-                [["Intercept", [0, false]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right", 75]], ["Wait", [null]]],
-                [["Intercept", [0, false]], ["GoToWallAtAngle", [75]], ["FollowWall", ["left"]]],
-                [["Intercept", [0, false]], ["GoToWallAtAngle", [285]], ["FollowWall", ["right"]]]
+                [["Wait", [null]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left", 75]], ["Wait", [null]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right", 75]], ["Wait", [null]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [75]], ["FollowWall", ["left"]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [285]], ["FollowWall", ["right"]]]
             ];
             algorithmName = "1 Priority + 4 Servants ";
             break;
@@ -1353,14 +1376,14 @@ function showAlgorithmDesc(s, w){
             color = "#fee";
             instruBinder = [
                 [["GoToExit", [null, true]], ["Wait", [(1+(Math.PI / 2))]], ["GoToWallAtAngle", [180]], ["Wait", [null]]],
-                [["Intercept", [0, false]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left", 60]], ["Wait", [null]]],
-                [["Intercept", [0, false]], ["GoToWallAtAngle", [60]], ["FollowWall", ["left", 30]], ["Wait", [null]]],
-                [["Intercept", [0, false]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 30]], ["Wait", [null]]],
-                [["Intercept", [0, false]], ["GoToWallAtAngle", [120]], ["FollowWall", ["left"]]],
-                [["Intercept", [0, false]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right", 60]], ["Wait", [null]]],
-                [["Intercept", [0, false]], ["GoToWallAtAngle", [300]], ["FollowWall", ["right", 30]], ["Wait", [null]]],
-                [["Intercept", [0, false]], ["GoToWallAtAngle", [270]], ["FollowWall", ["right", 30]], ["Wait", [null]]],
-                [["Intercept", [0, false]], ["GoToWallAtAngle", [240]], ["FollowWall", ["right"]], ["Wait", [null]]]
+                [["Wait", [null]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left", 60]], ["Wait", [null]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [60]], ["FollowWall", ["left", 30]], ["Wait", [null]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 30]], ["Wait", [null]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [120]], ["FollowWall", ["left"]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right", 60]], ["Wait", [null]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [300]], ["FollowWall", ["right", 30]], ["Wait", [null]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [270]], ["FollowWall", ["right", 30]], ["Wait", [null]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [240]], ["FollowWall", ["right"]], ["Wait", [null]]]
             ];
             algorithmName = "1 Priority + 8 Servants ";
             break;
@@ -1369,26 +1392,28 @@ function showAlgorithmDesc(s, w){
     wireless = w;
     d3.selectAll('.desc').style('display', 'none');
     d3.select('.tabtxt').style('background-color', color);
-    d3.select('#'+s).style('display', 'inline-block');
-    closeNav();
+    //d3.select('#'+s).style('display', 'inline-block');
+    //closeNav();
     if (firstTime){
         firstTime = false;
-        showHelp("start");
     }
     else {
         Reset();
-        showHelp('steps');
     }
 }
 
 function openNav() {
     document.getElementById("mySidenav").style.width = "300px";
+    document.getElementById("backbutton").style.display = "none";
     document.getElementById("navdiv").style.display = "none";
+
 }
 
 function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
+    document.getElementById("backbutton").style.display = "block";
     document.getElementById("navdiv").style.display = "block";
+
 
 }
 
@@ -1474,7 +1499,7 @@ function LoadAlgorithms(event) {
             }
             window.instruBinder = tempinstruBinder.slice(0);
         }
-        closeNav();
+        //closeNav();
         wireless = true;
         Reset();
     });
@@ -1491,7 +1516,14 @@ if (algRequested) {
     algSelector = window.location.href.indexOf("#");
     var l = window.location.href.length;
     console.log(window.location.href.slice(algSelector + 1, l));
-    showAlgorithmDesc(window.location.href.slice(algSelector + 1, l), true);
+    var wire = true;
+    if (window.location.href.includes("wl") || window.location.href.includes("Q")){
+        wire = true;
+    }
+    else {
+        wire = false;
+    }
+    showAlgorithmDesc(window.location.href.slice(algSelector + 1, l), wire);
 }
 else {
     showAlgorithmDesc("A", false);

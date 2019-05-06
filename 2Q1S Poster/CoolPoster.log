@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.10.21)  8 APR 2019 17:21
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.10.21)  3 MAY 2019 14:56
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
 **CoolPoster.tex
-(/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex
+(/home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.tex
 LaTeX2e <2016/02/01>
 Babel <3.9q> and hyphenation patterns for 81 language(s) loaded.
 (/usr/share/texlive/texmf-dist/tex/latex/beamer/beamer.cls (/usr/share/texlive/texmf-dist/tex/latex/beamer/beamerbasercs.sty
@@ -562,7 +562,7 @@ Package: beamerinnerthemedefault 2014/06/30  (rcs-revision 580088513a67)
 \beamer@dimb=\dimen187
 ) (/usr/share/texlive/texmf-dist/tex/latex/beamer/themes/outer/beamerouterthemedefault.sty
 Package: beamerouterthemedefault 2012/12/19  (rcs-revision 1686da3db3c9)
-))) (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypostersettings.tex (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/beamerposter.sty
+))) (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypostersettings.tex (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/beamerposter.sty
 Package: 2008/03/11. v.1.07. beamerposter: latex-beamer poster extension
 Package: beamerposter 2008/03/11. v.1.07. beamerposter: latex-beamer poster extension
 (/usr/share/texlive/texmf-dist/tex/latex/xkeyval/xkeyval.sty
@@ -675,7 +675,7 @@ Package caption Info: Hyperref support is turned off
 \sepwid=\skip60
 \onecolwid=\skip61
 \twocolwid=\skip62
- (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/beamerthemeconfposter.sty
+ (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/beamerthemeconfposter.sty
 Package: beamerthemeconfposter 
  (/usr/share/texlive/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty (/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
 Package: pgf 2015/08/07 v3.0.1a (rcs-revision 1.15)
@@ -881,7 +881,7 @@ Package: everysel 2011/10/28 v1.2 EverySelectfont Package (MS)
 \inboxwd=\skip77
 \iinboxwd=\skip78
 \inboxrule=\skip79
-)) (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.aux)
+)) (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.aux)
 \openout1 = `CoolPoster.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 20.
@@ -978,7 +978,7 @@ Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 LaTeX Info: Redefining \ref on input line 20.
 LaTeX Info: Redefining \pageref on input line 20.
 LaTeX Info: Redefining \nameref on input line 20.
- (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.out) (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.out)
+ (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.out) (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.out)
 \@outlinefile=\write5
 \openout5 = `CoolPoster.out'.
 
@@ -1008,7 +1008,7 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
  ABD: EverySelectfont initializing macros
 LaTeX Info: Redefining \selectfont on input line 20.
- (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.nav) <mypics/rutgerslogo.png, id=13, 301.125pt x 301.125pt>
+ (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.nav) <mypics/rutgerslogo.png, id=13, 301.125pt x 301.125pt>
 File: mypics/rutgerslogo.png Graphic file (type png)
  <use mypics/rutgerslogo.png>
 Package pdftex.def Info: mypics/rutgerslogo.png used on input line 20.
@@ -1038,12 +1038,12 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <8.93> on input line 20.
  <mypics/rutgers.jpeg, id=14, 301.125pt x 150.5625pt>
 File: mypics/rutgers.jpeg Graphic file (type jpg)
-
-<use mypics/rutgers.jpeg>
+ <use mypics/rutgers.jpeg>
 Package pdftex.def Info: mypics/rutgers.jpeg used on input line 20.
 (pdftex.def)             Requested size: 505.93707pt x 289.13872pt.
 LaTeX Font Info:    Try loading font information for T1+lmr on input line 71.
- (/usr/share/texmf/tex/latex/lm/t1lmr.fd
+
+(/usr/share/texmf/tex/latex/lm/t1lmr.fd
 File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 Underfull \hbox (badness 1540) in paragraph at lines 71--71
@@ -1074,7 +1074,7 @@ Package pdftex.def Info: mypics/2Q1S_Second_Step.pdf used on input line 71.
 (pdftex.def)             Requested size: 343.4266pt x 361.40733pt.
 
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: Bad math environment delimiter.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.tex:71: LaTeX Error: Bad math environment delimiter.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
@@ -1086,7 +1086,7 @@ Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: Missing \endgroup inserted.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.tex:71: Missing \endgroup inserted.
 <inserted text> 
                 \endgroup 
 l.71 \end{frame}
@@ -1098,7 +1098,7 @@ really didn't forget anything, try typing `2' now; then
 my insertion and my current dilemma will both disappear.
 
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: LaTeX Error: Bad math environment delimiter.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.tex:71: LaTeX Error: Bad math environment delimiter.
 
 See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
@@ -1110,7 +1110,7 @@ Your command was ignored.
 Type  I <command> <return>  to replace it with another command,
 or  <return>  to continue without it.
 
-/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.tex:71: Missing \endgroup inserted.
+/home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.tex:71: Missing \endgroup inserted.
 <inserted text> 
                 \endgroup 
 l.71 \end{frame}
@@ -1163,7 +1163,7 @@ Overfull \hbox (88.20334pt too wide) has occurred while \output is active
 
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
- </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/rutgerslogo.png> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/rutgers.jpeg> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Both.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Initial.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_Second_Step.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Servant.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_WorstCase_Priority.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/mypics/2Q1S_timeGraph.png>]
+ </home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/rutgerslogo.png> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/rutgers.jpeg> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_WorstCase_Both.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_Initial.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_Second_Step.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_WorstCase_Servant.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_WorstCase_Priority.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/mypics/2Q1S_timeGraph.png>]
 \tf@nav=\write6
 \openout6 = `CoolPoster.nav'.
 
@@ -1175,7 +1175,7 @@ Overfull \hbox (88.20334pt too wide) has occurred while \output is active
 
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 75.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 75.
- (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.aux)
+ (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 75.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 75.
 Package rerunfilecheck Info: File `CoolPoster.out' has not changed.
@@ -1184,14 +1184,14 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 75.
  ) 
 Here is how much of TeX's memory you used:
  23836 strings out of 493029
- 463587 string characters out of 6136233
+ 463503 string characters out of 6136233
  577118 words of memory out of 5000000
  26781 multiletter control sequences out of 15000+600000
  78556 words of font info for 76 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  66i,20n,100p,413b,1476s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi12.pfb></usr/share/texmf/fonts/type1/public/lm/lmr17.pfb></usr/share/texmf/fonts/type1/public/lm/lmss17.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb>
-Output written on "/home/chris/Documents/WebStuff/NSF Grant/Algorithms/CoolPoster Edit/CoolPoster.pdf" (1 page, 311328 bytes).
+Output written on "/home/chris/Documents/WebStuff/NSF Grant/Algorithms/2Q1S Poster/CoolPoster.pdf" (1 page, 311307 bytes).
 PDF statistics:
  121 PDF objects out of 1000 (max. 8388607)
  80 compressed objects within 1 object stream
