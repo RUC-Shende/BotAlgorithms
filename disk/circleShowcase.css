@@ -13,6 +13,8 @@ div {
 }
 
 svg {
+    width: 40vw;
+    height: 40vw;
     background-color: #fff;
     border-radius: 6px;
     margin: 2%;

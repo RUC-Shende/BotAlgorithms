@@ -1,3 +1,4 @@
+/**
 * @param {Circle} visual Represents the visual related to the bot.
 */
 class Tourist {

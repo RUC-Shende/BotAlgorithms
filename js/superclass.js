@@ -317,7 +317,6 @@ class iclVisual {
         this.graphSVG.select("#bots").attr("height", "100%").attr("width", "100%");
         this.graphSVG.select("#overLay").attr("height", "100%").attr("width", "100%");
         this.graphSVG.select("#excess").attr("height", "100%").attr("width", "100%");
-        this.graphSVG.attr("display", "none");
 
         //var tmp = this;
         //this.fieldSVG.on("mousemove", this.ChoosExit.call(this, tmp)).on("click", exitChosen.call(this, tmp));
