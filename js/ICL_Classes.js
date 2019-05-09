@@ -1,6 +1,9 @@
+/**
+* @param {Circle} visual Represents the visual related to the bot.
+*/
 class Tourist {
 
-  constructor (iclData) {
+  constructor (iclData, p) {
     this.visual = null;
     /** This holds all of what used to be global variables!  */
     this.iclData = iclData;
@@ -26,6 +29,9 @@ class Tourist {
     this.x = this.iclData.center[0];
     /** Tourist's current y position. */
     this.y = this.iclData.center[1];
+
+    this.priority = p;
+    this.atExit = false;
   }
 
   WallAtAngle(angle) {
@@ -55,8 +61,19 @@ class Tourist {
       this.y += Math.sin(ang) * this.allowance;
       this.allowance = 0;
     }
-  }
+    if (this.x == this.iclData.fieldExit[0] &&
+      this.y == this.iclData.fieldExit[1] &&
+      !this.atExit)
+      {
+          console.log("Robot " + this.number + " exits at " + (Math.floor((100 * this.iclData.time) / this.iclData.fps) / 100) + (this.priority ? " (Priority)" : ""));
+          this.atExit = true;
 
+          if (this.priority) {
+              console.log("in here")
+              this.iclData.AllAtExit();
+          }
+      }
+  }
   /**
   * Makes a robot go to the wall at a specific angle on the shape.
   *
@@ -239,42 +256,42 @@ class Tourist {
   }
 
   /**
-  *
-  * Robot will continuously move in the direction of the target, until it catches it.
-  *
-  *@param {Tourist} who Robot to follow command.
-  *@param value null
-  */
+   *
+   * Robot will continuously move in the direction of the target, until it catches it.
+   *
+   *@param {Tourist} who Robot to follow command.
+   *@param value null
+   */
   Pursue(value) {
-    if ((this.target == null) && (!this.iclData.wireless)) {
-      var closest = Infinity;
-      for (var i = 0; i < this.iclData.touristNum; i++) {
-        if (this.iclData.instruBinder[i][this.iclData.tourists[i].on][0] == "WaitAverage") {
-          continue;
-        }
-        if ((!this.iclData.tourists[i].knows) && (this.iclData.tourists[i].hunted == null)) {
-          var exitDist = Math.hypot(this.iclData.tourists[i].y - this.y, this.iclData.tourists[i].x - this.x);
-          if (exitDist < closest) {
-            this.target = i;
-            closest = exitDist;
+      if ((this.target == null) && (!this.iclData.wireless)) {
+          var closest = Infinity;
+          for (var i = 0; i < this.iclData.touristNum; i++) {
+              if (this.iclData.instruBinder[i][this.iclData.tourists[i].on][0] == "WaitAverage") {
+                  continue;
+              }
+              if ((!this.iclData.tourists[i].knows) && (this.iclData.tourists[i].hunted == null)) {
+                  var exitDist = Math.hypot(this.iclData.tourists[i].y - this.y, this.iclData.tourists[i].x - this.x);
+                  if (exitDist < closest) {
+                      this.target = i;
+                      closest = exitDist;
+                  }
+              }
           }
-        }
       }
-    }
-    if (this.target == null) {
-      this.GoToExit(value);
-    } else {
-      this.iclData.tourists[this.target].hunted = this.number;
-      var botDist = hypot(this.iclData.tourists[this.target].y - this.y, this.iclData.tourists[this.target].x - this.x);
-      if (botDist <= this.velocity * this.iclData.unit2Px / this.iclData.fps) {
-        this.iclData.exitAlert = this.iclData.tourists[this.target].knows = true;
-        this.iclData.exitAllow = botDist;
+      if (this.target == null) {
+          this.GoToExit(value);
+      } else {
+          this.iclData.tourists[this.target].hunted = this.number;
+          var botDist = hypot(this.iclData.tourists[this.target].y - this.y, this.iclData.tourists[this.target].x - this.x);
+          if (botDist <= this.velocity * this.iclData.unit2Px / this.iclData.fps) {
+              this.iclData.exitAlert = this.iclData.tourists[this.target].knows = true;
+              this.iclData.exitAllow = botDist;
+          }
+          this.DirectTo([this.iclData.tourists[this.target].x, this.iclData.tourists[this.target].y]);
+          if (this.iclData.tourists[this.target].knows) {
+              this.target = null;
+          }
       }
-      this.DirectTo([this.iclData.tourists[this.target].x, this.iclData.tourists[this.target].y]);
-      if (this.iclData.tourists[this.target].knows) {
-        this.target = null;
-      }
-    }
   }
 
   /**
@@ -287,18 +304,25 @@ class Tourist {
   */
   Intercept(value) {
     if (((this.target == null) || !this.target) && (!this.iclData.wireless)) {
+      var holdTime = 0;
       var closest = Infinity;
+      outer:
       for (var i = 0; i < this.iclData.touristNum; i++) {
         if (this.iclData.instruBinder[i][this.iclData.tourists[i].on][0] == "WaitAverage") {
           continue;
         }
-        if ((!this.iclData.tourists[i].knows) && (this.iclData.tourists[i].hunted == null)) {
+        if ((!this.iclData.tourists[i].knows) && ((this.iclData.tourists[i].hunted == this.number) || (this.tourists[i].hunted == null))) {
+          inner:
           for (var j = 0; j < 8 * this.iclData.unit2Px; j++) {
             if (this.iclData.time + j < this.iclData.timeMax) {
               var intercept = this.iclData.tourPoints[i][this.iclData.time + j];
               var botDist = Math.hypot(intercept.y - this.y, intercept.x - this.x);
               if ((Math.abs(j - botDist * this.iclData.fps / this.iclData.unit2Px) <= this.velocity / 2) && (botDist < closest)) {
                 this.target = [i, intercept];
+                if (value && value[0] == i){
+                    console.log("found priority");
+                    break outer;
+                }
                 closest = botDist;
               }
             }
@@ -306,17 +330,21 @@ class Tourist {
         }
       }
     }
-    if (this.target == null) {
+
+    if (this.priority || this.target == null) {
       this.GoToExit(value);
     } else {
       this.iclData.tourists[this.target[0]].hunted = this.number;
+      var pVec = [this.target[1].x - this.x, this.target[1].y - this.y];
       var pointDist = Math.hypot(this.target[1].y - this.y, this.target[1].x - this.x);
       if (pointDist <= this.velocity * this.iclData.unit2Px / (2 * this.iclData.fps)) {
         this.iclData.exitAlert = this.iclData.tourists[this.target[0]].knows = true;
+        this.iclData.exitFoundFrame = this.iclData.time;
         this.target = null;
         this.iclData.exitAllow = pointDist;
       } else {
         this.DirectTo([this.target[1].x, this.target[1].y]);
+
       }
     }
   }
