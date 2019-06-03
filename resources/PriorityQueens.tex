@@ -1,0 +1,49 @@
+\documentclass[11pt]{amsart}
+\usepackage[margin=2.5cm]{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{graphicx}
+\usepackage{amssymb,amsfonts}
+\usepackage{epstopdf}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\title{Brief Article}
+\author{The Author}
+%\date{}                                           % Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+\section{Preliminaries}
+\subsection{Model}
+
+\subsection{Previous Work}
+
+\subsection{Our Results}
+
+\section{Algorithm 1}
+
+%Our first priority algorithm with 2 queens and 1 servant
+
+\begin{algorithm}
+  \caption{An algorithm}
+  \begin{algorithmic}[1]
+    \Procedure{Euclid}{$a,b$}\Comment{The g.c.d.\ of $a$ and $b$}
+      \State $r \gets a \bmod b$
+      \While{$r \neq 0$}\Comment{We have the answer if $r$ is $0$}
+        \State $a \gets b$
+        \State $b \gets r$
+        \State $r \gets a \bmod b$
+      \EndWhile\label{euclidendwhile}
+      \State \textbf{return} $b$\Comment{The g.c.d.\ is $b$}
+    \EndProcedure
+  \end{algorithmic}
+\end{algorithm}
+ 
+
+
+
+
+\end{document}  
