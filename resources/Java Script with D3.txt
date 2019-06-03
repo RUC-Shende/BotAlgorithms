@@ -1,0 +1,154 @@
+Javascript and D3
+	Hello future undergraduate research assistants, this is Chris and Dave. This file is meant to help with understanding of javascript and D3 in HTML, with some small code snippets, and examples of the snippets together for some code examples. Each code snippet will go over (attempt to) show every possible way to use, and why it's used, in a sense this is a manual that is meant to be compact with tips, tricks, and weird things that happen with it.
+
+
+BoilerPlate HTML:
+	<!doctype html>
+	<html>
+		<head>
+		</head>
+		<body></body>
+	</html>
+
+	HTML comments between <!-- and -->
+	//before javascript and d3 comments
+	JS and D3 comments between /* and */
+
+
+How to use a javascript file:
+	Example 1: Only html file
+		examplehtml.html:
+			<!doctype html>
+			<html>
+				<head>
+					<!--How to include D3, like using #include-->
+
+					<!--Locally, same directory-->
+					<script src='d3.min.js'></script>
+
+					<!--Different Directory, parent directory-->
+					<script src='../d3.min.js'></script>
+
+					<!--From internet-->
+					<script src="https://d3js.org/d3.v5.min.js"></script>
+				</head>
+				<body>
+					<script>
+						<!--Javascript code here-->
+					</script>
+				</body>
+			</html>
+
+	Example 2: html and javascript file
+		examplehtml.html:
+			<!doctype html>
+			<html>
+				<head>
+					<script src="https://d3js.org/d3.v5.min.js"></script>
+				</head>
+				<body>
+					<script src="javascriptexample.js"></script>
+				</body>
+			</html>
+
+		javascriptexample.js:
+			<!--Javascript code here-->
+
+
+Simple Variables:
+	Variables in javascript are interesting, as they all are vars, but depending on what they are equal, defines the type
+		Example 1: JS only
+			<!--I recommend first initials the type, and capital the first letter of name-->
+			var iApple = 1;
+			var cBanana = 'a';
+			var sCarrot = "string";
+			var bDurian = true;
+			var iaEggPlant = [];	<!--integer array, uninitialized-->
+			var saFood = ["tomato", "potato"];	<!--string array, initialized-->
+			<!--Obviously, if you have like 2+ dimensional arrays, it's a bit awkward to type iaaName each time, so just type the dimension-->
+			var c1Stuff = [ 'a', 'b' ];
+			var c2Values = [ [ 'a', 'b' ], c1Stuff ];
+			var c3Great = [ [ [ 'a', 'b' ], [ 'c', 'd' ] ], [ [ 'e' ], [ 'f' ] ], [ [ ], [ ] ], c2Values ];
+
+		Example 2: JS and D3, the elements
+			var eBody = d3.select("body");		<!--Sets reference to the body in the html file into eBody-->
+			var eSVG = eBody.append("svg");		<!--Attaches svg to the body in html through eBody, and sets reference to it into eSVG-->
+			eSVG.attr("width", 25);		<!--Can set attributes of elements, in this case width is 25 pixels, pixels are default-->
+			eSVG.style("border", "1px solid black");	<!--Can set style elements, in this case give the svg a 1px black border-->
+			var eSVG = d3.select("body").append("svg").attr("width", 25").style("border", "1px solid black");	<!--Can combine it all into one line-->
+Functions:
+	Functions are interesting, and strange compared to other languages
+		Example 1: normal function
+			function fx( ) {
+				//Stuff here
+			}
+
+		Example 2: function parameters
+			function fx( parameter ) {
+				//Do stuff
+				return parameter;//Or something else
+			}
+			
+		Example 3: variable function
+			var fx = ( parameter ) => {
+				return parameter;
+			}
+
+			fx();//To use the variable function
+
+		Example 4: temporary function with parameters
+			var iHold = ( ( parameter ) => {
+				return parameter;
+			} )( 5 );
+
+			Same as
+
+			var iHold = fx( 5 );
+
+Classes:
+	Classes are a bit different than other languages, we shouldn't need private vars, but if we do one day, they are a bit funny
+		Example 1: normal class
+			class Name {
+				constructor( ) {
+					this.sName = "Example";
+				}
+			}
+
+			var ciName = cName();//class instance
+
+		Example 2: class with paramter
+			class Name2 {
+				constructor( name ) {
+					this.sName = name;
+				}
+			}
+
+			var ciName2 = cName2( "Example" );
+
+		Example 3: class with parameter and method
+			class Name3 {
+				constructor( name ) {
+					this.sName = name
+				}
+
+				name( ) {
+					return this.sName;
+				}
+			}
+
+			var ciName3 = cName3( "Example" );
+			var sName = ciName3.name( );//Get name from class instance
+
+
+
+
+
+
+
+
+
+
+
+
+
+
