@@ -1,6 +1,6 @@
 \documentclass[11pt]{amsart}
 \usepackage[margin=2.5cm]{geometry}                % See geometry.pdf to learn the layout options. There are lots.
-\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ...
 %\geometry{landscape}                % Activate for for rotated page geometry
 %\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
 \usepackage{algorithm}
@@ -17,9 +17,34 @@
 \begin{document}
 \maketitle
 \section{Preliminaries}
+
+Algorithms of search-and-escape involve mobile agents (also called Robots)
+searching in geometric domains, such as a closed disk, or convex polygon. By
+working together and communicating with one another, these mobile agents search
+the domain to find an exit hidden on the perimeter. Many different problems exist for
+this topic, such as evacuating all agents, or only evacuating a specific subset of these
+agents.
+
 \subsection{Model}
 
+All agents in this problem use the same coordinate system and operate in a closed
+disk, all starting from the center. These agents' algorithms do not all have to be the same,
+in fact to most efficiently search the circle, they must all be unique.
+In our problem, we observe the Priority model of algorithms. In this model, a
+subset of one or more agents (P) is defined as a Priority (or Queen) and the goal
+of the algorithm is to evacuate a certain number of these Priority Agents. These
+algorithms also include a certain number Helper agents (H), that simply assist in searching the circle
+for the exit, for a total of (H + P) agents. The Helper agents are not typically required to evacuate.
+Once an exit is found, whether by a Helper or a Priority,the agent may use
+Wireless communication to immediately broadcast the exit's location and the finder's identity to all other agents.
+Upon receiving this broadcasted location, any remaining Priority agents that
+need to evacuate travel immediately to the exit and the algorithm terminates.
+The cost of the algorithm is called the termination time, and is the total worst-case
+time for the required subset of Priority agents to exit.
+
 \subsection{Previous Work}
+
+
 
 \subsection{Our Results}
 
@@ -41,9 +66,9 @@
     \EndProcedure
   \end{algorithmic}
 \end{algorithm}
- 
 
 
 
 
-\end{document}  
+
+\end{document}

@@ -11,7 +11,9 @@ tips, tricks, and weird things that happen with it.
 Boilerplate HTML
 ----------------
 
-Copy and paste this to get a default HTML file: ::
+Copy and paste this to get a default HTML file:
+
+.. code-block:: HTML
 
     <!doctype html>
     <html>
@@ -19,6 +21,7 @@ Copy and paste this to get a default HTML file: ::
         </head>
         <body></body>
     </html>
+
 
 Comments
 --------
@@ -28,9 +31,12 @@ Comments
 * JS multi-line comments between /\* and \*/
 
 How To Load a Javascript File into HTML
-=======================================
+---------------------------------------
 
-If the Javascript file looks like this: ::
+If the Javascript file looks like this:
+
+.. code-block:: javascript
+    :emphasize-lines: 1
 
     example.js
 
@@ -39,7 +45,10 @@ If the Javascript file looks like this: ::
         return;
     }
 
-Then the best way to load it into the HTML file is like this: ::
+Then the best way to load it into the HTML file is like this:
+
+.. code-block:: HTML
+    :emphasize-lines: 1
 
     index.html
 
@@ -58,7 +67,10 @@ Then the best way to load it into the HTML file is like this: ::
 
 Please note that once the Javascript file is loaded, it will only execute
 when you tell it to, whether it be right away (from function calls inside the file)
-or in a different script tag, as shown below: ::
+or in a different script tag, as shown below:
+
+.. code-block:: HTML
+    :emphasize-lines: 1
 
     index.html
 
@@ -82,7 +94,10 @@ or in a different script tag, as shown below: ::
 
 Since D3.js is a library, we want to load it in before any of our local code runs.
 We can do this by loading it in the header of the HTML, so that it is included when
-any of our own Javascript runs in the body: ::
+any of our own Javascript runs in the body:
+
+.. code-block:: HTML
+    :emphasize-lines: 1
 
     index.html
 

@@ -1,19 +1,25 @@
+========================================
 Beginner's Guide to Javascript and D3.js
 ========================================
 
+.. contents::
+   :depth: 3
+..
+
 Hello future undergraduate research assistants, this is Chris and Dave.
-This file is meant to help with understanding of javascript and D3 in HTML,
-with some small code snippets, and examples of the snippets together for some code examples.
-Each code snippet will go over (attempt to) show every possible way to use,
-and why it's used, in a sense this is a manual that is meant to be compact with
-tips, tricks, and weird things that happen with it.
+This file is meant to help with understanding of javascript and D3 in
+HTML, with some small code snippets, and examples of the snippets
+together for some code examples. Each code snippet will go over (attempt
+to) show every possible way to use, and why it's used, in a sense this
+is a manual that is meant to be compact with tips, tricks, and weird
+things that happen with it.
 
 Boilerplate HTML
-----------------
+================
 
 Copy and paste this to get a default HTML file:
 
-.. code-block:: HTML
+.. code:: HTML
 
     <!doctype html>
     <html>
@@ -22,21 +28,19 @@ Copy and paste this to get a default HTML file:
         <body></body>
     </html>
 
-
 Comments
---------
+========
 
-* HTML comments between <!-- and -->
-* // before javascript comments
-* JS multi-line comments between /\* and \*/
+-  HTML comments between <!-- and -->
+-  // before javascript comments
+-  JS multi-line comments between /\* and \*/
 
 How To Load a Javascript File into HTML
----------------------------------------
+=======================================
 
 If the Javascript file looks like this:
 
-.. code-block:: javascript
-    :emphasize-lines: 1
+.. code:: javascript
 
     example.js
 
@@ -47,8 +51,7 @@ If the Javascript file looks like this:
 
 Then the best way to load it into the HTML file is like this:
 
-.. code-block:: HTML
-    :emphasize-lines: 1
+.. code:: HTML
 
     index.html
 
@@ -65,12 +68,11 @@ Then the best way to load it into the HTML file is like this:
         </body>
     </html>
 
-Please note that once the Javascript file is loaded, it will only execute
-when you tell it to, whether it be right away (from function calls inside the file)
-or in a different script tag, as shown below:
+Please note that once the Javascript file is loaded, it will only
+execute when you tell it to, whether it be right away (from function
+calls inside the file) or in a different script tag, as shown below:
 
-.. code-block:: HTML
-    :emphasize-lines: 1
+.. code:: HTML
 
     index.html
 
@@ -92,12 +94,11 @@ or in a different script tag, as shown below:
         </body>
     </html>
 
-Since D3.js is a library, we want to load it in before any of our local code runs.
-We can do this by loading it in the header of the HTML, so that it is included when
-any of our own Javascript runs in the body:
+Since D3.js is a library, we want to load it in before any of our local
+code runs. We can do this by loading it in the header of the HTML, so
+that it is included when any of our own Javascript runs in the body:
 
-.. code-block:: HTML
-    :emphasize-lines: 1
+.. code:: HTML
 
     index.html
 

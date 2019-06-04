@@ -18,6 +18,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Beginner’s Guide to Javascript and D3.js" href="extra.html" />
     <link rel="prev" title="Project Summary and Notes:" href="project-summary.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -26,6 +27,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="extra.html" title="Beginner’s Guide to Javascript and D3.js"
+             accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="project-summary.html" title="Project Summary and Notes:"
              accesskey="P">previous</a> |</li>
@@ -49,12 +53,12 @@ tips, tricks, and weird things that happen with it.</p>
 <div class="section" id="boilerplate-html">
 <h2>Boilerplate HTML<a class="headerlink" href="#boilerplate-html" title="Permalink to this headline">¶</a></h2>
 <p>Copy and paste this to get a default HTML file:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;!doctype html&gt;
-&lt;html&gt;
-    &lt;head&gt;
-    &lt;/head&gt;
-    &lt;body&gt;&lt;/body&gt;
-&lt;/html&gt;
+<div class="highlight-HTML notranslate"><div class="highlight"><pre><span></span><span class="cp">&lt;!doctype html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
 </pre></div>
 </div>
 </div>
@@ -66,85 +70,85 @@ tips, tricks, and weird things that happen with it.</p>
 <li>JS multi-line comments between /* and */</li>
 </ul>
 </div>
-</div>
 <div class="section" id="how-to-load-a-javascript-file-into-html">
-<h1>How To Load a Javascript File into HTML<a class="headerlink" href="#how-to-load-a-javascript-file-into-html" title="Permalink to this headline">¶</a></h1>
+<h2>How To Load a Javascript File into HTML<a class="headerlink" href="#how-to-load-a-javascript-file-into-html" title="Permalink to this headline">¶</a></h2>
 <p>If the Javascript file looks like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">example</span><span class="o">.</span><span class="n">js</span>
-
-<span class="n">function</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="n">alert</span><span class="p">(</span><span class="s2">&quot;Hello World!&quot;</span><span class="p">);</span>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">example</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="kd">function</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;Hello World!&quot;</span><span class="p">);</span>
     <span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>Then the best way to load it into the HTML file is like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>index.html
+<div class="highlight-HTML notranslate"><div class="highlight"><pre><span></span><span class="hll">index.html
+</span>
+<span class="cp">&lt;!doctype html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+        <span class="c">&lt;!-- Locally, same directory --&gt;</span>
+        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;example.js&quot;</span><span class="p">&gt;</span>
 
-&lt;!doctype html&gt;
-&lt;html&gt;
-    &lt;head&gt;
-    &lt;/head&gt;
-    &lt;body&gt;
-        &lt;!-- Locally, same directory --&gt;
-        &lt;script src=&quot;example.js&quot;&gt;
-
-        &lt;!-- Different directory from parent directory --&gt;
-        &lt;script src=&quot;../local/path/to/code/example.js&quot;&gt;
-    &lt;/body&gt;
-&lt;/html&gt;
+        <span class="c">&lt;!-- Different directory from parent directory --&gt;</span>
+        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;../local/path/to/code/example.js&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
 </pre></div>
 </div>
 <p>Please note that once the Javascript file is loaded, it will only execute
 when you tell it to, whether it be right away (from function calls inside the file)
 or in a different script tag, as shown below:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>index.html
+<div class="highlight-HTML notranslate"><div class="highlight"><pre><span></span><span class="hll">index.html
+</span>
+<span class="cp">&lt;!doctype html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+        <span class="c">&lt;!-- Locally, same directory --&gt;</span>
+        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;example.js&quot;</span><span class="p">&gt;</span>
 
-&lt;!doctype html&gt;
-&lt;html&gt;
-    &lt;head&gt;
-    &lt;/head&gt;
-    &lt;body&gt;
-        &lt;!-- Locally, same directory --&gt;
-        &lt;script src=&quot;example.js&quot;&gt;
-
-        &lt;!-- Now that we have loaded in our &#39;example.js&#39; we can use its functions. --&gt;
-        &lt;!-- Not all &#39;&lt;script&gt;&#39; tags need a &#39;src&#39; --&gt;
-        &lt;!-- Any text between the tags will use JS syntax. HTML  syntax is invalid in here. --&gt;
-        &lt;script&gt;
-            // Will Alert &quot;Hello World!&quot; as seen in the example.js file.
-            main();
-        &lt;/script&gt;
-    &lt;/body&gt;
-&lt;/html&gt;
+        <span class="c">&lt;!--</span> <span class="nx">Now</span> <span class="nx">that</span> <span class="nx">we</span> <span class="nx">have</span> <span class="nx">loaded</span> <span class="k">in</span> <span class="nx">our</span> <span class="s1">&#39;example.js&#39;</span> <span class="nx">we</span> <span class="nx">can</span> <span class="nx">use</span> <span class="nx">its</span> <span class="nx">functions</span><span class="p">.</span> <span class="o">--&gt;</span>
+        <span class="c">&lt;!--</span> <span class="nx">Not</span> <span class="nx">all</span> <span class="s1">&#39;&lt;script&gt;&#39;</span> <span class="nx">tags</span> <span class="nx">need</span> <span class="nx">a</span> <span class="s1">&#39;src&#39;</span> <span class="o">--&gt;</span>
+        <span class="c">&lt;!--</span> <span class="nx">Any</span> <span class="nx">text</span> <span class="nx">between</span> <span class="nx">the</span> <span class="nx">tags</span> <span class="nx">will</span> <span class="nx">use</span> <span class="nx">JS</span> <span class="nx">syntax</span><span class="p">.</span> <span class="nx">HTML</span>  <span class="nx">syntax</span> <span class="nx">is</span> <span class="nx">invalid</span> <span class="k">in</span> <span class="nx">here</span><span class="p">.</span> <span class="o">--&gt;</span>
+        <span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+            <span class="c1">// Will Alert &quot;Hello World!&quot; as seen in the example.js file.</span>
+            <span class="nx">main</span><span class="p">();</span>
+        <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
 </pre></div>
 </div>
 <p>Since D3.js is a library, we want to load it in before any of our local code runs.
 We can do this by loading it in the header of the HTML, so that it is included when
 any of our own Javascript runs in the body:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>index.html
+<div class="highlight-HTML notranslate"><div class="highlight"><pre><span></span><span class="hll">index.html
+</span>
+<span class="cp">&lt;!doctype html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+        <span class="c">&lt;!-- Using the same script tag, but this one gets loaded first. --&gt;</span>
+        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://d3js.org/d3.v5.min.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+        <span class="c">&lt;!-- Now we can safely use D3 methods in our body. --&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+        <span class="c">&lt;!-- Locally, same directory --&gt;</span>
+        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;example.js&quot;</span><span class="p">&gt;</span>
 
-&lt;!doctype html&gt;
-&lt;html&gt;
-    &lt;head&gt;
-        &lt;!-- Using the same script tag, but this one gets loaded first. --&gt;
-        &lt;script src=&quot;https://d3js.org/d3.v5.min.js&quot;&gt;&lt;/script&gt;
-        &lt;!-- Now we can safely use D3 methods in our body. --&gt;
-    &lt;/head&gt;
-    &lt;body&gt;
-        &lt;!-- Locally, same directory --&gt;
-        &lt;script src=&quot;example.js&quot;&gt;
-
-        &lt;!-- Now that we have loaded in our &#39;example.js&#39; we can use its functions. --&gt;
-        &lt;!-- Not all &#39;&lt;script&gt;&#39; tags need a &#39;src&#39; --&gt;
-        &lt;!-- Any text between the tags will use JS syntax. HTML  syntax is invalid in here. --&gt;
-        &lt;script&gt;
-            // Will Alert &quot;Hello World!&quot; as seen in the example.js file.
-            main();
-        &lt;/script&gt;
-    &lt;/body&gt;
-&lt;/html&gt;
+        <span class="c">&lt;!--</span> <span class="nx">Now</span> <span class="nx">that</span> <span class="nx">we</span> <span class="nx">have</span> <span class="nx">loaded</span> <span class="k">in</span> <span class="nx">our</span> <span class="s1">&#39;example.js&#39;</span> <span class="nx">we</span> <span class="nx">can</span> <span class="nx">use</span> <span class="nx">its</span> <span class="nx">functions</span><span class="p">.</span> <span class="o">--&gt;</span>
+        <span class="c">&lt;!--</span> <span class="nx">Not</span> <span class="nx">all</span> <span class="s1">&#39;&lt;script&gt;&#39;</span> <span class="nx">tags</span> <span class="nx">need</span> <span class="nx">a</span> <span class="s1">&#39;src&#39;</span> <span class="o">--&gt;</span>
+        <span class="c">&lt;!--</span> <span class="nx">Any</span> <span class="nx">text</span> <span class="nx">between</span> <span class="nx">the</span> <span class="nx">tags</span> <span class="nx">will</span> <span class="nx">use</span> <span class="nx">JS</span> <span class="nx">syntax</span><span class="p">.</span> <span class="nx">HTML</span>  <span class="nx">syntax</span> <span class="nx">is</span> <span class="nx">invalid</span> <span class="k">in</span> <span class="nx">here</span><span class="p">.</span> <span class="o">--&gt;</span>
+        <span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+            <span class="c1">// Will Alert &quot;Hello World!&quot; as seen in the example.js file.</span>
+            <span class="nx">main</span><span class="p">();</span>
+        <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
 </pre></div>
+</div>
 </div>
 </div>
 
@@ -159,14 +163,17 @@ any of our own Javascript runs in the body:</p>
 <li><a class="reference internal" href="#">Beginner’s Guide to Javascript and D3.js</a><ul>
 <li><a class="reference internal" href="#boilerplate-html">Boilerplate HTML</a></li>
 <li><a class="reference internal" href="#comments">Comments</a></li>
+<li><a class="reference internal" href="#how-to-load-a-javascript-file-into-html">How To Load a Javascript File into HTML</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#how-to-load-a-javascript-file-into-html">How To Load a Javascript File into HTML</a></li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="project-summary.html"
                         title="previous chapter">Project Summary and Notes:</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="extra.html"
+                        title="next chapter">Beginner’s Guide to Javascript and D3.js</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -197,6 +204,9 @@ any of our own Javascript runs in the body:</p>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
+          <a href="extra.html" title="Beginner’s Guide to Javascript and D3.js"
+             >next</a> |</li>
+        <li class="right" >
           <a href="project-summary.html" title="Project Summary and Notes:"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 1.3a documentation</a> &#187;</li> 
@@ -204,7 +214,7 @@ any of our own Javascript runs in the body:</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Chris Till, David Bushta.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
     </div>
   </body>
 </html>
