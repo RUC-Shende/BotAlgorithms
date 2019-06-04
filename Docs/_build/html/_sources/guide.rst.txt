@@ -1,0 +1,108 @@
+Beginner's Guide to Javascript and D3.js
+========================================
+
+Hello future undergraduate research assistants, this is Chris and Dave.
+This file is meant to help with understanding of javascript and D3 in HTML,
+with some small code snippets, and examples of the snippets together for some code examples.
+Each code snippet will go over (attempt to) show every possible way to use,
+and why it's used, in a sense this is a manual that is meant to be compact with
+tips, tricks, and weird things that happen with it.
+
+Boilerplate HTML
+----------------
+
+Copy and paste this to get a default HTML file: ::
+
+    <!doctype html>
+    <html>
+        <head>
+        </head>
+        <body></body>
+    </html>
+
+Comments
+--------
+
+* HTML comments between <!-- and -->
+* // before javascript comments
+* JS multi-line comments between /\* and \*/
+
+How To Load a Javascript File into HTML
+=======================================
+
+If the Javascript file looks like this: ::
+
+    example.js
+
+    function main() {
+        alert("Hello World!");
+        return;
+    }
+
+Then the best way to load it into the HTML file is like this: ::
+
+    index.html
+
+    <!doctype html>
+    <html>
+        <head>
+        </head>
+        <body>
+            <!-- Locally, same directory -->
+            <script src="example.js">
+
+            <!-- Different directory from parent directory -->
+            <script src="../local/path/to/code/example.js">
+        </body>
+    </html>
+
+Please note that once the Javascript file is loaded, it will only execute
+when you tell it to, whether it be right away (from function calls inside the file)
+or in a different script tag, as shown below: ::
+
+    index.html
+
+    <!doctype html>
+    <html>
+        <head>
+        </head>
+        <body>
+            <!-- Locally, same directory -->
+            <script src="example.js">
+
+            <!-- Now that we have loaded in our 'example.js' we can use its functions. -->
+            <!-- Not all '<script>' tags need a 'src' -->
+            <!-- Any text between the tags will use JS syntax. HTML  syntax is invalid in here. -->
+            <script>
+                // Will Alert "Hello World!" as seen in the example.js file.
+                main();
+            </script>
+        </body>
+    </html>
+
+Since D3.js is a library, we want to load it in before any of our local code runs.
+We can do this by loading it in the header of the HTML, so that it is included when
+any of our own Javascript runs in the body: ::
+
+    index.html
+
+    <!doctype html>
+    <html>
+        <head>
+            <!-- Using the same script tag, but this one gets loaded first. -->
+            <script src="https://d3js.org/d3.v5.min.js"></script>
+            <!-- Now we can safely use D3 methods in our body. -->
+        </head>
+        <body>
+            <!-- Locally, same directory -->
+            <script src="example.js">
+
+            <!-- Now that we have loaded in our 'example.js' we can use its functions. -->
+            <!-- Not all '<script>' tags need a 'src' -->
+            <!-- Any text between the tags will use JS syntax. HTML  syntax is invalid in here. -->
+            <script>
+                // Will Alert "Hello World!" as seen in the example.js file.
+                main();
+            </script>
+        </body>
+    </html>

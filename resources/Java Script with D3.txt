@@ -11,8 +11,8 @@ BoilerPlate HTML:
 	</html>
 
 	HTML comments between <!-- and -->
-	//before javascript and d3 comments
-	JS and D3 comments between /* and */
+	//before javascript comments
+	JS multi-line comments between /* and */
 
 
 How to use a javascript file:
@@ -44,6 +44,7 @@ How to use a javascript file:
 			<!doctype html>
 			<html>
 				<head>
+					<!-- Same as #include. Want to initialize the module -->
 					<script src="https://d3js.org/d3.v5.min.js"></script>
 				</head>
 				<body>
@@ -52,7 +53,41 @@ How to use a javascript file:
 			</html>
 
 		javascriptexample.js:
-			<!--Javascript code here-->
+			//Javascript code here
+			function main() {
+				alert("Hello World!");
+				return;
+			}
+
+	Example 3: Calling functions in HTML or JS
+
+		javascriptexample.js:
+			//Javascript code here
+			function main() {
+				alert("Hello World!");
+				return;
+			}
+
+		examplehtml.html:
+		<!doctype html>
+		<html>
+			<head>
+				<!-- Same as #include. Want to initialize the module -->
+				<script src="https://d3js.org/d3.v5.min.js"></script>
+			</head>
+			<body>
+				<script src="javascriptexample.js"></script>
+
+				<!-- Now that we have loaded in our 'javascriptexample.js' we can use its functions. -->
+				<!-- Not all '<script>' tags need a 'src' -->
+				<!-- Any text between the tags will use JS syntax. HTML  syntax is invalid in here. -->
+				<script>
+					// Will Alert "Hello World!" as seen in the javascriptexample.js file.
+					main();
+				</script>
+			</body>
+		</html>
+
 
 
 Simple Variables:
@@ -70,12 +105,14 @@ Simple Variables:
 			var c2Values = [ [ 'a', 'b' ], c1Stuff ];
 			var c3Great = [ [ [ 'a', 'b' ], [ 'c', 'd' ] ], [ [ 'e' ], [ 'f' ] ], [ [ ], [ ] ], c2Values ];
 
+
 		Example 2: JS and D3, the elements
 			var eBody = d3.select("body");		<!--Sets reference to the body in the html file into eBody-->
 			var eSVG = eBody.append("svg");		<!--Attaches svg to the body in html through eBody, and sets reference to it into eSVG-->
 			eSVG.attr("width", 25);		<!--Can set attributes of elements, in this case width is 25 pixels, pixels are default-->
 			eSVG.style("border", "1px solid black");	<!--Can set style elements, in this case give the svg a 1px black border-->
 			var eSVG = d3.select("body").append("svg").attr("width", 25").style("border", "1px solid black");	<!--Can combine it all into one line-->
+
 Functions:
 	Functions are interesting, and strange compared to other languages
 		Example 1: normal function
@@ -88,7 +125,7 @@ Functions:
 				//Do stuff
 				return parameter;//Or something else
 			}
-			
+
 		Example 3: variable function
 			var fx = ( parameter ) => {
 				return parameter;
@@ -138,17 +175,3 @@ Classes:
 
 			var ciName3 = cName3( "Example" );
 			var sName = ciName3.name( );//Get name from class instance
-
-
-
-
-
-
-
-
-
-
-
-
-
-

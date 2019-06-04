@@ -1,7 +1,7 @@
 Search and Exit Tourist API
 ===========================
 
-.. js:autoclass:: Tourist(visual)
+.. js:autoclass:: ICL_Classes.Tourist(visual)
    :members:
 
 Currently, the project supports the following instructions for robots (class: Tourist). Arguments in [square-brackets] are optional,
@@ -10,7 +10,7 @@ as denoted in the description.
 GoToWallAtAngle (x)
 -------------------
 
-.. js:autofunction:: GoToWallAtAngle
+.. js:autofunction:: ICL_Classes.Tourist#GoToWallAtAngle
 
 The robot will go to the perimeter of the shape at the given angle on the unit shape.
 Most commonly used for deployment phase, for example, Algorithm A (n=2, Face-to-Face)::
@@ -31,7 +31,7 @@ The default (no argument) will cause the robot to choose a random angle to go ou
 FollowWall (direction, [time/angle])
 --------------------------------------
 
-.. js:autofunction:: FollowWall
+.. js:autofunction:: ICL_Classes.Tourist#FollowWall
 
 The robot will search for the exit along the perimeter of the shape in the specified
 direction. [Optional: time/angle to travel for, no argument will result in indefinitely until it is notified of the exit.]
@@ -55,7 +55,7 @@ Note: left and right are relative to counter-clockwise and clockwise respectivel
 Wait ([time])
 -------------
 
-.. js:autofunction:: Wait
+.. js:autofunction:: ICL_Classes.Tourist#Wait
 
 
 The robot will wait indefinitely at the point it is currently at unless a time argument is specified.
@@ -64,7 +64,7 @@ Commonly used once the queen has finished its trajectory, and is waiting for the
 WaitAverage () {Wireless specific}
 ----------------------------------
 
-.. js:autofunction:: WaitAverage
+.. js:autofunction:: ICL_Classes.Tourist#WaitAverage
 
 
 The robot will wait at the average position of all the other robots. This usually involves the other robots
@@ -94,14 +94,14 @@ by the program to be able to receive the broadcasts.
 GoToPoint (x, y)
 ----------------
 
-.. js:autofunction:: GoToPoint
+.. js:autofunction:: ICL_Classes.Tourist#GoToPoint
 
 The robot will go to a specified point on the current (x, y) plane.
 
 Intercept () {Face-to-Face specific}
 -----------------------------------------------
 
-.. js:autofunction:: Intercept
+.. js:autofunction:: ICL_Classes.Tourist#Intercept
 
 If the exit is found, or the robot needs to go to another at the point in time, it may calculate the robot's
 trajectory and then calculate a path for itself to directly intercept the robot at the earliest time possible.
