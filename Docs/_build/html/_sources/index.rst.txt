@@ -17,7 +17,6 @@ This site covers the documentation of our app.
    detailed-changelog
    project-summary
    guide
-   extra
 
 Intro
 =====

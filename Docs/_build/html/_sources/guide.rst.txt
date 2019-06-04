@@ -121,3 +121,142 @@ any of our own Javascript runs in the body:
             </script>
         </body>
     </html>
+
+Variables In Javascript
+-----------------------
+
+Variables in Javascript act similarly to those in Python: they are never typecast to
+any specific value. A few examples:
+
+.. code-block:: javascript
+  :emphasize-lines: 1
+
+    variables.js
+
+    /* If the variable always needs to be a specific type, it may help to
+    name it in a certain way (prefixes or suffixes) to ensure you are always
+    playing with the right values. */
+
+    var apple = 1; //int
+
+    var banana = 'Banana';
+    var carrot = "Carrot";
+    // Note that single quotes or double quotes are valid for strings,
+    // so long as you start and end the string with the same ones.
+
+    var durian = true; //boolean
+
+    // Arrays are of one type only.
+    var eggplant = []; // Array, uninitialized.
+    var rhyme = ["tomato", "potato"];
+
+    // You can however, make multi-dimensional arrays of arrays.
+    var multiArray = [["orange", "doorhinge"], rhyme];
+
+As you can see, JS figures out the type of var automatically. This isn't always
+helpful, but most of the time it's a nice feature.
+
+Functions in Javascript
+-----------------------
+
+There are 3 ways to define a function in Javascript. Again, similarly to Python
+we do not need to define a return type, and instead of `def` we use `function`.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    functions.js
+
+    //Example 1: Normal Definition
+    function fx( parameters ) {
+        // do stuff
+        return;
+    }
+
+    //Example 2: As a var
+    var fy = ( parameter ) => {
+        // do stuff
+    }
+
+    // We may call it as a normal function call:
+    fy();
+
+    //Example 3: As a singleton function with parameters:
+    var hold = ((parameter) => {
+        // do stuff;
+        return val;
+    })( 5 );
+
+    //Same as calling:
+    var hold = fz(5);
+
+Objects in Javascript
+---------------------
+
+An object is a set of key-value pairs, used very frequently in JS. It is also
+similar to a dict in Python.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    objects.js
+
+    // Create an object and use string to retrieve value.
+    var alphabet = {
+        "A" : 1,
+        "B" : 2,
+        "C" : 3
+    }
+
+    var thisLetter = alphabet["A"];
+    // thisLetter == 1
+
+    var thatLetter = alphabet.B;
+    // thatLetter == 2
+
+Often when using Javascript we use the JSON format to send and retrieve data.
+A JSON string is generally a valid JS Object and can be used as such.
+
+Classes in Javascript
+---------------------
+
+Classes are simply special data structures we can use to store data.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    classes.js
+
+    //Example 1: Class with no input parameters
+    class Person {
+        constructor() {
+            this.name = "Harold";
+            this.age  = 65;
+        }
+    }
+
+    var man = new Person();
+    // man.name == "Harold";
+    // man.age  == 65;
+
+
+    //Example 2: Class which takes input parameters
+    class Car {
+        constructor(type, mileage) {
+            this.type = type;
+            this.mileage = mileage;
+            this.works = true;
+            this.wheels = true;
+        }
+    }
+
+    var type = "Tesla";
+    var mileage = 20000;
+
+    var tesla = new Car(type, mileage);
+
+In our project, the main components are all composed of classes that
+contain D3 elements and data that we modify to create visuals.
+
+D3 Elements
+-----------

@@ -18,7 +18,6 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Beginner’s Guide to Javascript and D3.js" href="extra.html" />
     <link rel="prev" title="Project Summary and Notes:" href="project-summary.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -27,9 +26,6 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="extra.html" title="Beginner’s Guide to Javascript and D3.js"
-             accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="project-summary.html" title="Project Summary and Notes:"
              accesskey="P">previous</a> |</li>
@@ -150,6 +146,130 @@ any of our own Javascript runs in the body:</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="variables-in-javascript">
+<h2>Variables In Javascript<a class="headerlink" href="#variables-in-javascript" title="Permalink to this headline">¶</a></h2>
+<p>Variables in Javascript act similarly to those in Python: they are never typecast to
+any specific value. A few examples:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll">  <span class="nx">variables</span><span class="p">.</span><span class="nx">js</span>
+</span>
+  <span class="cm">/* If the variable always needs to be a specific type, it may help to</span>
+<span class="cm">  name it in a certain way (prefixes or suffixes) to ensure you are always</span>
+<span class="cm">  playing with the right values. */</span>
+
+  <span class="kd">var</span> <span class="nx">apple</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">//int</span>
+
+  <span class="kd">var</span> <span class="nx">banana</span> <span class="o">=</span> <span class="s1">&#39;Banana&#39;</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">carrot</span> <span class="o">=</span> <span class="s2">&quot;Carrot&quot;</span><span class="p">;</span>
+  <span class="c1">// Note that single quotes or double quotes are valid for strings,</span>
+  <span class="c1">// so long as you start and end the string with the same ones.</span>
+
+  <span class="kd">var</span> <span class="nx">durian</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span> <span class="c1">//boolean</span>
+
+  <span class="c1">// Arrays are of one type only.</span>
+  <span class="kd">var</span> <span class="nx">eggplant</span> <span class="o">=</span> <span class="p">[];</span> <span class="c1">// Array, uninitialized.</span>
+  <span class="kd">var</span> <span class="nx">rhyme</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;tomato&quot;</span><span class="p">,</span> <span class="s2">&quot;potato&quot;</span><span class="p">];</span>
+
+  <span class="c1">// You can however, make multi-dimensional arrays of arrays.</span>
+  <span class="kd">var</span> <span class="nx">multiArray</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="s2">&quot;doorhinge&quot;</span><span class="p">],</span> <span class="nx">rhyme</span><span class="p">];</span>
+</pre></div>
+</div>
+<p>As you can see, JS figures out the type of var automatically. This isn’t always
+helpful, but most of the time it’s a nice feature.</p>
+</div>
+<div class="section" id="functions-in-javascript">
+<h2>Functions in Javascript<a class="headerlink" href="#functions-in-javascript" title="Permalink to this headline">¶</a></h2>
+<p>There are 3 ways to define a function in Javascript. Again, similarly to Python
+we do not need to define a return type, and instead of <cite>def</cite> we use <cite>function</cite>.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">functions</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="c1">//Example 1: Normal Definition</span>
+<span class="kd">function</span> <span class="nx">fx</span><span class="p">(</span> <span class="nx">parameters</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// do stuff</span>
+    <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">//Example 2: As a var</span>
+<span class="kd">var</span> <span class="nx">fy</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">parameter</span> <span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// do stuff</span>
+<span class="p">}</span>
+
+<span class="c1">// We may call it as a normal function call:</span>
+<span class="nx">fy</span><span class="p">();</span>
+
+<span class="c1">//Example 3: As a singleton function with parameters:</span>
+<span class="kd">var</span> <span class="nx">hold</span> <span class="o">=</span> <span class="p">((</span><span class="nx">parameter</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// do stuff;</span>
+    <span class="k">return</span> <span class="nx">val</span><span class="p">;</span>
+<span class="p">})(</span> <span class="mi">5</span> <span class="p">);</span>
+
+<span class="c1">//Same as calling:</span>
+<span class="kd">var</span> <span class="nx">hold</span> <span class="o">=</span> <span class="nx">fz</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="objects-in-javascript">
+<h2>Objects in Javascript<a class="headerlink" href="#objects-in-javascript" title="Permalink to this headline">¶</a></h2>
+<p>An object is a set of key-value pairs, used very frequently in JS. It is also
+similar to a dict in Python.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">objects</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="c1">// Create an object and use string to retrieve value.</span>
+<span class="kd">var</span> <span class="nx">alphabet</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;A&quot;</span> <span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;B&quot;</span> <span class="o">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s2">&quot;C&quot;</span> <span class="o">:</span> <span class="mi">3</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">thisLetter</span> <span class="o">=</span> <span class="nx">alphabet</span><span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">];</span>
+<span class="c1">// thisLetter == 1</span>
+
+<span class="kd">var</span> <span class="nx">thatLetter</span> <span class="o">=</span> <span class="nx">alphabet</span><span class="p">.</span><span class="nx">B</span><span class="p">;</span>
+<span class="c1">// thatLetter == 2</span>
+</pre></div>
+</div>
+<p>Often when using Javascript we use the JSON format to send and retrieve data.
+A JSON string is generally a valid JS Object and can be used as such.</p>
+</div>
+<div class="section" id="classes-in-javascript">
+<h2>Classes in Javascript<a class="headerlink" href="#classes-in-javascript" title="Permalink to this headline">¶</a></h2>
+<p>Classes are simply special data structures we can use to store data.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">classes</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="c1">//Example 1: Class with no input parameters</span>
+<span class="kr">class</span> <span class="nx">Person</span> <span class="p">{</span>
+    <span class="nx">constructor</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s2">&quot;Harold&quot;</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">age</span>  <span class="o">=</span> <span class="mi">65</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">man</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Person</span><span class="p">();</span>
+<span class="c1">// man.name == &quot;Harold&quot;;</span>
+<span class="c1">// man.age  == 65;</span>
+
+
+<span class="c1">//Example 2: Class which takes input parameters</span>
+<span class="kr">class</span> <span class="nx">Car</span> <span class="p">{</span>
+    <span class="nx">constructor</span><span class="p">(</span><span class="nx">type</span><span class="p">,</span> <span class="nx">mileage</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="nx">type</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">mileage</span> <span class="o">=</span> <span class="nx">mileage</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">works</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">wheels</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">type</span> <span class="o">=</span> <span class="s2">&quot;Tesla&quot;</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">mileage</span> <span class="o">=</span> <span class="mi">20000</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">tesla</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Car</span><span class="p">(</span><span class="nx">type</span><span class="p">,</span> <span class="nx">mileage</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>In our project, the main components are all composed of classes that
+contain D3 elements and data that we modify to create visuals.</p>
+</div>
+<div class="section" id="d3-elements">
+<h2>D3 Elements<a class="headerlink" href="#d3-elements" title="Permalink to this headline">¶</a></h2>
+</div>
 </div>
 
 
@@ -164,6 +284,11 @@ any of our own Javascript runs in the body:</p>
 <li><a class="reference internal" href="#boilerplate-html">Boilerplate HTML</a></li>
 <li><a class="reference internal" href="#comments">Comments</a></li>
 <li><a class="reference internal" href="#how-to-load-a-javascript-file-into-html">How To Load a Javascript File into HTML</a></li>
+<li><a class="reference internal" href="#variables-in-javascript">Variables In Javascript</a></li>
+<li><a class="reference internal" href="#functions-in-javascript">Functions in Javascript</a></li>
+<li><a class="reference internal" href="#objects-in-javascript">Objects in Javascript</a></li>
+<li><a class="reference internal" href="#classes-in-javascript">Classes in Javascript</a></li>
+<li><a class="reference internal" href="#d3-elements">D3 Elements</a></li>
 </ul>
 </li>
 </ul>
@@ -171,9 +296,6 @@ any of our own Javascript runs in the body:</p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="project-summary.html"
                         title="previous chapter">Project Summary and Notes:</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="extra.html"
-                        title="next chapter">Beginner’s Guide to Javascript and D3.js</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -203,9 +325,6 @@ any of our own Javascript runs in the body:</p>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="extra.html" title="Beginner’s Guide to Javascript and D3.js"
-             >next</a> |</li>
         <li class="right" >
           <a href="project-summary.html" title="Project Summary and Notes:"
              >previous</a> |</li>
