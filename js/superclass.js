@@ -187,7 +187,7 @@ class iclData {
         if (this.time > this.timeMax){
             this.time = this.timeMax;
             for (i = 0; i < this.touristNum; i++) {
-                //this.AlterLines(i);
+                this.AlterLines(i);
             }
         }
         else {
@@ -388,7 +388,7 @@ class iclVisual {
         //dataBox = fieldSVG.select("#overLay").append("svg").attr("width", 2 * unit2Px).attr("height", unit2Px).attr("visibility", "hidden");
         for (var i = 0; i < this.iclData.touristNum; i++) { //Reset for next run through.
 
-            this.tourLine[i] = this.fieldSVG.select("#lines").append("path").attr("d", this.lineFx(this.iclData.tourPoints[i]))
+            this.iclData.tourLine[i] = this.fieldSVG.select("#lines").append("path").attr("d", this.lineFx(this.iclData.tourPoints[i]))
                 .style("stroke", this.tourColors[i]).style("stroke-width", this.iclData.unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
 
             this.graphLine[i] = this.graphSVG.select("#lines").append("path").attr("d", this.lineFx(this.iclData.graphPoints[i]))
@@ -442,7 +442,7 @@ class iclVisual {
     cleanUp() {
         this.tourColors = [];
 
-        this.tourLine = [];
+        this.iclData.tourLine = [];
 
         this.graphLine = [];
 
@@ -473,10 +473,10 @@ class iclVisual {
     }
 
     UpdateVisuals() {
-        if (this.iclData.timeMax < this.iclData.time){
-            return;
+        if (this.iclData.timeMax <= this.iclData.time){
             for (var i = 0; i < this.iclData.touristNum; i++) {
-                this.tourLine[i].remove();
+                //this.iclData.AlterLines(i);
+                this.iclData.tourLine[i].remove();
 
                 var holdA = 'M' + (this.iclData.tourPoints[i][0].x + ',' + (this.iclData.tourPoints[i][0].y));
                 var holdG = 'M' + (10 / 25) * this.iclData.unit2Px + ',' + (this.iclData.graphPoints[i][0].y);
@@ -485,32 +485,46 @@ class iclVisual {
                     holdG += 'L' + ((10 / 25) + ((this.iclData.graphPoints[i][j].x / this.iclData.timeMax) * (63 / 20))) * this.iclData.unit2Px + ',' + (this.iclData.graphPoints[i][j].y);
                     //((10/25) + (graphPoints[i][j].x / timeMax) * (63/20)) * unit2Px)
                 }
-                console.log("here");
-                this.tourLine[i] = this.fieldSVG.select(".lines").append("path").attr("d", holdA)
-                    .style("stroke", this.tourColors[i]).style("stroke-width", this.iclData.unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
-                console.log("did not draw line");
+                if (this.iclData.tourLine){
+                    this.iclData.tourLine[i] = this.fieldSVG.select("#lines").append("path").attr("d", holdA)
+                        .style("stroke", this.tourColors[i]).style("stroke-width", this.iclData.unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
+                    console.log(this.iclData.tourLine[i]);
+
+                }
+                else {
+                    this.iclData.tourLine = [];
+                    this.iclData.tourLine[i] = this.fieldSVG.select("#lines").append("path").attr("d", holdA)
+                        .style("stroke", this.tourColors[i]).style("stroke-width", this.iclData.unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
+                    console.log(this.iclData.tourLine[i]);
+                }
             }
         }
-        for (var i = 0; i < this.iclData.touristNum; i++) {
-            var who = this.iclData.tourists[i];
-            if (this.iclData.time >= this.iclData.timeMax) {
-                this.tourLine[i].remove();
+        else {
+            for (var i = 0; i < this.iclData.touristNum; i++) {
+                var who = this.iclData.tourists[i];
+                if (this.iclData.time >= this.iclData.timeMax) {
+                    //this.iclData.tourLine[i].remove();
 
-                var holdA = 'M' + (this.iclData.tourPoints[i][0].x + ',' + (this.iclData.tourPoints[i][0].y));
-                var holdG = 'M' + (10 / 25) * this.iclData.unit2Px + ',' + (this.iclData.graphPoints[i][0].y);
-                for (var j = 1; j < this.iclData.time; j++) {
-                    holdA += 'L' + (this.iclData.tourPoints[i][j].x + ',' + (this.iclData.tourPoints[i][j].y));
-                    holdG += 'L' + ((10 / 25) + ((this.iclData.graphPoints[i][j].x / this.iclData.timeMax) * (63 / 20))) * this.iclData.unit2Px + ',' + (this.iclData.graphPoints[i][j].y);
-                    //((10/25) + (graphPoints[i][j].x / timeMax) * (63/20)) * unit2Px)
+                    var holdA = 'M' + (this.iclData.tourPoints[i][0].x + ',' + (this.iclData.tourPoints[i][0].y));
+                    var holdG = 'M' + (10 / 25) * this.iclData.unit2Px + ',' + (this.iclData.graphPoints[i][0].y);
+                    for (var j = 1; j < this.iclData.time; j++) {
+                        holdA += 'L' + (this.iclData.tourPoints[i][j].x + ',' + (this.iclData.tourPoints[i][j].y));
+                        holdG += 'L' + ((10 / 25) + ((this.iclData.graphPoints[i][j].x / this.iclData.timeMax) * (63 / 20))) * this.iclData.unit2Px + ',' + (this.iclData.graphPoints[i][j].y);
+                        //((10/25) + (graphPoints[i][j].x / timeMax) * (63/20)) * unit2Px)
+                    }
+                    if (this.iclData.tourLine){
+                        this.iclData.tourLine[i] = this.fieldSVG.select("#lines").append("path").attr("d", holdA)
+                            .style("stroke", this.tourColors[i]).style("stroke-width", this.iclData.unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
+                    }
+                    else {
+                        this.iclData.tourLine = [];
+                        this.iclData.tourLine[i] = this.fieldSVG.select("#lines").append("path").attr("d", holdA)
+                            .style("stroke", this.tourColors[i]).style("stroke-width", this.iclData.unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
+                    }
                 }
-                console.log("here");
-                this.tourLine[i] = this.fieldSVG.select(".lines").append("path").attr("d", holdA)
-                    .style("stroke", this.tourColors[i]).style("stroke-width", this.iclData.unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
-                console.log("did not draw line");
-                //break;
+                who.visual.attr("cx", this.iclData.tourPoints[i][Math.floor(this.iclData.time)].x).attr("cy", this.iclData.tourPoints[i][Math.floor(this.iclData.time)].y);
+                this.iclData.graphDots[i].attr("cx", this.iclData.graphPoints[i][Math.floor(this.iclData.time)].x).attr("cy", this.iclData.graphPoints[i][Math.floor(this.iclData.time)].y);
             }
-            who.visual.attr("cx", this.iclData.tourPoints[i][Math.floor(this.iclData.time)].x).attr("cy", this.iclData.tourPoints[i][Math.floor(this.iclData.time)].y);
-            this.iclData.graphDots[i].attr("cx", this.iclData.graphPoints[i][Math.floor(this.iclData.time)].x).attr("cy", this.iclData.graphPoints[i][Math.floor(this.iclData.time)].y);
         }
     }
 
@@ -523,7 +537,6 @@ function Interval() {
     }
     editAnims('play');
     leftVis.iclData.AlterAnim();
-    console.log(leftVis.iclData.timeDirect);
     leftVis.UpdateVisuals();
     leftVis.iclData.AllAtExit();
 }

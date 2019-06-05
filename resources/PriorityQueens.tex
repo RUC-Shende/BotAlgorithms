@@ -8,6 +8,7 @@
 \usepackage{graphicx}
 \usepackage{amssymb,amsfonts}
 \usepackage{epstopdf}
+\usepackage{multicol}
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 
 \title{Brief Article}
@@ -44,25 +45,39 @@ time for the required subset of Priority agents to exit.
 
 \subsection{Previous Work}
 
+Previously, problems of a similar type have been studied, namely those regarding 1 Priority and 1
+or more Helper agents searching in a closed disk. [(God Save the Queen, 2018)
+(Priority Evacuation From a Disk Using Mobile Robots, 2018)]
+In these papers, the results involved getting the only Priority agent to the exit
+as fast as possible, however, our problem attempts to design an algorithm where
+only one of multiple Priority agents needs to evacuate.
 
 
 \subsection{Our Results}
+
+In our algorithm containing 2 Priority and 1 Helper agent, we show that a termination time
+upper bound of 3.55 time units is possible given the specific set of parameters we use
+to guide the agents.
+
+
+
 
 \section{Algorithm 1}
 
 %Our first priority algorithm with 2 queens and 1 servant
 
 \begin{algorithm}
-  \caption{An algorithm}
+  \caption{Priority and Helper Algorithm}
   \begin{algorithmic}[1]
-    \Procedure{Euclid}{$a,b$}\Comment{The g.c.d.\ of $a$ and $b$}
-      \State $r \gets a \bmod b$
-      \While{$r \neq 0$}\Comment{We have the answer if $r$ is $0$}
-        \State $a \gets b$
-        \State $b \gets r$
-        \State $r \gets a \bmod b$
-      \EndWhile\label{euclidendwhile}
-      \State \textbf{return} $b$\Comment{The g.c.d.\ is $b$}
+    \Procedure{Search}{$\alpha$}\Comment{Search for exit and evacuate closest Priority}
+      \State $Q1, Q2, H$ are 2 Priority and Helper respectively.
+      \State All angles are on the typical unit circle.
+      \State $Q1$ goes to the perimeter of the disk at angle 0.
+      \State $Q2$ and $H$ go to the perimeter at angle $\alpha$.
+      \Repeat $Q1$ and $H$ travel clockwise and $Q2$ travels counterclockwise \Until{Exit is found.}
+      \If {$H$ Finds the exit} $H$ broadcasts the exit location, and the closer of the
+      two ($Q1$ or $Q2$) travels along a chord directly to the exit. The algorithm then terminates. \EndIf
+      \If {$Q1$ or $Q2$ finds the exit} the algorithm terminates. \EndIf
     \EndProcedure
   \end{algorithmic}
 \end{algorithm}
