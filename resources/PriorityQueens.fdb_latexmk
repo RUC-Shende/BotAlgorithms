@@ -1,7 +1,7 @@
 # Fdb version 3
-["pdflatex"] 1559759075 "PriorityQueens.tex" "/home/chris/Documents/Algorithms/BotAlgorithms/resources/PriorityQueens.pdf" "PriorityQueens" 1559759075
+["pdflatex"] 1559761581 "PriorityQueens.tex" "/home/chris/Documents/Algorithms/BotAlgorithms/resources/PriorityQueens.pdf" "PriorityQueens" 1559761581
   "/etc/texmf/web2c/texmf.cnf" 1530576801 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/chris/Documents/Algorithms/BotAlgorithms/resources/PriorityQueens.aux" 1559759075 673 585de97b6979f5da9306ff42424b0f72 ""
+  "/home/chris/Documents/Algorithms/BotAlgorithms/resources/PriorityQueens.aux" 1559761581 673 fa3d31b00737353519908b44f8f3a815 ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1511824771 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1480098698 1004 54797486969f23fa377b128694d548df ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1480098698 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -33,6 +33,7 @@
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1480098733 35752 024fb6c41858982481f6968b5fc26508 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb" 1480098733 32726 0a1aea6fcd6468ee2cf64d891f5c43c8 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb" 1480098733 33993 9b89b85fd2d9df0482bd47194d1d3bf3 ""
+  "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1480098733 32569 5e5ddc8df908dea60932f3c484a54c0d ""
   "/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1480098806 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "/usr/share/texlive/texmf-dist/tex/generic/ifxetex/ifxetex.sty" 1480098815 1458 43ab4710dc82f3edeabecd0d099626b2 ""
   "/usr/share/texlive/texmf-dist/tex/generic/oberdiek/etexcmds.sty" 1480098815 7612 729a8cc22a1ee0029997c7f74717ae05 ""
@@ -76,11 +77,13 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1520210507 32485 c64754543d8ac501bea6e75e209ea521 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1559663563 164837 f472f40ab643c6b1fa7fff8b04d446df ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1559663565 946886 dadce9e24407799beb60c3c6400ed09c ""
-  "PriorityQueens.aux" 1559759075 673 585de97b6979f5da9306ff42424b0f72 ""
-  "PriorityQueens.tex" 1559759071 4118 7e10deecb4f3297faa88c5ecb38de234 ""
+  "PriorityQueens.aux" 1559761581 673 fa3d31b00737353519908b44f8f3a815 ""
+  "PriorityQueens.tex" 1559761578 6373 6c64e14a117347c65aa1d5c1bc2c6ce4 ""
+  "mypics/2Q1S_Initial.pdf" 1559659147 23712 6cd3c16083c70a26096a8b63015093b4 ""
+  "mypics/2Q1S_Second_Step.pdf" 1559659147 25397 5ba8dddb9e5ced8649253974da0ab714 ""
   (generated)
-  "PriorityQueens.pdf"
   "PriorityQueens.aux"
-  "/home/chris/Documents/Algorithms/BotAlgorithms/resources/PriorityQueens.log"
-  "PriorityQueens.log"
   "/home/chris/Documents/Algorithms/BotAlgorithms/resources/PriorityQueens.pdf"
+  "PriorityQueens.log"
+  "/home/chris/Documents/Algorithms/BotAlgorithms/resources/PriorityQueens.log"
+  "PriorityQueens.pdf"

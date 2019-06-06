@@ -120,6 +120,12 @@ INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
 OUTPUT /home/chris/Documents/Algorithms/BotAlgorithms/resources/PriorityQueens.pdf
 INPUT /var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map
+INPUT /home/chris/Documents/Algorithms/BotAlgorithms/resources/mypics/2Q1S_Initial.pdf
+INPUT /home/chris/Documents/Algorithms/BotAlgorithms/resources/mypics/2Q1S_Initial.pdf
+INPUT /home/chris/Documents/Algorithms/BotAlgorithms/resources/mypics/2Q1S_Initial.pdf
+INPUT /home/chris/Documents/Algorithms/BotAlgorithms/resources/mypics/2Q1S_Second_Step.pdf
+INPUT /home/chris/Documents/Algorithms/BotAlgorithms/resources/mypics/2Q1S_Second_Step.pdf
+INPUT /home/chris/Documents/Algorithms/BotAlgorithms/resources/mypics/2Q1S_Second_Step.pdf
 INPUT /home/chris/Documents/Algorithms/BotAlgorithms/resources/PriorityQueens.aux
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb
@@ -127,3 +133,4 @@ INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb
+INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb

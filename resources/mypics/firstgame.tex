@@ -1,0 +1,35 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Compiling this file via: LATEX,  then DVItoPS then PStoPDF will produce a nice pdf file
+% which you can include it later as a picture in a file with the \includegraphics...
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[12pt]{article}
+
+\usepackage{ps4pdf,pstricks,pstricks-add}
+
+\begin{document}
+
+   \PSforPDF{\psset{unit=1cm}
+              \begin{pspicture}(-0.7,-.5)(2.5,4.5)
+                \psset{gridcolor=green,subgridcolor=yellow}
+                       \psgrid[gridlabels=0pt]
+                       \let\psgrid\relax
+                       \psline[linewidth=1pt]{-}(0,4)(1,4)
+                       \psline[linewidth=1pt]{-}(1,4)(1,1)
+                       \psline[linewidth=1pt]{-}(0,4)(0,1)
+                       \psline[linewidth=1pt]{-}(0,1)(2,1)
+                       \psline[linewidth=1pt]{-}(0,2)(2,2)
+                       \psline[linewidth=1pt]{-}(0,3)(2,3)
+                       \psline[linewidth=1pt]{-}(2,3)(2,0)
+                       \psline[linewidth=1pt]{-}(1,0)(2,0)
+                       \psline[linewidth=1pt]{-}(1,1)(1,0)
+                       \rput[t](.5,3.75){\Large \textbf{1}}
+                       \rput[t](.5,2.75){\Large \textbf{2}}
+                       \rput[t](.5,1.75){\Large \textbf{4}}
+                       \rput[t](1.5,2.75){\Large \textbf{3}}
+                       \rput[t](1.5,1.5){\Large \textbf{5}}
+                       \rput[t](1.5,.65){\Large \textbf{*}}
+              \end{pspicture}
+              }
+
+\end{document} 
