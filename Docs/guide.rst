@@ -156,6 +156,21 @@ any specific value. A few examples:
 As you can see, JS figures out the type of var automatically. This isn't always
 helpful, but most of the time it's a nice feature.
 
+Understanding Infinity
+----------------------
+
+A few weird equations surrounding infinity will produce the JS value `NaN` (Not a Number.)
+This value is falsy.
+
+For example:
+
+* Infinity * 0 == NaN
+* Infinity - Infinity == NaN
+* Infinity / Infinity == NaN
+* (Any number) / Infinity == 0
+* (Any nonzero number) / 0 == Infinity
+* 0 / 0 == NaN
+
 Functions in Javascript
 -----------------------
 
@@ -258,5 +273,74 @@ Classes are simply special data structures we can use to store data.
 In our project, the main components are all composed of classes that
 contain D3 elements and data that we modify to create visuals.
 
-D3 Elements
------------
+D3 V5 Elements
+==============
+
+Here is the `full API reference <https://github.com/d3/d3/blob/master/API.md>`_
+to the D3 library. As it's very large however, we'll be linking the important methods directly throughout.
+
+In D3.js, we have the power to select and modify DOM elements directly.
+We can use this to modify SVG, Text, and almost any element you can imagine.
+This is the trick to making the algorithms run smoothly, as we can quickly change
+element attributes every frame.
+
+The main call to D3 will be `d3.select()
+<https://github.com/d3/d3-selection/blob/v1.4.0/README.md#select>`_ and using the many types of selectors
+provided by the library to very broadly or finely choose elements. We may put these
+selection queries into a variable for later modification as well, so we don't
+need to call `d3.select()
+<https://github.com/d3/d3-selection/blob/v1.4.0/README.md#select>`_ more than once for an object.
+
+In this example, we select the main body of the document and add an SVG element
+on top of it. From there, we can change and set the SVG's attributes at any time.
+
+Furthermore, to add new elements to the page, we can take an already existing
+element and `.append() <https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selection_append>`_
+to it a new html tag.
+
+Finally to modify the attributes and styling of these elements we can use
+`.attr() <https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selection_attr>`_ and
+`.style() <https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selection_style>`_ respectively.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    d3example.js
+
+    var bodyRef = d3.select("body"); // Overarching container in HTML
+
+    var exampleGFX = bodyRef.append("svg");
+    // This is the same as 'd3.select("body").append("svg");
+    // Attaches the svg to the body and makes a reference to it.
+
+    // Size-based attributes assume pixels (px) by default,
+    // for anything else make the second argument a string.
+
+    // Set width of new SVG to 25px
+    exampleGFX.attr("width", 25);
+
+    // Make the height fit the whole height of the container it's in.
+    // In this case, the default body is 100% of the window height, so
+    // the SVG will also be 100% of the window height.
+    exampleGFX.attr("height", "100%");
+
+    // Give the SVG some style.
+    exampleGFX.style("border", "1px solid black");
+    exampleGFX.style("background-color", "blue");
+
+We can also put everything into one statement. It looks nice to keep it on
+multiple lines and use hanging indents. We like to keep our .attr() and .style() inline this way.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    d3example.js
+
+    //Same code as above, as fewer statements.
+
+    var exampleGFX = d3.select("body").append("svg");
+
+    exampleGFX.attr("width", 25)
+              .attr("height", "100%")
+              .style("border", "1px solid black")
+              .style("background-color", "blue");

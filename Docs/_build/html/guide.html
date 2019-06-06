@@ -176,6 +176,20 @@ any specific value. A few examples:</p>
 <p>As you can see, JS figures out the type of var automatically. This isn’t always
 helpful, but most of the time it’s a nice feature.</p>
 </div>
+<div class="section" id="understanding-infinity">
+<h2>Understanding Infinity<a class="headerlink" href="#understanding-infinity" title="Permalink to this headline">¶</a></h2>
+<p>A few weird equations surrounding infinity will produce the JS value <cite>NaN</cite> (Not a Number.)
+This value is falsy.</p>
+<p>For example:</p>
+<ul class="simple">
+<li>Infinity * 0 == NaN</li>
+<li>Infinity - Infinity == NaN</li>
+<li>Infinity / Infinity == NaN</li>
+<li>(Any number) / Infinity == 0</li>
+<li>(Any nonzero number) / 0 == Infinity</li>
+<li>0 / 0 == NaN</li>
+</ul>
+</div>
 <div class="section" id="functions-in-javascript">
 <h2>Functions in Javascript<a class="headerlink" href="#functions-in-javascript" title="Permalink to this headline">¶</a></h2>
 <p>There are 3 ways to define a function in Javascript. Again, similarly to Python
@@ -267,8 +281,64 @@ A JSON string is generally a valid JS Object and can be used as such.</p>
 <p>In our project, the main components are all composed of classes that
 contain D3 elements and data that we modify to create visuals.</p>
 </div>
+</div>
 <div class="section" id="d3-elements">
-<h2>D3 Elements<a class="headerlink" href="#d3-elements" title="Permalink to this headline">¶</a></h2>
+<h1>D3 Elements<a class="headerlink" href="#d3-elements" title="Permalink to this headline">¶</a></h1>
+<p>Here is the <a class="reference external" href="https://github.com/d3/d3/blob/master/API.md">full API reference</a>
+to the D3 library. As it’s very large however, we’ll be linking the important methods directly throughout.</p>
+<p>In D3.js, we have the power to select and modify DOM elements directly.
+We can use this to modify SVG, Text, and almost any element you can imagine.
+This is the trick to making the algorithms run smoothly, as we can quickly change
+element attributes every frame.</p>
+<p>The main call to D3 will be <a class="reference external" href="https://github.com/d3/d3-selection/blob/v1.4.0/README.md#select">d3.select()</a> and using the many types of selectors
+provided by the library to very broadly or finely choose elements. We may put these
+selection queries into a variable for later modification as well, so we don’t
+need to call <a class="reference external" href="https://github.com/d3/d3-selection/blob/v1.4.0/README.md#select">d3.select()</a> more than once for an object.</p>
+<p>In this example, we select the main body of the document and add an SVG element
+on top of it. From there, we can change and set the SVG’s attributes at any time.</p>
+<p>Furthermore, to add new elements to the page, we can take an already existing
+element and <a class="reference external" href="https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selection_append">.append()</a>
+to it a new html tag.</p>
+<p>Finally to modify the attributes and styling of these elements we can use
+<a class="reference external" href="https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selection_attr">.attr()</a> and
+<a class="reference external" href="https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selection_style">.style()</a> respectively.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">d3example</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="kd">var</span> <span class="nx">bodyRef</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;body&quot;</span><span class="p">);</span> <span class="c1">// Overarching container in HTML</span>
+
+<span class="kd">var</span> <span class="nx">exampleGFX</span> <span class="o">=</span> <span class="nx">bodyRef</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">);</span>
+<span class="c1">// This is the same as &#39;d3.select(&quot;body&quot;).append(&quot;svg&quot;);</span>
+<span class="c1">// Attaches the svg to the body and makes a reference to it.</span>
+
+<span class="c1">// Size-based attributes assume pixels (px) by default,</span>
+<span class="c1">// for anything else make the second argument a string.</span>
+
+<span class="c1">// Set width of new SVG to 25px</span>
+<span class="nx">exampleGFX</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">);</span>
+
+<span class="c1">// Make the height fit the whole height of the container it&#39;s in.</span>
+<span class="c1">// In this case, the default body is 100% of the window height, so</span>
+<span class="c1">// the SVG will also be 100% of the window height.</span>
+<span class="nx">exampleGFX</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="s2">&quot;100%&quot;</span><span class="p">);</span>
+
+<span class="c1">// Give the SVG some style.</span>
+<span class="nx">exampleGFX</span><span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;border&quot;</span><span class="p">,</span> <span class="s2">&quot;1px solid black&quot;</span><span class="p">);</span>
+<span class="nx">exampleGFX</span><span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;background-color&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>We can also put everything into one statement. It looks nice to keep it on
+multiple lines and use hanging indents. We like to keep our .attr() and .style() inline this way.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">d3example</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="c1">//Same code as above, as fewer statements.</span>
+
+<span class="kd">var</span> <span class="nx">exampleGFX</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;body&quot;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">);</span>
+
+<span class="nx">exampleGFX</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="s2">&quot;100%&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;border&quot;</span><span class="p">,</span> <span class="s2">&quot;1px solid black&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;background-color&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">);</span>
+</pre></div>
 </div>
 </div>
 
@@ -285,12 +355,13 @@ contain D3 elements and data that we modify to create visuals.</p>
 <li><a class="reference internal" href="#comments">Comments</a></li>
 <li><a class="reference internal" href="#how-to-load-a-javascript-file-into-html">How To Load a Javascript File into HTML</a></li>
 <li><a class="reference internal" href="#variables-in-javascript">Variables In Javascript</a></li>
+<li><a class="reference internal" href="#understanding-infinity">Understanding Infinity</a></li>
 <li><a class="reference internal" href="#functions-in-javascript">Functions in Javascript</a></li>
 <li><a class="reference internal" href="#objects-in-javascript">Objects in Javascript</a></li>
 <li><a class="reference internal" href="#classes-in-javascript">Classes in Javascript</a></li>
-<li><a class="reference internal" href="#d3-elements">D3 Elements</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#d3-elements">D3 Elements</a></li>
 </ul>
 
   <h4>Previous topic</h4>
