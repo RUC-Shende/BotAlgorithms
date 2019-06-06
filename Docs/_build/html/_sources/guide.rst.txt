@@ -171,6 +171,234 @@ For example:
 * (Any nonzero number) / 0 == Infinity
 * 0 / 0 == NaN
 
+Reference Variables
+-------------------
+
+These are variables that will be reference-only, and will not copy values when set.
+True for reference variables of other types like objects, classes, sets, and so on,
+but string are not reference vars in Javascript. In these examples, arrays are used
+to show referencing.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    references.js
+
+    var arr = [1,2,3,4];
+    var b = arr;
+
+    console.log(b[0]); // Logs "1"
+
+    // Change the original, change the reference as well. Be careful of this.
+    arr[0] = 5;
+    console.log(b[0]); // Logs "5" with no explicit changes to b
+
+    ...
+
+When using `Array.slice() <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice>`_
+we can make a shallow copy. This prevents us from modifying the original data of the slice()'d array.
+We can do similar things manually with classes, objects, etc by looping through all
+class variables or key-value pairs.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    references.js
+
+    ...
+
+    var arr = [1,2,3,4];
+    var b   = a.slice(); // makes a naive copy, not a reference.
+
+    console.log(b[0]); // Logs "1"
+
+    a[0] = 5;
+
+    console.log(b[0]); // Still logs "1"
+
+    ...
+
+Now we go three layers deep. We put a reference variable inside another array,
+and then slice it. The result is as follows:
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    references.js
+
+    ...
+
+    var c = [23];
+    var a = [c,2,3,4];
+
+    var b = a.slice();
+
+    console.log(b[0]); // Logs "[23]"
+
+    c[0] = 5;
+
+    console.log(b[0]); // Logs "[5]"
+
+You may also create an alias for a non-reference variable. What would you use this for?
+We don't know, but here's an example anyways.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    references.js
+
+    var a = 5;
+	var b = ( ) => { return a; };
+	alert( b( ) ); //results in 5
+	a = 10;
+	alert( b( ) ); //results in 10
+
+
+Conditionals in Javascript
+--------------------------
+
+IF conditional examples:
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    conditional.js
+
+    // singular
+    if (true) {
+        //stuff
+    }
+
+    // if, else
+    if (conditionIsTrue) {
+        // do stuff
+    }
+    else {
+        // do other stuff
+    }
+
+    // if, else if, else
+    if (conditionIsTrue) {
+        // do stuff
+    }
+    else if (otherCond) {
+        // do other stuff
+    }
+    else {
+        // do OTHER other stuff
+    }
+
+There are also ternary statements which are less lines of code but harder to read.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    ternary.js
+
+    // Basically, "?" is the if, ":" is the else.
+
+    var a = (condition) ? (valueIfTrue) : (valueIfFalse);
+
+Conditional Operators
+---------------------
+
+Along with the normal <, >, <=, >=, !, &&, || operators JS has two different equivalence operators.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    equivalence.js
+
+    //normal == to check if they have the same value.
+    var a = 12;
+    if (a == 12){} // Will be true
+    if (a == 13){} // false.
+
+    // Now there is also ===, which checks for type and value equivalence.
+    // We recommend this when working with classes and you are trying to find one.
+    // Remember, it doesn't check each element separately, only its reference for reference variables.
+    1 === 1; // will evaluate true as its same type and value.
+
+    var a = [1,2,3];
+    var b = [1,2,3];
+    a === b; // this will be false because reference addr. is not the same.
+
+    var c = a;
+    c === a; // true because they share the same reference addr.
+
+Looping
+-------
+
+Pretty common. Go through and do something a certain number of times or
+until a value is reached.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    loops.js
+
+    // for loop incremental
+    for( var i = 0; i < 10; i++ ) {
+    	//do stuff
+    }
+
+    // for loop decrement
+    for( var i = 10; i > 0; i-- ) {
+    	//do stuff
+    }
+
+    // for loop get odd numbers
+    for( var i = 1; i < 20; i += 2 ) {
+    	//do stuff with those odd numbers less than 20
+    }
+
+    // for loop different number of variables
+    for( var i = 0, j = 20; i < j; i++, j-- ) {
+    	//Do stuff with these colliding numbers
+    }//Both will be 10 at the end of the loop
+
+    // while: only do this if true
+    While( true ) {
+    	//Do stuff
+    }
+
+    // do while: do this once, and then repeat if true
+    Do {
+    	//Do stuff
+    } while( true );
+
+    // Control Flow the continue
+    // A continue will skip the rest current cycle, and start the next cycle
+    // Example:
+    for( var i = 0; i < 10; i++ ) {
+    	If( i % 2 == 0 ) {//Is it not odd?
+    		continue;
+    	}
+    	alert( “odd number” );
+    }
+
+    // Control Flow break
+    // Need to end a loop cycle in the middle, but don’t start a new cycle?
+    // Break it.
+    while( true ) {
+    	if( user input ) {
+    		break;
+    	}
+    }
+
+    // labeling your loops
+    // In a loop with in a loop, and need to get out of both? Well then, give
+    // them labels, and break the outer loop with its label.
+    labelOne:
+    while( true ) {
+    	labelTwo:
+    	while( true ) {
+    		if( user input ) {
+    			break labelOne;
+    		}
+    	}
+    }
+
 Functions in Javascript
 -----------------------
 
@@ -273,8 +501,8 @@ Classes are simply special data structures we can use to store data.
 In our project, the main components are all composed of classes that
 contain D3 elements and data that we modify to create visuals.
 
-D3 Elements
-===========
+D3 V5 Elements
+==============
 
 Here is the `full API reference <https://github.com/d3/d3/blob/master/API.md>`_
 to the D3 library. As it's very large however, we'll be linking the important methods directly throughout.
@@ -344,3 +572,63 @@ multiple lines and use hanging indents. We like to keep our .attr() and .style()
               .attr("height", "100%")
               .style("border", "1px solid black")
               .style("background-color", "blue");
+
+Other types of elements examples:
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    d3example.js
+
+    var exampleGFX = d3.select("body").append("svg");
+
+    exampleGFX.attr("width", 200)
+              .attr("height", "100%")
+              .style("border", "1px solid black")
+              .style("background-color", "blue");
+
+    // Text: Needs font-size, text, and (x,y) coordinates.
+    // Let's append it to the svg for now.
+    exampleGFX.append("text")
+              .attr("x", 20)
+              .attr("y", 20)
+              .style("text-anchor", "middle")
+              .style("font-size", 12)
+              .text("Hello!");
+    // Note that (x,y) coordinates are almost always relative to the
+    // top left of the element's container, in this case the SVG.
+
+    // Rectangle: Needs width, height, and (x,y) coordinates.
+    exampleGFX.append("rect")
+              .attr("width", 20)
+              .attr("height", 20)
+              .attr("x", 50)
+              .attr("y", 25)
+              .style("fill", "red");
+
+    // Path: needs a string of coordinates and a stroke color.
+    var coordinates = "M0,0L1,0L0,1";
+    // D3 has methods for making paths based on data. We can worry about the
+    // specifics of how to construct a path string later.
+    exampleGFX.append("path")
+              .attr("d", coordinates) // path's "d" attribute is what path it takes.
+              .style("fill", "none")
+              .style("stroke", "green");
+
+    // Line: needs (x1,y1) and (x2,y2) and a stroke color.
+    exampleGFX.append("line")
+              .attr("x1", 0)
+              .attr("y1", 0)
+              .attr("x2", 100)
+              .attr("y2", 100)
+              .style("fill", "none")
+              .style("stroke", "red");
+
+    // Circle: needs radius and center (cx,cy) coordinates.
+    exampleGFX.append("circle")
+              .attr("r", 10)
+              .attr("cx", 10)
+              .attr("cy", 90)
+              .style("fill", "red");
+
+As you can see, D3 is very powerful for what little we've seen so far.

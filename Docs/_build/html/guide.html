@@ -190,6 +190,209 @@ This value is falsy.</p>
 <li>0 / 0 == NaN</li>
 </ul>
 </div>
+<div class="section" id="reference-variables">
+<h2>Reference Variables<a class="headerlink" href="#reference-variables" title="Permalink to this headline">¶</a></h2>
+<p>These are variables that will be reference-only, and will not copy values when set.
+True for reference variables of other types like objects, classes, sets, and so on,
+but string are not reference vars in Javascript. In these examples, arrays are used
+to show referencing.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">references</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">];</span>
+<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// Logs &quot;1&quot;</span>
+
+<span class="c1">// Change the original, change the reference as well. Be careful of this.</span>
+<span class="nx">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// Logs &quot;5&quot; with no explicit changes to b</span>
+
+<span class="p">...</span>
+</pre></div>
+</div>
+<p>When using <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice">Array.slice()</a>
+we can make a shallow copy. This prevents us from modifying the original data of the slice()’d array.
+We can do similar things manually with classes, objects, etc by looping through all
+class variables or key-value pairs.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">references</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="p">...</span>
+
+<span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">];</span>
+<span class="kd">var</span> <span class="nx">b</span>   <span class="o">=</span> <span class="nx">a</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span> <span class="c1">// makes a naive copy, not a reference.</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// Logs &quot;1&quot;</span>
+
+<span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// Still logs &quot;1&quot;</span>
+
+<span class="p">...</span>
+</pre></div>
+</div>
+<p>Now we go three layers deep. We put a reference variable inside another array,
+and then slice it. The result is as follows:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">references</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="p">...</span>
+
+<span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="p">[</span><span class="mi">23</span><span class="p">];</span>
+<span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">[</span><span class="nx">c</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">];</span>
+
+<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">a</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// Logs &quot;[23]&quot;</span>
+
+<span class="nx">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// Logs &quot;[5]&quot;</span>
+</pre></div>
+</div>
+<p>You may also create an alias for a non-reference variable. What would you use this for?
+We don’t know, but here’s an example anyways.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">references</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="p">(</span> <span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">a</span><span class="p">;</span> <span class="p">};</span>
+    <span class="nx">alert</span><span class="p">(</span> <span class="nx">b</span><span class="p">(</span> <span class="p">)</span> <span class="p">);</span> <span class="c1">//results in 5</span>
+    <span class="nx">a</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+    <span class="nx">alert</span><span class="p">(</span> <span class="nx">b</span><span class="p">(</span> <span class="p">)</span> <span class="p">);</span> <span class="c1">//results in 10</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="conditionals-in-javascript">
+<h2>Conditionals in Javascript<a class="headerlink" href="#conditionals-in-javascript" title="Permalink to this headline">¶</a></h2>
+<p>IF conditional examples:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">conditional</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="c1">// singular</span>
+<span class="k">if</span> <span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">//stuff</span>
+<span class="p">}</span>
+
+<span class="c1">// if, else</span>
+<span class="k">if</span> <span class="p">(</span><span class="nx">conditionIsTrue</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// do stuff</span>
+<span class="p">}</span>
+<span class="k">else</span> <span class="p">{</span>
+    <span class="c1">// do other stuff</span>
+<span class="p">}</span>
+
+<span class="c1">// if, else if, else</span>
+<span class="k">if</span> <span class="p">(</span><span class="nx">conditionIsTrue</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// do stuff</span>
+<span class="p">}</span>
+<span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">otherCond</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// do other stuff</span>
+<span class="p">}</span>
+<span class="k">else</span> <span class="p">{</span>
+    <span class="c1">// do OTHER other stuff</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>There are also ternary statements which are less lines of code but harder to read.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">ternary</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="c1">// Basically, &quot;?&quot; is the if, &quot;:&quot; is the else.</span>
+
+<span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">(</span><span class="nx">condition</span><span class="p">)</span> <span class="o">?</span> <span class="p">(</span><span class="nx">valueIfTrue</span><span class="p">)</span> <span class="o">:</span> <span class="p">(</span><span class="nx">valueIfFalse</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="conditional-operators">
+<h2>Conditional Operators<a class="headerlink" href="#conditional-operators" title="Permalink to this headline">¶</a></h2>
+<p>Along with the normal &lt;, &gt;, &lt;=, &gt;=, !, &amp;&amp;, || operators JS has two different equivalence operators.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">equivalence</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="c1">//normal == to check if they have the same value.</span>
+<span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">==</span> <span class="mi">12</span><span class="p">){}</span> <span class="c1">// Will be true</span>
+<span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">==</span> <span class="mi">13</span><span class="p">){}</span> <span class="c1">// false.</span>
+
+<span class="c1">// Now there is also ===, which checks for type and value equivalence.</span>
+<span class="c1">// We recommend this when working with classes and you are trying to find one.</span>
+<span class="c1">// Remember, it doesn&#39;t check each element separately, only its reference for reference variables.</span>
+<span class="mi">1</span> <span class="o">===</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// will evaluate true as its same type and value.</span>
+
+<span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">];</span>
+<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">];</span>
+<span class="nx">a</span> <span class="o">===</span> <span class="nx">b</span><span class="p">;</span> <span class="c1">// this will be false because reference addr. is not the same.</span>
+
+<span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+<span class="nx">c</span> <span class="o">===</span> <span class="nx">a</span><span class="p">;</span> <span class="c1">// true because they share the same reference addr.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="looping">
+<h2>Looping<a class="headerlink" href="#looping" title="Permalink to this headline">¶</a></h2>
+<p>Pretty common. Go through and do something a certain number of times or
+until a value is reached.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll">loops.js
+</span>
+// for loop incremental
+for( var i = 0; i &lt; 10; i++ ) {
+    //do stuff
+}
+
+// for loop decrement
+for( var i = 10; i &gt; 0; i-- ) {
+    //do stuff
+}
+
+// for loop get odd numbers
+for( var i = 1; i &lt; 20; i += 2 ) {
+    //do stuff with those odd numbers less than 20
+}
+
+// for loop different number of variables
+for( var i = 0, j = 20; i &lt; j; i++, j-- ) {
+    //Do stuff with these colliding numbers
+}//Both will be 10 at the end of the loop
+
+// while: only do this if true
+While( true ) {
+    //Do stuff
+}
+
+// do while: do this once, and then repeat if true
+Do {
+    //Do stuff
+} while( true );
+
+// Control Flow the continue
+// A continue will skip the rest current cycle, and start the next cycle
+// Example:
+for( var i = 0; i &lt; 10; i++ ) {
+    If( i % 2 == 0 ) {//Is it not odd?
+            continue;
+    }
+    alert( “odd number” );
+}
+
+// Control Flow break
+// Need to end a loop cycle in the middle, but don’t start a new cycle?
+// Break it.
+while( true ) {
+    if( user input ) {
+            break;
+    }
+}
+
+// labeling your loops
+// In a loop with in a loop, and need to get out of both? Well then, give
+// them labels, and break the outer loop with its label.
+labelOne:
+while( true ) {
+    labelTwo:
+    while( true ) {
+            if( user input ) {
+                    break labelOne;
+            }
+    }
+}
+</pre></div>
+</div>
+</div>
 <div class="section" id="functions-in-javascript">
 <h2>Functions in Javascript<a class="headerlink" href="#functions-in-javascript" title="Permalink to this headline">¶</a></h2>
 <p>There are 3 ways to define a function in Javascript. Again, similarly to Python
@@ -282,8 +485,8 @@ A JSON string is generally a valid JS Object and can be used as such.</p>
 contain D3 elements and data that we modify to create visuals.</p>
 </div>
 </div>
-<div class="section" id="d3-elements">
-<h1>D3 Elements<a class="headerlink" href="#d3-elements" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="d3-v5-elements">
+<h1>D3 V5 Elements<a class="headerlink" href="#d3-v5-elements" title="Permalink to this headline">¶</a></h1>
 <p>Here is the <a class="reference external" href="https://github.com/d3/d3/blob/master/API.md">full API reference</a>
 to the D3 library. As it’s very large however, we’ll be linking the important methods directly throughout.</p>
 <p>In D3.js, we have the power to select and modify DOM elements directly.
@@ -340,6 +543,62 @@ multiple lines and use hanging indents. We like to keep our .attr() and .style()
           <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;background-color&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
+<p>Other types of elements examples:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">d3example</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="kd">var</span> <span class="nx">exampleGFX</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;body&quot;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">);</span>
+
+<span class="nx">exampleGFX</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="s2">&quot;100%&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;border&quot;</span><span class="p">,</span> <span class="s2">&quot;1px solid black&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;background-color&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">);</span>
+
+<span class="c1">// Text: Needs font-size, text, and (x,y) coordinates.</span>
+<span class="c1">// Let&#39;s append it to the svg for now.</span>
+<span class="nx">exampleGFX</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;text-anchor&quot;</span><span class="p">,</span> <span class="s2">&quot;middle&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;font-size&quot;</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Hello!&quot;</span><span class="p">);</span>
+<span class="c1">// Note that (x,y) coordinates are almost always relative to the</span>
+<span class="c1">// top left of the element&#39;s container, in this case the SVG.</span>
+
+<span class="c1">// Rectangle: Needs width, height, and (x,y) coordinates.</span>
+<span class="nx">exampleGFX</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;rect&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">);</span>
+
+<span class="c1">// Path: needs a string of coordinates and a stroke color.</span>
+<span class="kd">var</span> <span class="nx">coordinates</span> <span class="o">=</span> <span class="s2">&quot;M0,0L1,0L0,1&quot;</span><span class="p">;</span>
+<span class="c1">// D3 has methods for making paths based on data. We can worry about the</span>
+<span class="c1">// specifics of how to construct a path string later.</span>
+<span class="nx">exampleGFX</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="nx">coordinates</span><span class="p">)</span> <span class="c1">// path&#39;s &quot;d&quot; attribute is what path it takes.</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;stroke&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">);</span>
+
+<span class="c1">// Line: needs (x1,y1) and (x2,y2) and a stroke color.</span>
+<span class="nx">exampleGFX</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;line&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;x1&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;y1&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;x2&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;y2&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;stroke&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">);</span>
+
+<span class="c1">// Circle: needs radius and center (cx,cy) coordinates.</span>
+<span class="nx">exampleGFX</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;circle&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;cx&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;cy&quot;</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>As you can see, D3 is very powerful for what little we’ve seen so far.</p>
 </div>
 
 
@@ -356,12 +615,16 @@ multiple lines and use hanging indents. We like to keep our .attr() and .style()
 <li><a class="reference internal" href="#how-to-load-a-javascript-file-into-html">How To Load a Javascript File into HTML</a></li>
 <li><a class="reference internal" href="#variables-in-javascript">Variables In Javascript</a></li>
 <li><a class="reference internal" href="#understanding-infinity">Understanding Infinity</a></li>
+<li><a class="reference internal" href="#reference-variables">Reference Variables</a></li>
+<li><a class="reference internal" href="#conditionals-in-javascript">Conditionals in Javascript</a></li>
+<li><a class="reference internal" href="#conditional-operators">Conditional Operators</a></li>
+<li><a class="reference internal" href="#looping">Looping</a></li>
 <li><a class="reference internal" href="#functions-in-javascript">Functions in Javascript</a></li>
 <li><a class="reference internal" href="#objects-in-javascript">Objects in Javascript</a></li>
 <li><a class="reference internal" href="#classes-in-javascript">Classes in Javascript</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#d3-elements">D3 Elements</a></li>
+<li><a class="reference internal" href="#d3-v5-elements">D3 V5 Elements</a></li>
 </ul>
 
   <h4>Previous topic</h4>
