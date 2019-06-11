@@ -399,6 +399,75 @@ until a value is reached.
     	}
     }
 
+True, False, Truthy, and Falsy
+------------------------------
+
+When comparing many variables in Javascript with one another,
+we may run into instances where we have two vars of different types, but Javascript will
+see them as the same value. Some examples...
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    truth.js
+
+    if (1) {}; // TRUE
+    if (true) {}; // TRUE
+    // No problem here, this is pretty typical.
+
+    if (1 == true) {}; // TRUE: The interpreter will always evaluate this the same way.
+    if (1 === true) {}; // FALSE: Value equivalence? Sure. Type equivalence? No.
+
+    // The interpreter is smart and knows when a var can safely be typecasted and
+    // compared with another type.
+    if ('1' == 1) {}; // TRUE: If a string contains ONLY a number, then we may use ==.
+    if ([1] == 1) {}; // TRUE: Since the array is only 1-length, JS knows to compare them properly.
+
+    // The number '1' is special in that it's the only value that can be compared to true to result in true.
+    // All other non-zero numbers are "Truthy": They only result to true implicitly.
+    if (2) {}; // TRUE.
+    if (2 == true) {}; // FALSE.
+    if ("hello") {}; // TRUE. As long as a string is non-empty, it's truthy.
+    if ([3]) {}; // TRUE.
+
+
+As you can see, due to the nature of some vars being considered "truthy" by Javascript,
+we don't always explicitly need to check if they are equivalent to 'true' when checking their
+existence. Similarly, false values can also be "falsy". First some examples of things
+that equate to 'false', and then some rogue ones.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    false.js
+
+    if (0) {}; // FALSE.
+    if ("") {}; // FALSE.
+    if ([]) {}; // FALSE.
+    if (false) {}; //FALSE
+    // Typically empty and zero values are considered 'false'.
+
+
+    if (0 == false) {}; // TRUE. Similar to how '1' always gets true.
+    if ("" == false) {}; // TRUE.
+    if ([] == false) {}; // TRUE.
+
+    if (0 === false) {}; // FALSE. Strict equivalence at it again.
+
+    if (‘0’ == 0) {}; // TRUE. ’0’ becomes 0 when comparing
+    if ([0] == 0) {}; // TRUE. [0] becomes 0 when comparing
+
+    // Now for some falsy objects. They evaluate as false, but don't equal false.
+    if (null) {}; // FALSE.
+    if (undefined) {}; // FALSE.
+    if (null == undefined) {}; // TRUE.
+    if (null == false) {}; // FALSE.
+
+    // Lastly for NaN. Another weird and interesting specimen.
+    if (NaN) {}; // FALSE.
+    if (NaN == NaN) {}; // FALSE.
+    if (isNaN(NaN)) {}; // TRUE. isNaN() is a builtin JS function.
+
 Functions in Javascript
 -----------------------
 
@@ -457,8 +526,160 @@ similar to a dict in Python.
     var thatLetter = alphabet.B;
     // thatLetter == 2
 
+We may also want to add or remove key-value pairs directly once it is initialized.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    objects.js
+
+    var alphabet = {
+        "A" : 1,
+        "B" : 2,
+        "C" : 3
+    }
+
+    alphabet.D = 4; // automatically add a new key-value pair using dot notation.
+    // Note that the value after '.' will be a string key.
+    alphabet["E"] = 5; // Another valid way of adding to the obj.
+
+    console.log(alphabet);
+    // will log: {"A" : 1, "B" : 2, "C" : 3, "D" : 4, "E" : 5}
+
+    // The 'delete' keyword in Javascript will remove a value from the object.
+    delete alphabet.D;
+    delete alphabet["C"];
+    // Both ways of accessing the values are valid for this too,
+    // although once they are gone this will throw a keyError.
+
+    console.log(alphabet);
+    // will log: {"A" : 1, "B" : 2, E" : 5}
+
 Often when using Javascript we use the JSON format to send and retrieve data.
-A JSON string is generally a valid JS Object and can be used as such.
+A JSON string is generally formatted as a valid JS Object and can be used as such with the proper typecasting.
+
+Arrays in Javascript
+--------------------
+
+Arrays in JS are similar to lists in Python.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    arrays.js
+
+    var a = [1,2,3]; // Single type array.
+
+    var b = [1, "Hello", [a]]; // multi-type arrays are also supported.
+
+    var c = a[0]; // a[0] evaluates to 1, so c = 1.
+
+That's great, but once we initialize it, how can we add, remove or change values in it?
+Arrays use different methods from Objects and as such can act as queues, stacks, and other
+helpful data structures.
+
+..code-block:: javascript
+    :emphasize-lines: 1
+
+    arrays.js
+
+    var a = [1,2,3,4];
+
+    a.push(5);   // [1,2,3,4,5]
+    a.pop();     // [1,2,3,4]
+    a.shift();   // [2,3,4]
+    a.splice(1); // [2,4] This one is be a way to remove data from a certain index,
+    // As well as add data back into the array at that index.
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
+
+
+Spread Syntax
+-------------
+
+`Spread syntax <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax>`_
+is a type of operator that applies to both arrays as well as Objects. It allows an iterable
+to be expanded in places where zero or more arguments or elements are expected,
+or an object expression to be expanded in places where zero or more key-value pairs
+are expected. Spread syntax is called using the unary `...` operator on an iterable.
+
+.. code-block javascript
+    :emphasize-lines: 1
+
+    spreadSyntax.js
+
+    // Example 1: Using arrays
+    var a = [1,2,3];
+    var b = [a,4,5];     // This is currently [[1,2,3], 4,5]. The length of b is 3.
+    var c = [...a, 4,5]; // This is currently [1,2,3,4,5]. The length of c is 5.
+
+    // As you can see the spread operator can be used to seamlessly merge arrays.
+
+    // Example 2: Using Objects
+    var o = {
+        "A" : 1,
+        "B" : 2,
+        "C" : 3
+    }
+
+    var p = {
+        a,
+        "D" : 4,
+        "E" : 5
+    }
+
+    // p is currently {"o" : {"A":1,"B":2,"C"3}, "D": 4, "E" : 5}
+
+    var t = {
+        ...o,
+        "D" : 4,
+        "E" : 5
+    }
+
+    // t is currently {"A" : 1, "B" : 2,"C" : 3, "D" : 4, "E" : 5}
+
+
+    // Example 3: Overwriting Inherited Values
+    // o is defined above.
+
+    var x = {
+        ...o,
+        "C" : 10,
+        "D" : 4
+    }
+
+    // x is currently {"A" : 1, "B" : 2,"C" : 10, "D" : 4}
+
+
+"In" Syntax
+-----------
+
+Again, the `"in" operator syntax <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/in>`_
+applies for both arrays and Objects, but does something different depending on the type
+of the iterable.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    inOperator.js
+
+    // Example 1: Arrays
+    // The 'in' operator checks that the value is a valid INDEX
+    // in the array, not for the value itself.
+
+    var a = [1,2,3,4,5];
+    if (5 in a) {}; // FALSE. Index 5 does not exist in a.
+    if (2 in a) {}; // TRUE. There is a value at index 2 in a.
+
+    // Example 2: Objects
+    // The 'in' operator checks for the key in the Object.
+
+    var o = {
+        "A" : 1,
+        "B" : 2
+    }
+
+    if ("A" in o) {}; // TRUE.
+    if (2 in o) {};   // FALSE. 2 is not a valid key in o.
 
 Classes in Javascript
 ---------------------

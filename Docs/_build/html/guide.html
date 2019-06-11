@@ -393,6 +393,68 @@ while( true ) {
 </pre></div>
 </div>
 </div>
+<div class="section" id="true-false-truthy-and-falsy">
+<h2>True, False, Truthy, and Falsy<a class="headerlink" href="#true-false-truthy-and-falsy" title="Permalink to this headline">¶</a></h2>
+<p>When comparing many variables in Javascript with one another,
+we may run into instances where we have two vars of different types, but Javascript will
+see them as the same value. Some examples…</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">truth</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="k">if</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// TRUE</span>
+<span class="k">if</span> <span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// TRUE</span>
+<span class="c1">// No problem here, this is pretty typical.</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="mi">1</span> <span class="o">==</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// TRUE: The interpreter will always evaluate this the same way.</span>
+<span class="k">if</span> <span class="p">(</span><span class="mi">1</span> <span class="o">===</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// FALSE: Value equivalence? Sure. Type equivalence? No.</span>
+
+<span class="c1">// The interpreter is smart and knows when a var can safely be typecasted and</span>
+<span class="c1">// compared with another type.</span>
+<span class="k">if</span> <span class="p">(</span><span class="s1">&#39;1&#39;</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// TRUE: If a string contains ONLY a number, then we may use ==.</span>
+<span class="k">if</span> <span class="p">([</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// TRUE: Since the array is only 1-length, JS knows to compare them properly.</span>
+
+<span class="c1">// The number &#39;1&#39; is special in that it&#39;s the only value that can be compared to true to result in true.</span>
+<span class="c1">// All other non-zero numbers are &quot;Truthy&quot;: They only result to true implicitly.</span>
+<span class="k">if</span> <span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// TRUE.</span>
+<span class="k">if</span> <span class="p">(</span><span class="mi">2</span> <span class="o">==</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// FALSE.</span>
+<span class="k">if</span> <span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// TRUE. As long as a string is non-empty, it&#39;s truthy.</span>
+<span class="k">if</span> <span class="p">([</span><span class="mi">3</span><span class="p">])</span> <span class="p">{};</span> <span class="c1">// TRUE.</span>
+</pre></div>
+</div>
+<p>As you can see, due to the nature of some vars being considered “truthy” by Javascript,
+we don’t always explicitly need to check if they are equivalent to ‘true’ when checking their
+existence. Similarly, false values can also be “falsy”. First some examples of things
+that equate to ‘false’, and then some rogue ones.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll">false.js
+</span>
+if (0) {}; // FALSE.
+if (&quot;&quot;) {}; // FALSE.
+if ([]) {}; // FALSE.
+if (false) {}; //FALSE
+// Typically empty and zero values are considered &#39;false&#39;.
+
+
+if (0 == false) {}; // TRUE. Similar to how &#39;1&#39; always gets true.
+if (&quot;&quot; == false) {}; // TRUE.
+if ([] == false) {}; // TRUE.
+
+if (0 === false) {}; // FALSE. Strict equivalence at it again.
+
+if (‘0’ == 0) {}; // TRUE. ’0’ becomes 0 when comparing
+if ([0] == 0) {}; // TRUE. [0] becomes 0 when comparing
+
+// Now for some falsy objects. They evaluate as false, but don&#39;t equal false.
+if (null) {}; // FALSE.
+if (undefined) {}; // FALSE.
+if (null == undefined) {}; // TRUE.
+if (null == false) {}; // FALSE.
+
+// Lastly for NaN. Another weird and interesting specimen.
+if (NaN) {}; // FALSE.
+if (NaN == NaN) {}; // FALSE.
+if (isNaN(NaN)) {}; // TRUE. isNaN() is a builtin JS function.
+</pre></div>
+</div>
+</div>
 <div class="section" id="functions-in-javascript">
 <h2>Functions in Javascript<a class="headerlink" href="#functions-in-javascript" title="Permalink to this headline">¶</a></h2>
 <p>There are 3 ways to define a function in Javascript. Again, similarly to Python
@@ -444,8 +506,107 @@ similar to a dict in Python.</p>
 <span class="c1">// thatLetter == 2</span>
 </pre></div>
 </div>
+<p>We may also want to add or remove key-value pairs directly once it is initialized.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">objects</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="kd">var</span> <span class="nx">alphabet</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;A&quot;</span> <span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;B&quot;</span> <span class="o">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s2">&quot;C&quot;</span> <span class="o">:</span> <span class="mi">3</span>
+<span class="p">}</span>
+
+<span class="nx">alphabet</span><span class="p">.</span><span class="nx">D</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span> <span class="c1">// automatically add a new key-value pair using dot notation.</span>
+<span class="c1">// Note that the value after &#39;.&#39; will be a string key.</span>
+<span class="nx">alphabet</span><span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span> <span class="c1">// Another valid way of adding to the obj.</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">alphabet</span><span class="p">);</span>
+<span class="c1">// will log: {&quot;A&quot; : 1, &quot;B&quot; : 2, &quot;C&quot; : 3, &quot;D&quot; : 4, &quot;E&quot; : 5}</span>
+
+<span class="c1">// The &#39;delete&#39; keyword in Javascript will remove a value from the object.</span>
+<span class="k">delete</span> <span class="nx">alphabet</span><span class="p">.</span><span class="nx">D</span><span class="p">;</span>
+<span class="k">delete</span> <span class="nx">alphabet</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">];</span>
+<span class="c1">// Both ways of accessing the values are valid for this too,</span>
+<span class="c1">// although once they are gone this will throw a keyError.</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">alphabet</span><span class="p">);</span>
+<span class="c1">// will log: {&quot;A&quot; : 1, &quot;B&quot; : 2, E&quot; : 5}</span>
+</pre></div>
+</div>
 <p>Often when using Javascript we use the JSON format to send and retrieve data.
-A JSON string is generally a valid JS Object and can be used as such.</p>
+A JSON string is generally formatted as a valid JS Object and can be used as such with the proper typecasting.</p>
+</div>
+<div class="section" id="arrays-in-javascript">
+<h2>Arrays in Javascript<a class="headerlink" href="#arrays-in-javascript" title="Permalink to this headline">¶</a></h2>
+<p>Arrays in JS are similar to lists in Python.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">arrays</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">];</span> <span class="c1">// Single type array.</span>
+
+<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="p">[</span><span class="nx">a</span><span class="p">]];</span> <span class="c1">// multi-type arrays are also supported.</span>
+
+<span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span> <span class="c1">// a[0] evaluates to 1, so c = 1.</span>
+</pre></div>
+</div>
+<p>That’s great, but once we initialize it, how can we add, remove or change values in it?
+Arrays use different methods from Objects and as such can act as queues, stacks, and other
+helpful data structures.</p>
+<dl class="docutils">
+<dt>..code-block:: javascript</dt>
+<dd><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">emphasize-lines:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">1</td>
+</tr>
+</tbody>
+</table>
+<p>arrays.js</p>
+<p>var a = [1,2,3,4];</p>
+<p class="last">a.push(5);   // [1,2,3,4,5]
+a.pop();     // [1,2,3,4]
+a.shift();   // [2,3,4]
+a.splice(1); // [2,4] This one is be a way to remove data from a certain index,
+// As well as add data back into the array at that index.
+// <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice</a></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="spread-syntax">
+<h2>Spread Syntax<a class="headerlink" href="#spread-syntax" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax">Spread syntax</a>
+is a type of operator that applies to both arrays as well as Objects. It allows an iterable
+to be expanded in places where zero or more arguments or elements are expected,
+or an object expression to be expanded in places where zero or more key-value pairs
+are expected. Spread syntax is called using the unary <cite>…</cite> operator on an iterable.</p>
+</div>
+<div class="section" id="in-syntax">
+<h2>“In” Syntax<a class="headerlink" href="#in-syntax" title="Permalink to this headline">¶</a></h2>
+<p>Again, the <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/in">“in” operator syntax</a>
+applies for both arrays and Objects, but does something different depending on the type
+of the iterable.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">inOperator</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="c1">// Example 1: Arrays</span>
+<span class="c1">// The &#39;in&#39; operator checks that the value is a valid INDEX</span>
+<span class="c1">// in the array, not for the value itself.</span>
+
+<span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">];</span>
+<span class="k">if</span> <span class="p">(</span><span class="mi">5</span> <span class="k">in</span> <span class="nx">a</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// FALSE. Index 5 does not exist in a.</span>
+<span class="k">if</span> <span class="p">(</span><span class="mi">2</span> <span class="k">in</span> <span class="nx">a</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// TRUE. There is a value at index 2 in a.</span>
+
+<span class="c1">// Example 2: Objects</span>
+<span class="c1">// The &#39;in&#39; operator checks for the key in the Object.</span>
+
+<span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;A&quot;</span> <span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;B&quot;</span> <span class="o">:</span> <span class="mi">2</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="s2">&quot;A&quot;</span> <span class="k">in</span> <span class="nx">o</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// TRUE.</span>
+<span class="k">if</span> <span class="p">(</span><span class="mi">2</span> <span class="k">in</span> <span class="nx">o</span><span class="p">)</span> <span class="p">{};</span>   <span class="c1">// FALSE. 2 is not a valid key in o.</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="classes-in-javascript">
 <h2>Classes in Javascript<a class="headerlink" href="#classes-in-javascript" title="Permalink to this headline">¶</a></h2>
@@ -619,8 +780,12 @@ multiple lines and use hanging indents. We like to keep our .attr() and .style()
 <li><a class="reference internal" href="#conditionals-in-javascript">Conditionals in Javascript</a></li>
 <li><a class="reference internal" href="#conditional-operators">Conditional Operators</a></li>
 <li><a class="reference internal" href="#looping">Looping</a></li>
+<li><a class="reference internal" href="#true-false-truthy-and-falsy">True, False, Truthy, and Falsy</a></li>
 <li><a class="reference internal" href="#functions-in-javascript">Functions in Javascript</a></li>
 <li><a class="reference internal" href="#objects-in-javascript">Objects in Javascript</a></li>
+<li><a class="reference internal" href="#arrays-in-javascript">Arrays in Javascript</a></li>
+<li><a class="reference internal" href="#spread-syntax">Spread Syntax</a></li>
+<li><a class="reference internal" href="#in-syntax">“In” Syntax</a></li>
 <li><a class="reference internal" href="#classes-in-javascript">Classes in Javascript</a></li>
 </ul>
 </li>
