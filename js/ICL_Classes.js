@@ -69,7 +69,6 @@ class Tourist {
           this.atExit = true;
 
           if (this.priority) {
-              console.log("in here")
               this.iclData.AllAtExit();
           }
       }
@@ -308,16 +307,15 @@ class Tourist {
       var closest = Infinity;
       outer:
       for (var i = 0; i < this.iclData.touristNum; i++) {
-        if (this.iclData.instruBinder[i][this.iclData.tourists[i].on][0] == "WaitAverage") {
-          continue;
-        }
-        if ((!this.iclData.tourists[i].knows) && ((this.iclData.tourists[i].hunted == this.number) || (this.tourists[i].hunted == null))) {
+        if ((!this.iclData.tourists[i].knows) && ((this.iclData.tourists[i].hunted == this.number) || (this.iclData.tourists[i].hunted == null))) {
           inner:
           for (var j = 0; j < 8 * this.iclData.unit2Px; j++) {
             if (this.iclData.time + j < this.iclData.timeMax) {
               var intercept = this.iclData.tourPoints[i][this.iclData.time + j];
-              var botDist = Math.hypot(intercept.y - this.y, intercept.x - this.x);
-              if ((Math.abs(j - botDist * this.iclData.fps / this.iclData.unit2Px) <= this.velocity / 2) && (botDist < closest)) {
+              var bVec = [intercept.x - this.x, intercept.y - this.y];
+              var botDist = Math.sqrt(Math.pow(bVec[1], 2) + Math.pow(bVec[0], 2));
+              //var botDist = Math.hypot(intercept.y - this.y, intercept.x - this.x);
+              if ((Math.abs(j * this.iclData.unit2Px / this.iclData.fps - botDist) <= this.velocity * this.iclData.unit2Px / (2 * this.iclData.fps)) && (botDist < closest)) {
                 this.target = [i, intercept];
                 if (value && value[0] == i){
                     console.log("found priority");
@@ -336,15 +334,16 @@ class Tourist {
     } else {
       this.iclData.tourists[this.target[0]].hunted = this.number;
       var pVec = [this.target[1].x - this.x, this.target[1].y - this.y];
-      var pointDist = Math.hypot(this.target[1].y - this.y, this.target[1].x - this.x);
-      if (pointDist <= this.velocity * this.iclData.unit2Px / (2 * this.iclData.fps)) {
+      var pointDist = Math.sqrt(Math.pow(pVec[1], 2) + Math.pow(pVec[0], 2));
+      //var pointDist = Math.hypot(this.target[1].y - this.y, this.target[1].x - this.x);
+      if (pointDist <= this.velocity * this.iclData.unit2Px / (this.iclData.fps)) {
         this.iclData.exitAlert = this.iclData.tourists[this.target[0]].knows = true;
         this.iclData.exitFoundFrame = this.iclData.time;
-        this.target = null;
         this.iclData.exitAllow = pointDist;
-      } else {
-        this.DirectTo([this.target[1].x, this.target[1].y]);
-
+      }
+      this.DirectTo([this.target[1].x, this.target[1].y]);
+      if (this.iclData.tourists[this.target[0]].knows) {
+        this.target = null;
       }
     }
   }

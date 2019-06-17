@@ -131,6 +131,7 @@ class iclData {
         while (this.time < this.timeMax) { //Load one run through.
             this.LoadAnim();
         }
+        console.log(this.tourPoints);
 
         this.time = 0;
 
@@ -142,9 +143,9 @@ class iclData {
 
         }
 
-        while (this.time < this.timeMax) { //Load one run through.
-            this.AlterAnim();
-        }
+        //while (this.time < this.timeMax) { //Load one run through.
+        //    this.AlterAnim();
+        //}
         this.time = this.timeMax;
 
         this.time = 0;
@@ -183,130 +184,43 @@ class iclData {
         });
     }
 
-    AlterAnim() {
-        if (this.time > this.timeMax){
-            this.time = this.timeMax;
-            for (i = 0; i < this.touristNum; i++) {
-                this.AlterLines(i);
-            }
-        }
-        else {
-            var saveBuffer = [];
-            var closest2exit = Infinity;
-            for (var i = 0; i < this.tourists.length; i++) {
-                this.AlterLines(i);
-                var who = this.tourists[i];
-                saveBuffer.push([who.x, who.y, who.a, who.on]);
-                who.allowance = who.velocity * this.unit2Px / this.fps;
-                while (who.allowance > 0) {
-                    if (who.knows) {
-                        who[this.instruBinder[i][0][0]](this.instruBinder[i][0][1]);
-                    } else {
-                        who[this.instruBinder[i][who.on][0]](this.instruBinder[i][who.on][1]);
-                    }
-                }
-                if (!who.knows) {
-                    var exitDist = Math.hypot(this.fieldExit[1] - saveBuffer[i][1], this.fieldExit[0] - saveBuffer[i][0]);
-                    if (exitDist <= who.velocity * this.unit2Px / (2 * this.fps) && (exitDist < closest2exit)) {
-                        this.exitAlert = who.knows = true;
-                        this.exitAllow = exitDist;
-                    }
-                }
-            }
-            if (this.exitAlert) {
-                if (this.exitFoundLine == null) {
-                    var holdX = (this.unit2Px * (10 / 25) + ((this.time + this.exitAllow) / this.timeMax) * (80 / 25) * this.unit2Px);
-                    this.exitFoundLine = holdX;
-                }
-                for (var i = 0; i < this.tourists.length; i++) { //reset bots
-                    var who = this.tourists[i];
-                    who.x = saveBuffer[i][0];
-                    who.y = saveBuffer[i][1];
-                    who.a = saveBuffer[i][2];
-                    who.on = saveBuffer[i][3];
-                    if (this.wireless) {
-                        who.knows = true;
-                    }
-                    who.allowance = this.exitAllow;
-                    while (who.allowance > 0) {
-                        if (who.knew) { //Target already on exit procedures.
-                            who[this.instruBinder[i][0][0]](this.instruBinder[i][0][1]);
-                        } else { //Has not started exit procedures yet.
-                            who[this.instruBinder[i][who.on][0]](this.instruBinder[i][who.on][1]);
-                            if (who.knows) { //Clear target for bot if beginning exit procedures.
-                                who.target = null;
-                            }
-                        }
-                    }
-                    who.allowance = (who.velocity * this.unit2Px / this.fps) - this.exitAllow;
-                    while (who.allowance > 0) {
-                        if (who.knows) { //Proceed with exit procedures.
-                            who[this.instruBinder[i][0][0]](this.instruBinder[i][0][1]);
-                            who.knew = true;
-                        } else { //Still does not know.
-                            who[this.instruBinder[i][who.on][0]](this.instruBinder[i][who.on][1]);
-                        }
-                    }
-                }
-                this.exitAlert = false;
-            }
-            //this.AllAtExit();
-            this.time++;
-        }
-    }
-
-    //Create lines, and update graph dot positions, as well as recreating image of path.
-    AlterLines(i) {
-        var dista = this.unit2Px * 4 - (Math.hypot(this.fieldExit[0] - this.tourists[i].x, this.fieldExit[1] - this.tourists[i].y) * (20 / 25));
-        this.tourPoints[i][this.time] = {
-            x: this.tourists[i].x,
-            y: this.tourists[i].y
-        };
-        this.graphPoints[i][this.time] = {
-            x: (this.unit2Px * ((10 / 25) + (this.time / this.timeMax) * (80 / 25))),
-            y: (dista - this.unit2Px * (10 / 25))
-        };
-    }
-
-    PlayAnim() {
-        if (this.timeDirect != 0) {
-            this.time += this.timeDirect;
-            if (this.time < 0) {
-                this.time = 0;
-                this.timeDirect = 0;
-            } else if (this.time > this.timeMax - 1) {
-                this.time = this.timeMax;
-                this.timeDirect = 0;
-            }
-            //UpdateVisuals();
-            //d3.select("#timeSlide").attr("x", (time / timeMax) * (31 / 8) * unit2Px);
-            //d3.select("#timeText").text("Time: " + Math.floor((100 * time) / fps) / 100);
-            //d3.select("#frameText").text("Frame: " + Math.floor(time));
-        }
-    }
-
     AllAtExit() {
-        if (this.exitAlert) {
-            for (var p = 0; p < this.touristNum; p++) {
-                if (this.tourists[p].priority && this.tourists[p].atExit) {
+
+        if (this.exitAlert){ // check to see if any priority have exited.
+            for (var p = 0; p < this.touristNum; p++){
+                if (this.tourists[p].priority && this.tourists[p].atExit){
                     this.allExitedLine = 1;
                     this.timeMax = this.time;
                 }
             }
         }
-        for (var j = 0; j < this.touristNum; j++) { //Check every mobile agent
-            if ((this.tourists[j].x != this.fieldExit[0]) || (this.tourists[j].y != this.fieldExit[1])) { //check if not at exit
-                return;
-            } else if (!this.priorityExitedLine && this.tourists[j].priority) {
-                this.priorityExitedLine = 1;
-                this.timeMax = this.time;
-            }
+      for (var j = 0; j < this.touristNum; j++) {//Check every mobile agent
+        if ((this.tourists[j].x != this.fieldExit[0]) || (this.tourists[j].y != this.fieldExit[1])) {//check if not at exit
+          return;
         }
-        if (!this.allExitedLine) {
-            this.allExitedLine = 1;
-            this.timeMax = this.time;
+        else if (!this.priorityExitedLine && this.tourists[j].priority){//assuming also at exit...
+            var holdP = (this.unit2Px * (10 / 25) + ((this.time + this.exitAllow) / this.timeMax) * (80/25) * this.unit2Px);
+            this.priorityExitedLine = 1;
+                                /*graphSVG.select(".overLay").append("line").attr("x1", holdP).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
+                              .attr("x2", holdP).attr("y2", 1.75 * unit2Px).style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px)
+                              .style("stroke-opacity", 0.5);*/
+
+            this.timeMax = this.time; //to account for the extra bot getting to its next point
         }
+      }
+      if (!this.allExitedLine){
+        var holdX = (this.unit2Px * (10 / 25) + ((this.time + this.exitAllow) / this.timeMax) * (80 / 25) * this.unit2Px);
+
+        this.allExitedLine = 1;
+                        /*graphSVG.select(".overLay").append("line").attr("x1", holdX).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
+                      .attr("x2", holdX).attr("y2", 2 * unit2Px).style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px)
+                      .style("stroke-opacity", 0.5);*/
+        this.timeMax = this.time;
+      }
+      //console.log(Math.floor((100 * time) / fps) / 100);
     }
+
+
 }
 
 class iclVisual {
@@ -383,15 +297,15 @@ class iclVisual {
                 .attr("cy", this.iclData.unit2Px * 4 * (20 / 25) - this.iclData.unit2Px * (10 / 25)).attr("r", this.iclData.unit2Px / 16)
                 .style("fill", this.tourColors[i]).style("stroke", "#ffffff").style("stroke-width", (1 / 100) * this.iclData.unit2Px));
         }
-        this.UpdateVisuals();
+        //this.UpdateVisuals();
 
         //dataBox = fieldSVG.select("#overLay").append("svg").attr("width", 2 * unit2Px).attr("height", unit2Px).attr("visibility", "hidden");
         for (var i = 0; i < this.iclData.touristNum; i++) { //Reset for next run through.
 
-            this.iclData.tourLine[i] = this.fieldSVG.select("#lines").append("path").attr("d", this.lineFx(this.iclData.tourPoints[i]))
+            this.iclData.tourLine[i] = this.fieldSVG.select(".lines").append("path").attr("d", this.lineFx(this.iclData.tourPoints[i]))
                 .style("stroke", this.tourColors[i]).style("stroke-width", this.iclData.unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
 
-            this.graphLine[i] = this.graphSVG.select("#lines").append("path").attr("d", this.lineFx(this.iclData.graphPoints[i]))
+            this.graphLine[i] = this.graphSVG.select(".lines").append("path").attr("d", this.lineFx(this.iclData.graphPoints[i]))
                 .style("stroke", this.tourColors[i]).style("stroke-width", this.iclData.unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
         }
     }
@@ -435,6 +349,7 @@ class iclVisual {
         for (var i = 0; i < 11; i++) { //Create x-axis labels.
             this.graphSVG.select("#backGround").append("text").attr("x", this.iclData.unit2Px * (10 / 25) + i * this.iclData.unit2Px * (8 / 25))
                 .attr("y", this.iclData.unit2Px * (94 / 25))
+                .attr("class", "graphnum")
                 .style("font-size", this.iclData.unit2Px * (4 / 25)).style("text-anchor", "middle").text(i);
         }
     }
@@ -468,63 +383,170 @@ class iclVisual {
     exitChosen() {
         d3.select(".exitText").remove();
         this.fieldSVG.on("mousemove", null).on("click", null);
-        this.projector = setInterval(this.AlterAnim, 1000 / this.fps);
+        var visualReference = this;
+        this.projector = setInterval(this.AlterAnim, 1000 / this.iclData.fps);
         this.Load();
     }
 
-    UpdateVisuals() {
-        if (this.iclData.timeMax <= this.iclData.time){
-            for (var i = 0; i < this.iclData.touristNum; i++) {
-                //this.iclData.AlterLines(i);
-                this.iclData.tourLine[i].remove();
+    AlterAnim() {
+      if (this.leftVis.iclData.time >= this.leftVis.iclData.timeMax) {
+        this.leftVis.iclData.time = this.leftVis.iclData.timeMax;
 
-                var holdA = 'M' + (this.iclData.tourPoints[i][0].x + ',' + (this.iclData.tourPoints[i][0].y));
-                var holdG = 'M' + (10 / 25) * this.iclData.unit2Px + ',' + (this.iclData.graphPoints[i][0].y);
-                for (var j = 1; j < this.iclData.time; j++) {
-                    holdA += 'L' + (this.iclData.tourPoints[i][j].x + ',' + (this.iclData.tourPoints[i][j].y));
-                    holdG += 'L' + ((10 / 25) + ((this.iclData.graphPoints[i][j].x / this.iclData.timeMax) * (63 / 20))) * this.iclData.unit2Px + ',' + (this.iclData.graphPoints[i][j].y);
-                    //((10/25) + (graphPoints[i][j].x / timeMax) * (63/20)) * unit2Px)
-                }
-                if (this.iclData.tourLine){
-                    this.iclData.tourLine[i] = this.fieldSVG.select("#lines").append("path").attr("d", holdA)
-                        .style("stroke", this.tourColors[i]).style("stroke-width", this.iclData.unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
-                    console.log(this.iclData.tourLine[i]);
 
-                }
-                else {
-                    this.iclData.tourLine = [];
-                    this.iclData.tourLine[i] = this.fieldSVG.select("#lines").append("path").attr("d", holdA)
-                        .style("stroke", this.tourColors[i]).style("stroke-width", this.iclData.unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
-                    console.log(this.iclData.tourLine[i]);
-                }
-            }
+        for (var i = 0; i < 11; i++) {//Create x-axis labels.
+          this.leftVis.graphSVG.selectAll(".graphnum").style("display", "none");
         }
-        else {
-            for (var i = 0; i < this.iclData.touristNum; i++) {
-                var who = this.iclData.tourists[i];
-                if (this.iclData.time >= this.iclData.timeMax) {
-                    //this.iclData.tourLine[i].remove();
 
-                    var holdA = 'M' + (this.iclData.tourPoints[i][0].x + ',' + (this.iclData.tourPoints[i][0].y));
-                    var holdG = 'M' + (10 / 25) * this.iclData.unit2Px + ',' + (this.iclData.graphPoints[i][0].y);
-                    for (var j = 1; j < this.iclData.time; j++) {
-                        holdA += 'L' + (this.iclData.tourPoints[i][j].x + ',' + (this.iclData.tourPoints[i][j].y));
-                        holdG += 'L' + ((10 / 25) + ((this.iclData.graphPoints[i][j].x / this.iclData.timeMax) * (63 / 20))) * this.iclData.unit2Px + ',' + (this.iclData.graphPoints[i][j].y);
-                        //((10/25) + (graphPoints[i][j].x / timeMax) * (63/20)) * unit2Px)
-                    }
-                    if (this.iclData.tourLine){
-                        this.iclData.tourLine[i] = this.fieldSVG.select("#lines").append("path").attr("d", holdA)
-                            .style("stroke", this.tourColors[i]).style("stroke-width", this.iclData.unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
-                    }
-                    else {
-                        this.iclData.tourLine = [];
-                        this.iclData.tourLine[i] = this.fieldSVG.select("#lines").append("path").attr("d", holdA)
-                            .style("stroke", this.tourColors[i]).style("stroke-width", this.iclData.unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
-                    }
-                }
-                who.visual.attr("cx", this.iclData.tourPoints[i][Math.floor(this.iclData.time)].x).attr("cy", this.iclData.tourPoints[i][Math.floor(this.iclData.time)].y);
-                this.iclData.graphDots[i].attr("cx", this.iclData.graphPoints[i][Math.floor(this.iclData.time)].x).attr("cy", this.iclData.graphPoints[i][Math.floor(this.iclData.time)].y);
+        for (i = 0; i < this.leftVis.iclData.touristNum; i++){
+            this.leftVis.AlterLines(i);
+        }
+
+        for (var i = 0; i <= Math.floor((100 * this.leftVis.iclData.time) / this.leftVis.iclData.fps) / 100; i++) {//Create x-axis labels.
+          this.leftVis.graphSVG.select("#overLay").append("text")
+                  .attr("x", (10/25 + (i / (Math.floor((100 * this.leftVis.iclData.time) / this.leftVis.iclData.fps) / 100)) * 80/25) * this.leftVis.iclData.unit2Px)//unit2Px * (10 / 25) + ((Math.floor(timeMax) - i) * 80/25) * unit2Px)
+                  .attr("y", this.leftVis.iclData.unit2Px * (94 / 25))
+                  .style("font-size", this.leftVis.iclData.unit2Px * (4 / 25)).style("text-anchor", "middle").text(i).attr("class","graphnum");
+        }
+        leftVis.graphSVG.select("#overLay").append("text").attr("x", (this.leftVis.iclData.unit2Px * 65/25)).attr("y", this.leftVis.iclData.unit2Px * (1.7))
+                .style("font-size", this.leftVis.iclData.unit2Px * (4/25))
+                .text("End: " + Math.floor((100 * this.leftVis.iclData.time) / this.leftVis.iclData.fps) / 100 + " sec");
+        leftVis.graphSVG.select("#overLay").append('text').attr("x", this.leftVis.iclData.unit2Px * 65/25).attr("y", this.leftVis.iclData.unit2Px * 1.83)
+                .attr("class", "sliderhelp").style("font-size", this.leftVis.iclData.unit2Px * (3/25)).text("Click and drag gray bar")
+                .style("fill", "#bbbbaa");
+        leftVis.graphSVG.select("#overLay").append('text').attr("x", this.leftVis.iclData.unit2Px * 65/25).attr("y", this.leftVis.iclData.unit2Px * 1.95)
+                .attr("class", "sliderhelp").style("font-size", this.leftVis.iclData.unit2Px * (3/25)).text("to see the timeline")
+                .style("fill", "#bbbbaa");
+        this.leftVis.UpdateVisuals();
+        clearInterval(theMotor);
+        theMotor = setInterval(this.leftVis.PlayAnim, 1000 / this.leftVis.iclData.fps);
+      } else {
+        var saveBuffer = [];
+
+        for (var i = 0; i < this.leftVis.iclData.tourists.length; i++) {
+          this.leftVis.AlterLines(i);
+          var who = this.leftVis.iclData.tourists[i];
+          saveBuffer.push([who.x, who.y, who.a, who.on]);
+          who.allowance = who.velocity * this.leftVis.iclData.unit2Px / this.leftVis.iclData.fps;
+          while (who.allowance > 0) {
+            if (who.knows) {
+              who[instruBinder[i][0][0]](instruBinder[i][0][1]);
+            } else {
+              who[instruBinder[i][who.on][0]](instruBinder[i][who.on][1]);
             }
+          }
+          if (!who.knows) {
+            var eVec = [this.leftVis.iclData.fieldExit[0] - saveBuffer[i][0], this.leftVis.iclData.fieldExit[1] - saveBuffer[i][1]];
+            var exitDist = Math.sqrt(Math.pow(eVec[1], 2) + Math.pow(eVec[0], 2));
+            if (exitDist <= who.velocity * this.leftVis.iclData.unit2Px / (2 * this.leftVis.iclData.fps)) {
+              this.leftVis.iclData.exitAlert = who.knows = true;
+              //exitFoundFrame = time;
+              //console.log(Math.floor((100 * time) / fps) / 100);
+              if (who.priority){
+                  break;
+              }
+              this.leftVis.iclData.exitAllow = exitDist;
+            }
+          }
+        }
+
+        if (this.leftVis.iclData.exitAlert) {
+          if (this.leftVis.iclData.exitFoundLine == null) {
+            var holdX = (this.leftVis.iclData.unit2Px * (10 / 25) + ((this.leftVis.iclData.time + this.leftVis.iclData.exitAllow) / this.leftVis.iclData.timeMax) * (80 / 25) * this.leftVis.iclData.unit2Px);
+            this.leftVis.iclData.exitFoundLine = 1;
+
+                            /*
+                            graphSVG.select(".overLay").append("line").attr("x1", holdX).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
+                            .attr("x2", holdX).attr("y2", 2 * unit2Px).style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px)
+                            .style("stroke-opacity", 0.5);
+                            */
+          }
+          for (var i = 0; i < this.leftVis.iclData.tourists.length; i++) {//reset bots
+            var who = this.leftVis.iclData.tourists[i];
+            who.x = saveBuffer[i][0];
+            who.y = saveBuffer[i][1];
+            who.a = saveBuffer[i][2];
+            who.on = saveBuffer[i][3];
+            if (this.leftVis.iclData.wireless) {
+              who.knows = true;
+              //console.log(Math.floor((100 * time) / fps) / 100);
+            }
+            who.allowance = this.leftVis.iclData.exitAllow;
+            while (who.allowance > 0) {
+              if (who.knew) {//Target already on exit procedures.
+                who[instruBinder[i][0][0]](instruBinder[i][0][1]);
+              } else {//Has not started exit procedures yet.
+                who[instruBinder[i][who.on][0]](instruBinder[i][who.on][1]);
+                if (who.knows) {//Clear target for bot if beginning exit procedures.
+                  who.target = null;
+                }
+              }
+            }
+            who.allowance = (who.velocity * this.leftVis.iclData.unit2Px / this.leftVis.iclData.fps) - this.leftVis.iclData.exitAllow;
+            while (who.allowance > 0) {
+              if (who.knows) {//Proceed with exit procedures.
+                who[instruBinder[i][0][0]](instruBinder[i][0][1]);
+                who.knew = true;
+              } else {//Still does not know.
+                who[instruBinder[i][who.on][0]](instruBinder[i][who.on][1]);
+              }
+            }
+          }
+          this.leftVis.iclData.exitAlert = false;
+        }
+        this.leftVis.iclData.AllAtExit();
+        this.leftVis.UpdateVisuals();
+        this.leftVis.iclData.time++;
+        //timeSlider.attr("x", ((10/25) + (time / timeMax) * (63/20)) * unit2Px);
+      }
+      //timeText.text("Time: " + Math.floor((100 * this.leftVis.iclData.time) / this.leftVis.iclData.fps) / 100);
+      //frameText.text("Frame: " + this.leftVis.iclData.time);
+    }
+
+    AlterLines(i) {
+      var dista = this.iclData.unit2Px * 4 - Math.abs((Math.sqrt(Math.pow(this.iclData.fieldExit[0] - this.iclData.tourists[i].x, 2) + Math.pow(this.iclData.fieldExit[1] - this.iclData.tourists[i].y, 2)) * (20 / 25)));
+      this.iclData.tourPoints[i][this.iclData.time] = {x:this.iclData.tourists[i].x, y:this.iclData.tourists[i].y};
+      this.iclData.tourLine[i].remove();
+
+      var holdA = 'M' + (this.iclData.tourPoints[i][0].x + ',' + (this.iclData.tourPoints[i][0].y));
+      var holdG = 'M' + (10/25) * this.iclData.unit2Px + ',' + (this.iclData.graphPoints[i][0].y);
+      for (var j = 1; j < this.iclData.time; j++) {
+        holdA += 'L' + (this.iclData.tourPoints[i][j].x + ',' + (this.iclData.tourPoints[i][j].y));
+        holdG += 'L' + ((10/25) + ((this.iclData.graphPoints[i][j].x / this.iclData.timeMax) * (63/20))) * this.iclData.unit2Px  + ',' + (this.iclData.graphPoints[i][j].y);
+        //((10/25) + (graphPoints[i][j].x / timeMax) * (63/20)) * unit2Px)
+      }
+
+      this.iclData.tourLine[i] = this.fieldSVG.select("#lines").append("path").attr("d", holdA)
+                    .style("stroke", this.tourColors[i]).style("stroke-width", this.iclData.unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
+      this.iclData.graphPoints[i][this.iclData.time] = {x:this.iclData.time, y:(dista - this.iclData.unit2Px * (10 / 25))};
+      this.iclData.graphLine[i].remove();
+      this.iclData.graphLine[i] = this.graphSVG.select("#lines").append("path").attr("d", holdG)
+                     .style("stroke", this.tourColors[i]).style("stroke-width", this.iclData.unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
+    }
+
+
+
+    PlayAnim() {
+      if (this.leftVis.iclData.timeDirect != 0) {
+        this.leftVis.iclData.time += this.leftVis.iclData.timeDirect;
+        if (this.leftVis.iclData.time < 0) {
+          this.leftVis.iclData.time = 0;
+          this.leftVis.iclData.timeDirect = 0;
+        } else if (this.leftVis.iclData.time > this.leftVis.iclData.timeMax) {
+          this.leftVis.iclData.time = this.leftVis.iclData.timeMax;
+          this.leftVis.iclData.timeDirect = 0;
+        }
+        this.leftVis.UpdateVisuals();
+        timeSlider.attr("x", ((10/25) + (this.leftVis.iclData.time / this.leftVis.iclData.timeMax) * (63/20)) * this.leftVis.iclData.unit2Px);
+        timeText.text("Time: " + Math.floor((100 * this.leftVis.iclData.time) / this.leftVis.iclData.fps) / 100);
+        frameText.text("Frame: " + Math.floor(this.leftVis.iclData.time));
+      }
+    }
+
+    UpdateVisuals() {
+        for (var i = 0; i < this.iclData.touristNum; i++) {
+          var who = this.iclData.tourists[i];
+          who.visual.attr("cx", this.iclData.tourPoints[i][Math.floor(this.iclData.time)].x).attr("cy", this.iclData.tourPoints[i][Math.floor(this.iclData.time)].y);
+          this.iclData.graphDots[i].attr("cx", ((10/25) + ((this.iclData.graphPoints[i][Math.floor(this.iclData.time)].x / this.iclData.timeMax) * (63/20))) * this.iclData.unit2Px).attr("cy", this.iclData.graphPoints[i][Math.floor(this.iclData.time)].y);
         }
     }
 
@@ -533,7 +555,6 @@ class iclVisual {
 function Interval() {
     if (leftVis.finished){
         return;
-        ''
     }
     editAnims('play');
     leftVis.iclData.AlterAnim();
@@ -715,31 +736,211 @@ function exitChosen() {
     clearInterval(theMotor);
     d3.selectAll("#bots").html(null);
     d3.selectAll("#lines").html(null);
-    leftSide = new iclData(0, instruBinder, "Priority 1", d3.select("#exitAngle").node().value, true);
+    d3.selectAll("#overLay").html(null);
+    leftSide = new iclData(0, instruBinder, algName, d3.select("#exitAngle").node().value, wireless);
     leftVis = new iclVisual(leftSide);
-    theMotor = setInterval(Interval, 1000 / 60);
+    theMotor = setInterval(leftVis.AlterAnim, 1000 / 60);
     d3.select(".exitText").remove();
     d3.select("#anim0").on("mousemove", null).on("click", null);
+}
+
+function showHelp(s) {
+    d3.selectAll(".w3-display-container").style("display", "none");
+    switch (s) {
+        case "steps":
+            //document.getElementById(algShortName).style.display = "block";
+            break;
+        default:
+            document.getElementById(s).style.display = "block";
+            break;
+    }
+    return;
+}
+
+function showAlgorithmDesc(s, w){
+    var color;
+    switch(s){
+        case 'A':
+            color = "#efe";
+            instruBinder = [
+                            [["Intercept", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right"]]],
+                            [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left"]]]
+                        ];
+            algName = "Algorithm A ";
+            break;
+        case 'Awl':
+            color = "#efe";
+            instruBinder = [
+                            [["Intercept", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right"]]],
+                            [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left"]]]
+                        ];
+            algName = "Algorithm A ";
+            break;
+        case 'B':
+            color = '#eef';
+            instruBinder = [
+                                 [["Intercept", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0], center[1] + 5]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
+                                 [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0], center[1] + 5]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
+                               ];
+            algName = "Algorithm B ";
+            break;
+        case 'Bwl':
+            color = '#eef';
+            instruBinder = [
+                                 [["Intercept", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0], center[1] + 5]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
+                                 [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0], center[1] + 5]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
+                               ];
+            algName = "Algorithm B ";
+            break;
+        case 'C':
+            color = '#fee';
+            instruBinder = [
+                                 [["Intercept", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0] + 4, center[1] + 5]], ["GoToPoint", [center[0], center[1]+5]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
+                                 [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0] - 4, center[1] + 5]], ["GoToPoint", [center[0], center[1]+5]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
+                               ];
+            algName = "Algorithm C ";
+            break;
+        case 'Cwl':
+            color = '#fee';
+            instruBinder = [
+                                 [["Intercept", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0] + 4, center[1] + 5]], ["GoToPoint", [center[0], center[1]+5]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
+                                 [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0] - 4, center[1] + 5]], ["GoToPoint", [center[0], center[1]+5]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
+                               ];
+            algName = "Algorithm C ";
+            break;
+        case 'Q1':
+            color = "#efe";
+            instruBinder = [
+                                 [["GoToExit", [null, true, "#fe447d"]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]],
+                                 [["Wait", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right"]]]
+                               ];
+            algName = "Algorithm Priority 1 ";
+            break;
+        case 'Q2':
+            color = "#eef";
+            instruBinder = [
+                                  [["GoToExit", [null, true, "#fe447d"]], ["GoToWallAtAngle", [144]], ["FollowWall", ["left", 36]], ["GoToPoint", [center[0] + (unit2Px * 0.65), center[1] + 30]], ["GoToWallAtAngle", [345]], ["FollowWall", ["left"]]],
+                                  [["Wait", [null]], ["GoToWallAtAngle", [144]], ["FollowWall", ["right"]]],
+                                  [["Wait", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]]
+            ];
+            algName = "Algorithm Priority 2 ";
+            break;
+        case 'Q2S1':
+            color = "#fee";
+            instruBinder = [
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [213.8]], ["FollowWall", ["left"]]],
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left"]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [213.8]], ["FollowWall", ["right"]]]
+                /*
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left"]]],
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [240]], ["FollowWall", ["left"]]],
+                [["Intercept", [[0, 1], false]], ["GoToWallAtAngle", [240]], ["FollowWall", ["right"]]]
+                */
+                /*
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]],
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right", 36.5]], ["GoToWallAtAngle", [350]], ["Wait", [null]]],
+                [["Intercept", [[0, 1], false]], ["GoToWallAtAngle", [143.5]], ["FollowWall", ["right"]]]
+                */
+                /*
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]],
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right", 45]], ["GoToWallAtAngle", [340]], ["FollowWall", ["left"]]],
+                [["Intercept", [null, false]], ["GoToWallAtAngle", [135]], ["FollowWall", ["right"]]]
+                */
+                /*
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]],
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right", 45]], ["GoToPoint", [center[0] + (unit2Px * 0.65), center[1]]], ["GoToWallAtAngle", [337.5]], ["FollowWall", ["left"]]],
+                [["Intercept", [null, false]], ["GoToWallAtAngle", [135]], ["FollowWall", ["right"]]]
+                */
+                /*
+                [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 65]], ["GoToPoint", [center[0], center[1]]], ["GoToWallAtAngle", [245]], ["FollowWall", ["left"]]],
+                [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right", 65]], ["GoToPoint", [center[0], center[1]]], ["GoToWallAtAngle", [115]], ["FollowWall", ["right"]]],
+                [["Intercept", [null]], ["GoToWallAtAngle", [60]], ["FollowWall", ["right"]]]
+                */
+                /*
+                [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]],
+                [["GoToExit", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right"]]],
+
+                [["Intercept", [null]], ["GoToWallAtAngle", [60]], ["FollowWall", ["right"]]]
+                */
+
+            ];
+            algName = "2 Priority + 1 Servant (1) ";
+            break;
+
+        case 'Q1S1Q1':
+            color = "#efe";
+            instruBinder = [
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]] ,["FollowWall", ["right"]]],
+                [["GoToExit", [null, true]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right"]]],
+                [["Wait", [null]], ["GoToWallAtAngle", 180], ["FollowWall", ["left"]]]
+            ];
+            algName = "2 Priority + 1 Servant (2) ";
+            break;
+
+        case 'Q1S4':
+            color = "#eef";
+            instruBinder = [
+                [["GoToExit", [null, true]], ["Wait", [(1 + (Math.PI / 2))]], ["GoToWallAtAngle", [180]], ["Wait", [null]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left", 75]], ["Wait", [null]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right", 75]], ["Wait", [null]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [75]], ["FollowWall", ["left"]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [285]], ["FollowWall", ["right"]]]
+            ];
+            algName = "1 Priority + 4 Servants ";
+            break;
+
+        case 'Q1S8':
+            color = "#fee";
+            instruBinder = [
+                [["GoToExit", [null, true]], ["Wait", [(1+(Math.PI / 2))]], ["GoToWallAtAngle", [180]], ["Wait", [null]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left", 60]], ["Wait", [null]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [60]], ["FollowWall", ["left", 30]], ["Wait", [null]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 30]], ["Wait", [null]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [120]], ["FollowWall", ["left"]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right", 60]], ["Wait", [null]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [300]], ["FollowWall", ["right", 30]], ["Wait", [null]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [270]], ["FollowWall", ["right", 30]], ["Wait", [null]]],
+                [["Wait", [null]], ["GoToWallAtAngle", [240]], ["FollowWall", ["right"]], ["Wait", [null]]]
+            ];
+            algName = "1 Priority + 8 Servants ";
+            break;
+    }
+    algShortName = s;
+    wireless = w;
+    console.log(w);
+
 }
 
 var leftSide;
 var leftVis;
 var theMotor;
+var algSelector;
+var instruBinder;
+var algName;
+var wireless;
+var unit2Px = 25
+var center = [2 * unit2Px, 2 * unit2Px];
 
-var instruBinder = [
-    [
-        ["GoToExit", [null, true]],
-        ["GoToWallAtAngle", [213.8]],
-        ["FollowWall", ["left"]]
-    ],
-    [
-        ["GoToExit", [null, true]],
-        ["GoToWallAtAngle", [0]],
-        ["FollowWall", ["left"]]
-    ],
-    [
-        ["Wait", [null, false]],
-        ["GoToWallAtAngle", [213.8]],
-        ["FollowWall", ["right"]]
-    ]
-];
+var algRequested = window.location.href.includes("#");
+if (algRequested) {
+    algSelector = window.location.href.indexOf("#");
+    var l = window.location.href.length;
+    console.log(window.location.href.slice(algSelector + 1, l));
+    var wire = true;
+    if (window.location.href.includes("wl") || window.location.href.includes("Q")){
+        wire = true;
+    }
+    else {
+        wire = false;
+    }
+    console.log(wire);
+    showAlgorithmDesc(window.location.href.slice(algSelector + 1, l), wire);
+}
+else {
+    showAlgorithmDesc("A", false);
+}
+
+
+console.log("WIRELESS: " + wireless);
+leftSide = new iclData(0, instruBinder, algName, d3.select("#exitAngle").node().value, wireless);
+leftVis = new iclVisual(leftSide);

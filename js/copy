@@ -1,0 +1,127 @@
+AlterAnim() {
+    if (this.time > this.timeMax){
+        this.time = this.timeMax;
+        clearInterval(theMotor);
+        theMotor = setInterval(this.PlayAnim, 1000/this.fps)
+        for (i = 0; i < this.touristNum; i++) {
+            this.AlterLines(i);
+        }
+    }
+    else {
+        var saveBuffer = [];
+        var closest2exit = Infinity;
+        for (var i = 0; i < this.tourists.length; i++) {
+            this.AlterLines(i);
+            var who = this.tourists[i];
+            saveBuffer.push([who.x, who.y, who.a, who.on]);
+            who.allowance = who.velocity * this.unit2Px / this.fps;
+            while (who.allowance > 0) {
+                if (who.knows) {
+                    who[this.instruBinder[i][0][0]](this.instruBinder[i][0][1]);
+                } else {
+                    who[this.instruBinder[i][who.on][0]](this.instruBinder[i][who.on][1]);
+                }
+            }
+            if (!who.knows) {
+                var exitDist = Math.hypot(this.fieldExit[1] - saveBuffer[i][1], this.fieldExit[0] - saveBuffer[i][0]);
+                if (exitDist <= who.velocity * this.unit2Px / (2 * this.fps) && (exitDist < closest2exit)) {
+                    this.exitAlert = who.knows = true;
+                    this.exitAllow = exitDist;
+                }
+            }
+        }
+        if (this.exitAlert) {
+            if (this.exitFoundLine == null) {
+                var holdX = (this.unit2Px * (10 / 25) + ((this.time + this.exitAllow) / this.timeMax) * (80 / 25) * this.unit2Px);
+                this.exitFoundLine = holdX;
+            }
+            for (var i = 0; i < this.tourists.length; i++) { //reset bots
+                var who = this.tourists[i];
+                who.x = saveBuffer[i][0];
+                who.y = saveBuffer[i][1];
+                who.a = saveBuffer[i][2];
+                who.on = saveBuffer[i][3];
+                if (this.wireless) {
+                    who.knows = true;
+                }
+                who.allowance = this.exitAllow;
+                while (who.allowance > 0) {
+                    if (who.knew) { //Target already on exit procedures.
+                        who[this.instruBinder[i][0][0]](this.instruBinder[i][0][1]);
+                    } else { //Has not started exit procedures yet.
+                        who[this.instruBinder[i][who.on][0]](this.instruBinder[i][who.on][1]);
+                        if (who.knows) { //Clear target for bot if beginning exit procedures.
+                            who.target = null;
+                        }
+                    }
+                }
+                who.allowance = (who.velocity * this.unit2Px / this.fps) - this.exitAllow;
+                while (who.allowance > 0) {
+                    if (who.knows) { //Proceed with exit procedures.
+                        who[this.instruBinder[i][0][0]](this.instruBinder[i][0][1]);
+                        who.knew = true;
+                    } else { //Still does not know.
+                        who[this.instruBinder[i][who.on][0]](this.instruBinder[i][who.on][1]);
+                    }
+                }
+            }
+            this.exitAlert = false;
+        }
+        //this.AllAtExit();
+        this.time++;
+    }
+}
+
+//Create lines, and update graph dot positions, as well as recreating image of path.
+AlterLines(i) {
+    var dista = this.unit2Px * 4 - (Math.hypot(this.fieldExit[0] - this.tourists[i].x, this.fieldExit[1] - this.tourists[i].y) * (20 / 25));
+    this.tourPoints[i][this.time] = {
+        x: this.tourists[i].x,
+        y: this.tourists[i].y
+    };
+    this.tourLine[i].remove();
+    this.graphPoints[i][this.time] = {
+        x: (this.unit2Px * ((10 / 25) + (this.time / this.timeMax) * (80 / 25))),
+        y: (dista - this.unit2Px * (10 / 25))
+    };
+}
+
+PlayAnim() {
+    if (this.timeDirect != 0) {
+        this.time += this.timeDirect;
+        if (this.time < 0) {
+            this.time = 0;
+            this.timeDirect = 0;
+        } else if (this.time > this.timeMax - 1) {
+            this.time = this.timeMax;
+            this.timeDirect = 0;
+        }
+        //UpdateVisuals();
+        //d3.select("#timeSlide").attr("x", (time / timeMax) * (31 / 8) * unit2Px);
+        //d3.select("#timeText").text("Time: " + Math.floor((100 * time) / fps) / 100);
+        //d3.select("#frameText").text("Frame: " + Math.floor(time));
+    }
+}
+
+AllAtExit() {
+    if (this.exitAlert) {
+        for (var p = 0; p < this.touristNum; p++) {
+            if (this.tourists[p].priority && this.tourists[p].atExit) {
+                this.allExitedLine = 1;
+                this.timeMax = this.time;
+            }
+        }
+    }
+    for (var j = 0; j < this.touristNum; j++) { //Check every mobile agent
+        if ((this.tourists[j].x != this.fieldExit[0]) || (this.tourists[j].y != this.fieldExit[1])) { //check if not at exit
+            return;
+        } else if (!this.priorityExitedLine && this.tourists[j].priority) {
+            this.priorityExitedLine = 1;
+            this.timeMax = this.time;
+        }
+    }
+    if (!this.allExitedLine) {
+        this.allExitedLine = 1;
+        this.timeMax = this.time;
+    }
+}
