@@ -853,3 +853,69 @@ Other types of elements examples:
               .style("fill", "red");
 
 As you can see, D3 is very powerful for what little we've seen so far.
+
+Selection with D3
+-----------------
+
+We can do a lot more than just `select()
+<https://github.com/d3/d3-selection/blob/v1.4.0/README.md#select>`_ the body of
+the DOM in D3, because otherwise our code statements would be super long, and ugly looking.
+We are also able to select elements by class, ID, and tag name. Some examples:
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    selection.js
+
+    var body = d3.select("body");
+    // So we've seen this one, and we can chain selections off of it.
+
+    // Say we want to append and then select a circle with an ID of "dot".
+    // Assume we've already created the SVG as shown in the above example.
+    body.select("svg").append("circle")
+                      .attr("cx", 10)
+                      .attr("cy", 10)
+                      .attr("r" , 5)
+                      .attr("id" "dot"); // Now this circle has an id of "#dot" in the DOM.
+
+    // Now we can select it by saying:
+    var ourCircle = d3.select("#dot"); // The '#' is specific to searching for an ID.
+
+    // Similarly, we can give something a class and find it, or multiple like it.
+    body.select("svg").append("rect")
+                      .attr("x", 50)
+                      .attr("y", 50)
+                      .attr("width", 10)
+                      .attr("height", 10)
+                      .attr("class", "square"); // This will belong to ".square"
+
+    var ourSquare = d3.select(".square"); // The '.' is specific to searching for a class.
+
+Note that when using d3.select(), only the first element on the page that matches the
+search query will be returned. However, if we want to `selectAll()
+<https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selectAll>`_, then we can
+get a nice list of all elements on the page that match the selectors.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    selection.js
+
+    body.select("svg").append("rect")
+                      .attr("x", 100)
+                      .attr("y", 100)
+                      .attr("width", 20)
+                      .attr("height", 20)
+                      .attr("class", "square");
+
+    // Say we have everything from the example directly above already loaded in.
+    // We now go ahead and add another <rect class="square"/>
+
+    d3.selectAll(".square");
+    // Returns an array of both of the objects in class square, in the order they
+    // were added to the DOM.
+
+Data, and How D3 Handles the Work For You
+-----------------------------------------
+
+Arrays have data that we want to use, and D3 can make it look pretty for us.

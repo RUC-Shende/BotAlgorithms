@@ -760,6 +760,63 @@ multiple lines and use hanging indents. We like to keep our .attr() and .style()
 </pre></div>
 </div>
 <p>As you can see, D3 is very powerful for what little we’ve seen so far.</p>
+<div class="section" id="selection-with-d3">
+<h2>Selection with D3<a class="headerlink" href="#selection-with-d3" title="Permalink to this headline">¶</a></h2>
+<p>We can do a lot more than just <a class="reference external" href="https://github.com/d3/d3-selection/blob/v1.4.0/README.md#select">select()</a> the body of
+the DOM in D3, because otherwise our code statements would be super long, and ugly looking.
+We are also able to select elements by class, ID, and tag name. Some examples:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">selection</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="kd">var</span> <span class="nx">body</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;body&quot;</span><span class="p">);</span>
+<span class="c1">// So we&#39;ve seen this one, and we can chain selections off of it.</span>
+
+<span class="c1">// Say we want to append and then select a circle with an ID of &quot;dot&quot;.</span>
+<span class="c1">// Assume we&#39;ve already created the SVG as shown in the above example.</span>
+<span class="nx">body</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;circle&quot;</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;cx&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;cy&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;r&quot;</span> <span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;id&quot;</span> <span class="s2">&quot;dot&quot;</span><span class="p">);</span> <span class="c1">// Now this circle has an id of &quot;#dot&quot; in the DOM.</span>
+
+<span class="c1">// Now we can select it by saying:</span>
+<span class="kd">var</span> <span class="nx">ourCircle</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;#dot&quot;</span><span class="p">);</span> <span class="c1">// The &#39;#&#39; is specific to searching for an ID.</span>
+
+<span class="c1">// Similarly, we can give something a class and find it, or multiple like it.</span>
+<span class="nx">body</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;rect&quot;</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="s2">&quot;square&quot;</span><span class="p">);</span> <span class="c1">// This will belong to &quot;.square&quot;</span>
+
+<span class="kd">var</span> <span class="nx">ourSquare</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;.square&quot;</span><span class="p">);</span> <span class="c1">// The &#39;.&#39; is specific to searching for a class.</span>
+</pre></div>
+</div>
+<p>Note that when using d3.select(), only the first element on the page that matches the
+search query will be returned. However, if we want to <a class="reference external" href="https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selectAll">selectAll()</a>, then we can
+get a nice list of all elements on the page that match the selectors.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">selection</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="nx">body</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;rect&quot;</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="s2">&quot;square&quot;</span><span class="p">);</span>
+
+<span class="c1">// Say we have everything from the example directly above already loaded in.</span>
+<span class="c1">// We now go ahead and add another &lt;rect class=&quot;square&quot;/&gt;</span>
+
+<span class="nx">d3</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;.square&quot;</span><span class="p">);</span>
+<span class="c1">// Returns an array of both of the objects in class square, in the order they</span>
+<span class="c1">// were added to the DOM.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="data-and-how-d3-handles-the-work-for-you">
+<h2>Data, and How D3 Handles the Work For You<a class="headerlink" href="#data-and-how-d3-handles-the-work-for-you" title="Permalink to this headline">¶</a></h2>
+<p>Arrays have data that we want to use, and D3 can make it look pretty for us.</p>
+</div>
 </div>
 
 
@@ -789,7 +846,11 @@ multiple lines and use hanging indents. We like to keep our .attr() and .style()
 <li><a class="reference internal" href="#classes-in-javascript">Classes in Javascript</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#d3-v5-elements">D3 V5 Elements</a></li>
+<li><a class="reference internal" href="#d3-v5-elements">D3 V5 Elements</a><ul>
+<li><a class="reference internal" href="#selection-with-d3">Selection with D3</a></li>
+<li><a class="reference internal" href="#data-and-how-d3-handles-the-work-for-you">Data, and How D3 Handles the Work For You</a></li>
+</ul>
+</li>
 </ul>
 
   <h4>Previous topic</h4>
