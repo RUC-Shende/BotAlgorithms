@@ -237,6 +237,10 @@ class iclVisual {
         this.exitFoundLine = iclData.exitFoundLine;
         this.allExitedLine = iclData.allExitedLine;
 
+        this.timeSlider;
+        this.timeText;
+        this.frameText;
+
         this.lineFx = d3.line().x((d) => {
             return (d.x);
         }).y((d) => {
@@ -260,6 +264,32 @@ class iclVisual {
             }
         } //Add a zero in front of single digit hex.
         return ('#' + RGB[0] + RGB[1] + RGB[2]);
+    }
+
+    SSlide() {
+      d3.select(this).style("fill", "orange");
+      d3.select(this).classed("active", true);
+      d3.selectAll(".sliderhelp").style("visibility", "hidden");
+    }
+
+    MSlide() {
+      var mousePos = d3.event.x;
+      if (mousePos < leftVis.iclData.unit2Px * (10/25)) {
+        mousePos = leftVis.iclData.unit2Px * (10/25);
+    } else if (mousePos > (71 / 20) * leftVis.iclData.unit2Px) {
+        mousePos = (71 / 20) * leftVis.iclData.unit2Px;
+      }
+      d3.select(this).attr("x", mousePos);
+      leftVis.iclData.time = Math.round(((mousePos - (leftVis.iclData.unit2Px * 10/25)) / ((63 / 20) * leftVis.iclData.unit2Px)) * leftVis.iclData.timeMax);
+      leftVis.timeText.text("Time: " + Math.floor((100 * leftVis.iclData.time) / leftVis.iclData.fps) / 100);
+      leftVis.frameText.text("Frame: " + Math.floor(leftVis.iclData.time));
+      leftVis.UpdateVisuals();
+    }
+
+    ESlide() {
+      d3.select(this).style("fill", "#888888");
+      d3.select(this).classed("active", false);
+      d3.selectAll(".sliderhelp").style("visibility", "visible");
     }
 
     Start() {
@@ -338,7 +368,6 @@ class iclVisual {
     }
 
     LoadGraph() {
-        d3.select("#timeSlide").call(d3.drag().on("start", this.SSlide).on("drag", this.MSlide).on("end", this.ESlide));
         var fo = this.graphSVG.append('foreignObject').attr('x', this.iclData.unit2Px * (1 / 25)).attr('y', this.iclData.unit2Px * (18 / 25)).attr('width', this.iclData.unit2Px * 1.5).attr('height', this.iclData.unit2Px * (18 / 25));
 
         for (var i = 0; i < 3; i++) { //Create y-axis labels.
@@ -352,6 +381,32 @@ class iclVisual {
                 .attr("class", "graphnum")
                 .style("font-size", this.iclData.unit2Px * (4 / 25)).style("text-anchor", "middle").text(i);
         }
+
+        this.graphSVG.select("#overLay").append('text').attr("x", this.iclData.unit2Px * (1/25)).attr("y", this.iclData.unit2Px * 1).text(' ▶▶ Play').style('font-size', this.iclData.unit2Px * 5/25).attr('fill', 'green')
+                  .attr('class', 'reveal play').style('box-sizing', 'border-box').attr('cursor', 'pointer').on('click', () => {this.iclData.timeDirect++;});
+        this.graphSVG.select("#overLay").append('text').attr("x", this.iclData.unit2Px * (1/25)).attr("y", this.iclData.unit2Px * 1.2).text(' ■ Stop').style('cursor', 'pointer').style('font-size', this.iclData.unit2Px * 5/25).attr('fill', 'red')
+                  .attr('class', 'reveal play').on('click', () => {this.iclData.timeDirect = 0;});
+        this.graphSVG.select("#overLay").append('text').attr("x", this.iclData.unit2Px * (1/25)).attr("y", this.iclData.unit2Px * 1.4).text(' ◀◀ Rewind').style('cursor', 'pointer').style('font-size', this.iclData.unit2Px * 5/25).attr('fill', 'blue')
+                  .attr('class', 'reveal play').on('click', () => {this.iclData.timeDirect--;});
+        this.graphSVG.select("#overLay").append('text').attr("x", this.iclData.unit2Px * (1/25)).attr("y", this.iclData.unit2Px * 1.6).text(' ◀ Slow ▶').style('cursor', 'pointer').style('font-size', this.iclData.unit2Px * 5/25).attr('fill', 'cyan')
+                  .attr('class', 'reveal play').on('click', () => {if (this.iclData.timeDirect == 0) {this.iclData.timeDirect += 0.5;} else {this.iclData.timeDirect/=2;}});
+
+        /* Working frame advance and frame rewind buttons. Don't know if they're necessary but they work.
+        // Just need to update timeText, frameText, and timeSlider during a visual update.
+        this.graphSVG.select("#overLay").append('text').attr("x", this.iclData.unit2Px * 1).attr("y", this.iclData.unit2Px * 1).text(' Frame Adv. ▶').style('cursor', 'pointer').style('font-size', this.iclData.unit2Px * 5/25).attr('fill', 'purple')
+                  .attr('class', 'reveal play').on('click', () => {this.iclData.timeDirect = 0; if (this.iclData.time >= this.iclData.timeMax) {this.iclData.time = this.iclData.timeMax;} else {this.iclData.time += 1;} this.UpdateVisuals();});
+        this.graphSVG.select("#overLay").append('text').attr("x", this.iclData.unit2Px * 1).attr("y", this.iclData.unit2Px * 1.2).text(' ◀ Frame Rew.').style('cursor', 'pointer').style('font-size', this.iclData.unit2Px * 5/25).attr('fill', 'orange')
+                  .attr('class', 'reveal play').on('click', () => {this.iclData.timeDirect = 0; if (this.iclData.time > 0) {this.iclData.time -= 1;} else {this.iclData.time == 0;} this.UpdateVisuals();});
+        */
+
+        this.timeText = this.graphSVG.select("#backGround").append("text").attr("x", this.iclData.unit2Px * (1/ 25)).attr("y", this.iclData.unit2Px * .6)
+                   .style("font-size", this.iclData.unit2Px * (4 / 25)).style("text-anchor", "start").text("Time: 0").attr("class", "timeText");
+        this.frameText = this.graphSVG.select("#backGround").append("text").attr("x", this.iclData.unit2Px * (1/ 25)).attr("y", this.iclData.unit2Px * .8)
+                    .style("font-size", this.iclData.unit2Px * (4 / 25)).style("text-anchor", "start").text("Frame: 0").attr("class", "frameText");
+        this.timeSlider = this.graphSVG.select("#backGround").append("rect").attr("width", this.iclData.unit2Px / 20).attr("height", this.iclData.unit2Px * (31/20))
+                     .attr("y", this.iclData.unit2Px * 2).attr("x", this.iclData.unit2Px * (10/25))
+                     .style("fill", "#888888").style("fill-opacity", .5)
+                     .call(d3.drag().on("start", this.SSlide).on("drag", this.MSlide).on("end", this.ESlide)).attr("class", "timeSlide");
     }
 
     cleanUp() {
@@ -363,6 +418,7 @@ class iclVisual {
 
         this.exitFoundLine = null;
         this.allExitedLine = null;
+
     }
 
     ChoosExit() {
@@ -380,13 +436,18 @@ class iclVisual {
         d3.select("#exit").attr("cx", this.iclData.fieldExit[0]).attr("cy", this.iclData.fieldExit[1]);
     }
 
-    exitChosen() {
+    /*exitChosen() {
+        console.log("IN HERE");
+
         d3.select(".exitText").remove();
         this.fieldSVG.on("mousemove", null).on("click", null);
         var visualReference = this;
         this.projector = setInterval(this.AlterAnim, 1000 / this.iclData.fps);
         this.Load();
     }
+    //There's an actual exitChosen method outside the class that we're calling. Don't want
+    //to get these two confused but also want to make sure it doesnt break anything.
+    */
 
     AlterAnim() {
       if (this.leftVis.iclData.time >= this.leftVis.iclData.timeMax) {
@@ -496,10 +557,11 @@ class iclVisual {
         this.leftVis.iclData.AllAtExit();
         this.leftVis.UpdateVisuals();
         this.leftVis.iclData.time++;
-        //timeSlider.attr("x", ((10/25) + (time / timeMax) * (63/20)) * unit2Px);
       }
-      //timeText.text("Time: " + Math.floor((100 * this.leftVis.iclData.time) / this.leftVis.iclData.fps) / 100);
-      //frameText.text("Frame: " + this.leftVis.iclData.time);
+      leftVis.timeText.text("Time: " + Math.floor((100 * this.leftVis.iclData.time) / this.leftVis.iclData.fps) / 100);
+      leftVis.frameText.text("Frame: " + this.leftVis.iclData.time);
+      leftVis.timeSlider.attr("x", ((10/25) + (this.leftVis.iclData.time / this.leftVis.iclData.timeMax) * (63/20)) * this.leftVis.iclData.unit2Px);
+
     }
 
     AlterLines(i) {
@@ -535,10 +597,10 @@ class iclVisual {
           this.leftVis.iclData.time = this.leftVis.iclData.timeMax;
           this.leftVis.iclData.timeDirect = 0;
         }
-        this.leftVis.UpdateVisuals();
-        timeSlider.attr("x", ((10/25) + (this.leftVis.iclData.time / this.leftVis.iclData.timeMax) * (63/20)) * this.leftVis.iclData.unit2Px);
-        timeText.text("Time: " + Math.floor((100 * this.leftVis.iclData.time) / this.leftVis.iclData.fps) / 100);
-        frameText.text("Frame: " + Math.floor(this.leftVis.iclData.time));
+        leftVis.UpdateVisuals();
+        leftVis.timeSlider.attr("x", ((10/25) + (this.leftVis.iclData.time / this.leftVis.iclData.timeMax) * (63/20)) * this.leftVis.iclData.unit2Px);
+        leftVis.timeText.text("Time: " + Math.floor((100 * this.leftVis.iclData.time) / this.leftVis.iclData.fps) / 100);
+        leftVis.frameText.text("Frame: " + Math.floor(this.leftVis.iclData.time));
       }
     }
 
@@ -737,6 +799,9 @@ function exitChosen() {
     d3.selectAll("#bots").html(null);
     d3.selectAll("#lines").html(null);
     d3.selectAll("#overLay").html(null);
+    d3.selectAll(".timeSlide").remove();
+    d3.selectAll(".timeText").remove();
+    d3.selectAll(".frameText").remove();
     leftSide = new iclData(0, instruBinder, algName, d3.select("#exitAngle").node().value, wireless);
     leftVis = new iclVisual(leftSide);
     theMotor = setInterval(leftVis.AlterAnim, 1000 / 60);
