@@ -248,13 +248,23 @@ class iclVisual {
         return ('#' + RGB[0] + RGB[1] + RGB[2]);
     }
 
-
+    /**
+    *Helper function for time slider.
+    *Initializes the slider to be moved.
+    *Removes help text for visibility.
+    *Called by anonymous function inside LoadGraph().
+    */
     SSlide() {
       d3.select(this).style("fill", "orange");
       d3.select(this).classed("active", true);
       d3.selectAll(".sliderhelp").style("visibility", "hidden");
     }
-
+    /**
+    *Helper function for time slider.
+    *Makes sure the slider stays within the bounds of timeMax.
+    *Called by anonymous function inside LoadGraph().
+    *Relies on window.superlist.
+    */
     MSlide() {
       var mousePos = d3.event.x;
       if (mousePos < superlist[controllerID].iclData.unit2Px * (10/25)) {
@@ -268,13 +278,23 @@ class iclVisual {
       superlist[controllerID].frameText.text("Frame: " + Math.floor(superlist[controllerID].iclData.time));
       superlist[controllerID].UpdateVisuals();
     }
-
+    /**
+    *Helper function for time slider.
+    *Disables the slider and shows help text again.
+    *Called by anonymous function inside LoadGraph().
+    */
     ESlide() {
       d3.select(this).style("fill", "#888888");
       d3.select(this).classed("active", false);
       d3.selectAll(".sliderhelp").style("visibility", "visible");
     }
 
+    /**
+    *Initializes the layers and ensures they take up the whole of
+    *the given SVG.
+    *
+    *Called by constructor.
+    */
     Start() {
 
         this.fieldSVG.select("#backGround").attr("height", "100%").attr("width", "100%");
@@ -289,12 +309,16 @@ class iclVisual {
         this.graphSVG.select("#overLay").attr("height", "100%").attr("width", "100%");
         this.graphSVG.select("#excess").attr("height", "100%").attr("width", "100%");
 
-        //var tmp = this;
+        // In case we want to re-implement the user being able to select an exit with the mouse.
         //this.fieldSVG.on("mousemove", this.ChoosExit.call(this, tmp)).on("click", exitChosen.call(this, tmp));
 
         this.Load();
     }
 
+    /**
+    *Create tourist graph and field visuals
+    *Called by this.Start().
+    */
     Load() {
 
         this.LoadField();
@@ -324,6 +348,10 @@ class iclVisual {
         }
     }
 
+    /**
+    *Create field visuals, including shape, reference angles and algorithm description.
+    *Called by this.Load().
+    */
     LoadField() {
         var wire = (this.iclData.wireless) ? " Wireless" : " Non-Wireless";
         d3.select("#Desc" + this.iclData.id).text(this.iclData.algorithmName + wire);
@@ -350,7 +378,10 @@ class iclVisual {
                 .style("text-anchor", "middle").style("font-size", this.iclData.unit2Px / 5).text("90");
         }
     }
-
+    /**
+    *Create graph visuals, including graph axes, labels, replay buttons, time/frame data and slider.
+    *Called by this.Load().
+    */
     LoadGraph() {
         var fo = this.graphSVG.append('foreignObject').attr('x', this.iclData.unit2Px * (1 / 25)).attr('y', this.iclData.unit2Px * (18 / 25)).attr('width', this.iclData.unit2Px * 1.5).attr('height', this.iclData.unit2Px * (18 / 25));
 
@@ -393,65 +424,66 @@ class iclVisual {
                      .call(d3.drag().on("start", this.SSlide).on("drag", this.MSlide).on("end", this.ESlide)).attr("class", "timeSlide");
     }
 
-    cleanUp() {
-        this.tourColors = [];
-
-        this.iclData.tourLine = [];
-
-        this.iclData.graphLine = [];
-
-        this.iclData.exitFoundLine = null;
-        this.iclData.allExitedLine = null;
-
-    }
-
-    ChoosExit() {
-
-        this.iclData.exitAngle = Math.atan2(d3.mouse(this)[0] - d3.select("#center").attr("cx"), d3.mouse(this)[1] - d3.select("#center").attr("cy")) - (Math.PI / 2);
-        if (this.iclData.exitAngle < 0) {
-            this.iclData.exitAngle += 2 * Math.PI;
-        }
-        d3.select("#exitText").text("Left-Click to place exit at ~" + Math.floor(this.iclData.exitAngle * 180 * 100 / Math.PI) / 100 + " degrees");
-        if (this.iclData.degrees == 2) { //Choose exit relative to mouse position.
-            this.iclData.fieldExit = [d3.event.x, this.iclData.center[1]];
-        } else { //Choose exit relative to shape.
-            this.iclData.fieldExit = this.iclData.tourists[0].WallAtAngle(this.iclData.exitAngle);
-        }
-        d3.select("#exit").attr("cx", this.iclData.fieldExit[0]).attr("cy", this.iclData.fieldExit[1]);
-    }
-
+    /**
+    *The main function used to control an algorithm when it is running for the first time.
+    *Recalculates all necessary points based on new exit location.
+    *Relies on window.superlist.
+    *This is due to the nature of calling AlterAnim from weird places, such as a time interval.
+    *Does both data calculation and visual updates at once, so while it does not
+    *really fit in either class, putting it in iclVisual was the best way to do it
+    *because this class rests on iclData. The two are really meant to always work together.
+    */
     AlterAnim() {
+      // Reached the end of the sim.
       if (superlist[controllerID].iclData.time >= superlist[controllerID].iclData.timeMax) {
         superlist[controllerID].iclData.time = superlist[controllerID].iclData.timeMax;
 
 
-        for (var i = 0; i < 11; i++) {//Create x-axis labels.
+        for (var i = 0; i < 11; i++) {//Remove x-axis labels 1-10, in order to scale graph.
           superlist[controllerID].graphSVG.selectAll(".graphnum").style("display", "none");
         }
 
-        for (i = 0; i < superlist[controllerID].iclData.touristNum; i++){
+        for (i = 0; i < superlist[controllerID].iclData.touristNum; i++){//One last call to AlterLines.
             superlist[controllerID].AlterLines(i);
         }
 
-        for (var i = 0; i <= Math.floor((100 * superlist[controllerID].iclData.time) / superlist[controllerID].iclData.fps) / 100; i++) {//Create x-axis labels.
+        for (var i = 0; i <= Math.floor((100 * superlist[controllerID].iclData.time) / superlist[controllerID].iclData.fps) / 100; i++) {//Create new scaled x-axis labels.
           superlist[controllerID].graphSVG.select("#overLay").append("text")
                   .attr("x", (10/25 + (i / (Math.floor((100 * superlist[controllerID].iclData.time) / superlist[controllerID].iclData.fps) / 100)) * 80/25) * superlist[controllerID].iclData.unit2Px)//unit2Px * (10 / 25) + ((Math.floor(timeMax) - i) * 80/25) * unit2Px)
                   .attr("y", superlist[controllerID].iclData.unit2Px * (94 / 25))
-                  .style("font-size", superlist[controllerID].iclData.unit2Px * (4 / 25)).style("text-anchor", "middle").text(i).attr("class","graphnum");
+                  .style("font-size", superlist[controllerID].iclData.unit2Px * (4 / 25))
+                  .style("text-anchor", "middle")
+                  .text(i)
+                  .attr("class","graphnum");
         }
-        superlist[controllerID].graphSVG.select("#overLay").append("text").attr("x", (superlist[controllerID].iclData.unit2Px * 65/25)).attr("y", superlist[controllerID].iclData.unit2Px * (1.7))
+        superlist[controllerID].graphSVG.select("#overLay").append("text")
+                .attr("x", (superlist[controllerID].iclData.unit2Px * 65/25))
+                .attr("y", superlist[controllerID].iclData.unit2Px * (1.7))
                 .style("font-size", superlist[controllerID].iclData.unit2Px * (4/25))
                 .text("End: " + Math.floor((100 * superlist[controllerID].iclData.time) / superlist[controllerID].iclData.fps) / 100 + " sec");
-        superlist[controllerID].graphSVG.select("#overLay").append('text').attr("x", superlist[controllerID].iclData.unit2Px * 65/25).attr("y", superlist[controllerID].iclData.unit2Px * 1.83)
-                .attr("class", "sliderhelp").style("font-size", superlist[controllerID].iclData.unit2Px * (3/25)).text("Click and drag gray bar")
+
+        superlist[controllerID].graphSVG.select("#overLay").append('text')
+                .attr("x", superlist[controllerID].iclData.unit2Px * 65/25)
+                .attr("y", superlist[controllerID].iclData.unit2Px * 1.83)
+                .attr("class", "sliderhelp")
+                .style("font-size", superlist[controllerID].iclData.unit2Px * (3/25))
+                .text("Click and drag gray bar")
                 .style("fill", "#bbbbaa");
-        superlist[controllerID].graphSVG.select("#overLay").append('text').attr("x", superlist[controllerID].iclData.unit2Px * 65/25).attr("y", superlist[controllerID].iclData.unit2Px * 1.95)
-                .attr("class", "sliderhelp").style("font-size", superlist[controllerID].iclData.unit2Px * (3/25)).text("to see the timeline")
+
+        superlist[controllerID].graphSVG.select("#overLay").append('text')
+                .attr("x", superlist[controllerID].iclData.unit2Px * 65/25)
+                .attr("y", superlist[controllerID].iclData.unit2Px * 1.95)
+                .attr("class", "sliderhelp")
+                .style("font-size", superlist[controllerID].iclData.unit2Px * (3/25))
+                .text("to see the timeline")
                 .style("fill", "#bbbbaa");
+
         superlist[controllerID].UpdateVisuals();
         clearInterval(theMotor);
-        //theMotor = setInterval(superlist[controllerID].PlayAnim, 1000 / superlist[controllerID].iclData.fps);
-      } else {
+        theMotor = setInterval(superlist[controllerID].PlayAnim, 1000 / superlist[controllerID].iclData.fps);
+      }
+      // Inside the sim.
+      else {
         var saveBuffer = [];
 
         for (var i = 0; i < superlist[controllerID].iclData.tourists.length; i++) {
@@ -533,6 +565,12 @@ class iclVisual {
 
     }
 
+    /**
+    *Calculates the a given tourist's current lines up to the current time.
+    *Called from this.AlterAnim().
+    *
+    * @param {integer} i The given tourist id for which to calculate the path.
+    */
     AlterLines(i) {
       var dista = this.iclData.unit2Px * 4 - Math.abs((Math.sqrt(Math.pow(this.iclData.fieldExit[0] - this.iclData.tourists[i].x, 2) + Math.pow(this.iclData.fieldExit[1] - this.iclData.tourists[i].y, 2)) * (20 / 25)));
       this.iclData.tourPoints[i][this.iclData.time] = {x:this.iclData.tourists[i].x, y:this.iclData.tourists[i].y};
@@ -546,16 +584,31 @@ class iclVisual {
         //((10/25) + (graphPoints[i][j].x / timeMax) * (63/20)) * unit2Px)
       }
 
-      this.iclData.tourLine[i] = this.fieldSVG.select("#lines").append("path").attr("d", holdA)
-                    .style("stroke", this.tourColors[i]).style("stroke-width", this.iclData.unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
+      this.iclData.tourLine[i] = this.fieldSVG.select("#lines").append("path")
+            .attr("d", holdA)
+            .style("stroke", this.tourColors[i])
+            .style("stroke-width", this.iclData.unit2Px * (1 / 25))
+            .style("stroke-opacity", 0.5)
+            .style("fill", "none");
+
       this.iclData.graphPoints[i][this.iclData.time] = {x:this.iclData.time, y:(dista - this.iclData.unit2Px * (10 / 25))};
+
       this.iclData.graphLine[i].remove();
-      this.iclData.graphLine[i] = this.graphSVG.select("#lines").append("path").attr("d", holdG)
-                     .style("stroke", this.tourColors[i]).style("stroke-width", this.iclData.unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
+
+      this.iclData.graphLine[i] = this.graphSVG.select("#lines").append("path")
+            .attr("d", holdG)
+            .style("stroke", this.tourColors[i])
+            .style("stroke-width", this.iclData.unit2Px * (1 / 25))
+            .style("stroke-opacity", 0.5)
+            .style("fill", "none");
     }
 
-
-
+    /**
+    *The post-run algorithm controller. Allows for playback.
+    *timeDirect is defined in iclData.
+    *Relies on window.superlist because the call is usually from an interval once
+    *the sim has ended.
+    */
     PlayAnim() {
       if (superlist[controllerID].iclData.timeDirect != 0) {
         superlist[controllerID].iclData.time += superlist[controllerID].iclData.timeDirect;
@@ -573,6 +626,10 @@ class iclVisual {
       }
     }
 
+    /**
+    *The last part that happens after data has been updated.
+    *Redraws tourist visuals, usually in relation to current time.
+    */
     UpdateVisuals() {
         for (var i = 0; i < this.iclData.touristNum; i++) {
           var who = this.iclData.tourists[i];
@@ -580,10 +637,15 @@ class iclVisual {
           this.iclData.graphDots[i].attr("cx", ((10/25) + ((this.iclData.graphPoints[i][Math.floor(this.iclData.time)].x / this.iclData.timeMax) * (63/20))) * this.iclData.unit2Px).attr("cy", this.iclData.graphPoints[i][Math.floor(this.iclData.time)].y);
         }
     }
-
 }
 
-
+/**
+*Outside controller for letting the buttons choose timeDirect.
+*Relies on window.superlist.
+*Called from the HTML <text>s relating to playback.
+*
+* @param {string} s The direction which to send the playback. Gotten from hardcoded method calls in HTML.
+*/
 function editAnims(s) {
     if (s == "play") {
         superlist[controllerID].iclData.timeDirect = 1;
@@ -594,6 +656,14 @@ function editAnims(s) {
     }
 }
 
+/**
+*Unused function used to show two comparisons.
+*Lets the user choose whether the want to see
+*the graphs side by side, or the fields.
+* Relies on window.superlist.
+*
+* @param {string} s The part of the animation to show side by side with another. Gotten from hardcoded method calls in HTML.
+*/
 function showAnims(s) {
     for (var i = 0; i < 2; i++) {
         if (s == "graph") {
@@ -606,6 +676,14 @@ function showAnims(s) {
     }
 }
 
+/**
+*Unused function to swap instructions on the fly.
+*Not really used anymore because we choose the algorithm based on the current #value in the URL,
+*but I'll leave it here just in case.
+*Works best when having the user select an alg from a <select> HTML element.
+*
+* @param {string} n Algorithm Shortname. Will be defined in the docs... somewhere.
+*/
 function changeInstructions(n) {
     var e = document.getElementById("alg" + n);
     var s = e.options[e.selectedIndex].value;
@@ -738,6 +816,10 @@ function changeInstructions(n) {
 
 }
 
+/**
+*Unused function which lets a user choose the exit with a mouse.
+*
+*/
 function ChoosExit() {
     var exitAngle = Math.atan2(d3.mouse(this)[0] - center[0], d3.mouse(this)[1] - center[1]) - (Math.PI / 2);
     if (exitAngle < 0) {
@@ -752,6 +834,12 @@ function ChoosExit() {
     d3.select(".exit").attr("cx", fieldExit[0]).attr("cy", fieldExit[1]);
 }
 
+/**
+*Gets the current value of an <input type='number'> HTML element
+*and displays the exit at that location for a preview.
+*relies on window.superlist.
+*Reuses code from Tourist.DirectTo().
+*/
 function exitPreview() {
     var exitAngle = d3.select("#exitAngle").node().value;
     exitAngle = exitAngle * Math.PI / 180;
@@ -774,6 +862,13 @@ function exitPreview() {
     d3.select("#exit").attr("cx", wallLoc[0]).attr("cy", wallLoc[1]);
 }
 
+/**
+*Starts up the interval after clearing the field and graph of debris.
+*Any new elements that need to be cleared after a run and before a new one... do it here.
+*When doing comparisons the 'theMotor = ... ' is the part we wanna change to
+*use superlist and controllerID to update both one after another. Can't quite get it yet.
+*Relies on window.superlist.
+*/
 function exitChosen() {
     //clear motor
     clearInterval(theMotor);
@@ -789,6 +884,11 @@ function exitChosen() {
     d3.select(".exitText").remove();
 }
 
+/**
+*Select an algorithm or element description box to show based on current algorithm shortname.
+*
+* @param {string} s The id of the box to show. "steps" if you want to select an algorithm desc. box you've created based on shortname.
+*/
 function showHelp(s) {
     d3.selectAll(".w3-display-container").style("display", "none");
     switch (s) {
@@ -802,11 +902,17 @@ function showHelp(s) {
     return;
 }
 
+/**
+*Contains the commands for all the algorithms. Give it a shortname and wireless true/false
+*and it'll change the instrubinder to match. Used on page load.
+*The color isn't really necessary.
+*
+* @param {string} s Algorithm shortname. Add 'wl' to shortnames where the algorithm has the potential to be f2f.
+* @param {boolean} w Wireless true/false. A legacy value from before shortnames were more specific.
+*/
 function showAlgorithmDesc(s, w){
-    var color;
     switch(s){
         case 'A':
-            color = "#efe";
             instruBinder = [
                             [["Intercept", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right"]]],
                             [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left"]]]
@@ -814,7 +920,6 @@ function showAlgorithmDesc(s, w){
             algName = "Algorithm A ";
             break;
         case 'Awl':
-            color = "#efe";
             instruBinder = [
                             [["Intercept", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right"]]],
                             [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left"]]]
@@ -822,7 +927,6 @@ function showAlgorithmDesc(s, w){
             algName = "Algorithm A ";
             break;
         case 'B':
-            color = '#eef';
             instruBinder = [
                                  [["Intercept", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0], center[1] + 5]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
                                  [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0], center[1] + 5]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
@@ -830,7 +934,6 @@ function showAlgorithmDesc(s, w){
             algName = "Algorithm B ";
             break;
         case 'Bwl':
-            color = '#eef';
             instruBinder = [
                                  [["Intercept", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0], center[1] + 5]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
                                  [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0], center[1] + 5]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
@@ -838,7 +941,6 @@ function showAlgorithmDesc(s, w){
             algName = "Algorithm B ";
             break;
         case 'C':
-            color = '#fee';
             instruBinder = [
                                  [["Intercept", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0] + 4, center[1] + 5]], ["GoToPoint", [center[0], center[1]+5]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
                                  [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0] - 4, center[1] + 5]], ["GoToPoint", [center[0], center[1]+5]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
@@ -846,7 +948,6 @@ function showAlgorithmDesc(s, w){
             algName = "Algorithm C ";
             break;
         case 'Cwl':
-            color = '#fee';
             instruBinder = [
                                  [["Intercept", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0] + 4, center[1] + 5]], ["GoToPoint", [center[0], center[1]+5]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
                                  [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0] - 4, center[1] + 5]], ["GoToPoint", [center[0], center[1]+5]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
@@ -854,7 +955,6 @@ function showAlgorithmDesc(s, w){
             algName = "Algorithm C ";
             break;
         case 'Q1':
-            color = "#efe";
             instruBinder = [
                                  [["GoToExit", [null, true, "#fe447d"]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left", 114]], ["GoToWallAtAngle", [347]], ["FollowWall", ["right", 53]], ["Wait", [null]]],
                                  [["Wait", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right"]]]
@@ -862,7 +962,6 @@ function showAlgorithmDesc(s, w){
             algName = "Algorithm Priority 1 ";
             break;
         case 'Q2':
-            color = "#eef";
             instruBinder = [
                                   [["GoToExit", [null, true, "#fe447d"]], ["GoToWallAtAngle", [144]], ["FollowWall", ["left", 36]], ["GoToPoint", [center[0] + (unit2Px * 0.65), center[1] + 30]], ["GoToWallAtAngle", [345]], ["FollowWall", ["left"]]],
                                   [["Wait", [null]], ["GoToWallAtAngle", [144]], ["FollowWall", ["right"]]],
@@ -871,7 +970,6 @@ function showAlgorithmDesc(s, w){
             algName = "Algorithm Priority 2 ";
             break;
         case 'Q2S1':
-            color = "#fee";
             instruBinder = [
                 [["GoToExit", [null, true]], ["GoToWallAtAngle", [213.8]], ["FollowWall", ["left"]]],
                 [["GoToExit", [null, true]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left"]]],
@@ -913,7 +1011,6 @@ function showAlgorithmDesc(s, w){
             break;
 
         case 'Q1S1Q1':
-            color = "#efe";
             instruBinder = [
                 [["GoToExit", [null, true]], ["GoToWallAtAngle", [180]] ,["FollowWall", ["right"]]],
                 [["GoToExit", [null, true]], ["GoToWallAtAngle", [0]], ["FollowWall", ["right"]]],
@@ -923,7 +1020,6 @@ function showAlgorithmDesc(s, w){
             break;
 
         case 'Q1S4':
-            color = "#eef";
             instruBinder = [
                 [["GoToExit", [null, true]], ["Wait", [(1 + (Math.PI / 2))]], ["GoToWallAtAngle", [180]], ["Wait", [null]]],
                 [["Wait", [null]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left", 75]], ["Wait", [null]]],
@@ -935,7 +1031,6 @@ function showAlgorithmDesc(s, w){
             break;
 
         case 'Q1S8':
-            color = "#fee";
             instruBinder = [
                 [["GoToExit", [null, true]], ["Wait", [(1+(Math.PI / 2))]], ["GoToWallAtAngle", [180]], ["Wait", [null]]],
                 [["Wait", [null]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left", 60]], ["Wait", [null]]],
@@ -967,6 +1062,7 @@ var center = [2 * unit2Px, 2 * unit2Px];
 var superlist = [];
 var controllerID = 0;
 
+/////// INITIALIZE ALGORITHM ///////
 var algRequested = window.location.href.includes("#");
 if (algRequested) {
     algSelector = window.location.href.indexOf("#");
