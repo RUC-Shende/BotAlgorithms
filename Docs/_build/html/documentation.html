@@ -1,0 +1,1057 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Search-and-Exit Tourist and Superclass Method Documentation &#8212; Search and Exit Algorithms 1.3a documentation</title>
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="References and Bibliography" href="references.html" />
+    <link rel="prev" title="Search and Exit Tourist API" href="api.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="references.html" title="References and Bibliography"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="Search and Exit Tourist API"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 1.3a documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="search-and-exit-tourist-and-superclass-method-documentation">
+<h1>Search-and-Exit Tourist and Superclass Method Documentation<a class="headerlink" href="#search-and-exit-tourist-and-superclass-method-documentation" title="Permalink to this headline">¶</a></h1>
+<p>This document aims to explain the methods and functions used in
+the superclass (<code class="docutils literal notranslate"><span class="pre">iclData</span></code> and <code class="docutils literal notranslate"><span class="pre">iclVisual</span></code> classes) as well as some non-API functions found in
+the <code class="docutils literal notranslate"><span class="pre">Tourist</span></code> class.</p>
+<div class="section" id="the-use-of-global-variables">
+<h2>The use of global variables<a class="headerlink" href="#the-use-of-global-variables" title="Permalink to this headline">¶</a></h2>
+<p>Our original design of the algorithm simulator used way too many global variables to
+successfully keep developing on top of. The biggest reason for the switch to classes for all this
+information is that otherwise it would require us to essentially double the amount of global
+variables used to do things like comparison, and that just wasn’t a safe or efficient choice.</p>
+<p>We do, however keep some global vars just because its easier.
+In the current implementation of <code class="docutils literal notranslate"><span class="pre">superclass.js</span></code>, we use a variable called <code class="docutils literal notranslate"><span class="pre">superlist</span></code>
+to keep track of all of our instances of <code class="docutils literal notranslate"><span class="pre">iclVisual</span></code>. All classes refer to <code class="docutils literal notranslate"><span class="pre">superlist</span></code>, so it is
+necessary for the simulation to work. We understand that this might not be the best practice, but is
+certainly better than before, and helps us meet the requirements to make this simulator work.
+Remember, we are essentially creating our own small game engine here with graphics, etc., and
+because Javascript is so weird about certain things (for example <code class="docutils literal notranslate"><span class="pre">setInterval()</span></code>’s context) we have to adapt to JS’s
+way of working.</p>
+<p>To help implement comparisons and make switching between indices in the superlist easier,
+we create the <code class="docutils literal notranslate"><span class="pre">controllerID</span></code> which would just be the index of the current <code class="docutils literal notranslate"><span class="pre">iclVisual</span></code> we
+want to modify. When implementing comparisons we will likely just be switch between 1 and 0 for the
+<code class="docutils literal notranslate"><span class="pre">controllerID</span></code> the whole time.</p>
+<p>This simulation is built on a mechanism that Javascript provides called an Interval. When we refer
+to our own Interval that makes the thing work, we call it <code class="docutils literal notranslate"><span class="pre">theMotor</span></code>. We are still testing comparisons, so
+there could be a chance of adding a second motor that focuses just on the second comparison, but we have to see how they play
+together before making that decision. The whole reason for the use of these global variables is because of
+this Interval, when a function is called on an interval, even if the method that is being called is specific
+to an instance of a class, the method’s reference for <code class="docutils literal notranslate"><span class="pre">this</span></code> change from the usual reference to the
+instance to a reference to the window. So, we have to use window variables to get what we want.</p>
+<p>Other global variables that aren’t nearly as vital include a copy of <code class="docutils literal notranslate"><span class="pre">instruBinder</span></code> and <code class="docutils literal notranslate"><span class="pre">algName</span></code> that are changed depending on the
+current algorithm we are loading in, and  <code class="docutils literal notranslate"><span class="pre">unit2Px</span></code> and <code class="docutils literal notranslate"><span class="pre">center</span></code>, which will be defined below as they relate to <code class="docutils literal notranslate"><span class="pre">iclData</span></code>.</p>
+</div>
+</div>
+<div class="section" id="the-tourist">
+<h1>The Tourist<a class="headerlink" href="#the-tourist" title="Permalink to this headline">¶</a></h1>
+<p>A tourist in this case is the same exact thing as saying a ‘robot’ or ‘mobile agent’. It’s
+just a name we’ve had for the little circles in the sim since the beginning.</p>
+<dl class="class">
+<dt id="tourist.Tourist">
+<em class="property">class </em><code class="descclassname">tourist.</code><code class="descname">Tourist</code><span class="sig-paren">(</span><em>iclData</em>, <em>p</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>iclData</strong> (<em>iclData</em>) – Represents the data of the overall simulation, robots’ tourlines and graphlines.</li>
+<li><strong>p</strong> (<em>boolean</em>) – True if bot is Priority Agents, false otherwise.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="tourist.Tourist.DirectTo">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">DirectTo</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.DirectTo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send the robot to its next location (next frame) based on its current instruction or allowance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>value</strong> (<em>Array</em>) – [x,y] coordinates of the robot’s next calculated location.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="tourist.Tourist.FollowWall">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">FollowWall</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.FollowWall" title="Permalink to this definition">¶</a></dt>
+<dd><p>A robot will follow the perimeter for a certain number of seconds, or indefinitely if no time specified.
+value[0] Will default to ‘right’ if no direction specified.
+Robot is required to be at a position on the perimeter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>value</strong> (<em>Array</em>) – [Direction string ‘left’ or ‘right’, &lt;Optional&gt;time to follow wall in seconds]</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="tourist.Tourist.GoOutAtAngle">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">GoOutAtAngle</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.GoOutAtAngle" title="Permalink to this definition">¶</a></dt>
+<dd><p>The robot will go from the interior of the object to an angle on the perimeter.
+Robot is required to be in the interior (not in perimeter) of the object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>value</strong> (<em>Array</em>) – [angle on the shape of the perimeter, percent distance of a radius]</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="tourist.Tourist.GoToCenter">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">GoToCenter</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.GoToCenter" title="Permalink to this definition">¶</a></dt>
+<dd><p>The robot will go to the center (origin) of the shape. Robot is not required to be at any specific position.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>value</strong> (<em>null</em>) – null</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="tourist.Tourist.GoToExit">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">GoToExit</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.GoToExit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Robot will go to the exit at cartestian coordinates (x, y).
+This is not the same as exitAngle.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>value</strong> (<em>Array</em>) – [float x position, float y position]</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="tourist.Tourist.GoToPoint">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">GoToPoint</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.GoToPoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>The robot will go to a point on the shape defined by cartesian coordinates (x, y)
+Based on original center point defined in this.iclData (before visual scaling)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>value</strong> (<em>Array</em>) – [float x position,  float y position]</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="tourist.Tourist.GoToWallAtAngle">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">GoToWallAtAngle</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.GoToWallAtAngle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a robot go to the wall at a specific angle on the shape.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>value</strong> (<em>integer</em>) – Angle on the shape of the perimeter</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="tourist.Tourist.Intercept">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">Intercept</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.Intercept" title="Permalink to this definition">¶</a></dt>
+<dd><p>Robot will calculate the shortest to path to the closest targetable robot and
+create a straight path to intercept it.
+If there exist Priority Agents, the robot following this command will then target the
+closest of them.
+In case we ever use face-to-face priority algorithms.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>value</strong> (<em>null</em>) – null</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="tourist.Tourist.Pursue">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">Pursue</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.Pursue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Robot will continuously move in the direction of the closest target, until it catches it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>value</strong> (<em>null</em>) – null</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="tourist.Tourist.Wait">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">Wait</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.Wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>A robot will wait for a time in seconds, or indefinitely if no time is specified.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>value</strong> (<em>float</em>) – Time to wait for in seconds.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="tourist.Tourist.WaitAverage">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">WaitAverage</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.WaitAverage" title="Permalink to this definition">¶</a></dt>
+<dd><p>A robot will wait at the average position of all robots NOT doing the WaitAverage command.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>value</strong> (<em>null</em>) – null</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="tourist.Tourist.WallAtAngle">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">WallAtAngle</code><span class="sig-paren">(</span><em>angle</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.WallAtAngle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the wall position on the shape, given an angle.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
+<li><strong>angle</strong> (<em>float</em>) – Used to calculate the wall position of the shape.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>Array</strong> – Array with x,y position of the wall relative to the shape.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tourist.Tourist.a">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">a</code><a class="headerlink" href="#tourist.Tourist.a" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tourist’s current angle.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tourist.Tourist.allowance">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">allowance</code><a class="headerlink" href="#tourist.Tourist.allowance" title="Permalink to this definition">¶</a></dt>
+<dd><p>How far the tourist can move in one frame.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tourist.Tourist.atExit">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">atExit</code><a class="headerlink" href="#tourist.Tourist.atExit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether or not the robot is at the exit.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tourist.Tourist.hunted">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">hunted</code><a class="headerlink" href="#tourist.Tourist.hunted" title="Permalink to this definition">¶</a></dt>
+<dd><p>The tourist that is currently pursuing this one.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tourist.Tourist.iclData">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">iclData</code><a class="headerlink" href="#tourist.Tourist.iclData" title="Permalink to this definition">¶</a></dt>
+<dd><p>This holds all of what used to be global variables!</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tourist.Tourist.knew">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">knew</code><a class="headerlink" href="#tourist.Tourist.knew" title="Permalink to this definition">¶</a></dt>
+<dd><p>The tourist has known of the exit for more than one frame.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tourist.Tourist.knows">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">knows</code><a class="headerlink" href="#tourist.Tourist.knows" title="Permalink to this definition">¶</a></dt>
+<dd><p>The tourist has learned of the exit on this frame.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tourist.Tourist.number">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">number</code><a class="headerlink" href="#tourist.Tourist.number" title="Permalink to this definition">¶</a></dt>
+<dd><p>The tourist’s ID as an integer.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tourist.Tourist.on">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">on</code><a class="headerlink" href="#tourist.Tourist.on" title="Permalink to this definition">¶</a></dt>
+<dd><p>This tourist’s current instruction function.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tourist.Tourist.priority">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">priority</code><a class="headerlink" href="#tourist.Tourist.priority" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether or not the robot is a Priority Agent.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tourist.Tourist.target">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">target</code><a class="headerlink" href="#tourist.Tourist.target" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tourist’s current goal according to its command. Can be a point on the shape or another tourist.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tourist.Tourist.velocity">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">velocity</code><a class="headerlink" href="#tourist.Tourist.velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Speed of the tourist.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tourist.Tourist.visual">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">visual</code><a class="headerlink" href="#tourist.Tourist.visual" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference to a visual DOM element</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tourist.Tourist.x">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">x</code><a class="headerlink" href="#tourist.Tourist.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tourist’s current x position.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tourist.Tourist.y">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">y</code><a class="headerlink" href="#tourist.Tourist.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tourist’s current y position.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p>Other API methods are defined in <a class="reference external" href="api.html">the API section of these docs</a>, so this
+will just be going over the methods behind the API.</p>
+<div class="section" id="calculating-the-wall-position-at-a-given-angle">
+<h2>Calculating the Wall Position at a Given Angle<a class="headerlink" href="#calculating-the-wall-position-at-a-given-angle" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="tourist.Tourist.WallAtAngle">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">WallAtAngle</code><span class="sig-paren">(</span><em>angle</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.WallAtAngle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the wall position on the shape, given an angle.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
+<li><strong>angle</strong> (<em>float</em>) – Used to calculate the wall position of the shape.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>Array</strong> – Array with x,y position of the wall relative to the shape.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="direct-tourist-to-its-next-destination">
+<h2>Direct Tourist to its Next Destination<a class="headerlink" href="#direct-tourist-to-its-next-destination" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="tourist.Tourist.DirectTo">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">DirectTo</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.DirectTo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send the robot to its next location (next frame) based on its current instruction or allowance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>value</strong> (<em>Array</em>) – [x,y] coordinates of the robot’s next calculated location.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="icldata">
+<h1>ICLData<a class="headerlink" href="#icldata" title="Permalink to this headline">¶</a></h1>
+<p>This is a data structure that we use to maintain positions of Tourists and
+other relevant data when running the sim.
+We tried to keep it as removed from visuals as possible, data-only.
+ICLVisual uses this a lot when running the actual simulation.</p>
+<dl class="class">
+<dt id="superclass.iclData">
+<em class="property">class </em><code class="descclassname">superclass.</code><code class="descname">iclData</code><span class="sig-paren">(</span><em>id</em>, <em>instruBinder</em>, <em>algorithmName</em>, <em>angle</em>, <em>wireless</em><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data necessary to run a simulation of a given algorithm, create visual paths, etc.
+Tourist == Agent == Robot.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>id</strong> (<em>integer</em>) – Global identifier of this object.</li>
+<li><strong>instruBinder</strong> (<em>Array</em>) – Array of valid trajectories for Tourists to follow. Length of this is touristNum.</li>
+<li><strong>algorithmName</strong> (<em>string</em>) – Full clean name of the algorithm instruBinder is supposed to represent.</li>
+<li><strong>angle</strong> (<em>float</em>) – Angle of the exit location on the shape. Exit location will be at the wall of the shape.</li>
+<li><strong>wireless</strong> (<em>boolean</em>) – True if using Wireless communication model, false otherwise.4</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="superclass.iclData.AllAtExit">
+<code class="descclassname">superclass.iclData.</code><code class="descname">AllAtExit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclData.AllAtExit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check to see that the exit conditions have been satisfied.
+If so, modify this.time and this.timeMax to signal end of sim.</p>
+<p>Called from this.AlterAnim(), Tourist.DirectTo(), Tourist.GoToExit().</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="superclass.iclData.LoadAnim">
+<code class="descclassname">superclass.iclData.</code><code class="descname">LoadAnim</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclData.LoadAnim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load and calculate the entirety of the animation, until time runs out.
+Used in the no-exit sim portion of this.Start().
+Called from this.Start().</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="superclass.iclData.LoadPoints">
+<code class="descclassname">superclass.iclData.</code><code class="descname">LoadPoints</code><span class="sig-paren">(</span><em>i</em><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclData.LoadPoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create points {x:x’, y:y’}, so intercept function knows
+where a mobile agent will be.
+All agents will know others’ trajectories during the sim,
+this is a way of getting that info quickly.
+Used in the no-exit sim portion of this.Start().
+Called from this.LoadAnim().</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>i</strong> (<em>integer</em>) – Which frame of the sim we will be calculating for.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="superclass.iclData.Start">
+<code class="descclassname">superclass.iclData.</code><code class="descname">Start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclData.Start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes the data structure, and runs a no-exit sim to initialize important values.
+Create and initialize all Tourists.
+Called from constructor.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.algorithmName">
+<code class="descclassname">superclass.iclData.</code><code class="descname">algorithmName</code><a class="headerlink" href="#superclass.iclData.algorithmName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Full clean name of algorithm.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.allExitedLine">
+<code class="descclassname">superclass.iclData.</code><code class="descname">allExitedLine</code><a class="headerlink" href="#superclass.iclData.allExitedLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether or not all have exited. Can represent a visual.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.center">
+<code class="descclassname">superclass.iclData.</code><code class="descname">center</code><a class="headerlink" href="#superclass.iclData.center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Center of the current shape in {float}[x,y].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.degrees">
+<code class="descclassname">superclass.iclData.</code><code class="descname">degrees</code><a class="headerlink" href="#superclass.iclData.degrees" title="Permalink to this definition">¶</a></dt>
+<dd><p>Points of the equilateral shape to search. Ex. 3 = Triangle, 4 = square, 360 = circle</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.exitAlert">
+<code class="descclassname">superclass.iclData.</code><code class="descname">exitAlert</code><a class="headerlink" href="#superclass.iclData.exitAlert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Someone learned where the exit is.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.exitAllow">
+<code class="descclassname">superclass.iclData.</code><code class="descname">exitAllow</code><a class="headerlink" href="#superclass.iclData.exitAllow" title="Permalink to this definition">¶</a></dt>
+<dd><p>How far into a frame the exit was found.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.exitAngle">
+<code class="descclassname">superclass.iclData.</code><code class="descname">exitAngle</code><a class="headerlink" href="#superclass.iclData.exitAngle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Angle of the exit to use for the sim.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.exitFoundFrame">
+<code class="descclassname">superclass.iclData.</code><code class="descname">exitFoundFrame</code><a class="headerlink" href="#superclass.iclData.exitFoundFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Frame on which the exit was found.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.exitFoundLine">
+<code class="descclassname">superclass.iclData.</code><code class="descname">exitFoundLine</code><a class="headerlink" href="#superclass.iclData.exitFoundLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether or not the exit has been found yet. Can represent a visual.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.fieldExit">
+<code class="descclassname">superclass.iclData.</code><code class="descname">fieldExit</code><a class="headerlink" href="#superclass.iclData.fieldExit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exit to use for the sim in {float}[x,y].</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.fps">
+<code class="descclassname">superclass.iclData.</code><code class="descname">fps</code><a class="headerlink" href="#superclass.iclData.fps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Frames per second. Too high (&gt; 100) == bad performance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.graphDots">
+<code class="descclassname">superclass.iclData.</code><code class="descname">graphDots</code><a class="headerlink" href="#superclass.iclData.graphDots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Array of touristNum visuals of the robots on the graph.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.graphLine">
+<code class="descclassname">superclass.iclData.</code><code class="descname">graphLine</code><a class="headerlink" href="#superclass.iclData.graphLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Array of touristNum strings, representing the current line left behind by a Tourist’s graph positions.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.graphPoints">
+<code class="descclassname">superclass.iclData.</code><code class="descname">graphPoints</code><a class="headerlink" href="#superclass.iclData.graphPoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Array of Arrays of {x:, y:} objects to represent points on the graph. touristNum == number of inner arrays.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.id">
+<code class="descclassname">superclass.iclData.</code><code class="descname">id</code><a class="headerlink" href="#superclass.iclData.id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Global identifier to this data structure.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.instruBinder">
+<code class="descclassname">superclass.iclData.</code><code class="descname">instruBinder</code><a class="headerlink" href="#superclass.iclData.instruBinder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Array of valid trajectories for robots. Length is how many tourists are being used.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.time">
+<code class="descclassname">superclass.iclData.</code><code class="descname">time</code><a class="headerlink" href="#superclass.iclData.time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Current time of the simulation (frames).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.timeDirect">
+<code class="descclassname">superclass.iclData.</code><code class="descname">timeDirect</code><a class="headerlink" href="#superclass.iclData.timeDirect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Current velocity of the simulation. 1 - Forward. 0 - Stopped. -1 - Rewind. (0,1) - Slow</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.timeMax">
+<code class="descclassname">superclass.iclData.</code><code class="descname">timeMax</code><a class="headerlink" href="#superclass.iclData.timeMax" title="Permalink to this definition">¶</a></dt>
+<dd><p>The maximum time before we stop the simulation for good.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.tourColors">
+<code class="descclassname">superclass.iclData.</code><code class="descname">tourColors</code><a class="headerlink" href="#superclass.iclData.tourColors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hex color values of robots.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.tourLine">
+<code class="descclassname">superclass.iclData.</code><code class="descname">tourLine</code><a class="headerlink" href="#superclass.iclData.tourLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Array of touristNum strings, representing the current line left behind by a Tourist’s trajectory.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.tourPoints">
+<code class="descclassname">superclass.iclData.</code><code class="descname">tourPoints</code><a class="headerlink" href="#superclass.iclData.tourPoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Array of Arrays of {x:, y:} objects to represent points on the field. touristNum == number of inner arrays.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.touristNum">
+<code class="descclassname">superclass.iclData.</code><code class="descname">touristNum</code><a class="headerlink" href="#superclass.iclData.touristNum" title="Permalink to this definition">¶</a></dt>
+<dd><p>How many tourists this data structure is in control of.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.tourists">
+<code class="descclassname">superclass.iclData.</code><code class="descname">tourists</code><a class="headerlink" href="#superclass.iclData.tourists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Array of {Tourist}s</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.unit2Px">
+<code class="descclassname">superclass.iclData.</code><code class="descname">unit2Px</code><a class="headerlink" href="#superclass.iclData.unit2Px" title="Permalink to this definition">¶</a></dt>
+<dd><p>1 unit == 1 Radius. How many pixels per unit.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclData.wireless">
+<code class="descclassname">superclass.iclData.</code><code class="descname">wireless</code><a class="headerlink" href="#superclass.iclData.wireless" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether or not the simulation is using the wireless model.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p>The ID given on creation is a nice way to ensure we are not mucking about in the data
+of another instance of iclData when using <code class="docutils literal notranslate"><span class="pre">superlist[controllerID]</span></code>.</p>
+</div>
+<div class="section" id="iclvisual">
+<h1>ICLVisual<a class="headerlink" href="#iclvisual" title="Permalink to this headline">¶</a></h1>
+<p>This is the data structure which maintains all the visuals and updates the graphics
+on each frame. It does a mixture of modifying data in its own iclData member variable,
+and updating graphics based on them.</p>
+<dl class="class">
+<dt id="superclass.iclVisual">
+<em class="property">class </em><code class="descclassname">superclass.</code><code class="descname">iclVisual</code><span class="sig-paren">(</span><em>iclData</em><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual" title="Permalink to this definition">¶</a></dt>
+<dd><p>All visual updates and d3 calls for the sim happen in this.
+Rests on top of an instance of iclData.
+Field: The Shape, usually the left panel.
+Graph: The distance from exit graph, usually LoadPointsthe right panel.
+Multiple instances can and will be used for algorithm comparisons.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>iclData</strong> (<em>iclData</em>) – The values necessary to update the visuals.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="superclass.iclVisual.AlterAnim">
+<code class="descclassname">superclass.iclVisual.</code><code class="descname">AlterAnim</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.AlterAnim" title="Permalink to this definition">¶</a></dt>
+<dd><p>The main function used to control an algorithm when it is running for the first time.
+Recalculates all necessary points based on new exit location.
+<strong>Relies on window.superlist.</strong>
+This is due to the nature of calling AlterAnim from weird places, such as a time interval.
+Does both data calculation and visual updates at once, so while it does not
+really fit in either class, putting it in iclVisual was the best way to do it
+because this class rests on iclData. The two are really meant to always work together.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="superclass.iclVisual.AlterLines">
+<code class="descclassname">superclass.iclVisual.</code><code class="descname">AlterLines</code><span class="sig-paren">(</span><em>i</em><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.AlterLines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the a given tourist’s current lines up to the current time.
+Called from this.AlterAnim().</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>i</strong> (<em>integer</em>) – The given tourist id for which to calculate the path.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="superclass.iclVisual.ESlide">
+<code class="descclassname">superclass.iclVisual.</code><code class="descname">ESlide</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.ESlide" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function for time slider.
+Disables the slider and shows help text again.
+Called by anonymous function inside LoadGraph().</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="superclass.iclVisual.Load">
+<code class="descclassname">superclass.iclVisual.</code><code class="descname">Load</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.Load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create tourist graph and field visuals
+Called by this.Start().</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="superclass.iclVisual.LoadField">
+<code class="descclassname">superclass.iclVisual.</code><code class="descname">LoadField</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.LoadField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create field visuals, including shape, reference angles and algorithm description.
+Called by this.Load().</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="superclass.iclVisual.LoadGraph">
+<code class="descclassname">superclass.iclVisual.</code><code class="descname">LoadGraph</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.LoadGraph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create graph visuals, including graph axes, labels, replay buttons, time/frame data and slider.
+Called by this.Load().</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="superclass.iclVisual.MSlide">
+<code class="descclassname">superclass.iclVisual.</code><code class="descname">MSlide</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.MSlide" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function for time slider.
+Makes sure the slider stays within the bounds of timeMax.
+Called by anonymous function inside LoadGraph().
+<strong>Relies on window.superlist</strong>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="superclass.iclVisual.PlayAnim">
+<code class="descclassname">superclass.iclVisual.</code><code class="descname">PlayAnim</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.PlayAnim" title="Permalink to this definition">¶</a></dt>
+<dd><p>The post-run algorithm controller. Allows for playback.
+timeDirect is defined in iclData.
+<strong>Relies on window.superlist</strong> because the call is usually from an interval once
+the sim has ended.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="superclass.iclVisual.SSlide">
+<code class="descclassname">superclass.iclVisual.</code><code class="descname">SSlide</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.SSlide" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function for time slider.
+Initializes the slider to be moved.
+Removes help text for visibility.
+Called by anonymous function inside LoadGraph().</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="superclass.iclVisual.Start">
+<code class="descclassname">superclass.iclVisual.</code><code class="descname">Start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.Start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes the layers and ensures they take up the whole of
+the given SVG.</p>
+<p>Called by constructor.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="superclass.iclVisual.UpdateVisuals">
+<code class="descclassname">superclass.iclVisual.</code><code class="descname">UpdateVisuals</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.UpdateVisuals" title="Permalink to this definition">¶</a></dt>
+<dd><p>The last part that happens after data has been updated.
+Redraws tourist visuals, usually in relation to current time.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclVisual.fieldSVG">
+<code class="descclassname">superclass.iclVisual.</code><code class="descname">fieldSVG</code><a class="headerlink" href="#superclass.iclVisual.fieldSVG" title="Permalink to this definition">¶</a></dt>
+<dd><p>A D3 reference to the Field. Contains 4 Layers - 1: BackGround, 2: Lines, 3: Bots, 4: OverLay</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclVisual.frameText">
+<code class="descclassname">superclass.iclVisual.</code><code class="descname">frameText</code><a class="headerlink" href="#superclass.iclVisual.frameText" title="Permalink to this definition">¶</a></dt>
+<dd><p>A D3 reference to the text which shows the current time in the sim (frames).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclVisual.graphSVG">
+<code class="descclassname">superclass.iclVisual.</code><code class="descname">graphSVG</code><a class="headerlink" href="#superclass.iclVisual.graphSVG" title="Permalink to this definition">¶</a></dt>
+<dd><p>A D3 reference to the Graph. Contains 4 Layers - 1: BackGround, 2: Lines, 3: Bots, 4: OverLay</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclVisual.iclData">
+<code class="descclassname">superclass.iclVisual.</code><code class="descname">iclData</code><a class="headerlink" href="#superclass.iclVisual.iclData" title="Permalink to this definition">¶</a></dt>
+<dd><p>An instance of iclData to use to update visuals</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclVisual.lineFx">
+<code class="descclassname">superclass.iclVisual.</code><code class="descname">lineFx</code><a class="headerlink" href="#superclass.iclVisual.lineFx" title="Permalink to this definition">¶</a></dt>
+<dd><p>A reference to a D3 line function to create valid lines out of strings.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclVisual.timeSlider">
+<code class="descclassname">superclass.iclVisual.</code><code class="descname">timeSlider</code><a class="headerlink" href="#superclass.iclVisual.timeSlider" title="Permalink to this definition">¶</a></dt>
+<dd><p>A D3 reference to the movable time slider that appears at the end of a normal sim.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclVisual.timeText">
+<code class="descclassname">superclass.iclVisual.</code><code class="descname">timeText</code><a class="headerlink" href="#superclass.iclVisual.timeText" title="Permalink to this definition">¶</a></dt>
+<dd><p>A D3 reference to the text which shows the current time in the sim (seconds).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="superclass.iclVisual.tourColors">
+<code class="descclassname">superclass.iclVisual.</code><code class="descname">tourColors</code><a class="headerlink" href="#superclass.iclVisual.tourColors" title="Permalink to this definition">¶</a></dt>
+<dd><p>An array of hex color codes for Tourists</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="other-useful-functions">
+<h1>Other Useful Functions<a class="headerlink" href="#other-useful-functions" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="superclass.editAnims">
+<code class="descclassname">superclass.</code><code class="descname">editAnims</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#superclass.editAnims" title="Permalink to this definition">¶</a></dt>
+<dd><p>Outside controller for letting the buttons choose timeDirect.
+<strong>Relies on window.superlist</strong>.
+Called from the HTML &lt;text&gt;s relating to playback.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>s</strong> (<em>string</em>) – The direction which to send the playback. Gotten from hardcoded method calls in HTML.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="superclass.showAnims">
+<code class="descclassname">superclass.</code><code class="descname">showAnims</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#superclass.showAnims" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unused function used to show two comparisons.
+Lets the user choose whether the want to see
+the graphs side by side, or the fields.
+<strong>Relies on window.superlist</strong>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>s</strong> (<em>string</em>) – The part of the animation to show side by side with another. Gotten from hardcoded method calls in HTML.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="superclass.changeInstructions">
+<code class="descclassname">superclass.</code><code class="descname">changeInstructions</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#superclass.changeInstructions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unused function to swap instructions on the fly.
+Not really used anymore because we choose the algorithm based on the current #value in the URL,
+but I’ll leave it here just in case.
+Works best when having the user select an alg from a &lt;select&gt; HTML element.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>n</strong> (<em>string</em>) – Algorithm Shortname. Will be defined in the docs… somewhere.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="superclass.ChoosExit">
+<code class="descclassname">superclass.</code><code class="descname">ChoosExit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.ChoosExit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unused function which lets a user choose the exit with a mouse.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="superclass.exitPreview">
+<code class="descclassname">superclass.</code><code class="descname">exitPreview</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.exitPreview" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the current value of an &lt;input type=’number’&gt; HTML element
+and displays the exit at that location for a preview.
+<strong>Relies on window.superlist</strong>.
+Reuses code from Tourist.DirectTo().</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="superclass.exitChosen">
+<code class="descclassname">superclass.</code><code class="descname">exitChosen</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.exitChosen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts up the interval after clearing the field and graph of debris.
+Any new elements that need to be cleared after a run and before a new one… do it here.
+When doing comparisons the ‘theMotor = … ‘ is the part we wanna change to
+use superlist and controllerID to update both one after another. Can’t quite get it yet.
+<strong>Relies on window.superlist</strong>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="superclass.showHelp">
+<code class="descclassname">superclass.</code><code class="descname">showHelp</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#superclass.showHelp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select an algorithm or element description box to show based on current algorithm shortname.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>s</strong> (<em>string</em>) – The id of the box to show. “steps” if you want to select an algorithm desc. box you’ve created based on shortname.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="superclass.showAlgorithmDesc">
+<code class="descclassname">superclass.</code><code class="descname">showAlgorithmDesc</code><span class="sig-paren">(</span><em>s</em>, <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#superclass.showAlgorithmDesc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contains the commands for all the algorithms. Give it a shortname and wireless true/false
+and it’ll change the instrubinder to match. Used on page load.
+The color isn’t really necessary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>s</strong> (<em>string</em>) – Algorithm shortname. Add ‘wl’ to shortnames where the algorithm has the potential to be f2f.</li>
+<li><strong>w</strong> (<em>boolean</em>) – Wireless true/false. A legacy value from before shortnames were more specific.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Search-and-Exit Tourist and Superclass Method Documentation</a><ul>
+<li><a class="reference internal" href="#the-use-of-global-variables">The use of global variables</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#the-tourist">The Tourist</a><ul>
+<li><a class="reference internal" href="#calculating-the-wall-position-at-a-given-angle">Calculating the Wall Position at a Given Angle</a></li>
+<li><a class="reference internal" href="#direct-tourist-to-its-next-destination">Direct Tourist to its Next Destination</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#icldata">ICLData</a></li>
+<li><a class="reference internal" href="#iclvisual">ICLVisual</a></li>
+<li><a class="reference internal" href="#other-useful-functions">Other Useful Functions</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="api.html"
+                        title="previous chapter">Search and Exit Tourist API</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="references.html"
+                        title="next chapter">References and Bibliography</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/documentation.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="references.html" title="References and Bibliography"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="Search and Exit Tourist API"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 1.3a documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Chris Till, David Bushta.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

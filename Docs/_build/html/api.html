@@ -18,7 +18,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="References and Bibliography" href="references.html" />
+    <link rel="next" title="Search-and-Exit Tourist and Superclass Method Documentation" href="documentation.html" />
     <link rel="prev" title="Welcome to Search and Exit Algorithms documentation!" href="index.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -28,7 +28,7 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="references.html" title="References and Bibliography"
+          <a href="documentation.html" title="Search-and-Exit Tourist and Superclass Method Documentation"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="index.html" title="Welcome to Search and Exit Algorithms documentation!"
@@ -45,22 +45,40 @@
   <div class="section" id="search-and-exit-tourist-api">
 <h1>Search and Exit Tourist API<a class="headerlink" href="#search-and-exit-tourist-api" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="ICL_Classes.Tourist">
-<em class="property">class </em><code class="descclassname">ICL_Classes.</code><code class="descname">Tourist</code><span class="sig-paren">(</span><em>visual</em><span class="sig-paren">)</span><a class="headerlink" href="#ICL_Classes.Tourist" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist">
+<em class="property">class </em><code class="descclassname">tourist.</code><code class="descname">Tourist</code><span class="sig-paren">(</span><em>iclData</em>, <em>p</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>visual</strong> (<em>Circle</em>) – Represents the visual related to the bot.</li>
+<li><strong>iclData</strong> (<em>iclData</em>) – Represents the data of the overall simulation, robots’ tourlines and graphlines.</li>
+<li><strong>p</strong> (<em>boolean</em>) – True if bot is Priority Agents, false otherwise.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="function">
-<dt id="ICL_Classes.Tourist.FollowWall">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">FollowWall</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ICL_Classes.Tourist.FollowWall" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.DirectTo">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">DirectTo</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.DirectTo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send the robot to its next location (next frame) based on its current instruction or allowance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>value</strong> (<em>Array</em>) – [x,y] coordinates of the robot’s next calculated location.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="tourist.Tourist.FollowWall">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">FollowWall</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.FollowWall" title="Permalink to this definition">¶</a></dt>
 <dd><p>A robot will follow the perimeter for a certain number of seconds, or indefinitely if no time specified.
 value[0] Will default to ‘right’ if no direction specified.
 Robot is required to be at a position on the perimeter.</p>
@@ -69,8 +87,7 @@ Robot is required to be at a position on the perimeter.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>who</strong> (<em>Tourist</em>) – Robot to follow command</li>
-<li><strong>value</strong> (<em>Array</em>) – value[0]: Direction string ‘left’ or ‘right’ - value[1]: time to follow wall in seconds.</li>
+<li><strong>value</strong> (<em>Array</em>) – [Direction string ‘left’ or ‘right’, &lt;Optional&gt;time to follow wall in seconds]</li>
 </ul>
 </td>
 </tr>
@@ -79,8 +96,8 @@ Robot is required to be at a position on the perimeter.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ICL_Classes.Tourist.GoOutAtAngle">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">GoOutAtAngle</code><span class="sig-paren">(</span><em>who</em>, <em>=</em><span class="sig-paren">)</span><a class="headerlink" href="#ICL_Classes.Tourist.GoOutAtAngle" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.GoOutAtAngle">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">GoOutAtAngle</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.GoOutAtAngle" title="Permalink to this definition">¶</a></dt>
 <dd><p>The robot will go from the interior of the object to an angle on the perimeter.
 Robot is required to be in the interior (not in perimeter) of the object.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -88,9 +105,7 @@ Robot is required to be in the interior (not in perimeter) of the object.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>who</strong> (<em>Tourist</em>) – Robot to follow command</li>
-<li><strong>=</strong> (<em>double</em>) – [0] value Angle on the shape of the perimeter</li>
-<li><strong>=</strong> – [1] value Percent Distance of a radius</li>
+<li><strong>value</strong> (<em>Array</em>) – [angle on the shape of the perimeter, percent distance of a radius]</li>
 </ul>
 </td>
 </tr>
@@ -99,16 +114,15 @@ Robot is required to be in the interior (not in perimeter) of the object.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ICL_Classes.Tourist.GoToCenter">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">GoToCenter</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ICL_Classes.Tourist.GoToCenter" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.GoToCenter">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">GoToCenter</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.GoToCenter" title="Permalink to this definition">¶</a></dt>
 <dd><p>The robot will go to the center (origin) of the shape. Robot is not required to be at any specific position.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>who</strong> (<em>Tourist</em>) – Robot to follow command.</li>
-<li><strong>value</strong> – null</li>
+<li><strong>value</strong> (<em>null</em>) – null</li>
 </ul>
 </td>
 </tr>
@@ -117,8 +131,8 @@ Robot is required to be in the interior (not in perimeter) of the object.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ICL_Classes.Tourist.GoToExit">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">GoToExit</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ICL_Classes.Tourist.GoToExit" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.GoToExit">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">GoToExit</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.GoToExit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Robot will go to the exit at cartestian coordinates (x, y).
 This is not the same as exitAngle.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -126,8 +140,7 @@ This is not the same as exitAngle.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>who</strong> (<em>Tourist</em>) – Robot to follow command.</li>
-<li><strong>value</strong> (<em>Array</em>) – value[0]: float, x position – value[1]: float, y positions</li>
+<li><strong>value</strong> (<em>Array</em>) – [float x position, float y position]</li>
 </ul>
 </td>
 </tr>
@@ -136,16 +149,16 @@ This is not the same as exitAngle.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ICL_Classes.Tourist.GoToPoint">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">GoToPoint</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ICL_Classes.Tourist.GoToPoint" title="Permalink to this definition">¶</a></dt>
-<dd><p>The robot will go to a point on the shape defined by cartesian coordinates (x, y)</p>
+<dt id="tourist.Tourist.GoToPoint">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">GoToPoint</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.GoToPoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>The robot will go to a point on the shape defined by cartesian coordinates (x, y)
+Based on original center point defined in this.iclData (before visual scaling)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>who</strong> (<em>Tourist</em>) – Robot to follow command.</li>
-<li><strong>value</strong> (<em>Array</em>) – value[0]: float, x position – value[1]: float, y position</li>
+<li><strong>value</strong> (<em>Array</em>) – [float x position,  float y position]</li>
 </ul>
 </td>
 </tr>
@@ -154,15 +167,14 @@ This is not the same as exitAngle.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ICL_Classes.Tourist.GoToWallAtAngle">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">GoToWallAtAngle</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ICL_Classes.Tourist.GoToWallAtAngle" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.GoToWallAtAngle">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">GoToWallAtAngle</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.GoToWallAtAngle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes a robot go to the wall at a specific angle on the shape.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>who</strong> (<em>Tourist</em>) – Robot to follow command</li>
 <li><strong>value</strong> (<em>integer</em>) – Angle on the shape of the perimeter</li>
 </ul>
 </td>
@@ -172,17 +184,19 @@ This is not the same as exitAngle.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ICL_Classes.Tourist.Intercept">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">Intercept</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ICL_Classes.Tourist.Intercept" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.Intercept">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">Intercept</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.Intercept" title="Permalink to this definition">¶</a></dt>
 <dd><p>Robot will calculate the shortest to path to the closest targetable robot and
-create a straight path to intercept it.</p>
+create a straight path to intercept it.
+If there exist Priority Agents, the robot following this command will then target the
+closest of them.
+In case we ever use face-to-face priority algorithms.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>who</strong> (<em>Tourist</em>) – Robot to follow command.</li>
-<li><strong>value</strong> – null</li>
+<li><strong>value</strong> (<em>null</em>) – null</li>
 </ul>
 </td>
 </tr>
@@ -191,16 +205,15 @@ create a straight path to intercept it.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ICL_Classes.Tourist.Pursue">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">Pursue</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ICL_Classes.Tourist.Pursue" title="Permalink to this definition">¶</a></dt>
-<dd><p>Robot will continuously move in the direction of the target, until it catches it.</p>
+<dt id="tourist.Tourist.Pursue">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">Pursue</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.Pursue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Robot will continuously move in the direction of the closest target, until it catches it.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>who</strong> (<em>Tourist</em>) – Robot to follow command.</li>
-<li><strong>value</strong> – null</li>
+<li><strong>value</strong> (<em>null</em>) – null</li>
 </ul>
 </td>
 </tr>
@@ -209,16 +222,15 @@ create a straight path to intercept it.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ICL_Classes.Tourist.Wait">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">Wait</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ICL_Classes.Tourist.Wait" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.Wait">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">Wait</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.Wait" title="Permalink to this definition">¶</a></dt>
 <dd><p>A robot will wait for a time in seconds, or indefinitely if no time is specified.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>who</strong> (<em>Tourist</em>) – Robot to follow command</li>
-<li><strong>value</strong> (<em>integer</em>) – Time to wait for in seconds.</li>
+<li><strong>value</strong> (<em>float</em>) – Time to wait for in seconds.</li>
 </ul>
 </td>
 </tr>
@@ -227,16 +239,15 @@ create a straight path to intercept it.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ICL_Classes.Tourist.WaitAverage">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">WaitAverage</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ICL_Classes.Tourist.WaitAverage" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.WaitAverage">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">WaitAverage</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.WaitAverage" title="Permalink to this definition">¶</a></dt>
 <dd><p>A robot will wait at the average position of all robots NOT doing the WaitAverage command.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>who</strong> (<em>Tourist</em>) – Robot to follow command</li>
-<li><strong>value</strong> – null</li>
+<li><strong>value</strong> (<em>null</em>) – null</li>
 </ul>
 </td>
 </tr>
@@ -244,75 +255,113 @@ create a straight path to intercept it.</p>
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="tourist.Tourist.WallAtAngle">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">WallAtAngle</code><span class="sig-paren">(</span><em>angle</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.WallAtAngle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the wall position on the shape, given an angle.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
+<li><strong>angle</strong> (<em>float</em>) – Used to calculate the wall position of the shape.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>Array</strong> – Array with x,y position of the wall relative to the shape.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
-<dt id="ICL_Classes.Tourist.a">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">a</code><a class="headerlink" href="#ICL_Classes.Tourist.a" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.a">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">a</code><a class="headerlink" href="#tourist.Tourist.a" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tourist’s current angle.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="ICL_Classes.Tourist.allowance">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">allowance</code><a class="headerlink" href="#ICL_Classes.Tourist.allowance" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.allowance">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">allowance</code><a class="headerlink" href="#tourist.Tourist.allowance" title="Permalink to this definition">¶</a></dt>
 <dd><p>How far the tourist can move in one frame.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="ICL_Classes.Tourist.hunted">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">hunted</code><a class="headerlink" href="#ICL_Classes.Tourist.hunted" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.atExit">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">atExit</code><a class="headerlink" href="#tourist.Tourist.atExit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether or not the robot is at the exit.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tourist.Tourist.hunted">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">hunted</code><a class="headerlink" href="#tourist.Tourist.hunted" title="Permalink to this definition">¶</a></dt>
 <dd><p>The tourist that is currently pursuing this one.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="ICL_Classes.Tourist.iclData">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">iclData</code><a class="headerlink" href="#ICL_Classes.Tourist.iclData" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.iclData">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">iclData</code><a class="headerlink" href="#tourist.Tourist.iclData" title="Permalink to this definition">¶</a></dt>
 <dd><p>This holds all of what used to be global variables!</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="ICL_Classes.Tourist.knew">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">knew</code><a class="headerlink" href="#ICL_Classes.Tourist.knew" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.knew">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">knew</code><a class="headerlink" href="#tourist.Tourist.knew" title="Permalink to this definition">¶</a></dt>
 <dd><p>The tourist has known of the exit for more than one frame.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="ICL_Classes.Tourist.knows">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">knows</code><a class="headerlink" href="#ICL_Classes.Tourist.knows" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.knows">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">knows</code><a class="headerlink" href="#tourist.Tourist.knows" title="Permalink to this definition">¶</a></dt>
 <dd><p>The tourist has learned of the exit on this frame.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="ICL_Classes.Tourist.number">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">number</code><a class="headerlink" href="#ICL_Classes.Tourist.number" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.number">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">number</code><a class="headerlink" href="#tourist.Tourist.number" title="Permalink to this definition">¶</a></dt>
 <dd><p>The tourist’s ID as an integer.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="ICL_Classes.Tourist.on">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">on</code><a class="headerlink" href="#ICL_Classes.Tourist.on" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.on">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">on</code><a class="headerlink" href="#tourist.Tourist.on" title="Permalink to this definition">¶</a></dt>
 <dd><p>This tourist’s current instruction function.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="ICL_Classes.Tourist.target">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">target</code><a class="headerlink" href="#ICL_Classes.Tourist.target" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.priority">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">priority</code><a class="headerlink" href="#tourist.Tourist.priority" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether or not the robot is a Priority Agent.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tourist.Tourist.target">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">target</code><a class="headerlink" href="#tourist.Tourist.target" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tourist’s current goal according to its command. Can be a point on the shape or another tourist.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="ICL_Classes.Tourist.velocity">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">velocity</code><a class="headerlink" href="#ICL_Classes.Tourist.velocity" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.velocity">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">velocity</code><a class="headerlink" href="#tourist.Tourist.velocity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Speed of the tourist.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="ICL_Classes.Tourist.x">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">x</code><a class="headerlink" href="#ICL_Classes.Tourist.x" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.visual">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">visual</code><a class="headerlink" href="#tourist.Tourist.visual" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference to a visual DOM element</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="tourist.Tourist.x">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">x</code><a class="headerlink" href="#tourist.Tourist.x" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tourist’s current x position.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="ICL_Classes.Tourist.y">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">y</code><a class="headerlink" href="#ICL_Classes.Tourist.y" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.y">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">y</code><a class="headerlink" href="#tourist.Tourist.y" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tourist’s current y position.</p>
 </dd></dl>
 
@@ -320,18 +369,17 @@ create a straight path to intercept it.</p>
 
 <p>Currently, the project supports the following instructions for robots (class: Tourist). Arguments in [square-brackets] are optional,
 as denoted in the description.</p>
-<div class="section" id="gotowallatangle-x">
-<h2>GoToWallAtAngle (x)<a class="headerlink" href="#gotowallatangle-x" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="gotowallatangle-angle">
+<h2>GoToWallAtAngle (angle)<a class="headerlink" href="#gotowallatangle-angle" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="ICL_Classes.Tourist.GoToWallAtAngle">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">GoToWallAtAngle</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ICL_Classes.Tourist.GoToWallAtAngle" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.GoToWallAtAngle">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">GoToWallAtAngle</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.GoToWallAtAngle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes a robot go to the wall at a specific angle on the shape.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>who</strong> (<em>Tourist</em>) – Robot to follow command</li>
 <li><strong>value</strong> (<em>integer</em>) – Angle on the shape of the perimeter</li>
 </ul>
 </td>
@@ -359,8 +407,8 @@ Most commonly used for deployment phase, for example, Algorithm A (n=2, Face-to-
 <div class="section" id="followwall-direction-time-angle">
 <h2>FollowWall (direction, [time/angle])<a class="headerlink" href="#followwall-direction-time-angle" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="ICL_Classes.Tourist.FollowWall">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">FollowWall</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ICL_Classes.Tourist.FollowWall" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.FollowWall">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">FollowWall</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.FollowWall" title="Permalink to this definition">¶</a></dt>
 <dd><p>A robot will follow the perimeter for a certain number of seconds, or indefinitely if no time specified.
 value[0] Will default to ‘right’ if no direction specified.
 Robot is required to be at a position on the perimeter.</p>
@@ -369,8 +417,7 @@ Robot is required to be at a position on the perimeter.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>who</strong> (<em>Tourist</em>) – Robot to follow command</li>
-<li><strong>value</strong> (<em>Array</em>) – value[0]: Direction string ‘left’ or ‘right’ - value[1]: time to follow wall in seconds.</li>
+<li><strong>value</strong> (<em>Array</em>) – [Direction string ‘left’ or ‘right’, &lt;Optional&gt;time to follow wall in seconds]</li>
 </ul>
 </td>
 </tr>
@@ -400,16 +447,15 @@ Most commonly used for the search phase, or pre/post-detour phase:</p>
 <div class="section" id="wait-time">
 <h2>Wait ([time])<a class="headerlink" href="#wait-time" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="ICL_Classes.Tourist.Wait">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">Wait</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ICL_Classes.Tourist.Wait" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.Wait">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">Wait</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.Wait" title="Permalink to this definition">¶</a></dt>
 <dd><p>A robot will wait for a time in seconds, or indefinitely if no time is specified.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>who</strong> (<em>Tourist</em>) – Robot to follow command</li>
-<li><strong>value</strong> (<em>integer</em>) – Time to wait for in seconds.</li>
+<li><strong>value</strong> (<em>float</em>) – Time to wait for in seconds.</li>
 </ul>
 </td>
 </tr>
@@ -423,16 +469,15 @@ Commonly used once the queen has finished its trajectory, and is waiting for the
 <div class="section" id="waitaverage-wireless-specific">
 <h2>WaitAverage () {Wireless specific}<a class="headerlink" href="#waitaverage-wireless-specific" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="ICL_Classes.Tourist.WaitAverage">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">WaitAverage</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ICL_Classes.Tourist.WaitAverage" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.WaitAverage">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">WaitAverage</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.WaitAverage" title="Permalink to this definition">¶</a></dt>
 <dd><p>A robot will wait at the average position of all robots NOT doing the WaitAverage command.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>who</strong> (<em>Tourist</em>) – Robot to follow command</li>
-<li><strong>value</strong> – null</li>
+<li><strong>value</strong> (<em>null</em>) – null</li>
 </ul>
 </td>
 </tr>
@@ -465,16 +510,16 @@ by the program to be able to receive the broadcasts.</p>
 <div class="section" id="gotopoint-x-y">
 <h2>GoToPoint (x, y)<a class="headerlink" href="#gotopoint-x-y" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="ICL_Classes.Tourist.GoToPoint">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">GoToPoint</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ICL_Classes.Tourist.GoToPoint" title="Permalink to this definition">¶</a></dt>
-<dd><p>The robot will go to a point on the shape defined by cartesian coordinates (x, y)</p>
+<dt id="tourist.Tourist.GoToPoint">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">GoToPoint</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.GoToPoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>The robot will go to a point on the shape defined by cartesian coordinates (x, y)
+Based on original center point defined in this.iclData (before visual scaling)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>who</strong> (<em>Tourist</em>) – Robot to follow command.</li>
-<li><strong>value</strong> (<em>Array</em>) – value[0]: float, x position – value[1]: float, y position</li>
+<li><strong>value</strong> (<em>Array</em>) – [float x position,  float y position]</li>
 </ul>
 </td>
 </tr>
@@ -487,17 +532,19 @@ by the program to be able to receive the broadcasts.</p>
 <div class="section" id="intercept-face-to-face-specific">
 <h2>Intercept () {Face-to-Face specific}<a class="headerlink" href="#intercept-face-to-face-specific" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="ICL_Classes.Tourist.Intercept">
-<code class="descclassname">ICL_Classes.Tourist.</code><code class="descname">Intercept</code><span class="sig-paren">(</span><em>who</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#ICL_Classes.Tourist.Intercept" title="Permalink to this definition">¶</a></dt>
+<dt id="tourist.Tourist.Intercept">
+<code class="descclassname">tourist.Tourist.</code><code class="descname">Intercept</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.Intercept" title="Permalink to this definition">¶</a></dt>
 <dd><p>Robot will calculate the shortest to path to the closest targetable robot and
-create a straight path to intercept it.</p>
+create a straight path to intercept it.
+If there exist Priority Agents, the robot following this command will then target the
+closest of them.
+In case we ever use face-to-face priority algorithms.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>who</strong> (<em>Tourist</em>) – Robot to follow command.</li>
-<li><strong>value</strong> – null</li>
+<li><strong>value</strong> (<em>null</em>) – null</li>
 </ul>
 </td>
 </tr>
@@ -532,7 +579,7 @@ exchanging information about the exit and updated trajectories of other robots, 
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Search and Exit Tourist API</a><ul>
-<li><a class="reference internal" href="#gotowallatangle-x">GoToWallAtAngle (x)</a></li>
+<li><a class="reference internal" href="#gotowallatangle-angle">GoToWallAtAngle (angle)</a></li>
 <li><a class="reference internal" href="#followwall-direction-time-angle">FollowWall (direction, [time/angle])</a></li>
 <li><a class="reference internal" href="#wait-time">Wait ([time])</a></li>
 <li><a class="reference internal" href="#waitaverage-wireless-specific">WaitAverage () {Wireless specific}</a></li>
@@ -547,8 +594,8 @@ exchanging information about the exit and updated trajectories of other robots, 
   <p class="topless"><a href="index.html"
                         title="previous chapter">Welcome to Search and Exit Algorithms documentation!</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="references.html"
-                        title="next chapter">References and Bibliography</a></p>
+  <p class="topless"><a href="documentation.html"
+                        title="next chapter">Search-and-Exit Tourist and Superclass Method Documentation</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -579,7 +626,7 @@ exchanging information about the exit and updated trajectories of other robots, 
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="references.html" title="References and Bibliography"
+          <a href="documentation.html" title="Search-and-Exit Tourist and Superclass Method Documentation"
              >next</a> |</li>
         <li class="right" >
           <a href="index.html" title="Welcome to Search and Exit Algorithms documentation!"

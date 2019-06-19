@@ -24,9 +24,9 @@ copyright = '2018, Chris Till, David Bushta'
 author = 'Chris Till, David Bushta'
 
 # The short X.Y version
-version = '1.3'
+version = '2.0'
 # The full version, including alpha/beta/rc tags
-release = '1.3a'
+release = '2.0.2a'
 
 
 # -- General configuration ---------------------------------------------------

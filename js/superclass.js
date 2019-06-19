@@ -263,7 +263,7 @@ class iclVisual {
     *Helper function for time slider.
     *Makes sure the slider stays within the bounds of timeMax.
     *Called by anonymous function inside LoadGraph().
-    *Relies on window.superlist.
+    ***Relies on window.superlist**.
     */
     MSlide() {
       var mousePos = d3.event.x;
@@ -427,7 +427,7 @@ class iclVisual {
     /**
     *The main function used to control an algorithm when it is running for the first time.
     *Recalculates all necessary points based on new exit location.
-    *Relies on window.superlist.
+    * **Relies on window.superlist.**
     *This is due to the nature of calling AlterAnim from weird places, such as a time interval.
     *Does both data calculation and visual updates at once, so while it does not
     *really fit in either class, putting it in iclVisual was the best way to do it
@@ -606,7 +606,7 @@ class iclVisual {
     /**
     *The post-run algorithm controller. Allows for playback.
     *timeDirect is defined in iclData.
-    *Relies on window.superlist because the call is usually from an interval once
+    ***Relies on window.superlist** because the call is usually from an interval once
     *the sim has ended.
     */
     PlayAnim() {
@@ -641,7 +641,7 @@ class iclVisual {
 
 /**
 *Outside controller for letting the buttons choose timeDirect.
-*Relies on window.superlist.
+***Relies on window.superlist**.
 *Called from the HTML <text>s relating to playback.
 *
 * @param {string} s The direction which to send the playback. Gotten from hardcoded method calls in HTML.
@@ -660,7 +660,7 @@ function editAnims(s) {
 *Unused function used to show two comparisons.
 *Lets the user choose whether the want to see
 *the graphs side by side, or the fields.
-* Relies on window.superlist.
+* **Relies on window.superlist**.
 *
 * @param {string} s The part of the animation to show side by side with another. Gotten from hardcoded method calls in HTML.
 */
@@ -837,7 +837,7 @@ function ChoosExit() {
 /**
 *Gets the current value of an <input type='number'> HTML element
 *and displays the exit at that location for a preview.
-*relies on window.superlist.
+***Relies on window.superlist**.
 *Reuses code from Tourist.DirectTo().
 */
 function exitPreview() {
@@ -867,7 +867,7 @@ function exitPreview() {
 *Any new elements that need to be cleared after a run and before a new one... do it here.
 *When doing comparisons the 'theMotor = ... ' is the part we wanna change to
 *use superlist and controllerID to update both one after another. Can't quite get it yet.
-*Relies on window.superlist.
+***Relies on window.superlist**.
 */
 function exitChosen() {
     //clear motor
