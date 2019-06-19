@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta charset="ISO-8859-1">
+    <title>Disk Algorithm Showcase</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <!-- <script src='d3.min.js'></script>-->
+    <!--Offline support-->
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel='stylesheet' type='text/css' href='circleShowcase.css' />
+
+
+</head>
+
+<body>
+    <h4>Input a number to choose an exit angle.</h4>
+    <input id="exitAngle" onchange="exitPreview();" type=number min=0 max=360 />
+    <input type="submit" onclick="javascript:void(0);" value="Preview Exit Location" />
+    <input type="submit" onclick="exitChosen();">
+    <div style="width:100%;margin: 0 auto;">
+        <svg id="anim0">
+
+            <svg border:"1px solid black" height=100px id="backGround" width=100px viewBox="0 0 100 100">
+                <text x=50 y=5 style="font-size:5;text-anchor:middle">Search and Exit</text>
+                <text id="Desc0" x=50 y=8 style="font-size:3;text-anchor:middle"> Wireless</text>
+                <line x1=50 y1=25 x2=50 y2=75 style="stroke:#000000;stroke-width:.25"></line>
+                <line x1=25 y1=50 x2=75 y2=50 style="stroke:#000000;stroke-width:.25"></line>
+                <circle id="center" cx=50 cy=50 r=.5 style="fill:#ffffff;stroke:#000000;stroke-width:.1"></circle>
+            </svg>
+            <svg border:"1px solid black" height=100px id="lines" width=100px viewBox="0 0 100 100"></svg>
+            <svg border:"1px solid black" height=100px id="bots" width=100px viewBox="0 0 100 100"></svg>
+            <svg border:"1px solid black" height=100px id="overLay" width=100px viewBox="0 0 100 100"></svg>
+        </svg>
+        <svg id="graph0">
+            <svg border:"1px solid black" height=100px id="backGround" width=100px viewBox="0 0 100 100">
+                <path d="M10,50L10,90L90,90" style="fill:none;stroke:#000000;stroke-width:.25"></path>
+                <text x=15 y=70 transform="rotate(-90,10,75)" style="fill:#000000;font-size:5;text-anchor:middle">Dist. from Exit(radius)</text>
+                <text x=50 y=98 style="fill:#000000;font-size:5;text-anchor:middle">Time(seconds)</text>
+            </svg>
+            <svg border:"1px solid black" height=100px id="lines" width=100px viewBox="0 0 100 100"></svg>
+            <svg border:"1px solid black" height=100px id="bots" width=100px viewBox="0 0 100 100"></svg>
+            <svg border:"1px solid black" height=100px id="overLay" width=100px viewBox="0 0 100 100"></svg>
+            <svg border:"1px solid black" height=100px id="excess" width=100px viewBox="0 0 100 100">
+            </svg>
+        </svg>
+        <svg id="anim1">
+
+            <svg border:"1px solid black" height=100px id="backGround" width=100px viewBox="0 0 100 100">
+                <text x=50 y=5 style="font-size:5;text-anchor:middle">Search and Exit</text>
+                <text id="Desc0" x=50 y=8 style="font-size:3;text-anchor:middle"> Wireless</text>
+                <line x1=50 y1=25 x2=50 y2=75 style="stroke:#000000;stroke-width:.25"></line>
+                <line x1=25 y1=50 x2=75 y2=50 style="stroke:#000000;stroke-width:.25"></line>
+                <circle id="center" cx=50 cy=50 r=.5 style="fill:#ffffff;stroke:#000000;stroke-width:.1"></circle>
+            </svg>
+            <svg border:"1px solid black" height=100px id="lines" width=100px viewBox="0 0 100 100"></svg>
+            <svg border:"1px solid black" height=100px id="bots" width=100px viewBox="0 0 100 100"></svg>
+            <svg border:"1px solid black" height=100px id="overLay" width=100px viewBox="0 0 100 100"></svg>
+        </svg>
+        <svg id="graph1">
+            <svg border:"1px solid black" height=100px id="backGround" width=100px viewBox="0 0 100 100">
+                <path d="M10,50L10,90L90,90" style="fill:none;stroke:#000000;stroke-width:.25"></path>
+                <text x=15 y=70 transform="rotate(-90,10,75)" style="fill:#000000;font-size:5;text-anchor:middle">Dist. from Exit(radius)</text>
+                <text x=50 y=98 style="fill:#000000;font-size:5;text-anchor:middle">Time(seconds)</text>
+            </svg>
+            <svg border:"1px solid black" height=100px id="lines" width=100px viewBox="0 0 100 100"></svg>
+            <svg border:"1px solid black" height=100px id="bots" width=100px viewBox="0 0 100 100"></svg>
+            <svg border:"1px solid black" height=100px id="overLay" width=100px viewBox="0 0 100 100"></svg>
+            <svg border:"1px solid black" height=100px id="excess" width=100px viewBox="0 0 100 100">
+            </svg>
+        </svg>
+    </div>
+    <script src="../js/tourist.js"></script>
+    <script src="../js/superclass.js"></script>
+    <script>
+    /////// INITIALIZE ALGORITHM ///////
+
+    function exitChosen() {
+        //clear motor
+        clearInterval(theMotor);
+        d3.selectAll("#bots").html(null);
+        d3.selectAll("#lines").html(null);
+        d3.selectAll("#overLay").html(null);
+        d3.selectAll(".timeSlide").remove();
+        d3.selectAll(".timeText").remove();
+        d3.selectAll(".frameText").remove();
+        //leftSide = new iclData(0, instruBinder, algName, d3.select("#exitAngle").node().value, wireless);
+        //superlist[controllerID] = new iclVisual(leftSide);
+        theMotor = setInterval(function() {
+            controllerID = 0;
+            superlist[controllerID].AlterAnim();
+            controllerID = 1;
+            superlist[controllerID].AlterAnim();
+
+        }
+        ,1000 / 60);
+        d3.select(".exitText").remove();
+    }
+
+    wireless = false;
+    instruBinder = [
+                    [["Intercept", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right"]]],
+                    [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left"]]]
+                ];
+    algName = "Algorithm A ";
+
+    console.log("DEBUG: Wireless: " + wireless);
+    leftSide = new iclData(0, instruBinder, algName, d3.select("#exitAngle").node().value, wireless);
+    superlist.push(new iclVisual(leftSide));
+    console.log("DEBUG: Ready to start simulation.")
+    instruBinder = [
+                         [["Intercept", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0], center[1] + 5]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
+                         [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0], center[1] + 5]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
+                       ];
+    algName = "Algorithm B ";
+    controllerID = 1;
+    var rightSide = new iclData(1, instruBinder, algName, d3.select("#exitAngle").node().value, wireless);
+    superlist.push(new iclVisual(rightSide));
+
+    controllerID = 0;
+
+
+    </script>
+
+</body>
+
+</html>

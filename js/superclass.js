@@ -1,123 +1,79 @@
-//////////----------Instantiate Variables----------//////////
-
 /**
-Currently there is a bug where the lines at the end get very confused
-and look awful when the graph scaling to timeMax is supposed to occur.
-I am in the process of fixing it.
+*Data necessary to run a simulation of a given algorithm, create visual paths, etc.
+*Tourist == Agent == Robot.
+*
+* @param {integer} id Global identifier of this object.
+* @param {Array} instruBinder Array of valid trajectories for Tourists to follow. Length of this is touristNum.
+* @param {string} algorithmName Full clean name of the algorithm instruBinder is supposed to represent.
+* @param {float} angle Angle of the exit location on the shape. Exit location will be at the wall of the shape.
+* @param {boolean} wireless True if using Wireless communication model, false otherwise.4
+*
 */
-
 class iclData {
     constructor(id, instruBinder, algorithmName, angle, wireless) {
-        this.exitAlert = false; //Someone learned where the exit is.
-        this.exitAllow = 0; //How far in a frame was the exit found.
+        /** Someone learned where the exit is. */
+        this.exitAlert = false;
+        /** How far into a frame the exit was found. */
+        this.exitAllow = 0;
+        /** Whether or not the simulation is using the wireless model. */
         this.wireless = wireless;
+        /** Global identifier to this data structure. */
         this.id = id;
+        /** Current time of the simulation (frames). */
         this.time = 0;
-        this.timeDirect = 0; //After loading, play direction.
+        /** Current velocity of the simulation. 1 - Forward. 0 - Stopped. -1 - Rewind. (0,1) - Slow */
+        this.timeDirect = 0;
+        /** Frames per second. Too high (> 100) == bad performance. */
         this.fps = 60;
+        /** The maximum time before we stop the simulation for good. */
         this.timeMax = 10 * this.fps;
-        this.timeSlider;
-
-        this.projector;
+        /** Points of the equilateral shape to search. Ex. 3 = Triangle, 4 = square, 360 = circle */
         this.degrees = 3;
+        /** 1 unit == 1 Radius. How many pixels per unit. */
         this.unit2Px = 25;
+        /** Center of the current shape in {float}[x,y]. */
         this.center = [this.unit2Px * 2, this.unit2Px * 2];
+        /** Angle of the exit to use for the sim. */
         this.exitAngle = angle;
+        /** Exit to use for the sim in {float}[x,y]. */
         this.fieldExit = [this.center[0] + this.unit2Px * Math.cos(this.exitAngle * Math.PI / 180), this.center[1] - this.unit2Px * Math.sin(this.exitAngle * Math.PI / 180)];
-
+        /** How many tourists this data structure is in control of. */
         this.touristNum = 0;
+        /** Array of valid trajectories for robots. Length is how many tourists are being used. */
         this.instruBinder = instruBinder;
+        /** Full clean name of algorithm. */
         this.algorithmName = algorithmName;
+        /** Hex color values of robots. */
         this.tourColors = [];
-
-        this.fieldSVG; //0:Background - 1:Line - 2:Bots - 3:Overlay
+        /** Array of {Tourist}s */
         this.tourists = [];
+        /** Array of Arrays of {x:, y:} objects to represent points on the field. touristNum == number of inner arrays. */
         this.tourPoints = [];
+        /** Array of touristNum strings, representing the current line left behind by a Tourist's trajectory. */
         this.tourLine = [];
-
-        this.graphSVG; //0:Background - 1:Line - 2:Bots - 3:Overlay
+        /** Array of touristNum visuals of the robots on the graph. */
         this.graphDots = [];
+        /** Array of Arrays of {x:, y:} objects to represent points on the graph. touristNum == number of inner arrays. */
         this.graphPoints = [];
+        /** Array of touristNum strings, representing the current line left behind by a Tourist's graph positions. */
         this.graphLine = [];
+        /** Whether or not the exit has been found yet. Can represent a visual. */
         this.exitFoundLine = null;
+        /** Whether or not all have exited. Can represent a visual. */
         this.allExitedLine = null;
+        /** Frame on which the exit was found. */
         this.exitFoundFrame = 0;
+
         this.Start();
     }
 
-    LoadAlgorithms(event) {
-        javascript: void(0);
-        var file = event.target.files[0]; //even though it only takes one file, the input type will still be a FileList.
-        var fileName = document.getElementById('loadcommands').value;
-        if (!fileName.includes('.icl')) {
-            alert('Please use a proper *.icl file to load your commands. If you think the file name is correct, then it might be corrupted.');
-            return;
-        }
-        var fileReader = new FileReader();
-        fileReader.onload = (function(file) {
-            var tempinstruBinder = [];
-            var text = fileReader.result;
-            var sText = text.split("\n");
-            var numBots = sText.length - 1;
-            for (i = 0; i < numBots; i++) {
-                tempinstruBinder.push([]);
-                var exitProtocol = sText[i].split('#')[0];
-                var commandProtocol = sText[i].split('#')[1];
-
-                var exitComms = exitProtocol.split('*');
-                var regularComms = commandProtocol.split('|');
-
-
-                for (j = 0; j < exitComms.length - 1; j++) {
-                    var command = exitComms[j].split(' ')[0];
-                    var args = [];
-                    for (x = 1; x < exitComms[j].split(' ').length; x++) {
-
-                        var val = exitComms[j].split(' ')[x];
-                        var isnum = /^\d+$/.test(val);
-                        if (isnum) {
-                            val = parseInt(val);
-                        }
-
-                        args.push(val);
-                    }
-
-                    if (args.length == 0) {
-                        args.push(null);
-                    }
-                    tempinstruBinder[i].push([command, args]);
-                }
-                for (k = 0; k < regularComms.length - 1; k++) {
-                    var command = regularComms[k].split(' ')[0];
-                    var args = [];
-                    for (x = 1; x < regularComms[k].split(' ').length; x++) {
-
-                        var val = regularComms[k].split(' ')[x];
-                        var isnum = /^\d+$/.test(val);
-                        if (isnum) {
-                            val = parseInt(val);
-                        } else {}
-
-                        args.push(val);
-                    }
-                    if (args.length == 0) {
-                        args.push(null);
-                    }
-                    tempinstruBinder[i].push([command, args]);
-                }
-                this.instruBinder = tempinstruBinder.slice(0);
-            }
-            closeNav();
-            this.wireless = true;
-            Reset();
-        });
-        fileReader.readAsText(file);
-
-
-    }
-
+    /**
+    *Initializes the data structure, and runs a no-exit sim to initialize important values.
+    *Create and initialize all Tourists.
+    *Called from constructor.
+    */
     Start() {
-        this.degrees = 360;
+        this.degrees = 360; // Change shape. See "this.degrees" in the constructor.
         for (var i = 0; i < this.instruBinder.length; i++) { //Add bots, lines, and coordinate collectors.
             this.tourists.push(new Tourist(this, instruBinder[i][0][1][1]));
             this.tourPoints.push([]);
@@ -131,7 +87,6 @@ class iclData {
         while (this.time < this.timeMax) { //Load one run through.
             this.LoadAnim();
         }
-        console.log(this.tourPoints);
 
         this.time = 0;
 
@@ -159,6 +114,11 @@ class iclData {
         }
     }
 
+    /**
+    *Load and calculate the entirety of the animation, until time runs out.
+    *Used in the no-exit sim portion of this.Start().
+    *Called from this.Start().
+    */
     LoadAnim() {
         for (var i = 0; i < this.tourists.length; i++) {
             this.LoadPoints(i);
@@ -171,7 +131,16 @@ class iclData {
         this.time++;
     }
 
-    //Create points {x:x', y:y'}, so intercept function knows where a mobile agent will be.
+    /**
+    *Create points {x:x', y:y'}, so intercept function knows
+    *where a mobile agent will be.
+    *All agents will know others' trajectories during the sim,
+    *this is a way of getting that info quickly.
+    *Used in the no-exit sim portion of this.Start().
+    *Called from this.LoadAnim().
+    *
+    * @param {integer} i Which frame of the sim we will be calculating for.
+    */
     LoadPoints(i) {
         var dista = this.unit2Px * 4 - (Math.sqrt(Math.pow(this.fieldExit[0] - this.tourists[i].x, 2) + Math.pow(this.fieldExit[1] - this.tourists[i].y, 2)) * (20 / 25));
         this.tourPoints[i].push({
@@ -184,6 +153,12 @@ class iclData {
         });
     }
 
+    /**
+    *Check to see that the exit conditions have been satisfied.
+    *If so, modify this.time and this.timeMax to signal end of sim.
+    *
+    * Called from this.AlterAnim(), Tourist.DirectTo(), Tourist.GoToExit().
+    */
     AllAtExit() {
 
         if (this.exitAlert){ // check to see if any priority have exited.
@@ -217,41 +192,48 @@ class iclData {
                       .style("stroke-opacity", 0.5);*/
         this.timeMax = this.time;
       }
-      //console.log(Math.floor((100 * time) / fps) / 100);
     }
 
 
 }
 
+/**
+*All visual updates and d3 calls for the sim happen in this.
+*Rests on top of an instance of iclData.
+*Field: The Shape, usually the left panel.
+*Graph: The distance from exit graph, usually LoadPointsthe right panel.
+*Multiple instances can and will be used for algorithm comparisons.
+*
+* @param {iclData} iclData The values necessary to update the visuals.
+*
+*/
+
 class iclVisual {
     constructor(iclData) {
+        /** An instance of iclData to use to update visuals */
         this.iclData = iclData;
+        /** An array of hex color codes for Tourists */
         this.tourColors = [];
-
+        /** A D3 reference to the Field. Contains 4 Layers - 1: BackGround, 2: Lines, 3: Bots, 4: OverLay */
         this.fieldSVG = d3.select("#anim" + this.iclData.id);
-        this.tourLine = iclData.tourLine;
-
+        /** A D3 reference to the Graph. Contains 4 Layers - 1: BackGround, 2: Lines, 3: Bots, 4: OverLay */
         this.graphSVG = d3.select("#graph" + this.iclData.id);
-        this.graphLine = iclData.graphLine;
-
-        this.exitFoundLine = iclData.exitFoundLine;
-        this.allExitedLine = iclData.allExitedLine;
-
+        /** A D3 reference to the movable time slider that appears at the end of a normal sim. */
         this.timeSlider;
+        /** A D3 reference to the text which shows the current time in the sim (seconds). */
         this.timeText;
+        /** A D3 reference to the text which shows the current time in the sim (frames). */
         this.frameText;
-
+        /** A reference to a D3 line function to create valid lines out of strings. */
         this.lineFx = d3.line().x((d) => {
             return (d.x);
         }).y((d) => {
             return (d.y);
         });
-
-        this.finished = false;
-
-
+        // Initialize.
         this.Start();
     }
+
 
     RandomColor() {
         var RGB = ["00", "00", "00"];
@@ -266,6 +248,7 @@ class iclVisual {
         return ('#' + RGB[0] + RGB[1] + RGB[2]);
     }
 
+
     SSlide() {
       d3.select(this).style("fill", "orange");
       d3.select(this).classed("active", true);
@@ -274,16 +257,16 @@ class iclVisual {
 
     MSlide() {
       var mousePos = d3.event.x;
-      if (mousePos < leftVis.iclData.unit2Px * (10/25)) {
-        mousePos = leftVis.iclData.unit2Px * (10/25);
-    } else if (mousePos > (71 / 20) * leftVis.iclData.unit2Px) {
-        mousePos = (71 / 20) * leftVis.iclData.unit2Px;
+      if (mousePos < superlist[controllerID].iclData.unit2Px * (10/25)) {
+        mousePos = superlist[controllerID].iclData.unit2Px * (10/25);
+    } else if (mousePos > (71 / 20) * superlist[controllerID].iclData.unit2Px) {
+        mousePos = (71 / 20) * superlist[controllerID].iclData.unit2Px;
       }
       d3.select(this).attr("x", mousePos);
-      leftVis.iclData.time = Math.round(((mousePos - (leftVis.iclData.unit2Px * 10/25)) / ((63 / 20) * leftVis.iclData.unit2Px)) * leftVis.iclData.timeMax);
-      leftVis.timeText.text("Time: " + Math.floor((100 * leftVis.iclData.time) / leftVis.iclData.fps) / 100);
-      leftVis.frameText.text("Frame: " + Math.floor(leftVis.iclData.time));
-      leftVis.UpdateVisuals();
+      superlist[controllerID].iclData.time = Math.round(((mousePos - (superlist[controllerID].iclData.unit2Px * 10/25)) / ((63 / 20) * superlist[controllerID].iclData.unit2Px)) * superlist[controllerID].iclData.timeMax);
+      superlist[controllerID].timeText.text("Time: " + Math.floor((100 * superlist[controllerID].iclData.time) / superlist[controllerID].iclData.fps) / 100);
+      superlist[controllerID].frameText.text("Frame: " + Math.floor(superlist[controllerID].iclData.time));
+      superlist[controllerID].UpdateVisuals();
     }
 
     ESlide() {
@@ -315,11 +298,16 @@ class iclVisual {
     Load() {
 
         this.LoadField();
-        var t = this.iclData;
-        d3.select("#exit").attr("cx", t.fieldExit[0]).attr("cy", t.fieldExit[1]);
+        var colorPalette = ["#fe447d", "#f78f2e", "#fedc0c", "#fedc0c",
+                            "#654321", "#ff0000", "#0e10e6", "#9208e7",
+                            "#f84c00", "#f3f354", "#bff1e5", "#3bc335",
+                            "#7af5ca", "#448bff", "#101ab3", "#d645c8",
+                            "#0afe15", "#0acdfe", "#ff9600", "#b21ca1"];
+
+        d3.select("#exit").attr("cx", this.iclData.fieldExit[0]).attr("cy", this.iclData.fieldExit[1]);
         this.LoadGraph();
         for (var i = 0; i < this.iclData.instruBinder.length; i++) { //Add bots, lines, and coordinate collectors.
-            this.tourColors.push(this.RandomColor());
+            this.tourColors.push(colorPalette[(i + 4) % 20]);
             this.iclData.tourists[i].visual = this.fieldSVG.select("#bots").append("circle").attr("cx", this.iclData.unit2Px * (10 / 25))
                 .attr("cy", this.iclData.unit2Px * 4 * (20 / 25) - this.iclData.unit2Px * (10 / 25)).attr("r", this.iclData.unit2Px / 16)
                 .style("fill", this.tourColors[i]).style("stroke", "#ffffff").style("stroke-width", (1 / 100) * this.iclData.unit2Px);
@@ -327,15 +315,11 @@ class iclVisual {
                 .attr("cy", this.iclData.unit2Px * 4 * (20 / 25) - this.iclData.unit2Px * (10 / 25)).attr("r", this.iclData.unit2Px / 16)
                 .style("fill", this.tourColors[i]).style("stroke", "#ffffff").style("stroke-width", (1 / 100) * this.iclData.unit2Px));
         }
-        //this.UpdateVisuals();
-
-        //dataBox = fieldSVG.select("#overLay").append("svg").attr("width", 2 * unit2Px).attr("height", unit2Px).attr("visibility", "hidden");
         for (var i = 0; i < this.iclData.touristNum; i++) { //Reset for next run through.
 
             this.iclData.tourLine[i] = this.fieldSVG.select(".lines").append("path").attr("d", this.lineFx(this.iclData.tourPoints[i]))
                 .style("stroke", this.tourColors[i]).style("stroke-width", this.iclData.unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
-
-            this.graphLine[i] = this.graphSVG.select(".lines").append("path").attr("d", this.lineFx(this.iclData.graphPoints[i]))
+            this.iclData.graphLine[i] = this.graphSVG.select(".lines").append("path").attr("d", this.lineFx(this.iclData.graphPoints[i]))
                 .style("stroke", this.tourColors[i]).style("stroke-width", this.iclData.unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
         }
     }
@@ -352,7 +336,7 @@ class iclVisual {
             hold += 'L' + (50 + 25 * Math.cos(holdAng)) + ',' + (50 - 25 * Math.sin(holdAng));
         }
         this.fieldSVG.select("#overLay").append("path").attr("d", hold).style("fill", "none").style("stroke", "#000000").style("stroke-width", ".25");
-        this.fieldSVG.select("#overLay").append("circle").attr("id", "exit").attr("cx", 50).attr("cy", 50).attr("r", .5)
+        this.fieldSVG.select("#overLay").append("circle").attr("id", "exit").attr("cx", 50).attr("cy", 50).attr("r", 0.8)
             .style("fill", "#ffffff").style("stroke", "#000000").style("stroke-width", .1);
         if (this.iclData.degrees == 2) { //Add two distance numbers if a line.
             this.fieldSVG.select("#backGround").append("text").attr("x", 3.1 * this.iclData.unit2Px).attr("y", this.iclData.center[1])
@@ -414,10 +398,10 @@ class iclVisual {
 
         this.iclData.tourLine = [];
 
-        this.graphLine = [];
+        this.iclData.graphLine = [];
 
-        this.exitFoundLine = null;
-        this.allExitedLine = null;
+        this.iclData.exitFoundLine = null;
+        this.iclData.allExitedLine = null;
 
     }
 
@@ -436,58 +420,45 @@ class iclVisual {
         d3.select("#exit").attr("cx", this.iclData.fieldExit[0]).attr("cy", this.iclData.fieldExit[1]);
     }
 
-    /*exitChosen() {
-        console.log("IN HERE");
-
-        d3.select(".exitText").remove();
-        this.fieldSVG.on("mousemove", null).on("click", null);
-        var visualReference = this;
-        this.projector = setInterval(this.AlterAnim, 1000 / this.iclData.fps);
-        this.Load();
-    }
-    //There's an actual exitChosen method outside the class that we're calling. Don't want
-    //to get these two confused but also want to make sure it doesnt break anything.
-    */
-
     AlterAnim() {
-      if (this.leftVis.iclData.time >= this.leftVis.iclData.timeMax) {
-        this.leftVis.iclData.time = this.leftVis.iclData.timeMax;
+      if (superlist[controllerID].iclData.time >= superlist[controllerID].iclData.timeMax) {
+        superlist[controllerID].iclData.time = superlist[controllerID].iclData.timeMax;
 
 
         for (var i = 0; i < 11; i++) {//Create x-axis labels.
-          this.leftVis.graphSVG.selectAll(".graphnum").style("display", "none");
+          superlist[controllerID].graphSVG.selectAll(".graphnum").style("display", "none");
         }
 
-        for (i = 0; i < this.leftVis.iclData.touristNum; i++){
-            this.leftVis.AlterLines(i);
+        for (i = 0; i < superlist[controllerID].iclData.touristNum; i++){
+            superlist[controllerID].AlterLines(i);
         }
 
-        for (var i = 0; i <= Math.floor((100 * this.leftVis.iclData.time) / this.leftVis.iclData.fps) / 100; i++) {//Create x-axis labels.
-          this.leftVis.graphSVG.select("#overLay").append("text")
-                  .attr("x", (10/25 + (i / (Math.floor((100 * this.leftVis.iclData.time) / this.leftVis.iclData.fps) / 100)) * 80/25) * this.leftVis.iclData.unit2Px)//unit2Px * (10 / 25) + ((Math.floor(timeMax) - i) * 80/25) * unit2Px)
-                  .attr("y", this.leftVis.iclData.unit2Px * (94 / 25))
-                  .style("font-size", this.leftVis.iclData.unit2Px * (4 / 25)).style("text-anchor", "middle").text(i).attr("class","graphnum");
+        for (var i = 0; i <= Math.floor((100 * superlist[controllerID].iclData.time) / superlist[controllerID].iclData.fps) / 100; i++) {//Create x-axis labels.
+          superlist[controllerID].graphSVG.select("#overLay").append("text")
+                  .attr("x", (10/25 + (i / (Math.floor((100 * superlist[controllerID].iclData.time) / superlist[controllerID].iclData.fps) / 100)) * 80/25) * superlist[controllerID].iclData.unit2Px)//unit2Px * (10 / 25) + ((Math.floor(timeMax) - i) * 80/25) * unit2Px)
+                  .attr("y", superlist[controllerID].iclData.unit2Px * (94 / 25))
+                  .style("font-size", superlist[controllerID].iclData.unit2Px * (4 / 25)).style("text-anchor", "middle").text(i).attr("class","graphnum");
         }
-        leftVis.graphSVG.select("#overLay").append("text").attr("x", (this.leftVis.iclData.unit2Px * 65/25)).attr("y", this.leftVis.iclData.unit2Px * (1.7))
-                .style("font-size", this.leftVis.iclData.unit2Px * (4/25))
-                .text("End: " + Math.floor((100 * this.leftVis.iclData.time) / this.leftVis.iclData.fps) / 100 + " sec");
-        leftVis.graphSVG.select("#overLay").append('text').attr("x", this.leftVis.iclData.unit2Px * 65/25).attr("y", this.leftVis.iclData.unit2Px * 1.83)
-                .attr("class", "sliderhelp").style("font-size", this.leftVis.iclData.unit2Px * (3/25)).text("Click and drag gray bar")
+        superlist[controllerID].graphSVG.select("#overLay").append("text").attr("x", (superlist[controllerID].iclData.unit2Px * 65/25)).attr("y", superlist[controllerID].iclData.unit2Px * (1.7))
+                .style("font-size", superlist[controllerID].iclData.unit2Px * (4/25))
+                .text("End: " + Math.floor((100 * superlist[controllerID].iclData.time) / superlist[controllerID].iclData.fps) / 100 + " sec");
+        superlist[controllerID].graphSVG.select("#overLay").append('text').attr("x", superlist[controllerID].iclData.unit2Px * 65/25).attr("y", superlist[controllerID].iclData.unit2Px * 1.83)
+                .attr("class", "sliderhelp").style("font-size", superlist[controllerID].iclData.unit2Px * (3/25)).text("Click and drag gray bar")
                 .style("fill", "#bbbbaa");
-        leftVis.graphSVG.select("#overLay").append('text').attr("x", this.leftVis.iclData.unit2Px * 65/25).attr("y", this.leftVis.iclData.unit2Px * 1.95)
-                .attr("class", "sliderhelp").style("font-size", this.leftVis.iclData.unit2Px * (3/25)).text("to see the timeline")
+        superlist[controllerID].graphSVG.select("#overLay").append('text').attr("x", superlist[controllerID].iclData.unit2Px * 65/25).attr("y", superlist[controllerID].iclData.unit2Px * 1.95)
+                .attr("class", "sliderhelp").style("font-size", superlist[controllerID].iclData.unit2Px * (3/25)).text("to see the timeline")
                 .style("fill", "#bbbbaa");
-        this.leftVis.UpdateVisuals();
+        superlist[controllerID].UpdateVisuals();
         clearInterval(theMotor);
-        theMotor = setInterval(this.leftVis.PlayAnim, 1000 / this.leftVis.iclData.fps);
+        //theMotor = setInterval(superlist[controllerID].PlayAnim, 1000 / superlist[controllerID].iclData.fps);
       } else {
         var saveBuffer = [];
 
-        for (var i = 0; i < this.leftVis.iclData.tourists.length; i++) {
-          this.leftVis.AlterLines(i);
-          var who = this.leftVis.iclData.tourists[i];
+        for (var i = 0; i < superlist[controllerID].iclData.tourists.length; i++) {
+          superlist[controllerID].AlterLines(i);
+          var who = superlist[controllerID].iclData.tourists[i];
           saveBuffer.push([who.x, who.y, who.a, who.on]);
-          who.allowance = who.velocity * this.leftVis.iclData.unit2Px / this.leftVis.iclData.fps;
+          who.allowance = who.velocity * superlist[controllerID].iclData.unit2Px / superlist[controllerID].iclData.fps;
           while (who.allowance > 0) {
             if (who.knows) {
               who[instruBinder[i][0][0]](instruBinder[i][0][1]);
@@ -496,24 +467,23 @@ class iclVisual {
             }
           }
           if (!who.knows) {
-            var eVec = [this.leftVis.iclData.fieldExit[0] - saveBuffer[i][0], this.leftVis.iclData.fieldExit[1] - saveBuffer[i][1]];
+            var eVec = [superlist[controllerID].iclData.fieldExit[0] - saveBuffer[i][0], superlist[controllerID].iclData.fieldExit[1] - saveBuffer[i][1]];
             var exitDist = Math.sqrt(Math.pow(eVec[1], 2) + Math.pow(eVec[0], 2));
-            if (exitDist <= who.velocity * this.leftVis.iclData.unit2Px / (2 * this.leftVis.iclData.fps)) {
-              this.leftVis.iclData.exitAlert = who.knows = true;
+            if (exitDist <= who.velocity * superlist[controllerID].iclData.unit2Px / (2 * superlist[controllerID].iclData.fps)) {
+              superlist[controllerID].iclData.exitAlert = who.knows = true;
               //exitFoundFrame = time;
-              //console.log(Math.floor((100 * time) / fps) / 100);
               if (who.priority){
                   break;
               }
-              this.leftVis.iclData.exitAllow = exitDist;
+              superlist[controllerID].iclData.exitAllow = exitDist;
             }
           }
         }
 
-        if (this.leftVis.iclData.exitAlert) {
-          if (this.leftVis.iclData.exitFoundLine == null) {
-            var holdX = (this.leftVis.iclData.unit2Px * (10 / 25) + ((this.leftVis.iclData.time + this.leftVis.iclData.exitAllow) / this.leftVis.iclData.timeMax) * (80 / 25) * this.leftVis.iclData.unit2Px);
-            this.leftVis.iclData.exitFoundLine = 1;
+        if (superlist[controllerID].iclData.exitAlert) {
+          if (superlist[controllerID].iclData.exitFoundLine == null) {
+            var holdX = (superlist[controllerID].iclData.unit2Px * (10 / 25) + ((superlist[controllerID].iclData.time + superlist[controllerID].iclData.exitAllow) / superlist[controllerID].iclData.timeMax) * (80 / 25) * superlist[controllerID].iclData.unit2Px);
+            superlist[controllerID].iclData.exitFoundLine = 1;
 
                             /*
                             graphSVG.select(".overLay").append("line").attr("x1", holdX).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
@@ -521,17 +491,16 @@ class iclVisual {
                             .style("stroke-opacity", 0.5);
                             */
           }
-          for (var i = 0; i < this.leftVis.iclData.tourists.length; i++) {//reset bots
-            var who = this.leftVis.iclData.tourists[i];
+          for (var i = 0; i < superlist[controllerID].iclData.tourists.length; i++) {//reset bots
+            var who = superlist[controllerID].iclData.tourists[i];
             who.x = saveBuffer[i][0];
             who.y = saveBuffer[i][1];
             who.a = saveBuffer[i][2];
             who.on = saveBuffer[i][3];
-            if (this.leftVis.iclData.wireless) {
+            if (superlist[controllerID].iclData.wireless) {
               who.knows = true;
-              //console.log(Math.floor((100 * time) / fps) / 100);
             }
-            who.allowance = this.leftVis.iclData.exitAllow;
+            who.allowance = superlist[controllerID].iclData.exitAllow;
             while (who.allowance > 0) {
               if (who.knew) {//Target already on exit procedures.
                 who[instruBinder[i][0][0]](instruBinder[i][0][1]);
@@ -542,7 +511,7 @@ class iclVisual {
                 }
               }
             }
-            who.allowance = (who.velocity * this.leftVis.iclData.unit2Px / this.leftVis.iclData.fps) - this.leftVis.iclData.exitAllow;
+            who.allowance = (who.velocity * superlist[controllerID].iclData.unit2Px / superlist[controllerID].iclData.fps) - superlist[controllerID].iclData.exitAllow;
             while (who.allowance > 0) {
               if (who.knows) {//Proceed with exit procedures.
                 who[instruBinder[i][0][0]](instruBinder[i][0][1]);
@@ -552,15 +521,15 @@ class iclVisual {
               }
             }
           }
-          this.leftVis.iclData.exitAlert = false;
+          superlist[controllerID].iclData.exitAlert = false;
         }
-        this.leftVis.iclData.AllAtExit();
-        this.leftVis.UpdateVisuals();
-        this.leftVis.iclData.time++;
+        superlist[controllerID].iclData.AllAtExit();
+        superlist[controllerID].UpdateVisuals();
+        superlist[controllerID].iclData.time++;
       }
-      leftVis.timeText.text("Time: " + Math.floor((100 * this.leftVis.iclData.time) / this.leftVis.iclData.fps) / 100);
-      leftVis.frameText.text("Frame: " + this.leftVis.iclData.time);
-      leftVis.timeSlider.attr("x", ((10/25) + (this.leftVis.iclData.time / this.leftVis.iclData.timeMax) * (63/20)) * this.leftVis.iclData.unit2Px);
+      superlist[controllerID].timeText.text("Time: " + Math.floor((100 * superlist[controllerID].iclData.time) / superlist[controllerID].iclData.fps) / 100);
+      superlist[controllerID].frameText.text("Frame: " + superlist[controllerID].iclData.time);
+      superlist[controllerID].timeSlider.attr("x", ((10/25) + (superlist[controllerID].iclData.time / superlist[controllerID].iclData.timeMax) * (63/20)) * superlist[controllerID].iclData.unit2Px);
 
     }
 
@@ -588,19 +557,19 @@ class iclVisual {
 
 
     PlayAnim() {
-      if (this.leftVis.iclData.timeDirect != 0) {
-        this.leftVis.iclData.time += this.leftVis.iclData.timeDirect;
-        if (this.leftVis.iclData.time < 0) {
-          this.leftVis.iclData.time = 0;
-          this.leftVis.iclData.timeDirect = 0;
-        } else if (this.leftVis.iclData.time > this.leftVis.iclData.timeMax) {
-          this.leftVis.iclData.time = this.leftVis.iclData.timeMax;
-          this.leftVis.iclData.timeDirect = 0;
+      if (superlist[controllerID].iclData.timeDirect != 0) {
+        superlist[controllerID].iclData.time += superlist[controllerID].iclData.timeDirect;
+        if (superlist[controllerID].iclData.time < 0) {
+          superlist[controllerID].iclData.time = 0;
+          superlist[controllerID].iclData.timeDirect = 0;
+        } else if (superlist[controllerID].iclData.time > superlist[controllerID].iclData.timeMax) {
+          superlist[controllerID].iclData.time = superlist[controllerID].iclData.timeMax;
+          superlist[controllerID].iclData.timeDirect = 0;
         }
-        leftVis.UpdateVisuals();
-        leftVis.timeSlider.attr("x", ((10/25) + (this.leftVis.iclData.time / this.leftVis.iclData.timeMax) * (63/20)) * this.leftVis.iclData.unit2Px);
-        leftVis.timeText.text("Time: " + Math.floor((100 * this.leftVis.iclData.time) / this.leftVis.iclData.fps) / 100);
-        leftVis.frameText.text("Frame: " + Math.floor(this.leftVis.iclData.time));
+        superlist[controllerID].UpdateVisuals();
+        superlist[controllerID].timeSlider.attr("x", ((10/25) + (superlist[controllerID].iclData.time / superlist[controllerID].iclData.timeMax) * (63/20)) * superlist[controllerID].iclData.unit2Px);
+        superlist[controllerID].timeText.text("Time: " + Math.floor((100 * superlist[controllerID].iclData.time) / superlist[controllerID].iclData.fps) / 100);
+        superlist[controllerID].frameText.text("Frame: " + Math.floor(superlist[controllerID].iclData.time));
       }
     }
 
@@ -614,23 +583,14 @@ class iclVisual {
 
 }
 
-function Interval() {
-    if (leftVis.finished){
-        return;
-    }
-    editAnims('play');
-    leftVis.iclData.AlterAnim();
-    leftVis.UpdateVisuals();
-    leftVis.iclData.AllAtExit();
-}
 
 function editAnims(s) {
     if (s == "play") {
-        leftVis.iclData.timeDirect = 1;
+        superlist[controllerID].iclData.timeDirect = 1;
     } else if (s == "rewind") {
-        leftVis.iclData.timeDirect = -1;
+        superlist[controllerID].iclData.timeDirect = -1;
     } else if (s == "slow") {
-        leftVis.iclData.timeDirect /= 2;
+        superlist[controllerID].iclData.timeDirect /= 2;
     }
 }
 
@@ -649,7 +609,6 @@ function showAnims(s) {
 function changeInstructions(n) {
     var e = document.getElementById("alg" + n);
     var s = e.options[e.selectedIndex].value;
-    console.log(s, n);
     switch (s) {
         case 'A':
             algorithmName = "Algorithm A ";
@@ -793,6 +752,28 @@ function ChoosExit() {
     d3.select(".exit").attr("cx", fieldExit[0]).attr("cy", fieldExit[1]);
 }
 
+function exitPreview() {
+    var exitAngle = d3.select("#exitAngle").node().value;
+    exitAngle = exitAngle * Math.PI / 180;
+    while(exitAngle > 2 * Math.PI) {
+        exitAngle -= 2 * Math.PI;
+    }
+    while(exitAngle < 0){
+        exitAngle += 2 * Math.PI;
+    }
+    var unitAngle = (2 * Math.PI) / 360;										//Angle segment length.
+    var angleUnit = Math.floor(exitAngle / unitAngle);											//Which length of segment.
+    var unitPos = [Math.cos(exitAngle), -Math.sin(exitAngle)];											//End point on unit circle segment
+    var vertOne = [Math.cos(angleUnit * unitAngle), -Math.sin(angleUnit * unitAngle)];							//Start point of segment
+    var vertTwo = [Math.cos((angleUnit + 1) * unitAngle), -Math.sin((angleUnit + 1) * unitAngle)];					//End point of segment
+    var a2 = vertOne[1] - vertTwo[1];
+    var b2 = vertTwo[0] - vertOne[0];
+    var c2 = vertOne[1] * vertTwo[0] - vertOne[0] * vertTwo[1];
+    var wallLoc = [superlist[controllerID].iclData.center[0] + superlist[controllerID].iclData.unit2Px * (unitPos[0] * c2) / (unitPos[1] * b2 + unitPos[0] * a2),
+                   superlist[controllerID].iclData.center[1] + superlist[controllerID].iclData.unit2Px * (unitPos[1] * c2) / (unitPos[1] * b2 + unitPos[0] * a2)];		//Cramer's Law
+    d3.select("#exit").attr("cx", wallLoc[0]).attr("cy", wallLoc[1]);
+}
+
 function exitChosen() {
     //clear motor
     clearInterval(theMotor);
@@ -803,10 +784,9 @@ function exitChosen() {
     d3.selectAll(".timeText").remove();
     d3.selectAll(".frameText").remove();
     leftSide = new iclData(0, instruBinder, algName, d3.select("#exitAngle").node().value, wireless);
-    leftVis = new iclVisual(leftSide);
-    theMotor = setInterval(leftVis.AlterAnim, 1000 / 60);
+    superlist[controllerID] = new iclVisual(leftSide);
+    theMotor = setInterval(superlist[controllerID].AlterAnim, 1000 / 60);
     d3.select(".exitText").remove();
-    d3.select("#anim0").on("mousemove", null).on("click", null);
 }
 
 function showHelp(s) {
@@ -972,12 +952,11 @@ function showAlgorithmDesc(s, w){
     }
     algShortName = s;
     wireless = w;
-    console.log(w);
 
 }
 
+/////// GLOBAL VARIABLES ///////
 var leftSide;
-var leftVis;
 var theMotor;
 var algSelector;
 var instruBinder;
@@ -985,12 +964,14 @@ var algName;
 var wireless;
 var unit2Px = 25
 var center = [2 * unit2Px, 2 * unit2Px];
+var superlist = [];
+var controllerID = 0;
 
 var algRequested = window.location.href.includes("#");
 if (algRequested) {
     algSelector = window.location.href.indexOf("#");
     var l = window.location.href.length;
-    console.log(window.location.href.slice(algSelector + 1, l));
+    console.log("DEBUG: Algorithm: " + window.location.href.slice(algSelector + 1, l));
     var wire = true;
     if (window.location.href.includes("wl") || window.location.href.includes("Q")){
         wire = true;
@@ -998,14 +979,13 @@ if (algRequested) {
     else {
         wire = false;
     }
-    console.log(wire);
     showAlgorithmDesc(window.location.href.slice(algSelector + 1, l), wire);
 }
 else {
     showAlgorithmDesc("A", false);
 }
 
-
-console.log("WIRELESS: " + wireless);
+console.log("DEBUG: Wireless: " + wireless);
 leftSide = new iclData(0, instruBinder, algName, d3.select("#exitAngle").node().value, wireless);
-leftVis = new iclVisual(leftSide);
+superlist.push(new iclVisual(leftSide));
+console.log("DEBUG: Ready to start simulation.")

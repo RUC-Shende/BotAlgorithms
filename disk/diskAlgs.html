@@ -423,7 +423,8 @@
     <!-- <script src='circleShowcase.js'></script> -->
 
         <h4>Input a number to choose an exit angle.</h4>
-        <input id="exitAngle" type=number min=0 max=360 />
+        <input id="exitAngle" onchange="exitPreview();" type=number min=0 max=360 />
+        <input type="submit"  onclick="javascript:void(0);" value="Preview Exit Location"/>
         <input type="submit" onclick="exitChosen();">
         <div style="width:100%;margin: 0 auto;">
             <svg id="anim0">
@@ -452,7 +453,7 @@
                 </svg>
             </svg>
         </div>
-        <script src="../js/ICL_Classes.js"></script>
+        <script src="../js/tourist.js"></script>
         <script src="../js/superclass.js"></script>
 
 </body>
