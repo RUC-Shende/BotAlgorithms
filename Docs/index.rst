@@ -34,8 +34,8 @@ Getting Started
 To see the app in action, simply get the project from `Github
 <https://github.com/dbushta/BotAlgorithms/>`_.
 
-In version 1.1 of the app, there are a few types of simulations available for showing 2 Robot Face-to-Face communication model algorithms.
-The ICL reader in v1.1 uses ICLReader V24's Framework.
+In version |version| of the app, there are a few types of simulations available for showing wireless and face-to-face communication model algorithms.
+See the `changelog <detailed-changelog.html>`_ for a more detailed explanation.
 
 
 Types of algorithms
@@ -45,11 +45,10 @@ These algorithms differ significantly depending upon the number of available rob
 and the shape of the area the robots are searching. We assume, in these algorithms, that the robots
 
 a. know the algorithms and trajectory of the others at any given time.
-b. all move at the same speed, being their maximum speed. (Version 1.0)
+b. all move at the same speed, being their maximum speed. (since version 1.0)
 c. know how to move about the area and recognize the exit no matter what.
 
-In our app, we provide multiple examples of algorithms previously stated in other papers, and allow users to create their own using these
-variables.
+In our app, we provide multiple examples of algorithms `previously stated in other papers <references.html>`_.
 
 Number of robots
 ----------------
@@ -80,17 +79,29 @@ Currently, the project showcases these algorithms:
 Disk
 ----
 
-`Face-to-Face, 2 Robots. Algorithms A, B, and C.
-</BotAlgorithms/disk/circleShowcase.html>`_.
+`Face-to-Face, 2 Robots. Algorithm A.
+</BotAlgorithms/disk/diskAlgs.html#A>`_.
 
-`Wireless, 2 Robots. Algorithms A, B, and C.
-</BotAlgorithms/disk/circleShowcase.html#A>`_.
+`Face-to-Face, 2 Robots. Algorithm B.
+</BotAlgorithms/disk/diskAlgs.html#B>`_.
+
+`Face-to-Face, 2 Robots. Algorithm C.
+</BotAlgorithms/disk/diskAlgs.html#C>`_.
+
+`Wireless, 2 Robots. Algorithm A.
+</BotAlgorithms/disk/diskAlgs.html#Awl>`_.
+
+`Wireless, 2 Robots. Algorithm B.
+</BotAlgorithms/disk/diskAlgs.html#Bwl>`_.
+
+`Wireless, 2 Robots. Algorithm C.
+</BotAlgorithms/disk/diskAlgs.html#Cwl>`_.
 
 `Wireless, 1 Robot + Priority Robot.
-</BotAlgorithms/disk/circleShowcase.html#Q1>`_.
+</BotAlgorithms/disk/diskAlgs.html#Q1>`_.
 
 `Wireless, 2 Robots + Priority Robot.
-</BotAlgorithms/disk/circleShowcase.html#Q2>`_.
+</BotAlgorithms/disk/diskAlgs.html#Q2>`_.
 
 `Wireless, 1 Robot + 2 Priority.
-</BotAlgorithms/disk/circleShowcase.html#Q2S1>`_.
+</BotAlgorithms/disk/diskAlgs.html#Q2S1>`_.

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Project History &#8212; Search and Exit Algorithms 1.3a documentation</title>
+    <title>Project History &#8212; Search and Exit Algorithms 2.0.2 (154) documentation</title>
     <link rel="stylesheet" href="_static/style.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -33,7 +33,7 @@
         <li class="right" >
           <a href="references.html" title="References and Bibliography"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 1.3a documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 2.0.2 (154) documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -44,6 +44,22 @@
             
   <div class="section" id="project-history">
 <h1>Project History<a class="headerlink" href="#project-history" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="version-2-0-released">
+<h2>06/21/19: Version 2.0 Released<a class="headerlink" href="#version-2-0-released" title="Permalink to this headline">¶</a></h2>
+<p>As of this update, we have implemented a completely new version of the algorithm visualizer.
+The reason for this is that we wanted to be able to see comparisons of more than one
+algorithm side by side in the same window, and the number of global variables that one
+instance of a simulation relied on was too great. We have since split the visualizer
+into 3 modules: <a class="reference external" href="documentation.html#icldata">iclData</a>, <a class="reference external" href="documentation.html#iclvisual">iclVisual</a>,
+and <a class="reference external" href="documentation.html#the-tourist">Tourist</a>.</p>
+<p>By splitting these into classes, we can reduce the number of global variables used as well
+as allow for comparisons to be shown. We also created a landing page for the app
+that shows the different number of shapes, followed by a list of all available algorithms on
+the next page. The algorithms are selected by the shortname in the URL when the <code class="docutils literal notranslate"><span class="pre">diskalgs.html</span></code>
+page is loaded.</p>
+<p>Version 2.0 onward adds a reworked version of the visualizer on the diskAlgs page.
+Version 2.0.2 adds the time slider, working time/frame text.</p>
+</div>
 <div class="section" id="circle-showcase">
 <h2>03/05/19: Circle Showcase<a class="headerlink" href="#circle-showcase" title="Permalink to this headline">¶</a></h2>
 <p>In this update of Circle Showcase we have added a few smaller features.</p>
@@ -197,6 +213,7 @@ once they choose their options.</p>
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Project History</a><ul>
+<li><a class="reference internal" href="#version-2-0-released">06/21/19: Version 2.0 Released</a></li>
 <li><a class="reference internal" href="#circle-showcase">03/05/19: Circle Showcase</a></li>
 <li><a class="reference internal" href="#id1">01/07/19: Circle Showcase</a></li>
 <li><a class="reference internal" href="#id2">11/06/18</a></li>
@@ -252,12 +269,12 @@ once they choose their options.</p>
         <li class="right" >
           <a href="references.html" title="References and Bibliography"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 1.3a documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 2.0.2 (154) documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Chris Till, David Bushta.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
     </div>
   </body>
 </html>

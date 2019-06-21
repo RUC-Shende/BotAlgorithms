@@ -1,0 +1,8 @@
+Version History
+===============
+
+Version 2.0.2
+-------------
+
+Version 2.0 onward adds a reworked version of the visualizer on the diskAlgs page.
+Version 2.0.2 adds the time slider, working time/frame text.

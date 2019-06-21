@@ -1,6 +1,25 @@
 Project History
 ===============
 
+06/21/19: Version 2.0 Released
+------------------------------
+
+As of this update, we have implemented a completely new version of the algorithm visualizer.
+The reason for this is that we wanted to be able to see comparisons of more than one
+algorithm side by side in the same window, and the number of global variables that one
+instance of a simulation relied on was too great. We have since split the visualizer
+into 3 modules: `iclData <documentation.html#icldata>`_, `iclVisual <documentation.html#iclvisual>`_,
+and `Tourist <documentation.html#the-tourist>`_.
+
+By splitting these into classes, we can reduce the number of global variables used as well
+as allow for comparisons to be shown. We also created a landing page for the app
+that shows the different number of shapes, followed by a list of all available algorithms on
+the next page. The algorithms are selected by the shortname in the URL when the ``diskalgs.html``
+page is loaded.
+
+Version 2.0 onward adds a reworked version of the visualizer on the diskAlgs page.
+Version 2.0.2 adds the time slider, working time/frame text.
+
 03/05/19: Circle Showcase
 -------------------------
 
