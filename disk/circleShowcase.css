@@ -130,8 +130,9 @@ h3 {
 
 .infobox {
     background-color: white;
-    margin-left:2%;
     width:90%;
+    margin-left: 5%;
+    margin-right:5%;
     float:left;
     border: 2px solid black;
     display: none;
