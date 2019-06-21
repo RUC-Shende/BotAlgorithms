@@ -269,7 +269,7 @@ class iclVisual {
       var mousePos = d3.event.x;
       if (mousePos < superlist[controllerID].iclData.unit2Px * (10/25)) {
         mousePos = superlist[controllerID].iclData.unit2Px * (10/25);
-    } else if (mousePos > (71 / 20) * superlist[controllerID].iclData.unit2Px) {
+      } else if (mousePos > (71 / 20) * superlist[controllerID].iclData.unit2Px) {
         mousePos = (71 / 20) * superlist[controllerID].iclData.unit2Px;
       }
       d3.select(this).attr("x", mousePos);
@@ -322,16 +322,15 @@ class iclVisual {
     Load() {
 
         this.LoadField();
-        var colorPalette = ["#fe447d", "#f78f2e", "#fedc0c", "#fedc0c",
-                            "#654321", "#ff0000", "#0e10e6", "#9208e7",
-                            "#f84c00", "#f3f354", "#bff1e5", "#3bc335",
+        var colorPalette = ["#ff0000", "#0000ff", "#00ff00",
+                            "#654321", "#ff00ff", "#00ffff", "#3bc335",
                             "#7af5ca", "#448bff", "#101ab3", "#d645c8",
                             "#0afe15", "#0acdfe", "#ff9600", "#b21ca1"];
 
         d3.select("#exit").attr("cx", this.iclData.fieldExit[0]).attr("cy", this.iclData.fieldExit[1]);
         this.LoadGraph();
         for (var i = 0; i < this.iclData.instruBinder.length; i++) { //Add bots, lines, and coordinate collectors.
-            this.tourColors.push(colorPalette[(i + 4) % 20]);
+            this.tourColors.push(colorPalette[i]);
             this.iclData.tourists[i].visual = this.fieldSVG.select("#bots").append("circle").attr("cx", this.iclData.unit2Px * (10 / 25))
                 .attr("cy", this.iclData.unit2Px * 4 * (20 / 25) - this.iclData.unit2Px * (10 / 25)).attr("r", this.iclData.unit2Px / 16)
                 .style("fill", this.tourColors[i]).style("stroke", "#ffffff").style("stroke-width", (1 / 100) * this.iclData.unit2Px);
@@ -345,6 +344,33 @@ class iclVisual {
                 .style("stroke", this.tourColors[i]).style("stroke-width", this.iclData.unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
             this.iclData.graphLine[i] = this.graphSVG.select(".lines").append("path").attr("d", this.lineFx(this.iclData.graphPoints[i]))
                 .style("stroke", this.tourColors[i]).style("stroke-width", this.iclData.unit2Px * (1 / 25)).style("stroke-opacity", 0.5).style("fill", "none");
+        }
+
+        var touristCount = 0;
+        outer:
+        for (var i = 0; i <= 2; i++){
+            if (touristCount + 1 == this.iclData.instruBinder.length){
+                break outer;
+            }
+            for (var j = 0; j <= 2; j++) {
+                this.graphSVG.select("#overLay").append("circle")
+                        .attr("cx", (2*this.iclData.unit2Px) + (j * (2/3 * this.iclData.unit2Px)))
+                        .attr("cy", (this.iclData.unit2Px * 0.6) + (i * (1/4 * this.iclData.unit2Px)))
+                        .attr("r", this.iclData.unit2Px / 16)
+                        .style("fill", this.tourColors[touristCount])
+                        .style("stroke", "#ffffff")
+                        .style("stroke-width", (1/100 * this.iclData.unit2Px));
+                this.graphSVG.select("#overLay").append("text")
+                        .attr("x", (2*this.iclData.unit2Px) + (this.iclData.unit2Px / 15) + (j * (2/3 * this.iclData.unit2Px)))
+                        .attr("y", (this.iclData.unit2Px * 0.6) + (this.iclData.unit2Px/32) +  (i * (1/4 * this.iclData.unit2Px)))
+                        .style("font-size", this.iclData.unit2Px * (3/25))
+                        .text("" + ((this.iclData.instruBinder[touristCount][0][1][1] == true) ? "Queen " + touristCount : " Bot " + touristCount));
+                if (touristCount + 1 == this.iclData.instruBinder.length){
+                    break outer;
+                }
+                touristCount ++;
+
+            }
         }
     }
 
