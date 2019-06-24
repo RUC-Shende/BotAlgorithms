@@ -1,3 +1,4 @@
+'use strict';
 /**
 *Data necessary to run a simulation of a given algorithm, create visual paths, etc.
 *Tourist == Agent == Robot.
@@ -235,6 +236,7 @@ class iclVisual {
     }
 
 
+
     RandomColor() {
         var RGB = ["00", "00", "00"];
         RGB[0] = Math.floor(Math.random() * 256).toString(16);
@@ -461,87 +463,93 @@ class iclVisual {
     */
     AlterAnim() {
       // Reached the end of the sim.
-      if (superlist[controllerID].iclData.time >= superlist[controllerID].iclData.timeMax) {
-        superlist[controllerID].iclData.time = superlist[controllerID].iclData.timeMax;
+      if (this.iclData.time >= this.iclData.timeMax) {
+        this.iclData.time = this.iclData.timeMax;
 
 
         for (var i = 0; i < 11; i++) {//Remove x-axis labels 1-10, in order to scale graph.
-          superlist[controllerID].graphSVG.selectAll(".graphnum").style("display", "none");
+          this.graphSVG.selectAll(".graphnum").style("display", "none");
         }
 
-        for (i = 0; i < superlist[controllerID].iclData.touristNum; i++){//One last call to AlterLines.
-            superlist[controllerID].AlterLines(i);
+        for (i = 0; i < this.iclData.touristNum; i++){//One last call to AlterLines.
+            this.AlterLines(i);
         }
 
-        for (var i = 0; i <= Math.floor((100 * superlist[controllerID].iclData.time) / superlist[controllerID].iclData.fps) / 100; i++) {//Create new scaled x-axis labels.
-          superlist[controllerID].graphSVG.select("#overLay").append("text")
-                  .attr("x", (10/25 + (i / (Math.floor((100 * superlist[controllerID].iclData.time) / superlist[controllerID].iclData.fps) / 100)) * 80/25) * superlist[controllerID].iclData.unit2Px)//unit2Px * (10 / 25) + ((Math.floor(timeMax) - i) * 80/25) * unit2Px)
-                  .attr("y", superlist[controllerID].iclData.unit2Px * (94 / 25))
-                  .style("font-size", superlist[controllerID].iclData.unit2Px * (4 / 25))
+        for (var i = 0; i <= Math.floor((100 * this.iclData.time) / this.iclData.fps) / 100; i++) {//Create new scaled x-axis labels.
+          this.graphSVG.select("#overLay").append("text")
+                  .attr("x", (10/25 + (i / (Math.floor((100 * this.iclData.time) / this.iclData.fps) / 100)) * 80/25) * this.iclData.unit2Px)//unit2Px * (10 / 25) + ((Math.floor(timeMax) - i) * 80/25) * unit2Px)
+                  .attr("y", this.iclData.unit2Px * (94 / 25))
+                  .style("font-size", this.iclData.unit2Px * (4 / 25))
                   .style("text-anchor", "middle")
                   .text(i)
                   .attr("class","graphnum");
         }
-        superlist[controllerID].graphSVG.select("#overLay").append("text")
-                .attr("x", (superlist[controllerID].iclData.unit2Px * 65/25))
-                .attr("y", superlist[controllerID].iclData.unit2Px * (1.7))
-                .style("font-size", superlist[controllerID].iclData.unit2Px * (4/25))
-                .text("End: " + Math.floor((100 * superlist[controllerID].iclData.time) / superlist[controllerID].iclData.fps) / 100 + " sec");
+        this.graphSVG.select("#overLay").append("text")
+                .attr("x", (this.iclData.unit2Px * 65/25))
+                .attr("y", this.iclData.unit2Px * (1.7))
+                .style("font-size", this.iclData.unit2Px * (4/25))
+                .text("End: " + Math.floor((100 * this.iclData.time) / this.iclData.fps) / 100 + " sec");
 
-        superlist[controllerID].graphSVG.select("#overLay").append('text')
-                .attr("x", superlist[controllerID].iclData.unit2Px * 65/25)
-                .attr("y", superlist[controllerID].iclData.unit2Px * 1.83)
+        this.graphSVG.select("#overLay").append('text')
+                .attr("x", this.iclData.unit2Px * 65/25)
+                .attr("y", this.iclData.unit2Px * 1.83)
                 .attr("class", "sliderhelp")
-                .style("font-size", superlist[controllerID].iclData.unit2Px * (3/25))
+                .style("font-size", this.iclData.unit2Px * (3/25))
                 .text("Click and drag gray bar")
                 .style("fill", "#bbbbaa");
 
-        superlist[controllerID].graphSVG.select("#overLay").append('text')
-                .attr("x", superlist[controllerID].iclData.unit2Px * 65/25)
-                .attr("y", superlist[controllerID].iclData.unit2Px * 1.95)
+        this.graphSVG.select("#overLay").append('text')
+                .attr("x", this.iclData.unit2Px * 65/25)
+                .attr("y", this.iclData.unit2Px * 1.95)
                 .attr("class", "sliderhelp")
-                .style("font-size", superlist[controllerID].iclData.unit2Px * (3/25))
+                .style("font-size", this.iclData.unit2Px * (3/25))
                 .text("to see the timeline")
                 .style("fill", "#bbbbaa");
 
-        superlist[controllerID].UpdateVisuals();
+        this.UpdateVisuals();
         clearInterval(theMotor);
-        theMotor = setInterval(superlist[controllerID].PlayAnim, 1000 / superlist[controllerID].iclData.fps);
+        var tmp = this;
+
+        theMotor = setInterval((function(self) {
+            return function() {
+                self.PlayAnim();
+            }
+        })(this) , 1000 / this.iclData.fps);
       }
       // Inside the sim.
       else {
         var saveBuffer = [];
 
-        for (var i = 0; i < superlist[controllerID].iclData.tourists.length; i++) {
-          superlist[controllerID].AlterLines(i);
-          var who = superlist[controllerID].iclData.tourists[i];
+        for (var i = 0; i < this.iclData.tourists.length; i++) {
+          this.AlterLines(i);
+          var who = this.iclData.tourists[i];
           saveBuffer.push([who.x, who.y, who.a, who.on]);
-          who.allowance = who.velocity * superlist[controllerID].iclData.unit2Px / superlist[controllerID].iclData.fps;
+          who.allowance = who.velocity * this.iclData.unit2Px / this.iclData.fps;
           while (who.allowance > 0) {
             if (who.knows) {
-              who[instruBinder[i][0][0]](instruBinder[i][0][1]);
+              who[this.iclData.instruBinder[i][0][0]](this.iclData.instruBinder[i][0][1]);
             } else {
-              who[instruBinder[i][who.on][0]](instruBinder[i][who.on][1]);
+              who[this.iclData.instruBinder[i][who.on][0]](this.iclData.instruBinder[i][who.on][1]);
             }
           }
           if (!who.knows) {
-            var eVec = [superlist[controllerID].iclData.fieldExit[0] - saveBuffer[i][0], superlist[controllerID].iclData.fieldExit[1] - saveBuffer[i][1]];
+            var eVec = [this.iclData.fieldExit[0] - saveBuffer[i][0], this.iclData.fieldExit[1] - saveBuffer[i][1]];
             var exitDist = Math.sqrt(Math.pow(eVec[1], 2) + Math.pow(eVec[0], 2));
-            if (exitDist <= who.velocity * superlist[controllerID].iclData.unit2Px / (2 * superlist[controllerID].iclData.fps)) {
-              superlist[controllerID].iclData.exitAlert = who.knows = true;
+            if (exitDist <= who.velocity * this.iclData.unit2Px / (2 * this.iclData.fps)) {
+              this.iclData.exitAlert = who.knows = true;
               //exitFoundFrame = time;
               if (who.priority){
                   break;
               }
-              superlist[controllerID].iclData.exitAllow = exitDist;
+              this.iclData.exitAllow = exitDist;
             }
           }
         }
 
-        if (superlist[controllerID].iclData.exitAlert) {
-          if (superlist[controllerID].iclData.exitFoundLine == null) {
-            var holdX = (superlist[controllerID].iclData.unit2Px * (10 / 25) + ((superlist[controllerID].iclData.time + superlist[controllerID].iclData.exitAllow) / superlist[controllerID].iclData.timeMax) * (80 / 25) * superlist[controllerID].iclData.unit2Px);
-            superlist[controllerID].iclData.exitFoundLine = 1;
+        if (this.iclData.exitAlert) {
+          if (this.iclData.exitFoundLine == null) {
+            var holdX = (this.iclData.unit2Px * (10 / 25) + ((this.iclData.time + this.iclData.exitAllow) / this.iclData.timeMax) * (80 / 25) * this.iclData.unit2Px);
+            this.iclData.exitFoundLine = 1;
 
                             /*
                             graphSVG.select(".overLay").append("line").attr("x1", holdX).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
@@ -549,45 +557,45 @@ class iclVisual {
                             .style("stroke-opacity", 0.5);
                             */
           }
-          for (var i = 0; i < superlist[controllerID].iclData.tourists.length; i++) {//reset bots
-            var who = superlist[controllerID].iclData.tourists[i];
+          for (var i = 0; i < this.iclData.tourists.length; i++) {//reset bots
+            var who = this.iclData.tourists[i];
             who.x = saveBuffer[i][0];
             who.y = saveBuffer[i][1];
             who.a = saveBuffer[i][2];
             who.on = saveBuffer[i][3];
-            if (superlist[controllerID].iclData.wireless) {
+            if (this.iclData.wireless) {
               who.knows = true;
             }
-            who.allowance = superlist[controllerID].iclData.exitAllow;
+            who.allowance = this.iclData.exitAllow;
             while (who.allowance > 0) {
               if (who.knew) {//Target already on exit procedures.
-                who[instruBinder[i][0][0]](instruBinder[i][0][1]);
+                who[this.iclData.instruBinder[i][0][0]](this.iclData.instruBinder[i][0][1]);
               } else {//Has not started exit procedures yet.
-                who[instruBinder[i][who.on][0]](instruBinder[i][who.on][1]);
+                who[this.iclData.instruBinder[i][who.on][0]](this.iclData.instruBinder[i][who.on][1]);
                 if (who.knows) {//Clear target for bot if beginning exit procedures.
                   who.target = null;
                 }
               }
             }
-            who.allowance = (who.velocity * superlist[controllerID].iclData.unit2Px / superlist[controllerID].iclData.fps) - superlist[controllerID].iclData.exitAllow;
+            who.allowance = (who.velocity * this.iclData.unit2Px / this.iclData.fps) - this.iclData.exitAllow;
             while (who.allowance > 0) {
               if (who.knows) {//Proceed with exit procedures.
-                who[instruBinder[i][0][0]](instruBinder[i][0][1]);
+                who[this.iclData.instruBinder[i][0][0]](this.iclData.instruBinder[i][0][1]);
                 who.knew = true;
               } else {//Still does not know.
-                who[instruBinder[i][who.on][0]](instruBinder[i][who.on][1]);
+                who[this.iclData.instruBinder[i][who.on][0]](this.iclData.instruBinder[i][who.on][1]);
               }
             }
           }
-          superlist[controllerID].iclData.exitAlert = false;
+          this.iclData.exitAlert = false;
         }
-        superlist[controllerID].iclData.AllAtExit();
-        superlist[controllerID].UpdateVisuals();
-        superlist[controllerID].iclData.time++;
+        this.iclData.AllAtExit();
+        this.UpdateVisuals();
+        this.iclData.time++;
       }
-      superlist[controllerID].timeText.text("Time: " + Math.floor((100 * superlist[controllerID].iclData.time) / superlist[controllerID].iclData.fps) / 100);
-      superlist[controllerID].frameText.text("Frame: " + superlist[controllerID].iclData.time);
-      superlist[controllerID].timeSlider.attr("x", ((10/25) + (superlist[controllerID].iclData.time / superlist[controllerID].iclData.timeMax) * (63/20)) * superlist[controllerID].iclData.unit2Px);
+      this.timeText.text("Time: " + Math.floor((100 * this.iclData.time) / this.iclData.fps) / 100);
+      this.frameText.text("Frame: " + this.iclData.time);
+      this.timeSlider.attr("x", ((10/25) + (this.iclData.time / this.iclData.timeMax) * (63/20)) * this.iclData.unit2Px);
 
     }
 
@@ -636,19 +644,19 @@ class iclVisual {
     *the sim has ended.
     */
     PlayAnim() {
-      if (superlist[controllerID].iclData.timeDirect != 0) {
-        superlist[controllerID].iclData.time += superlist[controllerID].iclData.timeDirect;
-        if (superlist[controllerID].iclData.time < 0) {
-          superlist[controllerID].iclData.time = 0;
-          superlist[controllerID].iclData.timeDirect = 0;
-        } else if (superlist[controllerID].iclData.time > superlist[controllerID].iclData.timeMax) {
-          superlist[controllerID].iclData.time = superlist[controllerID].iclData.timeMax;
-          superlist[controllerID].iclData.timeDirect = 0;
+      if (this.iclData.timeDirect != 0) {
+        this.iclData.time += this.iclData.timeDirect;
+        if (this.iclData.time < 0) {
+          this.iclData.time = 0;
+          this.iclData.timeDirect = 0;
+        } else if (this.iclData.time > this.iclData.timeMax) {
+          this.iclData.time = this.iclData.timeMax;
+          this.iclData.timeDirect = 0;
         }
-        superlist[controllerID].UpdateVisuals();
-        superlist[controllerID].timeSlider.attr("x", ((10/25) + (superlist[controllerID].iclData.time / superlist[controllerID].iclData.timeMax) * (63/20)) * superlist[controllerID].iclData.unit2Px);
-        superlist[controllerID].timeText.text("Time: " + Math.floor((100 * superlist[controllerID].iclData.time) / superlist[controllerID].iclData.fps) / 100);
-        superlist[controllerID].frameText.text("Frame: " + Math.floor(superlist[controllerID].iclData.time));
+        this.UpdateVisuals();
+        this.timeSlider.attr("x", ((10/25) + (this.iclData.time / this.iclData.timeMax) * (63/20)) * this.iclData.unit2Px);
+        this.timeText.text("Time: " + Math.floor((100 * this.iclData.time) / this.iclData.fps) / 100);
+        this.frameText.text("Frame: " + Math.floor(this.iclData.time));
       }
     }
 
@@ -906,7 +914,10 @@ function exitChosen() {
     d3.selectAll(".frameText").remove();
     leftSide = new iclData(0, instruBinder, algName, d3.select("#exitAngle").node().value, wireless);
     superlist[controllerID] = new iclVisual(leftSide);
-    theMotor = setInterval(superlist[controllerID].AlterAnim, 1000 / 60);
+    theMotor = setInterval(function() {
+        superlist[controllerID].AlterAnim();
+    }
+    , 1000 / 60);
     d3.select(".exitText").remove();
 }
 
@@ -1082,6 +1093,7 @@ var theMotor;
 var algSelector;
 var instruBinder;
 var algName;
+var algShortName;
 var wireless;
 var unit2Px = 25
 var center = [2 * unit2Px, 2 * unit2Px];

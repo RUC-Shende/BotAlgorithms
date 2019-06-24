@@ -15,8 +15,7 @@ variables used to do things like comparison, and that just wasn't a safe or effi
 
 We do, however keep some global vars just because its easier.
 In the current implementation of ``superclass.js``, we use a variable called ``superlist``
-to keep track of all of our instances of ``iclVisual``. All classes refer to ``superlist``, so it is
-necessary for the simulation to work. We understand that this might not be the best practice, but is
+to keep track of all of our instances of ``iclVisual``. We understand that this might not be the best practice, but is
 certainly better than before, and helps us meet the requirements to make this simulator work.
 Remember, we are essentially creating our own small game engine here with graphics, etc., and
 because Javascript is so weird about certain things (for example ``setInterval()``'s context) we have to adapt to JS's

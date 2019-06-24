@@ -1,3 +1,4 @@
+'use strict';
 /**
 * @param {iclData} iclData Represents the data of the overall simulation, robots' tourlines and graphlines.
 * @param {boolean} p True if bot is Priority Agents, false otherwise.
