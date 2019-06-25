@@ -1,6 +1,36 @@
 Project History
 ===============
 
+06/25/19: Comparisons Released, Version 2.2.0
+-----------------------------------------------
+
+As of this update, a beta comparisons feature is available to select from
+the `main page <dbushta.github.io/BotAlgorithms/disk/circleShowcase.html>`_.
+It is also available while looking at a particular algorithm in the normal view,
+just click the "Compare..." button at the top of the page and head to the Compare
+page.
+
+On the Compare page, the algorithm you selected to compare will always be shown on the left,
+and the algorithm for comparison is shown on the right. To change the algorithm,
+simply select one from the drop down menu at the top of the page, select an exit location,
+and start the simulation. For now, the two animations operate independently of one another
+in terms of the time slider, but there will soon be a multi-animation play button which
+will be a quick shortcut to replay both animations from the start. More often than not,
+we can't sync the times 1:1, because some algorithms will finish faster or slower than
+their counterpart.
+
+
+
+06/24/19: Version 2.1.0 Released
+--------------------------------
+
+As of this update, ``superclass.js`` has changed such that it no longer requires any instance of global
+variables to function. Unfortunately, Javascript is weird, but we were able to find
+workarounds to have the module be completely self contained. As a way to make it even more
+flexible, we also removed all helper/excess functions from the ``superclass.js`` and moved them
+into the actual HTML of the page. Code can now differ for different pages, such as comparisons and regular
+algorithm view.
+
 06/21/19: Version 2.0 Released
 ------------------------------
 

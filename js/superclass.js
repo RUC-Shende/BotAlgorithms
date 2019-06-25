@@ -448,7 +448,7 @@ class iclVisual {
                    .style("font-size", this.iclData.unit2Px * (4 / 25)).style("text-anchor", "start").text("Time: 0").attr("class", "timeText");
         this.frameText = this.graphSVG.select("#backGround").append("text").attr("x", this.iclData.unit2Px * (1/ 25)).attr("y", this.iclData.unit2Px * .8)
                     .style("font-size", this.iclData.unit2Px * (4 / 25)).style("text-anchor", "start").text("Frame: 0").attr("class", "frameText");
-        this.timeSlider = this.graphSVG.select("#backGround").append("rect").attr("width", this.iclData.unit2Px / 20).attr("height", this.iclData.unit2Px * (31/20))
+        this.timeSlider = this.graphSVG.select("#backGround").append("rect").attr("width", this.iclData.unit2Px / 15).attr("height", this.iclData.unit2Px * (31/20))
                      .attr("y", this.iclData.unit2Px * 2).attr("x", this.iclData.unit2Px * (10/25))
                      .style("fill", "#888888").style("fill-opacity", .5)
                      .call(d3.drag().on("start", this.SSlide).on("drag", (function(self) {

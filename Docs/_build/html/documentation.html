@@ -6,16 +6,14 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Search-and-Exit Tourist and Superclass Method Documentation &#8212; Search and Exit Algorithms 2.0.4 (174) documentation</title>
+    <title>Search-and-Exit Tourist and Superclass Method Documentation &#8212; Search and Exit Algorithms 2.2.0 (176) documentation</title>
     <link rel="stylesheet" href="_static/style.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="References and Bibliography" href="references.html" />
@@ -33,7 +31,7 @@
         <li class="right" >
           <a href="api.html" title="Search and Exit Tourist API"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 2.0.4 (174) documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 2.2.0 (176) documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -617,6 +615,12 @@ Called from constructor.</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="superclass.iclData.motor">
+<code class="descclassname">superclass.iclData.</code><code class="descname">motor</code><a class="headerlink" href="#superclass.iclData.motor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interval for this iclData instance. Typically set to 1000/fps</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="superclass.iclData.time">
 <code class="descclassname">superclass.iclData.</code><code class="descname">time</code><a class="headerlink" href="#superclass.iclData.time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Current time of the simulation (frames).</p>
@@ -710,7 +714,6 @@ Multiple instances can and will be used for algorithm comparisons.</p>
 <code class="descclassname">superclass.iclVisual.</code><code class="descname">AlterAnim</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.AlterAnim" title="Permalink to this definition">¶</a></dt>
 <dd><p>The main function used to control an algorithm when it is running for the first time.
 Recalculates all necessary points based on new exit location.
-<strong>Relies on window.superlist.</strong>
 This is due to the nature of calling AlterAnim from weird places, such as a time interval.
 Does both data calculation and visual updates at once, so while it does not
 really fit in either class, putting it in iclVisual was the best way to do it
@@ -769,17 +772,14 @@ Called by this.Load().</p>
 <code class="descclassname">superclass.iclVisual.</code><code class="descname">MSlide</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.MSlide" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function for time slider.
 Makes sure the slider stays within the bounds of timeMax.
-Called by anonymous function inside LoadGraph().
-<strong>Relies on window.superlist</strong>.</p>
+Called by anonymous function inside LoadGraph().</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="superclass.iclVisual.PlayAnim">
 <code class="descclassname">superclass.iclVisual.</code><code class="descname">PlayAnim</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.PlayAnim" title="Permalink to this definition">¶</a></dt>
 <dd><p>The post-run algorithm controller. Allows for playback.
-timeDirect is defined in iclData.
-<strong>Relies on window.superlist</strong> because the call is usually from an interval once
-the sim has ended.</p>
+timeDirect is defined in iclData.</p>
 </dd></dl>
 
 <dl class="function">
@@ -860,8 +860,8 @@ Redraws tourist visuals, usually in relation to current time.</p>
 <div class="section" id="other-useful-functions">
 <h1>Other Useful Functions<a class="headerlink" href="#other-useful-functions" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="superclass.editAnims">
-<code class="descclassname">superclass.</code><code class="descname">editAnims</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#superclass.editAnims" title="Permalink to this definition">¶</a></dt>
+<dt id="helpers.editAnims">
+<code class="descclassname">helpers.</code><code class="descname">editAnims</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#helpers.editAnims" title="Permalink to this definition">¶</a></dt>
 <dd><p>Outside controller for letting the buttons choose timeDirect.
 <strong>Relies on window.superlist</strong>.
 Called from the HTML &lt;text&gt;s relating to playback.</p>
@@ -879,8 +879,8 @@ Called from the HTML &lt;text&gt;s relating to playback.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="superclass.showAnims">
-<code class="descclassname">superclass.</code><code class="descname">showAnims</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#superclass.showAnims" title="Permalink to this definition">¶</a></dt>
+<dt id="helpers.showAnims">
+<code class="descclassname">helpers.</code><code class="descname">showAnims</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#helpers.showAnims" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unused function used to show two comparisons.
 Lets the user choose whether the want to see
 the graphs side by side, or the fields.
@@ -899,8 +899,8 @@ the graphs side by side, or the fields.
 </dd></dl>
 
 <dl class="function">
-<dt id="superclass.changeInstructions">
-<code class="descclassname">superclass.</code><code class="descname">changeInstructions</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#superclass.changeInstructions" title="Permalink to this definition">¶</a></dt>
+<dt id="helpers.changeInstructions">
+<code class="descclassname">helpers.</code><code class="descname">changeInstructions</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#helpers.changeInstructions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unused function to swap instructions on the fly.
 Not really used anymore because we choose the algorithm based on the current #value in the URL,
 but I’ll leave it here just in case.
@@ -919,14 +919,14 @@ Works best when having the user select an alg from a &lt;select&gt; HTML element
 </dd></dl>
 
 <dl class="function">
-<dt id="superclass.ChoosExit">
-<code class="descclassname">superclass.</code><code class="descname">ChoosExit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.ChoosExit" title="Permalink to this definition">¶</a></dt>
+<dt id="helpers.ChoosExit">
+<code class="descclassname">helpers.</code><code class="descname">ChoosExit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helpers.ChoosExit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unused function which lets a user choose the exit with a mouse.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="superclass.exitPreview">
-<code class="descclassname">superclass.</code><code class="descname">exitPreview</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.exitPreview" title="Permalink to this definition">¶</a></dt>
+<dt id="helpers.exitPreview">
+<code class="descclassname">helpers.</code><code class="descname">exitPreview</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helpers.exitPreview" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the current value of an &lt;input type=’number’&gt; HTML element
 and displays the exit at that location for a preview.
 <strong>Relies on window.superlist</strong>.
@@ -934,18 +934,16 @@ Reuses code from Tourist.DirectTo().</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="superclass.exitChosen">
-<code class="descclassname">superclass.</code><code class="descname">exitChosen</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.exitChosen" title="Permalink to this definition">¶</a></dt>
+<dt id="helpers.exitChosen">
+<code class="descclassname">helpers.</code><code class="descname">exitChosen</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helpers.exitChosen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Starts up the interval after clearing the field and graph of debris.
 Any new elements that need to be cleared after a run and before a new one… do it here.
-When doing comparisons the ‘theMotor = … ‘ is the part we wanna change to
-use superlist and controllerID to update both one after another. Can’t quite get it yet.
 <strong>Relies on window.superlist</strong>.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="superclass.showHelp">
-<code class="descclassname">superclass.</code><code class="descname">showHelp</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#superclass.showHelp" title="Permalink to this definition">¶</a></dt>
+<dt id="helpers.showHelp">
+<code class="descclassname">helpers.</code><code class="descname">showHelp</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#helpers.showHelp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select an algorithm or element description box to show based on current algorithm shortname.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -961,8 +959,8 @@ use superlist and controllerID to update both one after another. Can’t quite g
 </dd></dl>
 
 <dl class="function">
-<dt id="superclass.showAlgorithmDesc">
-<code class="descclassname">superclass.</code><code class="descname">showAlgorithmDesc</code><span class="sig-paren">(</span><em>s</em>, <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#superclass.showAlgorithmDesc" title="Permalink to this definition">¶</a></dt>
+<dt id="helpers.showAlgorithmDesc">
+<code class="descclassname">helpers.</code><code class="descname">showAlgorithmDesc</code><span class="sig-paren">(</span><em>s</em>, <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#helpers.showAlgorithmDesc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Contains the commands for all the algorithms. Give it a shortname and wireless true/false
 and it’ll change the instrubinder to match. Used on page load.
 The color isn’t really necessary.</p>
@@ -988,7 +986,7 @@ The color isn’t really necessary.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
+  <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Search-and-Exit Tourist and Superclass Method Documentation</a><ul>
 <li><a class="reference internal" href="#the-use-of-global-variables">The use of global variables</a></li>
@@ -1045,12 +1043,12 @@ The color isn’t really necessary.</p>
         <li class="right" >
           <a href="api.html" title="Search and Exit Tourist API"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 2.0.4 (174) documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 2.2.0 (176) documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Chris Till, David Bushta.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.9.
     </div>
   </body>
 </html>

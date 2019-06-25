@@ -86,18 +86,18 @@ and updating graphics based on them.
 Other Useful Functions
 ======================
 
-.. js:autofunction:: superclass.editAnims
+.. js:autofunction:: helpers.editAnims
 
-.. js:autofunction:: superclass.showAnims
+.. js:autofunction:: helpers.showAnims
 
-.. js:autofunction:: superclass.changeInstructions
+.. js:autofunction:: helpers.changeInstructions
 
-.. js:autofunction:: superclass.ChoosExit
+.. js:autofunction:: helpers.ChoosExit
 
-.. js:autofunction:: superclass.exitPreview
+.. js:autofunction:: helpers.exitPreview
 
-.. js:autofunction:: superclass.exitChosen
+.. js:autofunction:: helpers.exitChosen
 
-.. js:autofunction:: superclass.showHelp
+.. js:autofunction:: helpers.showHelp
 
-.. js:autofunction:: superclass.showAlgorithmDesc
+.. js:autofunction:: helpers.showAlgorithmDesc

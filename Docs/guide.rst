@@ -8,6 +8,39 @@ Each code snippet will go over (attempt to) show every possible way to use,
 and why it's used, in a sense this is a manual that is meant to be compact with
 tips, tricks, and weird things that happen with it.
 
+Setting up the project environment
+----------------------------------
+
+To just look at the project, nothing is needed but a web browser. However, to do
+development we recommend the following packages. They're mostly used to create the docs: ::
+
+
+    System packages: install with your OS's package manager
+
+    npm (used to install js packages)
+    python3 (doesn't really matter which)
+    python3-pip (to install python packages)
+    python3-sphinx
+
+
+    PIP Packages: pip3 install ___
+
+    sphinx
+    sphinx-js
+
+
+    NPM Packages: npm install ___
+
+    jsdoc@3.5.5 (for some reason any version >3.5.5 doesn't recognize our JSDoc format)
+
+
+NPM is also useful for testing out Javascript code, if you want to just run a JS in the terminal
+and get text output, you can ``npm <filename>.js``.
+
+Here is a Sphinx `quickstart guide <https://www.sphinx-doc.org/en/master/usage/quickstart.html>`_
+to help build these docs. Most of it is already set up, just don't forget to add in new ``.rst`` files
+into ``index.rst``'s toctree and ``make html`` to see changes!
+
 Boilerplate HTML
 ----------------
 
@@ -208,7 +241,7 @@ class variables or key-value pairs.
     ...
 
     var arr = [1,2,3,4];
-    var b   = a.slice(); // makes a naive copy, not a reference.
+    var b   = a.slice(0); // makes a naive copy, not a reference.
 
     console.log(b[0]); // Logs "1"
 
@@ -231,7 +264,7 @@ and then slice it. The result is as follows:
     var c = [23];
     var a = [c,2,3,4];
 
-    var b = a.slice();
+    var b = a.slice(0);
 
     console.log(b[0]); // Logs "[23]"
 

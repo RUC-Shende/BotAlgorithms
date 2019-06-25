@@ -61,7 +61,7 @@
 
     -->
 
-    <h1>Robots Evacuating a Unit Disk</h1>
+    <h1 style="margin-top:0.5%;">Robots Evacuating a Unit Disk</h1>
     <!-- Contains the algorithm name and wireless status -->
     <h2 id="subheader"></h2>
 
@@ -70,6 +70,7 @@
         <button class="w3-bar-item w3-button" onclick="showHelp('graph');">Graph Info</button>
         <!--<button class="w3-bar-item w3-button" onclick="showHelp('worstcase');">Worst Case Visualizer</button>-->
         <button class="w3-bar-item w3-button" onclick="showHelp('steps');">Algorithm Steps</button>
+        <button class="w3-bar-item w3-button" onclick="showHelp('compare');">Compare...</button>
         <button class="w3-bar-item w3-button" onclick="showHelp('docs');">View Documentation</button>
         <button class="w3-bar-item w3-button" onclick="showHelp('acknowledgement');">Acknowledgements</button>
     </div>
@@ -152,6 +153,17 @@
             <p>
                 <a href="../Docs/_build/html/" target="_blank" style="color:blue; text-decoration:underline;">Click here</a>
                 to view the full documentation. This will open a new tab.
+            </p>
+        </div>
+    </div>
+    <div id="compare" class="w3-display-container infobox">
+        <span onclick="this.parentElement.style.display='none'; document.getElementById('showhelp').style.display='inline-block'; document.getElementById('showhelp').style.backgroundColor='green'; document.getElementById('showhelp').style.color='white';"
+            class="w3-button w3-display-topright">X</span>
+        <div>
+            <h2 style="color:black;">Comparisons</h2>
+            <p>
+                <a href="comparison.html" onclick="location.href=this.href+'#' + algShortName;return false;" target="_blank" style="color:blue; text-decoration:underline;">Click here</a>
+                to compare this to another algorithm in its category. This will open a new tab.
             </p>
         </div>
     </div>
@@ -422,7 +434,7 @@
         </div>
     <!-- <script src='circleShowcase.js'></script> -->
 
-        <h4>Input a number to choose an exit angle.</h4>
+        <h4 style="margin-top:5px;">Input a number to choose an exit angle.</h4>
         <input id="exitAngle" onchange="exitPreview();" type=number min=0 max=360 value=0 />
         <input type="submit"  onclick="javascript:void(0);" value="Preview Exit Location"/>
         <input type="submit" onclick="exitChosen();">
@@ -681,7 +693,7 @@
 
             }
         }
-
+https://www.youtube.com/watch?list=PLOTst296c70GAI54YXkkL6BQ4pAiV6DMO&v=wpXM8bOV_Bs
         /**
         *Starts up the interval after clearing the field and graph of debris.
         *Any new elements that need to be cleared after a run and before a new one... do it here.
@@ -886,8 +898,7 @@
         var controllerID = 0;
 
         /////// INITIALIZE ALGORITHM ///////
-        var algRequested = window.location.href.includes("#");
-        if (algRequested) {
+        if (window.location.href.includes("#")) {
             algSelector = window.location.href.indexOf("#");
             var l = window.location.href.length;
             console.log("DEBUG: Algorithm: " + window.location.href.slice(algSelector + 1, l));

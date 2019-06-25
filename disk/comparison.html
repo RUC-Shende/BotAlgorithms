@@ -18,12 +18,22 @@
 </head>
 
 <body>
-    <h4>Input a number to choose an exit angle.</h4>
+    <a href="compSelect.html" style="all:initial;">
+        <div id="backbutton" class="openNav" style="margin-bottom:5px;">
+            <span style="width: 100%;" class='openButton'>
+                <img src="../resources/back.svg" style="width:1.25em; height:1.25em;"><img>
+            </span>
+        </div>
+    </a>
+    <h4 style="margin-top: 5px;">Input a number to choose an exit angle.</h4>
     <input id="exitAngle" onchange="exitPreview();" type=number min=0 max=360 />
     <input type="submit" onclick="javascript:void(0);" value="Preview Exit Location" />
+    <text>Select an algorithm to compare:</text>
+    <select class="w3-select" style="width:15%; margin-left:10px;"id="selectCompare" onchange="document.getElementById('selectCompare').width((document.getElementById('selectCompare').innerHTML.length * 8) + "px")"></select>
     <input type="submit" onclick="exitChosen();">
-    <input type="submit" onclick="showAnims('anim');" id="swapA" value="See Animations Only" />
-    <input type="submit" onclick="showAnims('graph');" id="swapG" value="See Graphs Only" />
+    <div width="100%" height="5px" style="background-color:inherit;"></div>
+    <input type="submit" onclick="showAnims('anim');" id="swapA" value="See Animations" />
+    <input type="submit" onclick="showAnims('graph');" id="swapG" value="See Graphs" />
     <div style="width:100%;margin: 0 auto;">
         <svg id="anim0">
 
@@ -109,15 +119,39 @@
     function showAnims(s) {
         for (var i = 0; i < 2; i++) {
             if (s == "graph") {
-                superlist[i].fieldSVG.attr('display', 'none');
-                superlist[i].graphSVG.attr('display', 'inline-block');
+                superlist[i].fieldSVG
+                    .style("width", "15vw")
+                    .style("height", "15vw")
+                    .style("margin", "0%");
+                superlist[i].graphSVG
+                    .style("width", "30vw")
+                    .style("height", "30vw")
+                    .style("margin", "0%")
+                    .style("margin-right", "2%");
+
             } else if (s == "anim") {
-                superlist[i].graphSVG.attr('display', 'none');
-                superlist[i].fieldSVG.attr('display', 'inline-block');
+                superlist[i].graphSVG
+                    .style("width", "15vw")
+                    .style("height", "15vw")
+                    .style("margin", "0%")
+                    .style("margin-right", "2%");
+                superlist[i].fieldSVG
+                    .style("width", "30vw")
+                    .style("height", "30vw")
+                    .style("margin", "0%");
+
             }
             else {
-                superlist[i].graphSVG.attr('display', 'inline-block');
-                superlist[i].fieldSVG.attr('display', 'inline-block');
+                superlist[i].fieldSVG
+                    .style("width", "30vw")
+                    .style("height", "30vw")
+                    .style("margin", "0%");
+
+                superlist[i].graphSVG
+                    .style("width", "30vw")
+                    .style("height", "30vw")
+                    .style("margin", "0%");
+
             }
         }
     }
@@ -328,25 +362,40 @@
         d3.selectAll(".frameText").remove();
         superlist = [];
         controllerID = 0;
-        wireless = false;
-        instruBinder = [
-                        [["Intercept", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right"]]],
-                        [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left"]]]
-                    ];
-        algName = "Algorithm A ";
+
+        if (window.location.href.includes("#")) {
+            algSelector = window.location.href.indexOf("#");
+            var l = window.location.href.length;
+            console.log("DEBUG: Algorithm: " + window.location.href.slice(algSelector + 1, l));
+            var wire = true;
+            if (window.location.href.includes("wl") || window.location.href.includes("Q")){
+                wire = true;
+            }
+            else {
+                wire = false;
+            }
+            showAlgorithmDesc(window.location.href.slice(algSelector + 1, l), wire);
+        }
+        else {
+            showAlgorithmDesc("A", false);
+        }
+        currentChoices = choices[currentCategory].slice(0);
+        currentChoices.splice(currentChoices.indexOf(algShortName), 1);
+        console.log("DEBUG: Current Choices based on alg selected: " + currentChoices);
 
         console.log("DEBUG: Wireless: " + wireless);
         leftSide = new iclData(0, instruBinder, algName, d3.select("#exitAngle").node().value, wireless);
         superlist.push(new iclVisual(leftSide));
         console.log("DEBUG: Ready to start simulation.")
-        instruBinder = [
-                             [["Intercept", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0], center[1] + 5]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
-                             [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0], center[1] + 5]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
-                           ];
-        algName = "Algorithm B ";
+
+        var selector = document.getElementById("selectCompare");
+        showAlgorithmDesc(selector.value, wireless);
+
         controllerID = 1;
-        rightSide = new iclData(1, instruBinder, algName, d3.select("#exitAngle").node().value, wireless);
+        var rightSide = new iclData(1, instruBinder, algName, d3.select("#exitAngle").node().value, wireless);
         superlist.push(new iclVisual(rightSide));
+
+        controllerID = 0;
 
         clearInterval(superlist[0].iclData.motor);
         clearInterval(superlist[1].iclData.motor);
@@ -395,6 +444,7 @@
                                 [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left"]]]
                             ];
                 algName = "Algorithm A ";
+                currentCategory = "normalf2f";
                 break;
             case 'Awl':
                 instruBinder = [
@@ -402,6 +452,7 @@
                                 [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left"]]]
                             ];
                 algName = "Algorithm A ";
+                currentCategory = "normalwl";
                 break;
             case 'B':
                 instruBinder = [
@@ -409,6 +460,7 @@
                                      [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0], center[1] + 5]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
                                    ];
                 algName = "Algorithm B ";
+                currentCategory = "normalf2f";
                 break;
             case 'Bwl':
                 instruBinder = [
@@ -416,6 +468,7 @@
                                      [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0], center[1] + 5]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
                                    ];
                 algName = "Algorithm B ";
+                currentCategory = "normalwl";
                 break;
             case 'C':
                 instruBinder = [
@@ -423,6 +476,7 @@
                                      [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0] - 4, center[1] + 5]], ["GoToPoint", [center[0], center[1]+5]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
                                    ];
                 algName = "Algorithm C ";
+                currentCategory = "normalf2f"
                 break;
             case 'Cwl':
                 instruBinder = [
@@ -430,6 +484,7 @@
                                      [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0] - 4, center[1] + 5]], ["GoToPoint", [center[0], center[1]+5]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
                                    ];
                 algName = "Algorithm C ";
+                currentCategory = "normalwl";
                 break;
             case 'Q1':
                 instruBinder = [
@@ -437,6 +492,7 @@
                                      [["Wait", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["right"]]]
                                    ];
                 algName = "Algorithm Priority 1 ";
+                currentCategory = "smallpriority";
                 break;
             case 'Q2':
                 instruBinder = [
@@ -445,6 +501,7 @@
                                       [["Wait", [null]], ["GoToWallAtAngle", [180]], ["FollowWall", ["left"]]]
                 ];
                 algName = "Algorithm Priority 2 ";
+                currentCategory = "smallpriority";
                 break;
             case 'Q2S1':
                 instruBinder = [
@@ -485,6 +542,7 @@
 
                 ];
                 algName = "2 Priority + 1 Servant (1) ";
+                currentCategory = "multipriority";
                 break;
 
             case 'Q1S1Q1':
@@ -494,6 +552,7 @@
                     [["Wait", [null]], ["GoToWallAtAngle", 180], ["FollowWall", ["left"]]]
                 ];
                 algName = "2 Priority + 1 Servant (2) ";
+                currentCategory = "multipriority";
                 break;
 
             case 'Q1S4':
@@ -505,6 +564,7 @@
                     [["Wait", [null]], ["GoToWallAtAngle", [285]], ["FollowWall", ["right"]]]
                 ];
                 algName = "1 Priority + 4 Servants ";
+                currentCategory = "bigpriority";
                 break;
 
             case 'Q1S8':
@@ -520,6 +580,7 @@
                     [["Wait", [null]], ["GoToWallAtAngle", [240]], ["FollowWall", ["right"]], ["Wait", [null]]]
                 ];
                 algName = "1 Priority + 8 Servants ";
+                currentCategory = "bigpriority";
                 break;
         }
         algShortName = s;
@@ -538,28 +599,62 @@
     var center = [2 * unit2Px, 2 * unit2Px];
     var superlist = [];
     var controllerID = 0;
+    var choices = {
+        "normalf2f":["A", "B", "C"],
+        "normalwl": ["Awl", "Bwl", "Cwl"],
+        "smallpriority": ["Q1", "Q2"],
+        "bigpriority": ["Q1S4", "Q1S8"],
+        "multipriority": ["Q2S1", "Q1S1Q1"]
+    }
+    var currentCategory;
+    var currentChoices;
 
-    wireless = false;
-    instruBinder = [
-                    [["Intercept", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right"]]],
-                    [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left"]]]
-                ];
-    algName = "Algorithm A ";
+    /**
+    *Get an algrequested value, (default A) and load in the other algorithm
+    *based on that choice. Selections for algorithms change based on
+    *the one being compared.
+    */
+    if (window.location.href.includes("#")) {
+        algSelector = window.location.href.indexOf("#");
+        var l = window.location.href.length;
+        console.log("DEBUG: Algorithm: " + window.location.href.slice(algSelector + 1, l));
+        var wire = true;
+        if (window.location.href.includes("wl") || window.location.href.includes("Q")){
+            wire = true;
+        }
+        else {
+            wire = false;
+        }
+        showAlgorithmDesc(window.location.href.slice(algSelector + 1, l), wire);
+    }
+    else {
+        showAlgorithmDesc("A", false);
+    }
+    currentChoices = choices[currentCategory].slice(0);
+    currentChoices.splice(currentChoices.indexOf(algShortName), 1);
+    console.log("DEBUG: Current Choices based on alg selected: " + currentChoices);
 
     console.log("DEBUG: Wireless: " + wireless);
     leftSide = new iclData(0, instruBinder, algName, d3.select("#exitAngle").node().value, wireless);
     superlist.push(new iclVisual(leftSide));
     console.log("DEBUG: Ready to start simulation.")
-    instruBinder = [
-                         [["Intercept", [null, false, "#fe447d"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["right", 120]], ["GoToPoint", [center[0], center[1] + 5]], ["GoOutAtAngle", [330, 1]], ["FollowWall", ["right"]]],
-                         [["Intercept", [null, false, "#5cd05b"]], ["GoToWallAtAngle", [90]], ["FollowWall", ["left", 120]], ["GoToPoint", [center[0], center[1] + 5]], ["GoOutAtAngle", [210, 1]], ["FollowWall", ["left"]]]
-                       ];
-    algName = "Algorithm B ";
+
+    showAlgorithmDesc(currentChoices[0], wireless)
     controllerID = 1;
     var rightSide = new iclData(1, instruBinder, algName, d3.select("#exitAngle").node().value, wireless);
     superlist.push(new iclVisual(rightSide));
 
     controllerID = 0;
+
+    var selector = document.getElementById("selectCompare");
+    for (var i = 0; i < currentChoices.length; i++){
+        var opt = document.createElement('option');
+        showAlgorithmDesc(currentChoices[i], wireless);
+        opt.value = algShortName;
+        opt.innerHTML = algName;
+        selector.appendChild(opt);
+    }
+    showAnims('anim');
 
 
     </script>

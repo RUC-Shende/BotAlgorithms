@@ -6,16 +6,14 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Project History &#8212; Search and Exit Algorithms 2.0.4 (174) documentation</title>
+    <title>Project History &#8212; Search and Exit Algorithms 2.2.0 (176) documentation</title>
     <link rel="stylesheet" href="_static/style.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Project Summary and Notes:" href="project-summary.html" />
@@ -33,7 +31,7 @@
         <li class="right" >
           <a href="references.html" title="References and Bibliography"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 2.0.4 (174) documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 2.2.0 (176) documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -44,6 +42,31 @@
             
   <div class="section" id="project-history">
 <h1>Project History<a class="headerlink" href="#project-history" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="comparisons-released-version-2-2-0">
+<h2>06/25/19: Comparisons Released, Version 2.2.0<a class="headerlink" href="#comparisons-released-version-2-2-0" title="Permalink to this headline">¶</a></h2>
+<p>As of this update, a beta comparisons feature is available to select from
+the <a class="reference external" href="dbushta.github.io/BotAlgorithms/disk/circleShowcase.html">main page</a>.
+It is also available while looking at a particular algorithm in the normal view,
+just click the “Compare…” button at the top of the page and head to the Compare
+page.</p>
+<p>On the Compare page, the algorithm you selected to compare will always be shown on the left,
+and the algorithm for comparison is shown on the right. To change the algorithm,
+simply select one from the drop down menu at the top of the page, select an exit location,
+and start the simulation. For now, the two animations operate independently of one another
+in terms of the time slider, but there will soon be a multi-animation play button which
+will be a quick shortcut to replay both animations from the start. More often than not,
+we can’t sync the times 1:1, because some algorithms will finish faster or slower than
+their counterpart.</p>
+</div>
+<div class="section" id="version-2-1-0-released">
+<h2>06/24/19: Version 2.1.0 Released<a class="headerlink" href="#version-2-1-0-released" title="Permalink to this headline">¶</a></h2>
+<p>As of this update, <code class="docutils literal notranslate"><span class="pre">superclass.js</span></code> has changed such that it no longer requires any instance of global
+variables to function. Unfortunately, Javascript is weird, but we were able to find
+workarounds to have the module be completely self contained. As a way to make it even more
+flexible, we also removed all helper/excess functions from the <code class="docutils literal notranslate"><span class="pre">superclass.js</span></code> and moved them
+into the actual HTML of the page. Code can now differ for different pages, such as comparisons and regular
+algorithm view.</p>
+</div>
 <div class="section" id="version-2-0-released">
 <h2>06/21/19: Version 2.0 Released<a class="headerlink" href="#version-2-0-released" title="Permalink to this headline">¶</a></h2>
 <p>As of this update, we have implemented a completely new version of the algorithm visualizer.
@@ -210,9 +233,11 @@ once they choose their options.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
+  <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Project History</a><ul>
+<li><a class="reference internal" href="#comparisons-released-version-2-2-0">06/25/19: Comparisons Released, Version 2.2.0</a></li>
+<li><a class="reference internal" href="#version-2-1-0-released">06/24/19: Version 2.1.0 Released</a></li>
 <li><a class="reference internal" href="#version-2-0-released">06/21/19: Version 2.0 Released</a></li>
 <li><a class="reference internal" href="#circle-showcase">03/05/19: Circle Showcase</a></li>
 <li><a class="reference internal" href="#id1">01/07/19: Circle Showcase</a></li>
@@ -269,12 +294,12 @@ once they choose their options.</p>
         <li class="right" >
           <a href="references.html" title="References and Bibliography"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 2.0.4 (174) documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 2.2.0 (176) documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Chris Till, David Bushta.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.9.
     </div>
   </body>
 </html>

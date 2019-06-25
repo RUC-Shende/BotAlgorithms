@@ -6,16 +6,14 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Beginner’s Guide to Javascript and D3.js &#8212; Search and Exit Algorithms 2.0.4 (174) documentation</title>
+    <title>Beginner’s Guide to Javascript and D3.js &#8212; Search and Exit Algorithms 2.2.0 (176) documentation</title>
     <link rel="stylesheet" href="_static/style.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="Project Summary and Notes:" href="project-summary.html" /> 
@@ -29,7 +27,7 @@
         <li class="right" >
           <a href="project-summary.html" title="Project Summary and Notes:"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 2.0.4 (174) documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 2.2.0 (176) documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -46,6 +44,35 @@ with some small code snippets, and examples of the snippets together for some co
 Each code snippet will go over (attempt to) show every possible way to use,
 and why it’s used, in a sense this is a manual that is meant to be compact with
 tips, tricks, and weird things that happen with it.</p>
+<div class="section" id="setting-up-the-project-environment">
+<h2>Setting up the project environment<a class="headerlink" href="#setting-up-the-project-environment" title="Permalink to this headline">¶</a></h2>
+<p>To just look at the project, nothing is needed but a web browser. However, to do
+development we recommend the following packages. They’re mostly used to create the docs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">System</span> <span class="n">packages</span><span class="p">:</span> <span class="n">install</span> <span class="k">with</span> <span class="n">your</span> <span class="n">OS</span><span class="s1">&#39;s package manager</span>
+
+<span class="n">npm</span> <span class="p">(</span><span class="n">used</span> <span class="n">to</span> <span class="n">install</span> <span class="n">js</span> <span class="n">packages</span><span class="p">)</span>
+<span class="n">python3</span> <span class="p">(</span><span class="n">doesn</span><span class="s1">&#39;t really matter which)</span>
+<span class="n">python3</span><span class="o">-</span><span class="n">pip</span> <span class="p">(</span><span class="n">to</span> <span class="n">install</span> <span class="n">python</span> <span class="n">packages</span><span class="p">)</span>
+<span class="n">python3</span><span class="o">-</span><span class="n">sphinx</span>
+
+
+<span class="n">PIP</span> <span class="n">Packages</span><span class="p">:</span> <span class="n">pip3</span> <span class="n">install</span> <span class="n">___</span>
+
+<span class="n">sphinx</span>
+<span class="n">sphinx</span><span class="o">-</span><span class="n">js</span>
+
+
+<span class="n">NPM</span> <span class="n">Packages</span><span class="p">:</span> <span class="n">npm</span> <span class="n">install</span> <span class="n">___</span>
+
+<span class="n">jsdoc</span><span class="nd">@3</span><span class="o">.</span><span class="mf">5.5</span> <span class="p">(</span><span class="k">for</span> <span class="n">some</span> <span class="n">reason</span> <span class="nb">any</span> <span class="n">version</span> <span class="o">&gt;</span><span class="mf">3.5</span><span class="o">.</span><span class="mi">5</span> <span class="n">doesn</span><span class="s1">&#39;t recognize our JSDoc format)</span>
+</pre></div>
+</div>
+<p>NPM is also useful for testing out Javascript code, if you want to just run a JS in the terminal
+and get text output, you can <code class="docutils literal notranslate"><span class="pre">npm</span> <span class="pre">&lt;filename&gt;.js</span></code>.</p>
+<p>Here is a Sphinx <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/quickstart.html">quickstart guide</a>
+to help build these docs. Most of it is already set up, just don’t forget to add in new <code class="docutils literal notranslate"><span class="pre">.rst</span></code> files
+into <code class="docutils literal notranslate"><span class="pre">index.rst</span></code>’s toctree and <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> to see changes!</p>
+</div>
 <div class="section" id="boilerplate-html">
 <h2>Boilerplate HTML<a class="headerlink" href="#boilerplate-html" title="Permalink to this headline">¶</a></h2>
 <p>Copy and paste this to get a default HTML file:</p>
@@ -219,7 +246,7 @@ class variables or key-value pairs.</p>
 <span class="p">...</span>
 
 <span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">];</span>
-<span class="kd">var</span> <span class="nx">b</span>   <span class="o">=</span> <span class="nx">a</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span> <span class="c1">// makes a naive copy, not a reference.</span>
+<span class="kd">var</span> <span class="nx">b</span>   <span class="o">=</span> <span class="nx">a</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span> <span class="c1">// makes a naive copy, not a reference.</span>
 
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// Logs &quot;1&quot;</span>
 
@@ -239,7 +266,7 @@ and then slice it. The result is as follows:</p>
 <span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="p">[</span><span class="mi">23</span><span class="p">];</span>
 <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">[</span><span class="nx">c</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">];</span>
 
-<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">a</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
+<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">a</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
 
 <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// Logs &quot;[23]&quot;</span>
 
@@ -825,9 +852,10 @@ get a nice list of all elements on the page that match the selectors.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
+  <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Beginner’s Guide to Javascript and D3.js</a><ul>
+<li><a class="reference internal" href="#setting-up-the-project-environment">Setting up the project environment</a></li>
 <li><a class="reference internal" href="#boilerplate-html">Boilerplate HTML</a></li>
 <li><a class="reference internal" href="#comments">Comments</a></li>
 <li><a class="reference internal" href="#how-to-load-a-javascript-file-into-html">How To Load a Javascript File into HTML</a></li>
@@ -888,12 +916,12 @@ get a nice list of all elements on the page that match the selectors.</p>
         <li class="right" >
           <a href="project-summary.html" title="Project Summary and Notes:"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 2.0.4 (174) documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 2.2.0 (176) documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Chris Till, David Bushta.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.9.
     </div>
   </body>
 </html>
