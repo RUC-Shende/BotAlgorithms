@@ -1,0 +1,762 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Beginner’s Guide to Javascript &#8212; Search and Exit Algorithms 2.2.1 (178) documentation</title>
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Guide to Using D3 V5" href="guide-ddd.html" />
+    <link rel="prev" title="Project Summary and Notes:" href="project-summary.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="guide-ddd.html" title="Guide to Using D3 V5"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="project-summary.html" title="Project Summary and Notes:"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 2.2.1 (178) documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="beginner-s-guide-to-javascript">
+<h1>Beginner’s Guide to Javascript<a class="headerlink" href="#beginner-s-guide-to-javascript" title="Permalink to this headline">¶</a></h1>
+<p>Hello future undergraduate research assistants, this is Chris and Dave.
+This file is meant to help with understanding of Javascript and D3 in HTML,
+with some small code snippets, and examples of the snippets together for some code examples.
+Each code snippet will go over (attempt to) show every possible way to use,
+and why it’s used, in a sense this is a manual that is meant to be compact with
+tips, tricks, and weird things that happen with it.</p>
+<p>The <a class="reference external" href="guide-ddd.html">next section</a> will cover D3.js.</p>
+<div class="section" id="setting-up-the-project-environment">
+<h2>Setting up the project environment<a class="headerlink" href="#setting-up-the-project-environment" title="Permalink to this headline">¶</a></h2>
+<p>To just look at the project, nothing is needed but a web browser. However, to do
+development we recommend the following packages. They’re mostly used to create the docs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">System</span> <span class="n">packages</span><span class="p">:</span> <span class="n">install</span> <span class="k">with</span> <span class="n">your</span> <span class="n">OS</span><span class="s1">&#39;s package manager</span>
+
+<span class="n">nodejs</span>
+<span class="n">npm</span> <span class="p">(</span><span class="n">used</span> <span class="n">to</span> <span class="n">install</span> <span class="n">js</span> <span class="n">packages</span><span class="p">)</span>
+<span class="n">python3</span> <span class="p">(</span><span class="n">doesn</span><span class="s1">&#39;t really matter which)</span>
+<span class="n">python3</span><span class="o">-</span><span class="n">pip</span> <span class="p">(</span><span class="n">to</span> <span class="n">install</span> <span class="n">python</span> <span class="n">packages</span><span class="p">)</span>
+<span class="n">python3</span><span class="o">-</span><span class="n">sphinx</span>
+<span class="n">texlive</span><span class="o">-</span><span class="n">science</span> <span class="p">(</span><span class="ow">or</span> <span class="n">texlive</span><span class="o">-</span><span class="n">full</span><span class="p">,</span> <span class="k">if</span> <span class="n">you</span> <span class="n">want</span> <span class="n">the</span> <span class="n">full</span> <span class="n">LaTeX</span> <span class="n">experience</span><span class="o">.</span> <span class="n">science</span> <span class="ow">is</span> <span class="n">smaller</span> <span class="ow">and</span> <span class="n">uses</span> <span class="n">what</span> <span class="n">we</span> <span class="n">need</span><span class="o">.</span><span class="p">)</span>
+
+
+<span class="n">PIP</span> <span class="n">Packages</span><span class="p">:</span> <span class="n">pip3</span> <span class="n">install</span> <span class="n">___</span>
+
+<span class="n">sphinx</span>
+<span class="n">sphinx</span><span class="o">-</span><span class="n">js</span>
+
+
+<span class="n">NPM</span> <span class="n">Packages</span><span class="p">:</span> <span class="n">npm</span> <span class="n">install</span> <span class="n">___</span>
+
+<span class="n">jsdoc</span><span class="nd">@3</span><span class="o">.</span><span class="mf">5.5</span> <span class="p">(</span><span class="k">for</span> <span class="n">some</span> <span class="n">reason</span> <span class="nb">any</span> <span class="n">version</span> <span class="o">&gt;</span><span class="mf">3.5</span><span class="o">.</span><span class="mi">5</span> <span class="n">doesn</span><span class="s1">&#39;t recognize our JSDoc format)</span>
+</pre></div>
+</div>
+<p>Node is also useful for testing out Javascript code, if you want to just run a JS in the terminal
+and get text output, you can use <code class="docutils literal notranslate"><span class="pre">node</span> <span class="pre">&lt;filename&gt;.js</span></code>.</p>
+<p>Here is a Sphinx <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/quickstart.html">quickstart guide</a>
+to help build these docs. Most of it is already set up, just don’t forget to add in new <code class="docutils literal notranslate"><span class="pre">.rst</span></code> files
+into <code class="docutils literal notranslate"><span class="pre">index.rst</span></code>’s toctree and <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> in the Docs directory to see changes!</p>
+</div>
+<div class="section" id="boilerplate-html">
+<h2>Boilerplate HTML<a class="headerlink" href="#boilerplate-html" title="Permalink to this headline">¶</a></h2>
+<p>Copy and paste this to get a default HTML file:</p>
+<div class="highlight-HTML notranslate"><div class="highlight"><pre><span></span><span class="cp">&lt;!doctype html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="comments">
+<h2>Comments<a class="headerlink" href="#comments" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>HTML comments between &lt;!– and –&gt;</li>
+<li>// before javascript comments</li>
+<li>JS multi-line comments between /* and */</li>
+</ul>
+</div>
+<div class="section" id="how-to-load-a-javascript-file-into-html">
+<h2>How To Load a Javascript File into HTML<a class="headerlink" href="#how-to-load-a-javascript-file-into-html" title="Permalink to this headline">¶</a></h2>
+<p>If the Javascript file looks like this:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">example</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="kd">function</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;Hello World!&quot;</span><span class="p">);</span>
+    <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Then the best way to load it into the HTML file is like this:</p>
+<div class="highlight-HTML notranslate"><div class="highlight"><pre><span></span><span class="hll">index.html
+</span>
+<span class="cp">&lt;!doctype html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+        <span class="c">&lt;!-- Locally, same directory --&gt;</span>
+        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;example.js&quot;</span><span class="p">&gt;</span>
+
+        <span class="c">&lt;!-- Different directory from parent directory --&gt;</span>
+        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;../local/path/to/code/example.js&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>Please note that once the Javascript file is loaded, it will only execute
+when you tell it to, whether it be right away (from function calls inside the file)
+or in a different script tag, as shown below:</p>
+<div class="highlight-HTML notranslate"><div class="highlight"><pre><span></span><span class="hll">index.html
+</span>
+<span class="cp">&lt;!doctype html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+        <span class="c">&lt;!-- Locally, same directory --&gt;</span>
+        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;example.js&quot;</span><span class="p">&gt;</span>
+
+        <span class="c">&lt;!--</span> <span class="nx">Now</span> <span class="nx">that</span> <span class="nx">we</span> <span class="nx">have</span> <span class="nx">loaded</span> <span class="k">in</span> <span class="nx">our</span> <span class="s1">&#39;example.js&#39;</span> <span class="nx">we</span> <span class="nx">can</span> <span class="nx">use</span> <span class="nx">its</span> <span class="nx">functions</span><span class="p">.</span> <span class="o">--&gt;</span>
+        <span class="c">&lt;!--</span> <span class="nx">Not</span> <span class="nx">all</span> <span class="s1">&#39;&lt;script&gt;&#39;</span> <span class="nx">tags</span> <span class="nx">need</span> <span class="nx">a</span> <span class="s1">&#39;src&#39;</span> <span class="o">--&gt;</span>
+        <span class="c">&lt;!--</span> <span class="nx">Any</span> <span class="nx">text</span> <span class="nx">between</span> <span class="nx">the</span> <span class="nx">tags</span> <span class="nx">will</span> <span class="nx">use</span> <span class="nx">JS</span> <span class="nx">syntax</span><span class="p">.</span> <span class="nx">HTML</span>  <span class="nx">syntax</span> <span class="nx">is</span> <span class="nx">invalid</span> <span class="k">in</span> <span class="nx">here</span><span class="p">.</span> <span class="o">--&gt;</span>
+        <span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+            <span class="c1">// Will Alert &quot;Hello World!&quot; as seen in the example.js file.</span>
+            <span class="nx">main</span><span class="p">();</span>
+        <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<p>Since D3.js is a library, we want to load it in before any of our local code runs.
+We can do this by loading it in the header of the HTML, so that it is included when
+any of our own Javascript runs in the body:</p>
+<div class="highlight-HTML notranslate"><div class="highlight"><pre><span></span><span class="hll">index.html
+</span>
+<span class="cp">&lt;!doctype html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+        <span class="c">&lt;!-- Using the same script tag, but this one gets loaded first. --&gt;</span>
+        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://d3js.org/d3.v5.min.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+        <span class="c">&lt;!-- Now we can safely use D3 methods in our body. --&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+        <span class="c">&lt;!-- Locally, same directory --&gt;</span>
+        <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;example.js&quot;</span><span class="p">&gt;</span>
+
+        <span class="c">&lt;!--</span> <span class="nx">Now</span> <span class="nx">that</span> <span class="nx">we</span> <span class="nx">have</span> <span class="nx">loaded</span> <span class="k">in</span> <span class="nx">our</span> <span class="s1">&#39;example.js&#39;</span> <span class="nx">we</span> <span class="nx">can</span> <span class="nx">use</span> <span class="nx">its</span> <span class="nx">functions</span><span class="p">.</span> <span class="o">--&gt;</span>
+        <span class="c">&lt;!--</span> <span class="nx">Not</span> <span class="nx">all</span> <span class="s1">&#39;&lt;script&gt;&#39;</span> <span class="nx">tags</span> <span class="nx">need</span> <span class="nx">a</span> <span class="s1">&#39;src&#39;</span> <span class="o">--&gt;</span>
+        <span class="c">&lt;!--</span> <span class="nx">Any</span> <span class="nx">text</span> <span class="nx">between</span> <span class="nx">the</span> <span class="nx">tags</span> <span class="nx">will</span> <span class="nx">use</span> <span class="nx">JS</span> <span class="nx">syntax</span><span class="p">.</span> <span class="nx">HTML</span>  <span class="nx">syntax</span> <span class="nx">is</span> <span class="nx">invalid</span> <span class="k">in</span> <span class="nx">here</span><span class="p">.</span> <span class="o">--&gt;</span>
+        <span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+            <span class="c1">// Will Alert &quot;Hello World!&quot; as seen in the example.js file.</span>
+            <span class="nx">main</span><span class="p">();</span>
+        <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="variables-in-javascript">
+<h2>Variables In Javascript<a class="headerlink" href="#variables-in-javascript" title="Permalink to this headline">¶</a></h2>
+<p>Variables in Javascript act similarly to those in Python: they are never typecast to
+any specific value. A few examples:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll">  <span class="nx">variables</span><span class="p">.</span><span class="nx">js</span>
+</span>
+  <span class="cm">/* If the variable always needs to be a specific type, it may help to</span>
+<span class="cm">  name it in a certain way (prefixes or suffixes) to ensure you are always</span>
+<span class="cm">  playing with the right values. */</span>
+
+  <span class="kd">var</span> <span class="nx">apple</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">//int</span>
+
+  <span class="kd">var</span> <span class="nx">banana</span> <span class="o">=</span> <span class="s1">&#39;Banana&#39;</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">carrot</span> <span class="o">=</span> <span class="s2">&quot;Carrot&quot;</span><span class="p">;</span>
+  <span class="c1">// Note that single quotes or double quotes are valid for strings,</span>
+  <span class="c1">// so long as you start and end the string with the same ones.</span>
+
+  <span class="kd">var</span> <span class="nx">durian</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span> <span class="c1">//boolean</span>
+
+  <span class="c1">// Arrays are of one type only.</span>
+  <span class="kd">var</span> <span class="nx">eggplant</span> <span class="o">=</span> <span class="p">[];</span> <span class="c1">// Array, uninitialized.</span>
+  <span class="kd">var</span> <span class="nx">rhyme</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;tomato&quot;</span><span class="p">,</span> <span class="s2">&quot;potato&quot;</span><span class="p">];</span>
+
+  <span class="c1">// You can however, make multi-dimensional arrays of arrays.</span>
+  <span class="kd">var</span> <span class="nx">multiArray</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="s2">&quot;doorhinge&quot;</span><span class="p">],</span> <span class="nx">rhyme</span><span class="p">];</span>
+</pre></div>
+</div>
+<p>As you can see, JS figures out the type of var automatically. This isn’t always
+helpful, but most of the time it’s a nice feature.</p>
+</div>
+<div class="section" id="understanding-infinity">
+<h2>Understanding Infinity<a class="headerlink" href="#understanding-infinity" title="Permalink to this headline">¶</a></h2>
+<p>A few weird equations surrounding infinity will produce the JS value <cite>NaN</cite> (Not a Number.)
+This value is falsy.</p>
+<p>For example:</p>
+<ul class="simple">
+<li>Infinity * 0 == NaN</li>
+<li>Infinity - Infinity == NaN</li>
+<li>Infinity / Infinity == NaN</li>
+<li>(Any number) / Infinity == 0</li>
+<li>(Any nonzero number) / 0 == Infinity</li>
+<li>0 / 0 == NaN</li>
+</ul>
+</div>
+<div class="section" id="reference-variables">
+<h2>Reference Variables<a class="headerlink" href="#reference-variables" title="Permalink to this headline">¶</a></h2>
+<p>These are variables that will be reference-only, and will not copy values when set.
+True for reference variables of other types like objects, classes, sets, and so on,
+but string are not reference vars in Javascript. In these examples, arrays are used
+to show referencing.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">references</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">];</span>
+<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// Logs &quot;1&quot;</span>
+
+<span class="c1">// Change the original, change the reference as well. Be careful of this.</span>
+<span class="nx">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// Logs &quot;5&quot; with no explicit changes to b</span>
+
+<span class="p">...</span>
+</pre></div>
+</div>
+<p>When using <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice">Array.slice()</a>
+we can make a shallow copy. This prevents us from modifying the original data of the slice()’d array.
+We can do similar things manually with classes, objects, etc by looping through all
+class variables or key-value pairs.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">references</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="p">...</span>
+
+<span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">];</span>
+<span class="kd">var</span> <span class="nx">b</span>   <span class="o">=</span> <span class="nx">a</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span> <span class="c1">// makes a naive copy, not a reference.</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// Logs &quot;1&quot;</span>
+
+<span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// Still logs &quot;1&quot;</span>
+
+<span class="p">...</span>
+</pre></div>
+</div>
+<p>Now we go three layers deep. We put a reference variable inside another array,
+and then slice it. The result is as follows:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">references</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="p">...</span>
+
+<span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="p">[</span><span class="mi">23</span><span class="p">];</span>
+<span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">[</span><span class="nx">c</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">];</span>
+
+<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">a</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// Logs &quot;[23]&quot;</span>
+
+<span class="nx">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> <span class="c1">// Logs &quot;[5]&quot;</span>
+</pre></div>
+</div>
+<p>You may also create an alias for a non-reference variable. What would you use this for?
+We don’t know, but here’s an example anyways.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">references</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="p">(</span> <span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">a</span><span class="p">;</span> <span class="p">};</span>
+    <span class="nx">alert</span><span class="p">(</span> <span class="nx">b</span><span class="p">(</span> <span class="p">)</span> <span class="p">);</span> <span class="c1">//results in 5</span>
+    <span class="nx">a</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+    <span class="nx">alert</span><span class="p">(</span> <span class="nx">b</span><span class="p">(</span> <span class="p">)</span> <span class="p">);</span> <span class="c1">//results in 10</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="conditionals-in-javascript">
+<h2>Conditionals in Javascript<a class="headerlink" href="#conditionals-in-javascript" title="Permalink to this headline">¶</a></h2>
+<p>IF conditional examples:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">conditional</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="c1">// singular</span>
+<span class="k">if</span> <span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">//stuff</span>
+<span class="p">}</span>
+
+<span class="c1">// if, else</span>
+<span class="k">if</span> <span class="p">(</span><span class="nx">conditionIsTrue</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// do stuff</span>
+<span class="p">}</span>
+<span class="k">else</span> <span class="p">{</span>
+    <span class="c1">// do other stuff</span>
+<span class="p">}</span>
+
+<span class="c1">// if, else if, else</span>
+<span class="k">if</span> <span class="p">(</span><span class="nx">conditionIsTrue</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// do stuff</span>
+<span class="p">}</span>
+<span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">otherCond</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// do other stuff</span>
+<span class="p">}</span>
+<span class="k">else</span> <span class="p">{</span>
+    <span class="c1">// do OTHER other stuff</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>There are also ternary statements which are less lines of code but harder to read.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">ternary</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="c1">// Basically, &quot;?&quot; is the if, &quot;:&quot; is the else.</span>
+
+<span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">(</span><span class="nx">condition</span><span class="p">)</span> <span class="o">?</span> <span class="p">(</span><span class="nx">valueIfTrue</span><span class="p">)</span> <span class="o">:</span> <span class="p">(</span><span class="nx">valueIfFalse</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="conditional-operators">
+<h2>Conditional Operators<a class="headerlink" href="#conditional-operators" title="Permalink to this headline">¶</a></h2>
+<p>Along with the normal &lt;, &gt;, &lt;=, &gt;=, !, &amp;&amp;, || operators JS has two different equivalence operators.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">equivalence</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="c1">//normal == to check if they have the same value.</span>
+<span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">12</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">==</span> <span class="mi">12</span><span class="p">){}</span> <span class="c1">// Will be true</span>
+<span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">==</span> <span class="mi">13</span><span class="p">){}</span> <span class="c1">// false.</span>
+
+<span class="c1">// Now there is also ===, which checks for type and value equivalence.</span>
+<span class="c1">// We recommend this when working with classes and you are trying to find one.</span>
+<span class="c1">// Remember, it doesn&#39;t check each element separately, only its reference for reference variables.</span>
+<span class="mi">1</span> <span class="o">===</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// will evaluate true as its same type and value.</span>
+
+<span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">];</span>
+<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">];</span>
+<span class="nx">a</span> <span class="o">===</span> <span class="nx">b</span><span class="p">;</span> <span class="c1">// this will be false because reference addr. is not the same.</span>
+
+<span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span>
+<span class="nx">c</span> <span class="o">===</span> <span class="nx">a</span><span class="p">;</span> <span class="c1">// true because they share the same reference addr.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="looping">
+<h2>Looping<a class="headerlink" href="#looping" title="Permalink to this headline">¶</a></h2>
+<p>Pretty common. Go through and do something a certain number of times or
+until a value is reached.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll">loops.js
+</span>
+for( var i = 0; i &lt; 10; i++ ) {
+    //do stuff
+}
+
+// for loop decrement
+for( var i = 10; i &gt; 0; i-- ) {
+    //do stuff
+}
+
+// for loop get odd numbers
+for( var i = 1; i &lt; 20; i += 2 ) {
+    //do stuff with those odd numbers less than 20
+}
+
+// for loop different number of variables
+for( var i = 0, j = 20; i &lt; j; i++, j-- ) {
+    //Do stuff with these colliding numbers
+}//Both will be 10 at the end of the loop
+
+// while: only do this if true
+While( true ) {
+    //Do stuff
+}
+
+// do while: do this once, and then repeat if true
+Do {
+    //Do stuff
+} while( true );
+
+// Control Flow the continue
+// A continue will skip the rest current cycle, and start the next cycle
+// Example:
+for( var i = 0; i &lt; 10; i++ ) {
+    If( i % 2 == 0 ) {//Is it not odd?
+            continue;
+    }
+    alert( “odd number” );
+}
+
+// Control Flow break
+// Need to end a loop cycle in the middle, but don’t start a new cycle?
+// Break it.
+while( true ) {
+    if( user input ) {
+            break;
+    }
+}
+
+// labeling your loops
+// In a loop with in a loop, and need to get out of both? Well then, give
+// them labels, and break the outer loop with its label.
+labelOne:
+while( true ) {
+    labelTwo:
+    while( true ) {
+            if( user input ) {
+                    break labelOne;
+            }
+    }
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="true-false-truthy-and-falsy">
+<h2>True, False, Truthy, and Falsy<a class="headerlink" href="#true-false-truthy-and-falsy" title="Permalink to this headline">¶</a></h2>
+<p>When comparing many variables in Javascript with one another,
+we may run into instances where we have two vars of different types, but Javascript will
+see them as the same value. Some examples…</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">truth</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="k">if</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// TRUE</span>
+<span class="k">if</span> <span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// TRUE</span>
+<span class="c1">// No problem here, this is pretty typical.</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="mi">1</span> <span class="o">==</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// TRUE: The interpreter will always evaluate this the same way.</span>
+<span class="k">if</span> <span class="p">(</span><span class="mi">1</span> <span class="o">===</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// FALSE: Value equivalence? Sure. Type equivalence? No.</span>
+
+<span class="c1">// The interpreter is smart and knows when a var can safely be typecasted and</span>
+<span class="c1">// compared with another type.</span>
+<span class="k">if</span> <span class="p">(</span><span class="s1">&#39;1&#39;</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// TRUE: If a string contains ONLY a number, then we may use ==.</span>
+<span class="k">if</span> <span class="p">([</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// TRUE: Since the array is only 1-length, JS knows to compare them properly.</span>
+
+<span class="c1">// The number &#39;1&#39; is special in that it&#39;s the only value that can be compared to true to result in true.</span>
+<span class="c1">// All other non-zero numbers are &quot;Truthy&quot;: They only result to true implicitly.</span>
+<span class="k">if</span> <span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// TRUE.</span>
+<span class="k">if</span> <span class="p">(</span><span class="mi">2</span> <span class="o">==</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// FALSE.</span>
+<span class="k">if</span> <span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// TRUE. As long as a string is non-empty, it&#39;s truthy.</span>
+<span class="k">if</span> <span class="p">([</span><span class="mi">3</span><span class="p">])</span> <span class="p">{};</span> <span class="c1">// TRUE.</span>
+</pre></div>
+</div>
+<p>As you can see, due to the nature of some vars being considered “truthy” by Javascript,
+we don’t always explicitly need to check if they are equivalent to ‘true’ when checking their
+existence. Similarly, false values can also be “falsy”. First some examples of things
+that equate to ‘false’, and then some rogue ones.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll">if (0) {}; // FALSE.
+</span>if (&quot;&quot;) {}; // FALSE.
+if ([]) {}; // FALSE.
+if (false) {}; //FALSE
+// Typically empty and zero values are considered &#39;false&#39;.
+
+
+if (0 == false) {}; // TRUE. Similar to how &#39;1&#39; always gets true.
+if (&quot;&quot; == false) {}; // TRUE.
+if ([] == false) {}; // TRUE.
+
+if (0 === false) {}; // FALSE. Strict equivalence at it again.
+
+if (‘0’ == 0) {}; // TRUE. ’0’ becomes 0 when comparing
+if ([0] == 0) {}; // TRUE. [0] becomes 0 when comparing
+
+// Now for some falsy objects. They evaluate as false, but don&#39;t equal false.
+if (null) {}; // FALSE.
+if (undefined) {}; // FALSE.
+if (null == undefined) {}; // TRUE.
+if (null == false) {}; // FALSE.
+
+// Lastly for NaN. Another weird and interesting specimen.
+if (NaN) {}; // FALSE.
+if (NaN == NaN) {}; // FALSE.
+if (isNaN(NaN)) {}; // TRUE. isNaN() is a builtin JS function.
+</pre></div>
+</div>
+</div>
+<div class="section" id="functions-in-javascript">
+<h2>Functions in Javascript<a class="headerlink" href="#functions-in-javascript" title="Permalink to this headline">¶</a></h2>
+<p>There are 3 ways to define a function in Javascript. Again, similarly to Python
+we do not need to define a return type, and instead of <cite>def</cite> we use <cite>function</cite>.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">functions</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="c1">//Example 1: Normal Definition</span>
+<span class="kd">function</span> <span class="nx">fx</span><span class="p">(</span> <span class="nx">parameters</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// do stuff</span>
+    <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">//Example 2: As a var</span>
+<span class="kd">var</span> <span class="nx">fy</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">parameter</span> <span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// do stuff</span>
+<span class="p">}</span>
+
+<span class="c1">// We may call it as a normal function call:</span>
+<span class="nx">fy</span><span class="p">();</span>
+
+<span class="c1">//Example 3: As a singleton function with parameters:</span>
+<span class="kd">var</span> <span class="nx">hold</span> <span class="o">=</span> <span class="p">((</span><span class="nx">parameter</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+    <span class="c1">// do stuff;</span>
+    <span class="k">return</span> <span class="nx">val</span><span class="p">;</span>
+<span class="p">})(</span> <span class="mi">5</span> <span class="p">);</span>
+
+<span class="c1">//Same as calling:</span>
+<span class="kd">var</span> <span class="nx">hold</span> <span class="o">=</span> <span class="nx">fz</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="objects-in-javascript">
+<h2>Objects in Javascript<a class="headerlink" href="#objects-in-javascript" title="Permalink to this headline">¶</a></h2>
+<p>An object is a set of key-value pairs, used very frequently in JS. It is also
+similar to a dict in Python.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">objects</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="c1">// Create an object and use string to retrieve value.</span>
+<span class="kd">var</span> <span class="nx">alphabet</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;A&quot;</span> <span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;B&quot;</span> <span class="o">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s2">&quot;C&quot;</span> <span class="o">:</span> <span class="mi">3</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">thisLetter</span> <span class="o">=</span> <span class="nx">alphabet</span><span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">];</span>
+<span class="c1">// thisLetter == 1</span>
+
+<span class="kd">var</span> <span class="nx">thatLetter</span> <span class="o">=</span> <span class="nx">alphabet</span><span class="p">.</span><span class="nx">B</span><span class="p">;</span>
+<span class="c1">// thatLetter == 2</span>
+</pre></div>
+</div>
+<p>We may also want to add or remove key-value pairs directly once it is initialized.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">objects</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="kd">var</span> <span class="nx">alphabet</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;A&quot;</span> <span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;B&quot;</span> <span class="o">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s2">&quot;C&quot;</span> <span class="o">:</span> <span class="mi">3</span>
+<span class="p">}</span>
+
+<span class="nx">alphabet</span><span class="p">.</span><span class="nx">D</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span> <span class="c1">// automatically add a new key-value pair using dot notation.</span>
+<span class="c1">// Note that the value after &#39;.&#39; will be a string key.</span>
+<span class="nx">alphabet</span><span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span> <span class="c1">// Another valid way of adding to the obj.</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">alphabet</span><span class="p">);</span>
+<span class="c1">// will log: {&quot;A&quot; : 1, &quot;B&quot; : 2, &quot;C&quot; : 3, &quot;D&quot; : 4, &quot;E&quot; : 5}</span>
+
+<span class="c1">// The &#39;delete&#39; keyword in Javascript will remove a value from the object.</span>
+<span class="k">delete</span> <span class="nx">alphabet</span><span class="p">.</span><span class="nx">D</span><span class="p">;</span>
+<span class="k">delete</span> <span class="nx">alphabet</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">];</span>
+<span class="c1">// Both ways of accessing the values are valid for this too,</span>
+<span class="c1">// although once they are gone this will throw a keyError.</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">alphabet</span><span class="p">);</span>
+<span class="c1">// will log: {&quot;A&quot; : 1, &quot;B&quot; : 2, E&quot; : 5}</span>
+</pre></div>
+</div>
+<p>Often when using Javascript we use the JSON format to send and retrieve data.
+A JSON string is generally formatted as a valid JS Object and can be used as such with the proper typecasting.</p>
+</div>
+<div class="section" id="arrays-in-javascript">
+<h2>Arrays in Javascript<a class="headerlink" href="#arrays-in-javascript" title="Permalink to this headline">¶</a></h2>
+<p>Arrays in JS are similar to lists in Python.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">arrays</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">];</span> <span class="c1">// Single type array.</span>
+
+<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="p">[</span><span class="nx">a</span><span class="p">]];</span> <span class="c1">// multi-type arrays are also supported.</span>
+
+<span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span> <span class="c1">// a[0] evaluates to 1, so c = 1.</span>
+</pre></div>
+</div>
+<p>That’s great, but once we initialize it, how can we add, remove or change values in it?
+Arrays use different methods from Objects and as such can act as queues, stacks, and other
+helpful data structures.</p>
+<dl class="docutils">
+<dt>..code-block:: javascript</dt>
+<dd><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">emphasize-lines:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">1</td>
+</tr>
+</tbody>
+</table>
+<p>arrays.js</p>
+<p>var a = [1,2,3,4];</p>
+<p class="last">a.push(5);   // [1,2,3,4,5]
+a.pop();     // [1,2,3,4]
+a.shift();   // [2,3,4]
+a.splice(1); // [2,4] This one is be a way to remove data from a certain index,
+// As well as add data back into the array at that index.
+// <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice</a></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="spread-syntax">
+<h2>Spread Syntax<a class="headerlink" href="#spread-syntax" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax">Spread syntax</a>
+is a type of operator that applies to both arrays as well as Objects. It allows an iterable
+to be expanded in places where zero or more arguments or elements are expected,
+or an object expression to be expanded in places where zero or more key-value pairs
+are expected. Spread syntax is called using the unary <cite>…</cite> operator on an iterable.</p>
+</div>
+<div class="section" id="in-syntax">
+<h2>“In” Syntax<a class="headerlink" href="#in-syntax" title="Permalink to this headline">¶</a></h2>
+<p>Again, the <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/in">“in” operator syntax</a>
+applies for both arrays and Objects, but does something different depending on the type
+of the iterable.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">inOperator</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="c1">// Example 1: Arrays</span>
+<span class="c1">// The &#39;in&#39; operator checks that the value is a valid INDEX</span>
+<span class="c1">// in the array, not for the value itself.</span>
+
+<span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">];</span>
+<span class="k">if</span> <span class="p">(</span><span class="mi">5</span> <span class="k">in</span> <span class="nx">a</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// FALSE. Index 5 does not exist in a.</span>
+<span class="k">if</span> <span class="p">(</span><span class="mi">2</span> <span class="k">in</span> <span class="nx">a</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// TRUE. There is a value at index 2 in a.</span>
+
+<span class="c1">// Example 2: Objects</span>
+<span class="c1">// The &#39;in&#39; operator checks for the key in the Object.</span>
+
+<span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;A&quot;</span> <span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;B&quot;</span> <span class="o">:</span> <span class="mi">2</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="s2">&quot;A&quot;</span> <span class="k">in</span> <span class="nx">o</span><span class="p">)</span> <span class="p">{};</span> <span class="c1">// TRUE.</span>
+<span class="k">if</span> <span class="p">(</span><span class="mi">2</span> <span class="k">in</span> <span class="nx">o</span><span class="p">)</span> <span class="p">{};</span>   <span class="c1">// FALSE. 2 is not a valid key in o.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="classes-in-javascript">
+<h2>Classes in Javascript<a class="headerlink" href="#classes-in-javascript" title="Permalink to this headline">¶</a></h2>
+<p>Classes are simply special data structures we can use to store data.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">classes</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="c1">//Example 1: Class with no input parameters</span>
+<span class="kr">class</span> <span class="nx">Person</span> <span class="p">{</span>
+    <span class="nx">constructor</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="s2">&quot;Harold&quot;</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">age</span>  <span class="o">=</span> <span class="mi">65</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">man</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Person</span><span class="p">();</span>
+<span class="c1">// man.name == &quot;Harold&quot;;</span>
+<span class="c1">// man.age  == 65;</span>
+
+
+<span class="c1">//Example 2: Class which takes input parameters</span>
+<span class="kr">class</span> <span class="nx">Car</span> <span class="p">{</span>
+    <span class="nx">constructor</span><span class="p">(</span><span class="nx">type</span><span class="p">,</span> <span class="nx">mileage</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">type</span> <span class="o">=</span> <span class="nx">type</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">mileage</span> <span class="o">=</span> <span class="nx">mileage</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">works</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">wheels</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">type</span> <span class="o">=</span> <span class="s2">&quot;Tesla&quot;</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">mileage</span> <span class="o">=</span> <span class="mi">20000</span><span class="p">;</span>
+
+<span class="kd">var</span> <span class="nx">tesla</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Car</span><span class="p">(</span><span class="nx">type</span><span class="p">,</span> <span class="nx">mileage</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>In our project, the main components are all composed of classes that
+contain D3 elements and data that we modify to create visuals.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Beginner’s Guide to Javascript</a><ul>
+<li><a class="reference internal" href="#setting-up-the-project-environment">Setting up the project environment</a></li>
+<li><a class="reference internal" href="#boilerplate-html">Boilerplate HTML</a></li>
+<li><a class="reference internal" href="#comments">Comments</a></li>
+<li><a class="reference internal" href="#how-to-load-a-javascript-file-into-html">How To Load a Javascript File into HTML</a></li>
+<li><a class="reference internal" href="#variables-in-javascript">Variables In Javascript</a></li>
+<li><a class="reference internal" href="#understanding-infinity">Understanding Infinity</a></li>
+<li><a class="reference internal" href="#reference-variables">Reference Variables</a></li>
+<li><a class="reference internal" href="#conditionals-in-javascript">Conditionals in Javascript</a></li>
+<li><a class="reference internal" href="#conditional-operators">Conditional Operators</a></li>
+<li><a class="reference internal" href="#looping">Looping</a></li>
+<li><a class="reference internal" href="#true-false-truthy-and-falsy">True, False, Truthy, and Falsy</a></li>
+<li><a class="reference internal" href="#functions-in-javascript">Functions in Javascript</a></li>
+<li><a class="reference internal" href="#objects-in-javascript">Objects in Javascript</a></li>
+<li><a class="reference internal" href="#arrays-in-javascript">Arrays in Javascript</a></li>
+<li><a class="reference internal" href="#spread-syntax">Spread Syntax</a></li>
+<li><a class="reference internal" href="#in-syntax">“In” Syntax</a></li>
+<li><a class="reference internal" href="#classes-in-javascript">Classes in Javascript</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="project-summary.html"
+                        title="previous chapter">Project Summary and Notes:</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="guide-ddd.html"
+                        title="next chapter">Guide to Using D3 V5</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/guide-js.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="guide-ddd.html" title="Guide to Using D3 V5"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="project-summary.html" title="Project Summary and Notes:"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 2.2.1 (178) documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Chris Till, David Bushta.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

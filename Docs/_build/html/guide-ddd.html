@@ -1,0 +1,357 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Guide to Using D3 V5 &#8212; Search and Exit Algorithms 2.2.1 (178) documentation</title>
+    <link rel="stylesheet" href="_static/style.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Beginner’s Guide to Javascript" href="guide-js.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="guide-js.html" title="Beginner’s Guide to Javascript"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 2.2.1 (178) documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="guide-to-using-d3-v5">
+<h1>Guide to Using D3 V5<a class="headerlink" href="#guide-to-using-d3-v5" title="Permalink to this headline">¶</a></h1>
+<p>Here is the <a class="reference external" href="https://github.com/d3/d3/blob/master/API.md">full API reference</a>
+to the D3 V5 library. As it’s very large however, we’ll be linking the important methods directly throughout.</p>
+<p>In D3.js, we have the power to select and modify DOM elements directly.
+We can use this to modify SVG, Text, and almost any element you can imagine.
+This is the trick to making the algorithms run smoothly, as we can quickly change
+element attributes every frame.</p>
+<p>The main call to D3 will be <a class="reference external" href="https://github.com/d3/d3-selection/blob/v1.4.0/README.md#select">d3.select()</a> and using the many types of selectors
+provided by the library to very broadly or finely choose elements. We may put these
+selection queries into a variable for later modification as well, so we don’t
+need to call <a class="reference external" href="https://github.com/d3/d3-selection/blob/v1.4.0/README.md#select">d3.select()</a> more than once for an object.</p>
+<p>In this example, we select the main body of the document and add an SVG element
+on top of it. From there, we can change and set the SVG’s attributes at any time.</p>
+<p>Furthermore, to add new elements to the page, we can take an already existing
+element and <a class="reference external" href="https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selection_append">.append()</a>
+to it a new html tag.</p>
+<p>Finally to modify the attributes and styling of these elements we can use
+<a class="reference external" href="https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selection_attr">.attr()</a> and
+<a class="reference external" href="https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selection_style">.style()</a> respectively.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">d3example</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="kd">var</span> <span class="nx">bodyRef</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;body&quot;</span><span class="p">);</span> <span class="c1">// Overarching container in HTML</span>
+
+<span class="kd">var</span> <span class="nx">exampleGFX</span> <span class="o">=</span> <span class="nx">bodyRef</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">);</span>
+<span class="c1">// This is the same as &#39;d3.select(&quot;body&quot;).append(&quot;svg&quot;);</span>
+<span class="c1">// Attaches the svg to the body and makes a reference to it.</span>
+
+<span class="c1">// Size-based attributes assume pixels (px) by default,</span>
+<span class="c1">// for anything else make the second argument a string.</span>
+
+<span class="c1">// Set width of new SVG to 25px</span>
+<span class="nx">exampleGFX</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">);</span>
+
+<span class="c1">// Make the height fit the whole height of the container it&#39;s in.</span>
+<span class="c1">// In this case, the default body is 100% of the window height, so</span>
+<span class="c1">// the SVG will also be 100% of the window height.</span>
+<span class="nx">exampleGFX</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="s2">&quot;100%&quot;</span><span class="p">);</span>
+
+<span class="c1">// Give the SVG some style.</span>
+<span class="nx">exampleGFX</span><span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;border&quot;</span><span class="p">,</span> <span class="s2">&quot;1px solid black&quot;</span><span class="p">);</span>
+<span class="nx">exampleGFX</span><span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;background-color&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>We can also put everything into one statement. It looks nice to keep it on
+multiple lines and use hanging indents. We like to keep our .attr() and .style() inline this way.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">d3example</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="c1">//Same code as above, as fewer statements.</span>
+
+<span class="kd">var</span> <span class="nx">exampleGFX</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;body&quot;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">);</span>
+
+<span class="nx">exampleGFX</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="s2">&quot;100%&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;border&quot;</span><span class="p">,</span> <span class="s2">&quot;1px solid black&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;background-color&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Other types of elements examples:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">d3example</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="kd">var</span> <span class="nx">exampleGFX</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;body&quot;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">);</span>
+
+<span class="nx">exampleGFX</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="s2">&quot;100%&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;border&quot;</span><span class="p">,</span> <span class="s2">&quot;1px solid black&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;background-color&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">);</span>
+
+<span class="c1">// Text: Needs font-size, text, and (x,y) coordinates.</span>
+<span class="c1">// Let&#39;s append it to the svg for now.</span>
+<span class="nx">exampleGFX</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;text-anchor&quot;</span><span class="p">,</span> <span class="s2">&quot;middle&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;font-size&quot;</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Hello!&quot;</span><span class="p">);</span>
+<span class="c1">// Note that (x,y) coordinates are almost always relative to the</span>
+<span class="c1">// top left of the element&#39;s container, in this case the SVG.</span>
+
+<span class="c1">// Rectangle: Needs width, height, and (x,y) coordinates.</span>
+<span class="nx">exampleGFX</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;rect&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">);</span>
+
+<span class="c1">// Path: needs a string of coordinates and a stroke color.</span>
+<span class="kd">var</span> <span class="nx">coordinates</span> <span class="o">=</span> <span class="s2">&quot;M0,0L1,0L0,1&quot;</span><span class="p">;</span>
+<span class="c1">// D3 has methods for making paths based on data. We can worry about the</span>
+<span class="c1">// specifics of how to construct a path string later.</span>
+<span class="nx">exampleGFX</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="nx">coordinates</span><span class="p">)</span> <span class="c1">// path&#39;s &quot;d&quot; attribute is what path it takes.</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;stroke&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">);</span>
+
+<span class="c1">// Line: needs (x1,y1) and (x2,y2) and a stroke color.</span>
+<span class="nx">exampleGFX</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;line&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;x1&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;y1&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;x2&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;y2&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;stroke&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">);</span>
+
+<span class="c1">// Circle: needs radius and center (cx,cy) coordinates.</span>
+<span class="nx">exampleGFX</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;circle&quot;</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;cx&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;cy&quot;</span><span class="p">,</span> <span class="mi">90</span><span class="p">)</span>
+          <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>As you can see, D3 is very powerful for what little we’ve seen so far.</p>
+<div class="section" id="selection-with-d3">
+<h2>Selection with D3<a class="headerlink" href="#selection-with-d3" title="Permalink to this headline">¶</a></h2>
+<p>We can do a lot more than just <a class="reference external" href="https://github.com/d3/d3-selection/blob/v1.4.0/README.md#select">select()</a> the body of
+the DOM in D3, because otherwise our code statements would be super long, and ugly looking.
+We are also able to select elements by class, ID, and tag name. Some examples:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">selection</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="kd">var</span> <span class="nx">body</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;body&quot;</span><span class="p">);</span>
+<span class="c1">// So we&#39;ve seen this one, and we can chain selections off of it.</span>
+
+<span class="c1">// Say we want to append and then select a circle with an ID of &quot;dot&quot;.</span>
+<span class="c1">// Assume we&#39;ve already created the SVG as shown in the above example.</span>
+<span class="nx">body</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;circle&quot;</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;cx&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;cy&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;r&quot;</span> <span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;id&quot;</span> <span class="s2">&quot;dot&quot;</span><span class="p">);</span> <span class="c1">// Now this circle has an id of &quot;#dot&quot; in the DOM.</span>
+
+<span class="c1">// Now we can select it by saying:</span>
+<span class="kd">var</span> <span class="nx">ourCircle</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;#dot&quot;</span><span class="p">);</span> <span class="c1">// The &#39;#&#39; is specific to searching for an ID.</span>
+
+<span class="c1">// Similarly, we can give something a class and find it, or multiple like it.</span>
+<span class="nx">body</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;rect&quot;</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="s2">&quot;square&quot;</span><span class="p">);</span> <span class="c1">// This will belong to &quot;.square&quot;</span>
+
+<span class="kd">var</span> <span class="nx">ourSquare</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;.square&quot;</span><span class="p">);</span> <span class="c1">// The &#39;.&#39; is specific to searching for a class.</span>
+</pre></div>
+</div>
+<p>Note that when using d3.select(), only the first element on the page that matches the
+search query will be returned. However, if we want to <a class="reference external" href="https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selectAll">selectAll()</a>, then we can
+get a nice list of all elements on the page that match the selectors.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">selection</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="nx">body</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;rect&quot;</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+                  <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="s2">&quot;square&quot;</span><span class="p">);</span>
+
+<span class="c1">// Say we have everything from the example directly above already loaded in.</span>
+<span class="c1">// We now go ahead and add another &lt;rect class=&quot;square&quot;/&gt;</span>
+
+<span class="nx">d3</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;.square&quot;</span><span class="p">);</span>
+<span class="c1">// Returns an array of both of the objects in class square, in the order they</span>
+<span class="c1">// were added to the DOM.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="data-and-how-d3-handles-the-work-for-you">
+<h2>Data, and How D3 Handles the Work For You<a class="headerlink" href="#data-and-how-d3-handles-the-work-for-you" title="Permalink to this headline">¶</a></h2>
+<p>Arrays have <a class="reference external" href="https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selection_data">data that we want to use</a>, and D3 can make it look pretty for us.
+Say we have the following elements already in our project, as well as an array of
+points in [x,y] format:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">datum</span><span class="p">.</span><span class="nx">js</span>
+</span>
+<span class="kd">var</span> <span class="nx">bodySVG</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;body&quot;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">)</span>
+                <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+                <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="mi">200</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">dataPoints</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">195</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">195</span><span class="p">,</span> <span class="mi">195</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">195</span><span class="p">],</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">]];</span>
+
+<span class="c1">// We can directly hand this data to the D3 Element and tell it to utilize</span>
+<span class="c1">// it when drawing these points.</span>
+
+<span class="nx">bodySVG</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">dataPoints</span><span class="p">);</span>
+
+<span class="c1">// Side note: if you want the element to hold data, but not use it directly,</span>
+<span class="c1">// you can say:</span>
+<span class="c1">// bodySVG.datum(dataPoints);</span>
+
+<span class="kd">var</span> <span class="nx">circles</span> <span class="o">=</span> <span class="nx">bodySVG</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;circle&quot;</span><span class="p">).</span><span class="nx">enter</span><span class="p">().</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;circle&quot;</span><span class="p">);</span>
+<span class="nx">circles</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;cx&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span><span class="k">return</span> <span class="nx">d</span><span class="p">[</span><span class="mi">0</span><span class="p">]})</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;cy&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span><span class="k">return</span> <span class="nx">d</span><span class="p">[</span><span class="mi">1</span><span class="p">]})</span>
+       <span class="p">.</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>In the above example, using the <a class="reference external" href="https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selection_enter">enter</a> function applied each of the dataPoints
+contained in <code class="docutils literal notranslate"><span class="pre">bodySVG</span></code> onto a new circle that had been created by <code class="docutils literal notranslate"><span class="pre">append</span></code>, and returned the array of newly created circles with selectAll.</p>
+<p>The reason that <code class="docutils literal notranslate"><span class="pre">selectAll</span></code> was called last in this situation, is because <code class="docutils literal notranslate"><span class="pre">enter</span></code> takes precedence.
+Think of it as “entering” into the node, applying some data to some new elements, and then exiting and calling the selectAll.
+Thus, we can get an accurate list of circles before ever techincally creating them.</p>
+<p>In the second statement, we used an anonymous function to apply the data to each circle.
+When using this anon function, D3 likes us to use the variable <code class="docutils literal notranslate"><span class="pre">d</span></code> to represent the current data point.</p>
+</div>
+<div class="section" id="elements-and-their-functions-doing-more-with-data">
+<h2>Elements and their functions, doing more with data<a class="headerlink" href="#elements-and-their-functions-doing-more-with-data" title="Permalink to this headline">¶</a></h2>
+<p>Lets take a look at some functions that have similar uses, but are from
+different sources. Say we have our circles and <code class="docutils literal notranslate"><span class="pre">bodySVG</span></code> from above.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">];</span>
+</span><span class="c1">// forEach is a Javascript builtin function for use on iterables.</span>
+<span class="nx">a</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">d</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Index &quot;</span> <span class="o">+</span> <span class="nx">i</span> <span class="o">+</span> <span class="s2">&quot; contains data &quot;</span> <span class="o">+</span> <span class="nx">d</span><span class="p">);</span>
+<span class="p">})</span>
+<span class="c1">// By utilizing an anon function with arguments d,i</span>
+<span class="c1">// we can see the index as well as element in the list</span>
+<span class="c1">// while iterating through a forEach call.</span>
+
+<span class="c1">// now we look at a D3 function, each().</span>
+<span class="c1">// this is meant to be used with lists of elements, like selectAll will give.</span>
+
+<span class="nx">bodySVG</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;circle&quot;</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">d</span><span class="p">,</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">);</span> <span class="c1">// will log the D3 instance of the shape.</span>
+    <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;stroke&quot;</span><span class="p">,</span> <span class="s2">&quot;cyan&quot;</span><span class="p">);</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+<p>As <code class="docutils literal notranslate"><span class="pre">forEach</span></code>, D3 has the <a class="reference external" href="https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selection_each">each()</a>
+function, which will iterate through a list of D3 elements. Important to note as well,
+is that during a function defined in <code class="docutils literal notranslate"><span class="pre">each</span></code>, the current reference to <code class="docutils literal notranslate"><span class="pre">this</span></code> is the
+DOM reference to the current element in the list, making it available to be <a href="#id2"><span class="problematic" id="id3">``</span></a>d3.select``ed.</p>
+<p>If, for some reason, we want to call an anonymous function on a particular element, D3 lets
+us do that as well. Using the <a class="reference external" href="https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selection_call">call()</a>
+function on a <code class="docutils literal notranslate"><span class="pre">d3.select``ed</span> <span class="pre">element</span> <span class="pre">will</span> <span class="pre">let</span> <span class="pre">us</span> <span class="pre">define</span> <span class="pre">an</span> <span class="pre">anonymous</span> <span class="pre">function</span> <span class="pre">to</span> <span class="pre">be</span> <span class="pre">called.</span>
+<span class="pre">Notably</span> <span class="pre">different</span> <span class="pre">than</span> <span class="pre">``each</span></code> however, the reference of <code class="docutils literal notranslate"><span class="pre">this</span></code> is not a reference to any element during this fucntion call.
+A reference to an element may be passed in like so:</p>
+<dl class="docutils">
+<dt>..code-block:: javascript</dt>
+<dd><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">emphasize-lines:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body">1</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>bodySVG.append(“circle”).call( function (d) { // d becomes the reference to the newly appended object.</dt>
+<dd>console.log(d);
+d3.select(d).style(“fill”, “green”); // So, if we want to utilize d, we must again select it before use.</dd>
+</dl>
+<p class="last">});</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Guide to Using D3 V5</a><ul>
+<li><a class="reference internal" href="#selection-with-d3">Selection with D3</a></li>
+<li><a class="reference internal" href="#data-and-how-d3-handles-the-work-for-you">Data, and How D3 Handles the Work For You</a></li>
+<li><a class="reference internal" href="#elements-and-their-functions-doing-more-with-data">Elements and their functions, doing more with data</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="guide-js.html"
+                        title="previous chapter">Beginner’s Guide to Javascript</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/guide-ddd.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="guide-js.html" title="Beginner’s Guide to Javascript"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 2.2.1 (178) documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Chris Till, David Bushta.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+    </div>
+  </body>
+</html>

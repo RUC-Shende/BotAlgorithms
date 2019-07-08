@@ -940,6 +940,37 @@
                         algName = "Algorithm Priority 2 ";
                         break;
                     case 'Q2S1':
+                    /* new algorithm 3.53 UB
+                        var a = 3.7512128736749366;
+                        var b = 2.5319724335046496;
+                        var c = 0.7692404401702861;
+                        //var d = 2.2838619831381655;
+                        var e = 0.05916844547058453;
+                        var f = 0.8073508236002884;
+                        var g = 0.45;
+                        var h = 0.896212724263491;
+
+
+                        instruBinder = [
+                            [//Queen 1
+                                ["GoToExit", [null, true]],
+                                ["GoToWallAtAngle", [ a * ( 180 / Math.PI ) ] ],
+                                ["FollowWall", ["left"]],
+                            ],
+                            [//Queen 2
+                                [ "GoToExit", [ null , true] ],
+                                [ "GoToWallAtAngle", [ 0 ] ],
+                                [ "FollowWall", [ "left", ( c ) * ( 180 / Math.PI )  ] ],
+                                [ "GoToWallAtAngle", [ ( c + h ) * ( 180 / Math.PI ) ] ],
+                                [ "FollowWall", [ "right" ]]
+                            ],
+                            [//Helper
+                                [ "Wait", [ null , false] ],
+                                [ "GoToWallAtAngle", [ a * ( 180 / Math.PI ) ] ],
+                                [ "FollowWall", [ "right"]]
+                            ]
+                        ];
+                        */
                         instruBinder = [
                             [
                                 ["GoToExit", [null, true]],
@@ -956,6 +987,7 @@
                                 ["GoToWallAtAngle", [213.8]],
                                 ["FollowWall", ["right"]]
                             ]
+                        ];
                             /*
                             [["GoToExit", [null, true]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left"]]],
                             [["GoToExit", [null, true]], ["GoToWallAtAngle", [240]], ["FollowWall", ["left"]]],
@@ -987,8 +1019,6 @@
 
                             [["Intercept", [null]], ["GoToWallAtAngle", [60]], ["FollowWall", ["right"]]]
                             */
-
-                        ];
                         algName = "2 Priority + 1 Helper (1) ";
                         break;
 

@@ -26,7 +26,7 @@ author = 'Chris Till, David Bushta'
 # The short X.Y version
 version = '2.2'
 # The full version, including alpha/beta/rc tags
-release = '2.2.1 (177)'
+release = '2.2.1 (178)'
 # Version [major].[minor].[release] (build)
 
 # -- General configuration ---------------------------------------------------

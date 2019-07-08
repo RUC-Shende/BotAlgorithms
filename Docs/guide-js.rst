@@ -1,12 +1,14 @@
-Beginner's Guide to Javascript and D3.js
-========================================
+Beginner's Guide to Javascript
+==============================
 
 Hello future undergraduate research assistants, this is Chris and Dave.
-This file is meant to help with understanding of javascript and D3 in HTML,
+This file is meant to help with understanding of Javascript and D3 in HTML,
 with some small code snippets, and examples of the snippets together for some code examples.
 Each code snippet will go over (attempt to) show every possible way to use,
 and why it's used, in a sense this is a manual that is meant to be compact with
 tips, tricks, and weird things that happen with it.
+
+The `next section <guide-ddd.html>`_ will cover D3.js.
 
 Setting up the project environment
 ----------------------------------
@@ -17,10 +19,12 @@ development we recommend the following packages. They're mostly used to create t
 
     System packages: install with your OS's package manager
 
+    nodejs
     npm (used to install js packages)
     python3 (doesn't really matter which)
     python3-pip (to install python packages)
     python3-sphinx
+    texlive-science (or texlive-full, if you want the full LaTeX experience. science is smaller and uses what we need.)
 
 
     PIP Packages: pip3 install ___
@@ -34,12 +38,12 @@ development we recommend the following packages. They're mostly used to create t
     jsdoc@3.5.5 (for some reason any version >3.5.5 doesn't recognize our JSDoc format)
 
 
-NPM is also useful for testing out Javascript code, if you want to just run a JS in the terminal
-and get text output, you can ``npm <filename>.js``.
+Node is also useful for testing out Javascript code, if you want to just run a JS in the terminal
+and get text output, you can use ``node <filename>.js``.
 
 Here is a Sphinx `quickstart guide <https://www.sphinx-doc.org/en/master/usage/quickstart.html>`_
 to help build these docs. Most of it is already set up, just don't forget to add in new ``.rst`` files
-into ``index.rst``'s toctree and ``make html`` to see changes!
+into ``index.rst``'s toctree and ``make html`` in the Docs directory to see changes!
 
 Boilerplate HTML
 ----------------
@@ -370,7 +374,6 @@ until a value is reached.
 
     loops.js
 
-    // for loop incremental
     for( var i = 0; i < 10; i++ ) {
     	//do stuff
     }
@@ -471,8 +474,6 @@ that equate to 'false', and then some rogue ones.
 
 .. code-block:: javascript
     :emphasize-lines: 1
-
-    false.js
 
     if (0) {}; // FALSE.
     if ("") {}; // FALSE.
@@ -754,201 +755,3 @@ Classes are simply special data structures we can use to store data.
 
 In our project, the main components are all composed of classes that
 contain D3 elements and data that we modify to create visuals.
-
-D3 V5 Elements
-==============
-
-Here is the `full API reference <https://github.com/d3/d3/blob/master/API.md>`_
-to the D3 library. As it's very large however, we'll be linking the important methods directly throughout.
-
-In D3.js, we have the power to select and modify DOM elements directly.
-We can use this to modify SVG, Text, and almost any element you can imagine.
-This is the trick to making the algorithms run smoothly, as we can quickly change
-element attributes every frame.
-
-The main call to D3 will be `d3.select()
-<https://github.com/d3/d3-selection/blob/v1.4.0/README.md#select>`_ and using the many types of selectors
-provided by the library to very broadly or finely choose elements. We may put these
-selection queries into a variable for later modification as well, so we don't
-need to call `d3.select()
-<https://github.com/d3/d3-selection/blob/v1.4.0/README.md#select>`_ more than once for an object.
-
-In this example, we select the main body of the document and add an SVG element
-on top of it. From there, we can change and set the SVG's attributes at any time.
-
-Furthermore, to add new elements to the page, we can take an already existing
-element and `.append() <https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selection_append>`_
-to it a new html tag.
-
-Finally to modify the attributes and styling of these elements we can use
-`.attr() <https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selection_attr>`_ and
-`.style() <https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selection_style>`_ respectively.
-
-.. code-block:: javascript
-    :emphasize-lines: 1
-
-    d3example.js
-
-    var bodyRef = d3.select("body"); // Overarching container in HTML
-
-    var exampleGFX = bodyRef.append("svg");
-    // This is the same as 'd3.select("body").append("svg");
-    // Attaches the svg to the body and makes a reference to it.
-
-    // Size-based attributes assume pixels (px) by default,
-    // for anything else make the second argument a string.
-
-    // Set width of new SVG to 25px
-    exampleGFX.attr("width", 25);
-
-    // Make the height fit the whole height of the container it's in.
-    // In this case, the default body is 100% of the window height, so
-    // the SVG will also be 100% of the window height.
-    exampleGFX.attr("height", "100%");
-
-    // Give the SVG some style.
-    exampleGFX.style("border", "1px solid black");
-    exampleGFX.style("background-color", "blue");
-
-We can also put everything into one statement. It looks nice to keep it on
-multiple lines and use hanging indents. We like to keep our .attr() and .style() inline this way.
-
-.. code-block:: javascript
-    :emphasize-lines: 1
-
-    d3example.js
-
-    //Same code as above, as fewer statements.
-
-    var exampleGFX = d3.select("body").append("svg");
-
-    exampleGFX.attr("width", 25)
-              .attr("height", "100%")
-              .style("border", "1px solid black")
-              .style("background-color", "blue");
-
-Other types of elements examples:
-
-.. code-block:: javascript
-    :emphasize-lines: 1
-
-    d3example.js
-
-    var exampleGFX = d3.select("body").append("svg");
-
-    exampleGFX.attr("width", 200)
-              .attr("height", "100%")
-              .style("border", "1px solid black")
-              .style("background-color", "blue");
-
-    // Text: Needs font-size, text, and (x,y) coordinates.
-    // Let's append it to the svg for now.
-    exampleGFX.append("text")
-              .attr("x", 20)
-              .attr("y", 20)
-              .style("text-anchor", "middle")
-              .style("font-size", 12)
-              .text("Hello!");
-    // Note that (x,y) coordinates are almost always relative to the
-    // top left of the element's container, in this case the SVG.
-
-    // Rectangle: Needs width, height, and (x,y) coordinates.
-    exampleGFX.append("rect")
-              .attr("width", 20)
-              .attr("height", 20)
-              .attr("x", 50)
-              .attr("y", 25)
-              .style("fill", "red");
-
-    // Path: needs a string of coordinates and a stroke color.
-    var coordinates = "M0,0L1,0L0,1";
-    // D3 has methods for making paths based on data. We can worry about the
-    // specifics of how to construct a path string later.
-    exampleGFX.append("path")
-              .attr("d", coordinates) // path's "d" attribute is what path it takes.
-              .style("fill", "none")
-              .style("stroke", "green");
-
-    // Line: needs (x1,y1) and (x2,y2) and a stroke color.
-    exampleGFX.append("line")
-              .attr("x1", 0)
-              .attr("y1", 0)
-              .attr("x2", 100)
-              .attr("y2", 100)
-              .style("fill", "none")
-              .style("stroke", "red");
-
-    // Circle: needs radius and center (cx,cy) coordinates.
-    exampleGFX.append("circle")
-              .attr("r", 10)
-              .attr("cx", 10)
-              .attr("cy", 90)
-              .style("fill", "red");
-
-As you can see, D3 is very powerful for what little we've seen so far.
-
-Selection with D3
------------------
-
-We can do a lot more than just `select()
-<https://github.com/d3/d3-selection/blob/v1.4.0/README.md#select>`_ the body of
-the DOM in D3, because otherwise our code statements would be super long, and ugly looking.
-We are also able to select elements by class, ID, and tag name. Some examples:
-
-.. code-block:: javascript
-    :emphasize-lines: 1
-
-    selection.js
-
-    var body = d3.select("body");
-    // So we've seen this one, and we can chain selections off of it.
-
-    // Say we want to append and then select a circle with an ID of "dot".
-    // Assume we've already created the SVG as shown in the above example.
-    body.select("svg").append("circle")
-                      .attr("cx", 10)
-                      .attr("cy", 10)
-                      .attr("r" , 5)
-                      .attr("id" "dot"); // Now this circle has an id of "#dot" in the DOM.
-
-    // Now we can select it by saying:
-    var ourCircle = d3.select("#dot"); // The '#' is specific to searching for an ID.
-
-    // Similarly, we can give something a class and find it, or multiple like it.
-    body.select("svg").append("rect")
-                      .attr("x", 50)
-                      .attr("y", 50)
-                      .attr("width", 10)
-                      .attr("height", 10)
-                      .attr("class", "square"); // This will belong to ".square"
-
-    var ourSquare = d3.select(".square"); // The '.' is specific to searching for a class.
-
-Note that when using d3.select(), only the first element on the page that matches the
-search query will be returned. However, if we want to `selectAll()
-<https://github.com/d3/d3-selection/blob/v1.4.0/README.md#selectAll>`_, then we can
-get a nice list of all elements on the page that match the selectors.
-
-.. code-block:: javascript
-    :emphasize-lines: 1
-
-    selection.js
-
-    body.select("svg").append("rect")
-                      .attr("x", 100)
-                      .attr("y", 100)
-                      .attr("width", 20)
-                      .attr("height", 20)
-                      .attr("class", "square");
-
-    // Say we have everything from the example directly above already loaded in.
-    // We now go ahead and add another <rect class="square"/>
-
-    d3.selectAll(".square");
-    // Returns an array of both of the objects in class square, in the order they
-    // were added to the DOM.
-
-Data, and How D3 Handles the Work For You
------------------------------------------
-
-Arrays have data that we want to use, and D3 can make it look pretty for us.

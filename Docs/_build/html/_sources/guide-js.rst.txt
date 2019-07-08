@@ -1,0 +1,757 @@
+Beginner's Guide to Javascript
+==============================
+
+Hello future undergraduate research assistants, this is Chris and Dave.
+This file is meant to help with understanding of Javascript and D3 in HTML,
+with some small code snippets, and examples of the snippets together for some code examples.
+Each code snippet will go over (attempt to) show every possible way to use,
+and why it's used, in a sense this is a manual that is meant to be compact with
+tips, tricks, and weird things that happen with it.
+
+The `next section <guide-ddd.html>`_ will cover D3.js.
+
+Setting up the project environment
+----------------------------------
+
+To just look at the project, nothing is needed but a web browser. However, to do
+development we recommend the following packages. They're mostly used to create the docs: ::
+
+
+    System packages: install with your OS's package manager
+
+    nodejs
+    npm (used to install js packages)
+    python3 (doesn't really matter which)
+    python3-pip (to install python packages)
+    python3-sphinx
+    texlive-science (or texlive-full, if you want the full LaTeX experience. science is smaller and uses what we need.)
+
+
+    PIP Packages: pip3 install ___
+
+    sphinx
+    sphinx-js
+
+
+    NPM Packages: npm install ___
+
+    jsdoc@3.5.5 (for some reason any version >3.5.5 doesn't recognize our JSDoc format)
+
+
+Node is also useful for testing out Javascript code, if you want to just run a JS in the terminal
+and get text output, you can use ``node <filename>.js``.
+
+Here is a Sphinx `quickstart guide <https://www.sphinx-doc.org/en/master/usage/quickstart.html>`_
+to help build these docs. Most of it is already set up, just don't forget to add in new ``.rst`` files
+into ``index.rst``'s toctree and ``make html`` in the Docs directory to see changes!
+
+Boilerplate HTML
+----------------
+
+Copy and paste this to get a default HTML file:
+
+.. code-block:: HTML
+
+    <!doctype html>
+    <html>
+        <head>
+        </head>
+        <body></body>
+    </html>
+
+
+Comments
+--------
+
+* HTML comments between <!-- and -->
+* // before javascript comments
+* JS multi-line comments between /\* and \*/
+
+How To Load a Javascript File into HTML
+---------------------------------------
+
+If the Javascript file looks like this:
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    example.js
+
+    function main() {
+        alert("Hello World!");
+        return;
+    }
+
+Then the best way to load it into the HTML file is like this:
+
+.. code-block:: HTML
+    :emphasize-lines: 1
+
+    index.html
+
+    <!doctype html>
+    <html>
+        <head>
+        </head>
+        <body>
+            <!-- Locally, same directory -->
+            <script src="example.js">
+
+            <!-- Different directory from parent directory -->
+            <script src="../local/path/to/code/example.js">
+        </body>
+    </html>
+
+Please note that once the Javascript file is loaded, it will only execute
+when you tell it to, whether it be right away (from function calls inside the file)
+or in a different script tag, as shown below:
+
+.. code-block:: HTML
+    :emphasize-lines: 1
+
+    index.html
+
+    <!doctype html>
+    <html>
+        <head>
+        </head>
+        <body>
+            <!-- Locally, same directory -->
+            <script src="example.js">
+
+            <!-- Now that we have loaded in our 'example.js' we can use its functions. -->
+            <!-- Not all '<script>' tags need a 'src' -->
+            <!-- Any text between the tags will use JS syntax. HTML  syntax is invalid in here. -->
+            <script>
+                // Will Alert "Hello World!" as seen in the example.js file.
+                main();
+            </script>
+        </body>
+    </html>
+
+Since D3.js is a library, we want to load it in before any of our local code runs.
+We can do this by loading it in the header of the HTML, so that it is included when
+any of our own Javascript runs in the body:
+
+.. code-block:: HTML
+    :emphasize-lines: 1
+
+    index.html
+
+    <!doctype html>
+    <html>
+        <head>
+            <!-- Using the same script tag, but this one gets loaded first. -->
+            <script src="https://d3js.org/d3.v5.min.js"></script>
+            <!-- Now we can safely use D3 methods in our body. -->
+        </head>
+        <body>
+            <!-- Locally, same directory -->
+            <script src="example.js">
+
+            <!-- Now that we have loaded in our 'example.js' we can use its functions. -->
+            <!-- Not all '<script>' tags need a 'src' -->
+            <!-- Any text between the tags will use JS syntax. HTML  syntax is invalid in here. -->
+            <script>
+                // Will Alert "Hello World!" as seen in the example.js file.
+                main();
+            </script>
+        </body>
+    </html>
+
+Variables In Javascript
+-----------------------
+
+Variables in Javascript act similarly to those in Python: they are never typecast to
+any specific value. A few examples:
+
+.. code-block:: javascript
+  :emphasize-lines: 1
+
+    variables.js
+
+    /* If the variable always needs to be a specific type, it may help to
+    name it in a certain way (prefixes or suffixes) to ensure you are always
+    playing with the right values. */
+
+    var apple = 1; //int
+
+    var banana = 'Banana';
+    var carrot = "Carrot";
+    // Note that single quotes or double quotes are valid for strings,
+    // so long as you start and end the string with the same ones.
+
+    var durian = true; //boolean
+
+    // Arrays are of one type only.
+    var eggplant = []; // Array, uninitialized.
+    var rhyme = ["tomato", "potato"];
+
+    // You can however, make multi-dimensional arrays of arrays.
+    var multiArray = [["orange", "doorhinge"], rhyme];
+
+As you can see, JS figures out the type of var automatically. This isn't always
+helpful, but most of the time it's a nice feature.
+
+Understanding Infinity
+----------------------
+
+A few weird equations surrounding infinity will produce the JS value `NaN` (Not a Number.)
+This value is falsy.
+
+For example:
+
+* Infinity * 0 == NaN
+* Infinity - Infinity == NaN
+* Infinity / Infinity == NaN
+* (Any number) / Infinity == 0
+* (Any nonzero number) / 0 == Infinity
+* 0 / 0 == NaN
+
+Reference Variables
+-------------------
+
+These are variables that will be reference-only, and will not copy values when set.
+True for reference variables of other types like objects, classes, sets, and so on,
+but string are not reference vars in Javascript. In these examples, arrays are used
+to show referencing.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    references.js
+
+    var arr = [1,2,3,4];
+    var b = arr;
+
+    console.log(b[0]); // Logs "1"
+
+    // Change the original, change the reference as well. Be careful of this.
+    arr[0] = 5;
+    console.log(b[0]); // Logs "5" with no explicit changes to b
+
+    ...
+
+When using `Array.slice() <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice>`_
+we can make a shallow copy. This prevents us from modifying the original data of the slice()'d array.
+We can do similar things manually with classes, objects, etc by looping through all
+class variables or key-value pairs.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    references.js
+
+    ...
+
+    var arr = [1,2,3,4];
+    var b   = a.slice(0); // makes a naive copy, not a reference.
+
+    console.log(b[0]); // Logs "1"
+
+    a[0] = 5;
+
+    console.log(b[0]); // Still logs "1"
+
+    ...
+
+Now we go three layers deep. We put a reference variable inside another array,
+and then slice it. The result is as follows:
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    references.js
+
+    ...
+
+    var c = [23];
+    var a = [c,2,3,4];
+
+    var b = a.slice(0);
+
+    console.log(b[0]); // Logs "[23]"
+
+    c[0] = 5;
+
+    console.log(b[0]); // Logs "[5]"
+
+You may also create an alias for a non-reference variable. What would you use this for?
+We don't know, but here's an example anyways.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    references.js
+
+    var a = 5;
+	var b = ( ) => { return a; };
+	alert( b( ) ); //results in 5
+	a = 10;
+	alert( b( ) ); //results in 10
+
+
+Conditionals in Javascript
+--------------------------
+
+IF conditional examples:
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    conditional.js
+
+    // singular
+    if (true) {
+        //stuff
+    }
+
+    // if, else
+    if (conditionIsTrue) {
+        // do stuff
+    }
+    else {
+        // do other stuff
+    }
+
+    // if, else if, else
+    if (conditionIsTrue) {
+        // do stuff
+    }
+    else if (otherCond) {
+        // do other stuff
+    }
+    else {
+        // do OTHER other stuff
+    }
+
+There are also ternary statements which are less lines of code but harder to read.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    ternary.js
+
+    // Basically, "?" is the if, ":" is the else.
+
+    var a = (condition) ? (valueIfTrue) : (valueIfFalse);
+
+Conditional Operators
+---------------------
+
+Along with the normal <, >, <=, >=, !, &&, || operators JS has two different equivalence operators.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    equivalence.js
+
+    //normal == to check if they have the same value.
+    var a = 12;
+    if (a == 12){} // Will be true
+    if (a == 13){} // false.
+
+    // Now there is also ===, which checks for type and value equivalence.
+    // We recommend this when working with classes and you are trying to find one.
+    // Remember, it doesn't check each element separately, only its reference for reference variables.
+    1 === 1; // will evaluate true as its same type and value.
+
+    var a = [1,2,3];
+    var b = [1,2,3];
+    a === b; // this will be false because reference addr. is not the same.
+
+    var c = a;
+    c === a; // true because they share the same reference addr.
+
+Looping
+-------
+
+Pretty common. Go through and do something a certain number of times or
+until a value is reached.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    loops.js
+
+    for( var i = 0; i < 10; i++ ) {
+    	//do stuff
+    }
+
+    // for loop decrement
+    for( var i = 10; i > 0; i-- ) {
+    	//do stuff
+    }
+
+    // for loop get odd numbers
+    for( var i = 1; i < 20; i += 2 ) {
+    	//do stuff with those odd numbers less than 20
+    }
+
+    // for loop different number of variables
+    for( var i = 0, j = 20; i < j; i++, j-- ) {
+    	//Do stuff with these colliding numbers
+    }//Both will be 10 at the end of the loop
+
+    // while: only do this if true
+    While( true ) {
+    	//Do stuff
+    }
+
+    // do while: do this once, and then repeat if true
+    Do {
+    	//Do stuff
+    } while( true );
+
+    // Control Flow the continue
+    // A continue will skip the rest current cycle, and start the next cycle
+    // Example:
+    for( var i = 0; i < 10; i++ ) {
+    	If( i % 2 == 0 ) {//Is it not odd?
+    		continue;
+    	}
+    	alert( “odd number” );
+    }
+
+    // Control Flow break
+    // Need to end a loop cycle in the middle, but don’t start a new cycle?
+    // Break it.
+    while( true ) {
+    	if( user input ) {
+    		break;
+    	}
+    }
+
+    // labeling your loops
+    // In a loop with in a loop, and need to get out of both? Well then, give
+    // them labels, and break the outer loop with its label.
+    labelOne:
+    while( true ) {
+    	labelTwo:
+    	while( true ) {
+    		if( user input ) {
+    			break labelOne;
+    		}
+    	}
+    }
+
+True, False, Truthy, and Falsy
+------------------------------
+
+When comparing many variables in Javascript with one another,
+we may run into instances where we have two vars of different types, but Javascript will
+see them as the same value. Some examples...
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    truth.js
+
+    if (1) {}; // TRUE
+    if (true) {}; // TRUE
+    // No problem here, this is pretty typical.
+
+    if (1 == true) {}; // TRUE: The interpreter will always evaluate this the same way.
+    if (1 === true) {}; // FALSE: Value equivalence? Sure. Type equivalence? No.
+
+    // The interpreter is smart and knows when a var can safely be typecasted and
+    // compared with another type.
+    if ('1' == 1) {}; // TRUE: If a string contains ONLY a number, then we may use ==.
+    if ([1] == 1) {}; // TRUE: Since the array is only 1-length, JS knows to compare them properly.
+
+    // The number '1' is special in that it's the only value that can be compared to true to result in true.
+    // All other non-zero numbers are "Truthy": They only result to true implicitly.
+    if (2) {}; // TRUE.
+    if (2 == true) {}; // FALSE.
+    if ("hello") {}; // TRUE. As long as a string is non-empty, it's truthy.
+    if ([3]) {}; // TRUE.
+
+
+As you can see, due to the nature of some vars being considered "truthy" by Javascript,
+we don't always explicitly need to check if they are equivalent to 'true' when checking their
+existence. Similarly, false values can also be "falsy". First some examples of things
+that equate to 'false', and then some rogue ones.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    if (0) {}; // FALSE.
+    if ("") {}; // FALSE.
+    if ([]) {}; // FALSE.
+    if (false) {}; //FALSE
+    // Typically empty and zero values are considered 'false'.
+
+
+    if (0 == false) {}; // TRUE. Similar to how '1' always gets true.
+    if ("" == false) {}; // TRUE.
+    if ([] == false) {}; // TRUE.
+
+    if (0 === false) {}; // FALSE. Strict equivalence at it again.
+
+    if (‘0’ == 0) {}; // TRUE. ’0’ becomes 0 when comparing
+    if ([0] == 0) {}; // TRUE. [0] becomes 0 when comparing
+
+    // Now for some falsy objects. They evaluate as false, but don't equal false.
+    if (null) {}; // FALSE.
+    if (undefined) {}; // FALSE.
+    if (null == undefined) {}; // TRUE.
+    if (null == false) {}; // FALSE.
+
+    // Lastly for NaN. Another weird and interesting specimen.
+    if (NaN) {}; // FALSE.
+    if (NaN == NaN) {}; // FALSE.
+    if (isNaN(NaN)) {}; // TRUE. isNaN() is a builtin JS function.
+
+Functions in Javascript
+-----------------------
+
+There are 3 ways to define a function in Javascript. Again, similarly to Python
+we do not need to define a return type, and instead of `def` we use `function`.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    functions.js
+
+    //Example 1: Normal Definition
+    function fx( parameters ) {
+        // do stuff
+        return;
+    }
+
+    //Example 2: As a var
+    var fy = ( parameter ) => {
+        // do stuff
+    }
+
+    // We may call it as a normal function call:
+    fy();
+
+    //Example 3: As a singleton function with parameters:
+    var hold = ((parameter) => {
+        // do stuff;
+        return val;
+    })( 5 );
+
+    //Same as calling:
+    var hold = fz(5);
+
+Objects in Javascript
+---------------------
+
+An object is a set of key-value pairs, used very frequently in JS. It is also
+similar to a dict in Python.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    objects.js
+
+    // Create an object and use string to retrieve value.
+    var alphabet = {
+        "A" : 1,
+        "B" : 2,
+        "C" : 3
+    }
+
+    var thisLetter = alphabet["A"];
+    // thisLetter == 1
+
+    var thatLetter = alphabet.B;
+    // thatLetter == 2
+
+We may also want to add or remove key-value pairs directly once it is initialized.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    objects.js
+
+    var alphabet = {
+        "A" : 1,
+        "B" : 2,
+        "C" : 3
+    }
+
+    alphabet.D = 4; // automatically add a new key-value pair using dot notation.
+    // Note that the value after '.' will be a string key.
+    alphabet["E"] = 5; // Another valid way of adding to the obj.
+
+    console.log(alphabet);
+    // will log: {"A" : 1, "B" : 2, "C" : 3, "D" : 4, "E" : 5}
+
+    // The 'delete' keyword in Javascript will remove a value from the object.
+    delete alphabet.D;
+    delete alphabet["C"];
+    // Both ways of accessing the values are valid for this too,
+    // although once they are gone this will throw a keyError.
+
+    console.log(alphabet);
+    // will log: {"A" : 1, "B" : 2, E" : 5}
+
+Often when using Javascript we use the JSON format to send and retrieve data.
+A JSON string is generally formatted as a valid JS Object and can be used as such with the proper typecasting.
+
+Arrays in Javascript
+--------------------
+
+Arrays in JS are similar to lists in Python.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    arrays.js
+
+    var a = [1,2,3]; // Single type array.
+
+    var b = [1, "Hello", [a]]; // multi-type arrays are also supported.
+
+    var c = a[0]; // a[0] evaluates to 1, so c = 1.
+
+That's great, but once we initialize it, how can we add, remove or change values in it?
+Arrays use different methods from Objects and as such can act as queues, stacks, and other
+helpful data structures.
+
+..code-block:: javascript
+    :emphasize-lines: 1
+
+    arrays.js
+
+    var a = [1,2,3,4];
+
+    a.push(5);   // [1,2,3,4,5]
+    a.pop();     // [1,2,3,4]
+    a.shift();   // [2,3,4]
+    a.splice(1); // [2,4] This one is be a way to remove data from a certain index,
+    // As well as add data back into the array at that index.
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
+
+
+Spread Syntax
+-------------
+
+`Spread syntax <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax>`_
+is a type of operator that applies to both arrays as well as Objects. It allows an iterable
+to be expanded in places where zero or more arguments or elements are expected,
+or an object expression to be expanded in places where zero or more key-value pairs
+are expected. Spread syntax is called using the unary `...` operator on an iterable.
+
+.. code-block javascript
+    :emphasize-lines: 1
+
+    spreadSyntax.js
+
+    // Example 1: Using arrays
+    var a = [1,2,3];
+    var b = [a,4,5];     // This is currently [[1,2,3], 4,5]. The length of b is 3.
+    var c = [...a, 4,5]; // This is currently [1,2,3,4,5]. The length of c is 5.
+
+    // As you can see the spread operator can be used to seamlessly merge arrays.
+
+    // Example 2: Using Objects
+    var o = {
+        "A" : 1,
+        "B" : 2,
+        "C" : 3
+    }
+
+    var p = {
+        a,
+        "D" : 4,
+        "E" : 5
+    }
+
+    // p is currently {"o" : {"A":1,"B":2,"C"3}, "D": 4, "E" : 5}
+
+    var t = {
+        ...o,
+        "D" : 4,
+        "E" : 5
+    }
+
+    // t is currently {"A" : 1, "B" : 2,"C" : 3, "D" : 4, "E" : 5}
+
+
+    // Example 3: Overwriting Inherited Values
+    // o is defined above.
+
+    var x = {
+        ...o,
+        "C" : 10,
+        "D" : 4
+    }
+
+    // x is currently {"A" : 1, "B" : 2,"C" : 10, "D" : 4}
+
+
+"In" Syntax
+-----------
+
+Again, the `"in" operator syntax <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/in>`_
+applies for both arrays and Objects, but does something different depending on the type
+of the iterable.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    inOperator.js
+
+    // Example 1: Arrays
+    // The 'in' operator checks that the value is a valid INDEX
+    // in the array, not for the value itself.
+
+    var a = [1,2,3,4,5];
+    if (5 in a) {}; // FALSE. Index 5 does not exist in a.
+    if (2 in a) {}; // TRUE. There is a value at index 2 in a.
+
+    // Example 2: Objects
+    // The 'in' operator checks for the key in the Object.
+
+    var o = {
+        "A" : 1,
+        "B" : 2
+    }
+
+    if ("A" in o) {}; // TRUE.
+    if (2 in o) {};   // FALSE. 2 is not a valid key in o.
+
+Classes in Javascript
+---------------------
+
+Classes are simply special data structures we can use to store data.
+
+.. code-block:: javascript
+    :emphasize-lines: 1
+
+    classes.js
+
+    //Example 1: Class with no input parameters
+    class Person {
+        constructor() {
+            this.name = "Harold";
+            this.age  = 65;
+        }
+    }
+
+    var man = new Person();
+    // man.name == "Harold";
+    // man.age  == 65;
+
+
+    //Example 2: Class which takes input parameters
+    class Car {
+        constructor(type, mileage) {
+            this.type = type;
+            this.mileage = mileage;
+            this.works = true;
+            this.wheels = true;
+        }
+    }
+
+    var type = "Tesla";
+    var mileage = 20000;
+
+    var tesla = new Car(type, mileage);
+
+In our project, the main components are all composed of classes that
+contain D3 elements and data that we modify to create visuals.

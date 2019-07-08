@@ -17,7 +17,8 @@ This site covers the documentation of our app.
    references
    detailed-changelog
    project-summary
-   guide
+   guide-js
+   guide-ddd
 
 Intro
 =====
