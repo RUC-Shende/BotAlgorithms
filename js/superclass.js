@@ -25,7 +25,7 @@ class iclData {
         /** Current velocity of the simulation. 1 - Forward. 0 - Stopped. -1 - Rewind. (0,1) - Slow */
         this.timeDirect = 0;
         /** Frames per second. Too high (> 100) == bad performance. */
-        this.fps = 60;
+        this.fps = 100;
         /** The maximum time before we stop the simulation for good. */
         this.timeMax = 10 * this.fps;
         /** Points of the equilateral shape to search. Ex. 3 = Triangle, 4 = square, 360 = circle */
@@ -334,8 +334,8 @@ class iclVisual {
         this.LoadGraph();
         for (var i = 0; i < this.iclData.instruBinder.length; i++) { //Add bots, lines, and coordinate collectors.
             this.tourColors.push(colorPalette[i]);
-            this.iclData.tourists[i].visual = this.fieldSVG.select("#bots").append("circle").attr("cx", this.iclData.unit2Px * (10 / 25))
-                .attr("cy", this.iclData.unit2Px * 4 * (20 / 25) - this.iclData.unit2Px * (10 / 25)).attr("r", this.iclData.unit2Px / 16)
+            this.iclData.tourists[i].visual = this.fieldSVG.select("#bots").append("circle").attr("cx", this.iclData.center[0])
+                .attr("cy", this.iclData.center[1]).attr("r", this.iclData.unit2Px / 16)
                 .style("fill", this.tourColors[i]).style("stroke", "#ffffff").style("stroke-width", (1 / 100) * this.iclData.unit2Px);
             this.iclData.graphDots.push(this.graphSVG.select("#bots").append("circle").attr("cx", this.iclData.unit2Px * (10 / 25))
                 .attr("cy", this.iclData.unit2Px * 4 * (20 / 25) - this.iclData.unit2Px * (10 / 25)).attr("r", this.iclData.unit2Px / 16)
