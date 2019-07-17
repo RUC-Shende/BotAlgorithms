@@ -138,7 +138,7 @@ to get to $B$, having started at the opposite side of the arc $a$, would be:
 
 \vspace*{5mm} Then, differentiating with respect to $t$, we get:
 
-\[ \frac{dt}{da} = 1 - 2 \cos (\frac{a - 2c}{2}) \]
+\[ \frac{dt}{dc} = 1 - 2 \cos (\frac{a - 2c}{2}) \]
 
 \vspace*{5mm} Finally, setting that equal to zero results in:
 
@@ -150,6 +150,53 @@ or at an angle of $ \frac{2\pi}{3}$ for $a >= \frac{2\pi}{3}$.
 
 
 \end{flushleft}
+
+\subsection {Equations}
+
+\begin{flushleft}
+    First, we know that we can divide the circle into two sections, where $a$ is the
+    responsibility of the Helper and Priority 1, and the $b$ is the responsibility of Priority 2.
+    Therefore:
+
+    \[ 2\pi = a + b \]
+
+    We know that Priority 1 and Helper will have to travel a total of $a$ around the circle,
+    and after a certain time $c$, the remaining unsearched area will be $d = a - 2c$, so at this point:
+
+    \[ 2\pi = b + 2c + d \]
+
+    If, after more time $e$ of both agents following the perimeter the distance between the two
+    would be equal to $\sqrt{3}$, which by Lemma 1 will result in the evacuation time increasing, then
+    we instead send Priority 1 along a chord of angle $h$, such that when Helper reaches point $C_{a - c - e}$, Priority 1 will be travelling somewhere along the chord. The point at which Priority 1 reaches the
+    end of the detour at point $C_{c + h}$, the Helper will be at point $C_{a - c - e - f}$, where $f$ is the extra time taken by Priority 1 to reach the end of its detour.
+
+    \[ e + f = 2\sin(\frac{h}{2}) \]
+
+    We call $g$ the remaining unsearched arc between $C_{c + h}$ and $C_{a - c - e - f}$.
+    At this point in the algorithm, we send Priority 1 clockwise to search the area from $C_{c + h}$ until
+    $C_{c}$ and Helper stays clockwise to search the remaining area from $C_{a - c - e - f}$ until $C_{c + h}$. At this point the distance between the two agents stays constant for the rest of the algorithm, and this distance is equal to $2\sin(\frac{g}{2})$. Clearly, the optimal value for $h$ is:
+
+    \[ h = g + 2\sin(\frac{g}{2})\]
+
+    At this point, we have fully partitioned the circle such that:
+
+    \[ 2\pi = b + 2c + e + f + g + h\]
+
+    which, once simplified, becomes:
+
+    \[ 2\pi = b + 2c + 2\sin(\frac{g + 2\sin(\frac{g}{2})}{2}) + 2g + 2\sin({g}{2}) \]
+
+    At this point, we identify two upper bounds. One is when Priority 2 finds the exit at the end of its
+    search, after time $t = 1 + b$, and the other is when either Helper or Priority 1
+    finds the exit at the end of their search, after time $t = 1 + c + e + f + h$.
+
+    \[b = c + e + f + h\]
+
+     
+
+
+\end{flushleft}
+
 % \includegraphics{mypics/2Q1S_Initial.pdf}
 % \includegraphics{mypics/2Q1S_Second_Step.pdf}
 % \includegraphics{mypics/2Q1S_Initial.pdf}

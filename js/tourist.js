@@ -82,7 +82,7 @@ class Tourist {
       this.y == this.iclData.fieldExit[1] &&
       !this.atExit)
       {
-          console.log("DEBUG: Robot " + this.number + " exits at " + (Math.floor((100 * this.iclData.time) / this.iclData.fps) / 100) + (this.priority ? " (Priority)" : ""));
+          console.log("DEBUG: Robot " + this.number + " exits at " + (Math.floor((1000 * this.iclData.time) / this.iclData.fps) / 1000) + (this.priority ? " (Priority)" : ""));
           this.atExit = true;
 
           if (this.priority) {

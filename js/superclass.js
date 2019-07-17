@@ -554,7 +554,8 @@ class iclVisual {
                     var exitDist = Math.sqrt(Math.pow(eVec[1], 2) + Math.pow(eVec[0], 2));
                     if (exitDist <= who.velocity * this.iclData.unit2Px / (2 * this.iclData.fps)) {
                         this.iclData.exitAlert = who.knows = true;
-                        //exitFoundFrame = time;
+                        this.iclData.exitFoundFrame = this.iclData.time;
+                        console.log("Exit found at " + this.iclData.time);
                         if (who.priority) {
                             break;
                         }

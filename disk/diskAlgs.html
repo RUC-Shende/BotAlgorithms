@@ -743,12 +743,15 @@
 
                 d3.selectAll(".timeText").remove();
                 d3.selectAll(".frameText").remove();
+                leftSide = null;
+                superlist = [];
+                controllerID = 0;
                 leftSide = new iclData(0, instruBinder, algName, d3.select("#exitAngle").node().value, wireless);
                 superlist[controllerID] = new iclVisual(leftSide);
                 clearInterval(superlist[controllerID].iclData.motor);
                 superlist[controllerID].iclData.motor = setInterval(function() {
                     superlist[controllerID].AlterAnim();
-                }, 1000 / 60);
+                }, 1);
                 d3.select(".exitText").remove();
             }
 
@@ -940,17 +943,96 @@
                         algName = "Algorithm Priority 2 ";
                         break;
                     case 'Q2S1':
-                    /* new algorithm 3.53 UB
-                        var a = 3.7512128736749366;
-                        var b = 2.5319724335046496;
-                        var c = 0.7692404401702861;
-                        //var d = 2.2838619831381655;
-                        var e = 0.05916844547058453;
-                        var f = 0.8073508236002884;
-                        var g = 0.45;
-                        var h = 0.896212724263491;
+/*
+                    var b = 2.52;
+                    var c = 0.96;
+                    var d = 3.76318;
+                    var h = 0.79;
+                    //var h = g + 2 * Math.sin( g / 2 );
+                    //var h = g;
+                    //var eandf = 2 * Math.sin( h / 2 );
+
+                    instruBinder = [
+                        [//Queen 1
+                            ["GoToExit", [null, true]],
+                            ["GoToWallAtAngle", [ (Math.PI + c) * ( 180 / Math.PI ) ] ],
+                            ["FollowWall", ["left"]],
+                        ],
+                        [//Queen 2
+                            [ "GoToExit", [ null , true] ],
+                            [ "GoToWallAtAngle", [ 0 ] ],
+                            [ "FollowWall", [ "left", ( c ) * ( 180 / Math.PI )  ] ],
+                            [ "GoToWallAtAngle", [ ( c + h ) * ( 180 / Math.PI ) ] ],
+                            [ "FollowWall", [ "right" ]]
+                        ],
+                        [//Helper
+                            [ "Wait", [ null , false] ],
+                            [ "GoToWallAtAngle", [ (Math.PI + c) * ( 180 / Math.PI ) ] ],
+                            [ "FollowWall", [ "right"]]
+                        ]
+                    ];
+*/
+                        var g = .435;
+                        var h = g + 2 * Math.sin( g / 2 );
+                        //var h = g;
+                        var eandf = 2 * Math.sin( h / 2 );
+                        console.log(eandf);
+                        var c = ( 1 / 3 ) * ( 2 * Math.PI - g - 2 * h - 2 * eandf );
+                        var a = 2 * c + eandf + g + h;
+                        var b = 2 * Math.PI - a;
+                        var e = ( (a - (( 2 / 3 ) * Math.PI)) / 2 ) - c;
+                        var f = eandf - e;
+                        var d = eandf + g + h;
+                        console.log("D is " + d);
+
+                        console.log( "Startin at angle: " + ( a - Math.PI ) );
+                        var u1 = 1 + b;
+                        var u3 = 1 + c + e + f + h;
+                        console.log( "UpperBound: " + u1 + " " + u3 );
+                        console.log( "Difference: " + ( Math.abs( Math.abs( u1 ) - Math.abs( u3 ) ) ) );
+                        console.log( "a: " + a + "\nb: " + b + "\nc: " + c + "\ne: " + e + "\nf: " + f + "\ng: " + g + "\nh: " + h );
+                        instruBinder = [
+                            [//Queen 1
+                                ["GoToExit", [null, true]],
+                                ["GoToWallAtAngle", [ a * ( 180 / Math.PI ) ] ],
+                                ["FollowWall", ["left"]],
+                            ],
+                            [//Queen 2
+                                [ "GoToExit", [ null , true] ],
+                                [ "GoToWallAtAngle", [ 0 ] ],
+                                [ "FollowWall", [ "left", ( c ) * ( 180 / Math.PI )  ] ],
+                                [ "GoToWallAtAngle", [ ( c + h ) * ( 180 / Math.PI ) ] ],
+                                [ "FollowWall", [ "right" ]]
+                            ],
+                            [//Helper
+                                [ "Wait", [ null , false] ],
+                                [ "GoToWallAtAngle", [ a * ( 180 / Math.PI ) ] ],
+                                [ "FollowWall", [ "right"]]
+                            ]
+                        ];
 
 
+                    /* new algorithm 3.53 UB */
+                        /*
+                        var g = .45;
+                        var h = g + 2 * Math.sin( g / 2 );
+                        //var h = g;
+                        var eandf = 2 * Math.sin( h / 2 );
+                        console.log(eandf);
+                        var c = ( 1 / 3 ) * ( 2 * Math.PI - g - 2 * h - 2 * eandf );
+                        var a = 2 * c + eandf + g + h;
+                        var b = 2 * Math.PI - a;
+                        var e = ( (a - (( 2 / 3 ) * Math.PI)) / 2 ) - c;
+                        var f = eandf - e;
+                        var d = eandf + g + h;
+                        console.log("D is " + d);
+
+                        console.log( "Startin at angle: " + ( a - Math.PI ) );
+                        var u1 = 1 + b;
+                        var u3 = 1 + c + e + f + h;
+                        console.log( "UpperBound: " + u1 + " " + u3 );
+                        console.log( "Difference: " + ( Math.abs( Math.abs( u1 ) - Math.abs( u3 ) ) ) );
+                        console.log( "a: " + a + "\nb: " + b + "\nc: " + c + "\ne: " + e + "\nf: " + f + "\ng: " + g + "\nh: " + h );
                         instruBinder = [
                             [//Queen 1
                                 ["GoToExit", [null, true]],
@@ -971,6 +1053,7 @@
                             ]
                         ];
                         */
+                        /*
                         instruBinder = [
                             [
                                 ["GoToExit", [null, true]],
