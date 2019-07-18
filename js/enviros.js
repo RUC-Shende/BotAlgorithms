@@ -57,8 +57,8 @@ class world {
     var worldo = new world( pathy, { x:50, y:50 }, event, 60, 360 );
 
     worldo.pkg.push( new lineFill( worldo ) );
-    //worldo.pkg.push( new CAS( worldo, 0, 1 ) );
-    worldo.pkg.push( new exitFind( worldo, { x:25, y:50 } ) );
+    worldo.pkg.push( new CAS( worldo, 0, 1, SVG2 ) );
+    //worldo.pkg.push( new exitFind( worldo, { x:25, y:50 } ) );
 
     worldo.createHistory( );
 
@@ -103,21 +103,23 @@ class world {
   }
 
   createHistory( ) {
-    this.history = { locs:[ ], dist:[ ] };
+    this.history = [ ];
     for( var i = 0; i < this.events.length; i++ ) {
-      this.history.locs.push( [ ] );
+      this.history.push( [ ] );
     }
     while( this.time < this.tTime ) {
       for( var i = 0; i < this.events.length; i++ ) {
         var who = this.mobiles[ i ];
-        this.history.locs[ i ].push( { x:who.x, y:who.y } );
+        this.history[ i ].push( { x:who.x, y:who.y } );
         who.energy = who.vel * this.unit / this.fps;
         while( who.energy > 0 ) {
           who[ who.event[ who.on ][ 0 ] ]( who.event[ who.on ][ 1 ] );
         }
       }
       for( var j = 0; j < this.pkg.length; j++ ) {
-        this.pkg[ j ].Update( );
+        if( this.pkg[ j ].Update ) {
+          this.pkg[ j ].Update( );
+        }
       }
       this.time++;
     }
@@ -266,7 +268,7 @@ class exitFind {
   }
 
   Update( ) {
-    var loc = this.w.history.locs;
+    var loc = this.w.history;
     for( var i = 0; i < loc.length; i++ ) {
       var distance = Math.hypot(
         this.exit.y - loc[ i ][ loc[ i ].length - 1 ].y,
@@ -300,6 +302,7 @@ class lineFill {
     this.step = this.w.unit / this.w.fps;
     this.pPath = [ ];
     this.points = new Set( [ ] );
+    this.wireless = true;
     this.Init( );
   }
 
@@ -330,7 +333,7 @@ class lineFill {
   }
 
   Update( ) {
-    var loc = this.w.history.locs;
+    var loc = this.w.history;
     for( var h = 0; h < loc.length; h++ ) {
       for( var i = 0; i < this.pPath.length; i++ ) {
         if( this.points.has( this.pPath[ i ] ) ) {
@@ -356,15 +359,18 @@ class lineFill {
 
 //Looks at a bot going along arc and another along chord
 class CAS {
-  constructor( world, n, m ) {
+  constructor( world, n, m, svg ) {
     this.w = world;
     this.n = n;
     this.m = m;
+    this.svg = svg.append( "svg" ).attr( "viewBox", "0, 0, 100, 100" )
+      .attr( "height", "100%" ).attr( "width", "100%" );
     this.sum = [ ];
+    this.sumText;
   }
 
   Update( ) {
-    var loc = this.w.history.locs;
+    var loc = this.w.history;
     if( loc[ this.n ].length < 2 ) {
       this.sum.push( 0 );
     } else {
@@ -385,9 +391,18 @@ class CAS {
       var lloll = Math.hypot( o.y, o.x );
       var cosn = ( n.x * o.x + n.y * o.y ) / ( llnll * lloll );
       var cosm = -( m.x * o.x + m.y * o.y ) / ( llmll * lloll );
-      this.sum.push( cosn + cosm );
-      console.log( cosn + " + " + cosm + " = " + ( cosn + cosm ) );
+      this.sum.push( Math.floor( 100 * ( cosn + cosm ) ) / 100 );
     }
+  }
+
+  VInit( ) {
+    this.sumText = this.svg.append( "text" )
+      .attr( "x", 50 ).attr( "y", 50 ).attr( "text-anchor", "middle" )
+      .text( "0" );
+  }
+
+  VUpdate( ) {
+    this.sumText.text( this.sum[ this.w.time ] );
   }
 }
 
@@ -400,12 +415,12 @@ class visual {
     this.svg = svg.append( "svg" ).attr( "viewBox", "0, 0, 100, 100" )
       .attr( "height", "100%" ).attr( "width", "100%" );
     this.w = world;
-    this.time = 0;
     this.visuals = [ ];
-    this.prepSVG( );
+    this.Init( );
   }
 
-  prepSVG( ) {
+  Init( ) {
+    this.w.time = 0;
     var hold = '';
     for( var i = 0; i < this.w.path.length; i++ ) {
       var pt = this.w.path[ i ];
@@ -415,21 +430,31 @@ class visual {
       .attr( "d", hold ).attr( "stroke-width", 1 )
       .style( "stroke", "00ff00" ).style( "fill", "000000ff" );
 
-    for( var i = 0; i < this.w.history.locs.length; i++ ) {
+    for( var i = 0; i < this.w.history.length; i++ ) {
       this.visuals.push( this.svg.append( "circle" )
         .attr( "r", 3 ).attr( "stroke-width", 1 )
         .style( "fill", "#ff000033" ).style( "stroke", "#ffffff" )
       );
     }
+    for( var i = 0; i < this.w.pkg.length; i++ ) {
+      if( this.w.pkg[ i ].VInit ) {
+        this.w.pkg[ i ].VInit( );
+      }
+    }
   }
 
   static reEnact( ) {
-    if( this.time < this.w.tTime ) {
-      for( var i = 0; i < this.w.history.locs.length; i++ ) {
-        this.visuals[ i ].attr( "cx", this.w.history.locs[ i ][ this.time ].x )
-          .attr( "cy", this.w.history.locs[ i ][ this.time ].y );
+    if( this.w.time < this.w.tTime ) {
+      for( var i = 0; i < this.w.history.length; i++ ) {
+        this.visuals[ i ].attr( "cx", this.w.history[ i ][ this.w.time ].x )
+          .attr( "cy", this.w.history[ i ][ this.w.time ].y );
       }
-      this.time++;
+      for( var i = 0; i < this.w.pkg.length; i++ ) {
+        if( this.w.pkg[ i ].VUpdate ) {
+          this.w.pkg[ i ].VUpdate( );
+        }
+      }
+      this.w.time++;
     }
   }
 }
