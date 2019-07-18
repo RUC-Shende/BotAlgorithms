@@ -16,7 +16,7 @@ class world {
     this.tTime = 10 * this.fps;
     this.mobiles = [ ];
     this.pkg = [ ];
-    this.Init( );
+    this.runs = 0;
   }
 
   static main( ) {
@@ -57,10 +57,13 @@ class world {
     var worldo = new world( pathy, { x:50, y:50 }, event, 60, 360 );
 
     worldo.pkg.push( new lineFill( worldo ) );
-    worldo.pkg.push( new CAS( worldo, 0, 1, SVG2 ) );
+    //worldo.pkg.push( new CAS( worldo, 0, 1, SVG2 ) );
     //worldo.pkg.push( new exitFind( worldo, { x:25, y:50 } ) );
 
     worldo.createHistory( );
+    console.log( worldo.history );
+    worldo.createHistory( );
+    console.log( worldo.history );
 
     var visuao = new visual( SVG, worldo );
     var motor = setInterval( visual.reEnact.bind( visuao ), 1000 / worldo.fps );
@@ -94,16 +97,24 @@ class world {
   }
 
   Init( ) {
-    for( var i = 0; i < this.events.length; i++ ) {
+    this.time = 0;	//Reset time
+    this.mobiles = [ ];		//Reset mobiles for run
+    for( var i = 0; i < this.events.length; i++ ) {	//Refill mobiles for run
       this.mobiles.push( new mobile(
         this, this.start.x, this.start.y,
         this.mobiles.length, this.events[ this.mobiles.length ]
       ) );
     }
+    for( var j = 0; j < this.pkg.length; j++ ) {
+      if( this.pkg[ j ].Init ) {
+        this.pkg[ j ].Init( );
+      }
+    }
   }
 
   createHistory( ) {
-    this.history = [ ];
+    this.Init( );
+    this.history = [ ];		//Reset History
     for( var i = 0; i < this.events.length; i++ ) {
       this.history.push( [ ] );
     }
@@ -123,6 +134,7 @@ class world {
       }
       this.time++;
     }
+    this.runs++;
   }
 }
 
@@ -262,32 +274,40 @@ class exitFind {
   constructor( world, exit ) {
     this.w = world;
     this.step = this.w.unit / this.w.fps;
-    this.premo = world.history;
+    this.premo = null;
     this.exit = exit;
     this.fTime = null;
   }
 
-  Update( ) {
-    var loc = this.w.history;
-    for( var i = 0; i < loc.length; i++ ) {
-      var distance = Math.hypot(
-        this.exit.y - loc[ i ][ loc[ i ].length - 1 ].y,
-        this.exit.x - loc[ i ][ loc[ i ].length - 1 ].x
-      );
-      
-      if( distance <= this.step ) {
-        console.log( distance + ", " + this.step / 2 );
-      }
-      
-      if( distance <= this.step / 2 ) {
-        this.w.mobiles[ i ].on = 0;
-        this.w.mobiles[ i ].know = 1;
-        continue;
-      }
-      break;
+  Init( ) {
+    if( this.w.runs == 1 ) {
+      this.premo = this.w.history;
     }
-    if( i == loc.length ) {
-      this.w.tTime = this.w.time;
+  }
+
+  Update( ) {
+    if( this.w.runs ) {
+      if( !this.premo ) {
+        this.premo = this.w.history;
+      }
+      this.premo = world.history;
+      var loc = this.w.history;
+      for( var i = 0; i < loc.length; i++ ) {
+        var distance = Math.hypot(
+          this.exit.y - loc[ i ][ loc[ i ].length - 1 ].y,
+          this.exit.x - loc[ i ][ loc[ i ].length - 1 ].x
+        );
+        
+        if( distance <= this.step / 2 ) {
+          this.w.mobiles[ i ].on = 0;
+          this.w.mobiles[ i ].know = 1;
+          continue;
+        }
+        break;
+      }
+      if( i == loc.length ) {
+        this.w.tTime = this.w.time;
+      }
     }
   }
 }
@@ -303,7 +323,6 @@ class lineFill {
     this.pPath = [ ];
     this.points = new Set( [ ] );
     this.wireless = true;
-    this.Init( );
   }
 
   Init( ) {
@@ -313,6 +332,8 @@ class lineFill {
       console.log( "%cERROR: Must be a closed path", "color:#ff0000ff" );
       return null;
     }
+    this.pPath = [ ];
+    this.points = new Set( [ ] );
     var curPt = null;
     for( var i = 0; i < this.w.path.length; i++ ) {
       var nextPt = this.w.path[ i ];
@@ -367,6 +388,10 @@ class CAS {
       .attr( "height", "100%" ).attr( "width", "100%" );
     this.sum = [ ];
     this.sumText;
+  }
+
+  Init( ) {
+    this.sim = [ ];
   }
 
   Update( ) {
