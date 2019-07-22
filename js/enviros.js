@@ -5,12 +5,13 @@
 
 class world {
   constructor( path, start, icll, fps ) {
-    this.path = path;
-    this.icll = icll;
-    this.history = null;
     this.unit = 25;
-    this.fps = fps;
+    this.path = path;
     this.start = start;
+    this.icll = icll;
+    this.fps = fps;
+    this.pPath = this.genPath( );
+    this.history = null;
     this.time = 0;
     this.tTime = 10 * this.fps;
     this.mobiles = [ ];
@@ -62,12 +63,13 @@ class world {
       60
     );
 
-    //worldo.mods.push( new lineFillMod( worldo ) );//medium			~135ms
+    //nothing									~25ms
+    worldo.mods.push( new lineFillMod( worldo ) );//medium			~65ms
     //worldo.mods.push( new coSuMod( worldo, 0, 1, SVG2 ) );//light		~10ms
     //worldo.mods.push( new exitFindMod( worldo, { x:25, y:50 } ) );//light	~5ms
 
     worldo.createHistory( );
-    worldo.createHistory( );	//exitFindMod requires two createHistory's
+    //worldo.createHistory( );	//exitFindMod requires two createHistory's
 
     var visuao = new visual( SVG, worldo );
     var motor = setInterval( visual.reEnact.bind( visuao ), 1000 / worldo.fps );
@@ -84,6 +86,33 @@ class world {
     }
     poly.push( poly[ 0 ] );
     return( poly );
+  }
+
+  genPath( ) {
+    if( this.path[ 0 ].x != this.path[ this.path.length - 1 ].x ||
+      this.path[ 0 ].y != this.path[ this.path.length - 1 ].y
+    ) {
+      console.log( "%cERROR: Must be a closed path", "color:#ff0000ff" );
+      return null;
+    }
+    var pPath = [ ];
+    var curPt = null;
+    for( var i = 0; i < this.path.length; i++ ) {
+      var nextPt = this.path[ i ];
+      if( curPt ) {
+        var distance = Math.hypot( nextPt.y - curPt.y, nextPt.x - curPt.x );
+        var totalSteps = Math.floor( this.fps * distance / this.unit ) + 1;
+        for( var j = 0; j < totalSteps; j++ ) {
+          var pt = {
+            x:curPt.x + ( j / totalSteps ) * ( nextPt.x - curPt.x ),
+            y:curPt.y + ( j / totalSteps ) * ( nextPt.y - curPt.y )
+          };
+          pPath.push( pt );
+        }
+      }
+      curPt = nextPt;
+    }
+    return( pPath );
   }
 
   //returns point relative to a unit polygon at origin, code is reduced rel. to p11 = 0,0
@@ -225,7 +254,7 @@ class mobile {
   }
 
   GoToWall( value ) {
-    for( var i = 0; i < this.path.length - 1; i++ ) {
+    for( var i = 0; i < this.pPath.length - 1; i++ ) {
       var u = { x:this.x - this.path[ i ].x, y:this.y - this.path[ i ].y };
       var v = {
         x:this.path[ i + 1 ].x - this.path[ i ].x,
@@ -327,53 +356,32 @@ class lineFillMod {
   constructor( world ) {
     this.w = world;
     this.step = this.w.unit / this.w.fps;
-    this.pPath = null;
-    this.points = null;
+    this.pts = null;
+    this.count = -1;
   }
 
   Init( ) {
-    if( this.w.path[ 0 ].x != this.w.path[ this.w.path.length - 1 ].x ||
-      this.w.path[ 0 ].y != this.w.path[ this.w.path.length - 1 ].y
-    ) {
-      console.log( "%cERROR: Must be a closed path", "color:#ff0000ff" );
-      return null;
-    }
-    this.pPath = [ ];
-    var curPt = null;
-    for( var i = 0; i < this.w.path.length; i++ ) {
-      var nextPt = this.w.path[ i ];
-      if( curPt ) {
-        var distance = Math.hypot( nextPt.y - curPt.y, nextPt.x - curPt.x );
-        var totalSteps = Math.floor( distance / this.step ) + 1;
-        for( var j = 0; j < totalSteps; j++ ) {
-          var pt = {
-            x:curPt.x + ( j / totalSteps ) * ( nextPt.x - curPt.x ),
-            y:curPt.y + ( j / totalSteps ) * ( nextPt.y - curPt.y )
-          };
-          this.pPath.push( pt );
-        }
-      }
-      curPt = nextPt;
-    }
-    this.points = new Set( this.pPath );
+    this.pts = this.w.pPath.slice( );
+    this.count = this.w.pPath.length;
   }
 
   Update( ) {
     var loc = this.w.history;
-    for( var h = 0; h < loc.length; h++ ) {
-      for( var i = 0; i < this.pPath.length; i++ ) {
-        if( this.points.has( this.pPath[ i ] ) ) {
+    for( var i = 0; i < loc.length; i++ ) {
+      for( var j = 0; j < this.pts.length; j++ ) {
+        if( this.pts[ j ] ) {
           var distance = Math.hypot(
-            this.pPath[ i ].y - loc[ h ][ loc[ h ].length - 1 ].y,
-            this.pPath[ i ].x - loc[ h ][ loc[ h ].length - 1 ].x
+            this.pts[ j ].y - loc[ i ][ loc[ i ].length - 1 ].y,
+            this.pts[ j ].x - loc[ i ][ loc[ i ].length - 1 ].x
           );
           if( distance <= this.step / 2 ) {
-              this.points.delete( this.pPath[ i ] );
+            this.pts[ j ] = null;
+            this.count--;
           }
         }
       }
     }
-    if( this.points.size == 0 ) {
+    if( this.count < 1 ) {
       this.w.tTime = this.w.time;
     }
   }
