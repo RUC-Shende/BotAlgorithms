@@ -4,19 +4,17 @@
 //var visuao;
 
 class world {
-  constructor( path, start, events, fps, deg ) {
+  constructor( path, start, icll, fps ) {
     this.path = path;
-    this.events = events;
+    this.icll = icll;
     this.history = null;
     this.unit = 25;
     this.fps = fps;
-    this.deg = deg;
     this.start = start;
     this.time = 0;
     this.tTime = 10 * this.fps;
     this.mobiles = [ ];
-    this.pkg = [ ];
-    this.runs = 0;
+    this.mods = [ ];
   }
 
   static main( ) {
@@ -27,52 +25,58 @@ class world {
       .attr( "width", 500 ).attr( "height", 500 )
       .style( "border", "1px solid green" );
 
-    var event = [
+    var icll = [
       [
-        [ "wait", [ ] ],
-        [ "GoToWallAtAngle", [ 315 ] ],
-        [ "FollowWall", [ "right" ] ]
+        [ "info" ],
+        //[ "GoToWallAtAngle", [ 315 ] ],
+        //[ "FollowWall", [ "right" ] ],
+        [ "wait", [ ] ]
       ],
       [ 
-        [ "wait", [ ] ],
-        [ "GoToWallAtAngle", [ 135 ] ],
-        [ "FollowWall", [ "left" ] ]
-      ],
-      [
-        [ "wait", [ ] ],
-        [ "wait", [ 9 ] ],
-        [ "GoToWallAtAngle", [ 315 ] ],
+        [ "info" ],
+        //[ "GoToWallAtAngle", [ 135 ] ],
+        //[ "FollowWall", [ "left" ] ],
         [ "wait", [ ] ]
       ],
       [
+        [ "info" ],
+        [ "wait", [ 9 ] ],
+        //[ "GoToWallAtAngle", [ 315 ] ],
         [ "wait", [ ] ],
-        [ "GoToPoint", [ 25, 50 ] ],
+        [ "wait", [ ] ]
+      ],
+      [
+        [ "info" ],
+        [ "GoToPoint", { x:25, y:50 } ],
         [ "GoToCenter", [ ] ],
-        [ "GoOutAtAngle", [ 45, 1 ] ],
+        [ "GoOutAtAngle", { r:1, d:45 } ],
+        [ "wait", [ ] ],
         [ "wait", [ ] ]
       ]
     ];
-    var pathy = world.genPoly( { x:50, y:50 }, 25, 360 );
 
-    var worldo = new world( pathy, { x:50, y:50 }, event, 60, 360 );
+    var worldo = new world(
+      world.genPoly( { x:50, y:50 }, 25, 0, 360 ),
+      { x:50, y:50 },
+      icll,
+      60
+    );
 
-    worldo.pkg.push( new lineFill( worldo ) );
-    //worldo.pkg.push( new CAS( worldo, 0, 1, SVG2 ) );
-    //worldo.pkg.push( new exitFind( worldo, { x:25, y:50 } ) );
+    //worldo.mods.push( new lineFillMod( worldo ) );//medium			~135ms
+    //worldo.mods.push( new coSuMod( worldo, 0, 1, SVG2 ) );//light		~10ms
+    //worldo.mods.push( new exitFindMod( worldo, { x:25, y:50 } ) );//light	~5ms
 
     worldo.createHistory( );
-    console.log( worldo.history );
-    worldo.createHistory( );
-    console.log( worldo.history );
+    worldo.createHistory( );	//exitFindMod requires two createHistory's
 
     var visuao = new visual( SVG, worldo );
     var motor = setInterval( visual.reEnact.bind( visuao ), 1000 / worldo.fps );
   }
 
-  static genPoly( c, r, n ) {
+  static genPoly( c, r, a, n ) {
     var poly = [ ];
     for( var i = 0; i < n; i++ ) {
-      var sumAng = ( i * 2 * Math.PI / n );
+      var sumAng = ( a * Math.PI / 180 ) + ( i * 2 * Math.PI / n );
       poly.push( {
         x:c.x + r * Math.cos( sumAng ),
         y:c.y - r * Math.sin( sumAng )
@@ -99,15 +103,14 @@ class world {
   Init( ) {
     this.time = 0;	//Reset time
     this.mobiles = [ ];		//Reset mobiles for run
-    for( var i = 0; i < this.events.length; i++ ) {	//Refill mobiles for run
+    for( var i = 0; i < this.icll.length; i++ ) {	//Refill mobiles for run
       this.mobiles.push( new mobile(
-        this, this.start.x, this.start.y,
-        this.mobiles.length, this.events[ this.mobiles.length ]
+        this, this.start.x, this.start.y, i, this.icll[ i ]
       ) );
     }
-    for( var j = 0; j < this.pkg.length; j++ ) {
-      if( this.pkg[ j ].Init ) {
-        this.pkg[ j ].Init( );
+    for( var j = 0; j < this.mods.length; j++ ) {	//Reset modules
+      if( this.mods[ j ].Init ) {
+        this.mods[ j ].Init( );
       }
     }
   }
@@ -115,26 +118,25 @@ class world {
   createHistory( ) {
     this.Init( );
     this.history = [ ];		//Reset History
-    for( var i = 0; i < this.events.length; i++ ) {
+    for( var i = 0; i < this.icll.length; i++ ) {
       this.history.push( [ ] );
     }
     while( this.time < this.tTime ) {
-      for( var i = 0; i < this.events.length; i++ ) {
+      for( var i = 0; i < this.icll.length; i++ ) {
         var who = this.mobiles[ i ];
         this.history[ i ].push( { x:who.x, y:who.y } );
         who.energy = who.vel * this.unit / this.fps;
         while( who.energy > 0 ) {
-          who[ who.event[ who.on ][ 0 ] ]( who.event[ who.on ][ 1 ] );
+          who[ who.icl[ who.on ][ 0 ] ]( who.icl[ who.on ][ 1 ] );
         }
       }
-      for( var j = 0; j < this.pkg.length; j++ ) {
-        if( this.pkg[ j ].Update ) {
-          this.pkg[ j ].Update( );
+      for( var j = 0; j < this.mods.length; j++ ) {
+        if( this.mods[ j ].Update ) {
+          this.mods[ j ].Update( );
         }
       }
       this.time++;
     }
-    this.runs++;
   }
 }
 
@@ -143,13 +145,13 @@ class world {
 
 
 class mobile {
-  constructor( world, x, y, num, event ) {
+  constructor( world, x, y, num, icl ) {
     this.world = world;
     this.x = x;
     this.y = y;
     this.num = num;
     this.on = 1;
-    this.event = event;
+    this.icl = icl;
     this.vel = 1;
     this.a = 0;
     this.energy = 0;
@@ -191,10 +193,10 @@ class mobile {
   }
 
   GoToPoint( value ) {
-    if ( ( this.x == value[ 0 ] ) && ( this.y == value[ 1 ] ) ) {
+    if ( ( this.x == value.x ) && ( this.y == value.y ) ) {
       this.on++;
     } else {
-      this.DirectTo( { x:value[ 0 ], y:value[ 1 ] } );
+      this.DirectTo( value );
     }
   }
 
@@ -203,6 +205,32 @@ class mobile {
       this.on++;
     } else {
       this.DirectTo( this.world.start );
+    }
+  }
+
+  GoOutAtAngle( value ) {
+    if ( this.target == null ) {
+      var angHold = value.d * ( Math.PI / 180 );
+      this.target = {
+        x:this.x + value.r * this.world.unit * Math.cos( angHold ),
+        y:this.y - value.r * this.world.unit * Math.sin( angHold )
+      };
+    }
+    if ( ( this.x == this.target.x ) && ( this.y == this.target.y ) ) {
+      this.on++;
+      this.target = null;
+    } else {
+      this.DirectTo( this.target );
+    }
+  }
+
+  GoToWall( value ) {
+    for( var i = 0; i < this.path.length - 1; i++ ) {
+      var u = { x:this.x - this.path[ i ].x, y:this.y - this.path[ i ].y };
+      var v = {
+        x:this.path[ i + 1 ].x - this.path[ i ].x,
+        y:this.path[ i + 1 ].y - this.path[ i ].y
+      };
     }
   }
 
@@ -215,22 +243,6 @@ class mobile {
     if ( ( this.x == this.target.x ) && ( this.y == this.target.y ) ) {
       this.a = value[ 0 ];
       this.on++;
-    } else {
-      this.DirectTo( this.target );
-    }
-  }
-
-  GoOutAtAngle( value ) {
-    if ( this.target == null ) {
-      var angHold = value[ 0 ] * ( Math.PI / 180 );
-      this.target = {
-        x:this.x + value[ 1 ] * this.world.unit * Math.cos( angHold ),
-        y:this.y - value[ 1 ] * this.world.unit * Math.sin( angHold )
-      };
-    }
-    if ( ( this.x == this.target.x ) && ( this.y == this.target.y ) ) {
-      this.on++;
-      this.target = null;
     } else {
       this.DirectTo( this.target );
     }
@@ -270,8 +282,8 @@ class mobile {
 
 
 
-class exitFind {
-  constructor( world, exit ) {
+class exitFindMod {
+  constructor( world, exit, ) {
     this.w = world;
     this.step = this.w.unit / this.w.fps;
     this.premo = null;
@@ -280,18 +292,14 @@ class exitFind {
   }
 
   Init( ) {
-    if( this.w.runs == 1 ) {
+    if( this.w.history ) {
       this.premo = this.w.history;
     }
   }
 
   Update( ) {
-    if( this.w.runs ) {
-      if( !this.premo ) {
-        this.premo = this.w.history;
-      }
-      this.premo = world.history;
-      var loc = this.w.history;
+    if( this.premo ) {
+      var loc = this.w.history, j = 0;
       for( var i = 0; i < loc.length; i++ ) {
         var distance = Math.hypot(
           this.exit.y - loc[ i ][ loc[ i ].length - 1 ].y,
@@ -299,13 +307,12 @@ class exitFind {
         );
         
         if( distance <= this.step / 2 ) {
-          this.w.mobiles[ i ].on = 0;
+          this.w.mobiles[ i ].on = this.w.mobiles[ i ].icl.length - 1;
           this.w.mobiles[ i ].know = 1;
-          continue;
+          j++;
         }
-        break;
       }
-      if( i == loc.length ) {
+      if( j == loc.length ) {
         this.w.tTime = this.w.time;
       }
     }
@@ -316,13 +323,12 @@ class exitFind {
 
 
 
-class lineFill {
+class lineFillMod {
   constructor( world ) {
     this.w = world;
     this.step = this.w.unit / this.w.fps;
-    this.pPath = [ ];
-    this.points = new Set( [ ] );
-    this.wireless = true;
+    this.pPath = null;
+    this.points = null;
   }
 
   Init( ) {
@@ -333,7 +339,6 @@ class lineFill {
       return null;
     }
     this.pPath = [ ];
-    this.points = new Set( [ ] );
     var curPt = null;
     for( var i = 0; i < this.w.path.length; i++ ) {
       var nextPt = this.w.path[ i ];
@@ -346,11 +351,11 @@ class lineFill {
             y:curPt.y + ( j / totalSteps ) * ( nextPt.y - curPt.y )
           };
           this.pPath.push( pt );
-          this.points.add( pt );
         }
       }
       curPt = nextPt;
     }
+    this.points = new Set( this.pPath );
   }
 
   Update( ) {
@@ -379,7 +384,7 @@ class lineFill {
 
 
 //Looks at a bot going along arc and another along chord
-class CAS {
+class coSuMod {
   constructor( world, n, m, svg ) {
     this.w = world;
     this.n = n;
@@ -391,7 +396,7 @@ class CAS {
   }
 
   Init( ) {
-    this.sim = [ ];
+    this.sum = [ ];
   }
 
   Update( ) {
@@ -461,9 +466,9 @@ class visual {
         .style( "fill", "#ff000033" ).style( "stroke", "#ffffff" )
       );
     }
-    for( var i = 0; i < this.w.pkg.length; i++ ) {
-      if( this.w.pkg[ i ].VInit ) {
-        this.w.pkg[ i ].VInit( );
+    for( var i = 0; i < this.w.mods.length; i++ ) {
+      if( this.w.mods[ i ].VInit ) {
+        this.w.mods[ i ].VInit( );
       }
     }
   }
@@ -474,9 +479,9 @@ class visual {
         this.visuals[ i ].attr( "cx", this.w.history[ i ][ this.w.time ].x )
           .attr( "cy", this.w.history[ i ][ this.w.time ].y );
       }
-      for( var i = 0; i < this.w.pkg.length; i++ ) {
-        if( this.w.pkg[ i ].VUpdate ) {
-          this.w.pkg[ i ].VUpdate( );
+      for( var i = 0; i < this.w.mods.length; i++ ) {
+        if( this.w.mods[ i ].VUpdate ) {
+          this.w.mods[ i ].VUpdate( );
         }
       }
       this.w.time++;
