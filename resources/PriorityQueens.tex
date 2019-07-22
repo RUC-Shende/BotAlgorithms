@@ -10,6 +10,7 @@
 \usepackage{epstopdf}
 \usepackage{multicol}
 \usepackage{multirow}
+\usepackage{tabularx}
 \DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
 \setlength\parindent{8mm}
 \title{Evacuating Priority Agents in a Disk with Unknown Exit Location}
@@ -145,7 +146,7 @@ to get to $B$, having started at the opposite side of the arc $a$, would be:
 \[ \frac{2\pi}{3} = a - 2c \]
 
 \vspace*{5mm} Thus, the greatest value for $t$ will occur when the agents are $\sqrt{3}$ apart,
-or at an angle of $ \frac{2\pi}{3}$ for $a >= \frac{2\pi}{3}$.
+or at an angle of $ \frac{2\pi}{3}$ for $a >= \frac{2\pi}{3}$ at the time of exit discovery.
 
 
 
@@ -192,10 +193,59 @@ or at an angle of $ \frac{2\pi}{3}$ for $a >= \frac{2\pi}{3}$.
 
     \[b = c + e + f + h\]
 
-     
-
-
 \end{flushleft}
+
+\subsection{Figures of Reference}
+\begin{flushleft}
+    This subsection is devoted to showing how we get each variable as it relates to the shape or upper bound.
+\end{flushleft}
+\begin{center}
+    \begin{tabularx}{\textwidth}{lXc}
+        \hline
+        \multirow{2}{*}{$2\pi = a+b$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_1.pdf}} \\
+    \end{tabularx}
+    \begin{tabularx}{\textwidth}{lXc}
+        \hline
+        \multirow{2}{*}{$a = 2c+d$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_2.pdf}} \\
+    \end{tabularx}
+    \begin{tabularx}{\textwidth}{lXc}
+        \hline
+        \multirow{2}{*}{$d = e+f+g+h$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_3.pdf}} \\
+    \end{tabularx}
+    \begin{tabularx}{\textwidth}{lXc}
+        \hline
+        \multirow{2}{*}{$c+e = \frac{a - \frac{2\pi}{3}}{2}$} & &  \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_4.pdf}} \\
+    \end{tabularx}
+    \begin{tabularx}{\textwidth}{lXc}
+        \hline
+        \multirow{2}{*}{$e+f = 2\sin(\frac{h}{2})$} & & \parbox[c]{0.3\textwidth}{\includegraphics[width=0.3\textwidth]{Q2S1_Eq/eq_5.pdf}} \\
+    \end{tabularx}
+    \begin{tabularx}{\textwidth}{lXc}
+        \hline
+        \multirow{2}{*}{$h = g+2\sin(\frac{g}{2})$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_6.pdf}} \\
+    \end{tabularx}
+    %\begin{tabularx}{\textwidth}{p{0.4\textwidth}lc}
+        %\hline
+        %\multirow{2}{*}{$2\sin(c+x) =
+        %\sqrt{2}\sqrt{(x-1)\cos(g+h+x) - x\cos(g+x) -
+        %(x-1)x\cos(h) + (x-1)x + 1}$} & \\ \\ %\parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/ub_1.pdf}} \\
+    %\end{tabularx}
+    \begin{tabularx}{\textwidth}{lXc}
+        \hline
+        \multirow{2}{*}{$t = 1+b$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/ub_1.pdf}} \\
+    \end{tabularx}
+    \begin{tabularx}{\textwidth}{lXc}
+        \hline
+        \multirow{2}{*}{$t = 1+c+e+f+h$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/ub_2.pdf}} \\
+    \end{tabularx}
+    \begin{tabularx}{\textwidth}{lXc}
+        \hline
+        \multirow{2}{*}{$t = 1+c+x+2\sin(c+x)$} & & \parbox[c]{0.3\textwidth}{\includegraphics[width=0.3\textwidth]{Q2S1_Eq/ub_3.pdf}} \\
+        \hline
+    \end{tabularx}
+\end{center}
+
+
 
 % \includegraphics{mypics/2Q1S_Initial.pdf}
 % \includegraphics{mypics/2Q1S_Second_Step.pdf}
