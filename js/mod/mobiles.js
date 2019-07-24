@@ -145,30 +145,6 @@ class Tourist {
   }
 
   /**
-  * A robot will wait for a time in seconds, or indefinitely if no time is specified.
-  *
-  *@param {float} value Time to wait for in seconds.
-  *
-  *
-  */
-  Wait(value) {
-    if (value[0] == null) {
-      this.allowance = 0;
-    } else {
-      if (this.target == null) {
-        this.target = this.iclData.time + value[0] * this.iclData.fps;
-      }
-      if (this.iclData.time >= this.target) {
-        this.on++;
-        this.allowance -= this.velocity * (this.iclData.unit2Px / this.iclData.fps) - (this.iclData.time - this.target);
-        this.target = null;
-      } else {
-        this.allowance = 0;
-      }
-    }
-  }
-
-  /**
   * A robot will follow the perimeter for a certain number of seconds, or indefinitely if no time specified.
   * value[0] Will default to 'right' if no direction specified.
   * Robot is required to be at a position on the perimeter.
@@ -222,32 +198,6 @@ class Tourist {
   }
 
   /**
-  * A robot will wait at the average position of all robots NOT doing the WaitAverage command.
-  *
-  *@param {null} value null
-  *
-  *
-  */
-  WaitAverage(value) {
-    var sumPosition = [0, 0];
-    var totalNum = 0;
-    for (var i = 0; i < this.iclData.tourists.length; i++) {
-      if (this.iclData.instruBinder[i][this.iclData.tourists[i].on][0] != "WaitAverage") {
-        totalNum++;
-        sumPosition[0] += this.iclData.tourists[i].x;
-        sumPosition[1] += this.iclData.tourists[i].y;
-      }
-    }
-    sumPosition[0] /= totalNum;
-    sumPosition[1] /= totalNum;
-    if ((this.x == sumPosition[0]) && (this.y == sumPosition[1])) {
-      this.allowance = 0;
-    } else {
-      this.DirectTo(sumPosition);
-    }
-  }
-
-  /**
   *
   * The robot will go to a point on the shape defined by cartesian coordinates (x, y)
   * Based on original center point defined in this.iclData (before visual scaling)
@@ -274,43 +224,6 @@ class Tourist {
     } else {
       this.DirectTo(this.iclData.fieldExit);
     }
-  }
-
-  /**
-   * Robot will continuously move in the direction of the closest target, until it catches it.
-   *
-   *@param {null} value null
-   */
-  Pursue(value) {
-      if ((this.target == null) && (!this.iclData.wireless)) {
-          var closest = Infinity;
-          for (var i = 0; i < this.iclData.touristNum; i++) {
-              if (this.iclData.instruBinder[i][this.iclData.tourists[i].on][0] == "WaitAverage") {
-                  continue;
-              }
-              if ((!this.iclData.tourists[i].knows) && (this.iclData.tourists[i].hunted == null)) {
-                  var exitDist = Math.hypot(this.iclData.tourists[i].y - this.y, this.iclData.tourists[i].x - this.x);
-                  if (exitDist < closest) {
-                      this.target = i;
-                      closest = exitDist;
-                  }
-              }
-          }
-      }
-      if (this.target == null) {
-          this.GoToExit(value);
-      } else {
-          this.iclData.tourists[this.target].hunted = this.number;
-          var botDist = hypot(this.iclData.tourists[this.target].y - this.y, this.iclData.tourists[this.target].x - this.x);
-          if (botDist <= this.velocity * this.iclData.unit2Px / this.iclData.fps) {
-              this.iclData.exitAlert = this.iclData.tourists[this.target].knows = true;
-              this.iclData.exitAllow = botDist;
-          }
-          this.DirectTo([this.iclData.tourists[this.target].x, this.iclData.tourists[this.target].y]);
-          if (this.iclData.tourists[this.target].knows) {
-              this.target = null;
-          }
-      }
   }
 
   /**

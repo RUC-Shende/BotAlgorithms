@@ -1,5 +1,49 @@
 'use strict';
 var worldo;
+
+class utils {
+
+    constructor() {}
+
+    static wallAtAngle(deg, angle) {
+        var fa = Math.floor((angle / 360) * deg);
+        var d2r = Math.PI / 180;
+        var p12 = {
+            x: Math.cos(angle * d2r),
+            y: -Math.sin(angle * d2r)
+        };
+        var p21 = {
+            x: Math.cos(fa * d2r),
+            y: -Math.sin(fa * d2r)
+        };
+        var p22 = {
+            x: Math.cos((fa + 1) * d2r),
+            y: -Math.sin((fa + 1) * d2r)
+        };
+        var m1 = p12.y / p12.x;
+        var m2 = (p22.y - p21.y) / (p22.x - p21.x);
+        var c2 = p22.y - m2 * p22.x;
+        var d = m2 - m1;
+        return ({
+            x: (-c2) / d,
+            y: (-m1 * c2) / d
+        });
+    }
+
+    static genPoly(c, r, a, n) {
+        var poly = [];
+        for (var i = 0; i < n; i++) {
+            var sumAng = (a * Math.PI / 180) + (i * 2 * Math.PI / n);
+            poly.push({
+                x: c.x + r * Math.cos(sumAng),
+                y: c.y - r * Math.sin(sumAng)
+            });
+        }
+        poly.push(poly[0]);
+        return (poly);
+    }
+}
+
 /**
  *Data necessary to run a simulation of a given algorithm, create visual paths, etc.
  *Tourist == Agent == Robot.
@@ -26,7 +70,7 @@ class iclData {
         /** Current velocity of the simulation. 1 - Forward. 0 - Stopped. -1 - Rewind. (0,1) - Slow */
         this.timeDirect = 0;
         /** Frames per second. Too high (> 100) == bad performance. */
-        this.fps = 100;
+        this.fps = 60;
         /** The maximum time before we stop the simulation for good. */
         this.timeMax = 10 * this.fps;
         /** Points of the equilateral shape to search. Ex. 3 = Triangle, 4 = square, 360 = circle */
@@ -34,11 +78,17 @@ class iclData {
         /** 1 unit == 1 Radius. How many pixels per unit. */
         this.unit2Px = 25;
         /** Center of the current shape in {float}[x,y]. */
-        this.center = {x:this.unit2Px * 2, y:this.unit2Px*2};
+        this.center = {
+            x: this.unit2Px * 2,
+            y: this.unit2Px * 2
+        };
         /** Angle of the exit to use for the sim. */
         this.exitAngle = angle;
         /** Exit to use for the sim in {float}[x,y]. */
-        this.fieldExit = {x:this.center.x + this.unit2Px * Math.cos(this.exitAngle * Math.PI / 180), y:this.center.y - this.unit2Px * Math.sin(this.exitAngle * Math.PI / 180)};
+        this.fieldExit = {
+            x: this.center.x + this.unit2Px * Math.cos(this.exitAngle * Math.PI / 180),
+            y: this.center.y - this.unit2Px * Math.sin(this.exitAngle * Math.PI / 180)
+        };
         /** How many tourists this data structure is in control of. */
         this.touristNum = 0;
         /** Array of valid trajectories for robots. Length is how many tourists are being used. */
@@ -80,145 +130,76 @@ class iclData {
         //this.Start();
     }
 
-    static main(id, instruBinder, algorithmName, angle, wireless) {
-        var SVG = d3.select("body").append("svg")
-            .attr("width", 500).attr("height", 500)
-            .style("border", "1px solid red");
-        var SVG2 = d3.select("body").append("svg")
-            .attr("width", 500).attr("height", 500)
-            .style("border", "1px solid green");
-
-        var icll = [
-            [
-                ["info"],
-                [ "GoOutAtAngle", {r:1, d:90} ],
-                [ "FollowWall", [ "right"] ],
-                ["Intercept"]
-            ],
-            [
-                ["info"],
-                [ "GoOutAtAngle", {r:1, d:90} ],
-                [ "FollowWall", [ "left" ] ],
-                ["Intercept"]
-            ]
-        ];
-
-        worldo = new iclData(
-            0,
-            icll,
-            'AlgorithmName',
-            180,
-            false,
-            iclData.genPoly({x: 50, y: 50}, 25, 0, 360)
-        );
-
-        //nothing									~25ms
-        worldo.mods.push( new exitFindMod( worldo, worldo.fieldExit ) );//light	~5ms
-        worldo.createHistory();
-        worldo.mods.push(new lineFillMod(worldo)); //medium			~65ms
-        //worldo.mods.push( new coSuMod( worldo, 0, 1, SVG2 ) );//light		~10ms
-        //worldo.mods.push( new exitFindMod( worldo, { x:75, y:50 } ) );//light	~5ms
-
-        worldo.createHistory();
-        //worldo.createHistory( );	//exitFindMod requires two createHistory's
-
-        var visuao = new iclVisual(SVG, worldo);
-        worldo.motor = setInterval(iclVisual.reEnact.bind(visuao), 1000 / worldo.fps);
-    }
-
-    static genPoly( c, r, a, n ) {
-      var poly = [ ];
-      for( var i = 0; i < n; i++ ) {
-        var sumAng = ( a * Math.PI / 180 ) + ( i * 2 * Math.PI / n );
-        poly.push( {
-          x:c.x + r * Math.cos( sumAng ),
-          y:c.y - r * Math.sin( sumAng )
-        } );
-      }
-      poly.push( poly[ 0 ] );
-      return( poly );
-    }
-
-    genPath( ) {
-      if( this.path[ 0 ].x != this.path[ this.path.length - 1 ].x ||
-        this.path[ 0 ].y != this.path[ this.path.length - 1 ].y
-      ) {
-        console.log( "%cERROR: Must be a closed path", "color:#ff0000ff" );
-        return null;
-      }
-      var pPath = [ ];
-      var curPt = null;
-      for( var i = 0; i < this.path.length; i++ ) {
-        var nextPt = this.path[ i ];
-        if( curPt ) {
-          var distance = Math.hypot( nextPt.y - curPt.y, nextPt.x - curPt.x );
-          var totalSteps = Math.floor( this.fps * distance / this.unit2Px ) + 1;
-          for( var j = 0; j < totalSteps; j++ ) {
-            var pt = {
-              x:curPt.x + ( j / totalSteps ) * ( nextPt.x - curPt.x ),
-              y:curPt.y + ( j / totalSteps ) * ( nextPt.y - curPt.y )
-            };
-            pPath.push( pt );
-          }
+    genPath() {
+        if (this.path[0].x != this.path[this.path.length - 1].x ||
+            this.path[0].y != this.path[this.path.length - 1].y
+        ) {
+            console.log("%cERROR: Must be a closed path", "color:#ff0000ff");
+            return null;
         }
-        curPt = nextPt;
-      }
-      return( pPath );
+        var pPath = [];
+        var curPt = null;
+        for (var i = 0; i < this.path.length; i++) {
+            var nextPt = this.path[i];
+            if (curPt) {
+                var distance = Math.hypot(nextPt.y - curPt.y, nextPt.x - curPt.x);
+                var totalSteps = Math.floor(this.fps * distance / this.unit2Px) + 1;
+                for (var j = 0; j < totalSteps; j++) {
+                    var pt = {
+                        x: curPt.x + (j / totalSteps) * (nextPt.x - curPt.x),
+                        y: curPt.y + (j / totalSteps) * (nextPt.y - curPt.y)
+                    };
+                    pPath.push(pt);
+                }
+            }
+            curPt = nextPt;
+        }
+        return (pPath);
     }
 
-    static wallAtAngle( deg, angle ) {
-      var fa = Math.floor( ( angle / 360 ) * deg );
-      var d2r = Math.PI / 180;
-      var p12 = { x:Math.cos( angle * d2r ), y:-Math.sin( angle * d2r ) };
-      var p21 = { x:Math.cos( fa * d2r ), y:-Math.sin( fa * d2r ) };
-      var p22 = { x:Math.cos( ( fa + 1 ) * d2r ), y:-Math.sin( ( fa + 1 ) * d2r ) };
-      var m1 = p12.y / p12.x;
-      var m2 = ( p22.y - p21.y ) / ( p22.x - p21.x );
-      var c2 = p22.y - m2 * p22.x;
-      var d = m2 - m1;
-      return( { x:( -c2 ) / d, y:( -m1 * c2 ) / d } );
+    Init() {
+        this.time = 0; //Reset time
+        this.tourists = []; //Reset mobiles for run
+        var p = [true, true, false]
+        for (var i = 0; i < this.instruBinder.length; i++) { //Refill mobiles for run
+
+            this.tourists.push(new Tourist(
+                this, this.center.x, this.center.y, i, this.instruBinder[i], p[i]));
+        }
+        for (var j = 0; j < this.mods.length; j++) { //Reset modules
+            if (this.mods[j].Init) {
+                this.mods[j].Init();
+            }
+        }
+
     }
 
-    Init( ) {
-      this.time = 0;	//Reset time
-      this.tourists = [ ];		//Reset mobiles for run
-      var p = [true, false]
-      for( var i = 0; i < this.instruBinder.length; i++ ) {	//Refill mobiles for run
-
-        this.tourists.push( new Tourist(
-          this, this.center.x, this.center.y, i, this.instruBinder[ i ], p[i])
-      );
-      }
-      for( var j = 0; j < this.mods.length; j++ ) {	//Reset modules
-        if( this.mods[ j ].Init ) {
-          this.mods[ j ].Init( );
+    createHistory() {
+        this.Init();
+        this.history = []; //Reset History
+        for (var i = 0; i < this.instruBinder.length; i++) {
+            this.history.push([]);
         }
-      }
-    }
-
-    createHistory( ) {
-      this.Init( );
-      this.history = [ ];		//Reset History
-      for( var i = 0; i < this.instruBinder.length; i++ ) {
-        this.history.push( [ ] );
-      }
-      while( this.time < this.timeMax ) {
-        for( var i = 0; i < this.instruBinder.length; i++ ) {
-          var who = this.tourists[ i ];
-          this.history[ i ].push( { x:who.x, y:who.y } );
-          who.allowance = who.velocity * this.unit2Px / this.fps;
-          while( who.allowance > 0 ) {
-            who[ who.icl[ who.on ][ 0 ] ]( who.icl[ who.on ][ 1 ] );
-          }
+        while (this.time < this.timeMax) {
+            for (var i = 0; i < this.instruBinder.length; i++) {
+                var who = this.tourists[i];
+                this.history[i].push({
+                    x: who.x,
+                    y: who.y
+                });
+                who.allowance = who.velocity * this.unit2Px / this.fps;
+                while (who.allowance > 0) {
+                    who[who.icl[who.on][0]](who.icl[who.on][1]);
+                }
+            }
+            for (var j = 0; j < this.mods.length; j++) {
+                if (this.mods[j].Update) {
+                    this.mods[j].Update();
+                }
+            }
+            this.time++;
         }
-        for( var j = 0; j < this.mods.length; j++ ) {
-          if( this.mods[ j ].Update ) {
-            this.mods[ j ].Update( );
-          }
-        }
-        this.time++;
-      }
-      console.log(this.history)
+        console.log(this.history)
     }
 
 
@@ -352,70 +333,107 @@ class iclData {
 }
 
 class exitFindMod {
-    constructor(iclData, exit) {
+    constructor(iclData, exit, SVG) {
         this.iclData = iclData;
         this.step = this.iclData.unit2Px / this.iclData.fps;
         this.premo = null;
         this.exit = exit;
         this.fTime = null;
+        this.exitDistances = [];
+        this.graphSVG = SVG.append("svg")
+            .attr("viewBox", "0,0,100,100")
+            .attr("height", "100%")
+            .attr("width", "100%");
+        this.graphLines = [];
     }
 
     Init() {
         if (this.iclData.history) {
             this.premo = this.iclData.history;
         }
+        for (var i = 0; i < this.iclData.tourists.length; i++) {
+            this.exitDistances.push([]); // Add each array for tourists.
+        }
     }
 
-    Update( ) {
-      if( this.premo ) {
-        var loc = this.iclData.history, j = 0;
-        for( var i = 0; i < loc.length; i++ ) {
-          var distance = Math.hypot(
-            this.exit.y - loc[ i ][ loc[ i ].length - 1 ].y,
-            this.exit.x - loc[ i ][ loc[ i ].length - 1 ].x
-          );
+    Update() {
+        if (this.premo) {
+            var loc = this.iclData.history,
+                j = 0;
+            for (var i = 0; i < this.iclData.tourists.length; i++) {
 
-          if( distance <= this.step / 2 || this.iclData.tourists[i].knows) {
-            this.iclData.tourists[ i ].on = this.iclData.tourists[ i ].icl.length - 1;
-            this.iclData.tourists[ i ].knows = true;
-            j++;
-          }
-        for (var p = 0; p < this.iclData.touristNum; p++) {
-                if (this.iclData.tourists[p].priority && this.iclData.tourists[p].atExit) {
-                    this.iclData.allExitedLine = 1;
-                    this.iclData.timeMax = this.iclData.time;
+                var distance = Math.hypot(
+                    this.exit.y - loc[i][loc[i].length - 1].y,
+                    this.exit.x - loc[i][loc[i].length - 1].x
+                );
+                this.exitDistances[i].push(distance);
+                if (distance <= this.step / 2) {
+                    // If tourist is priority and at exit end alg by time = timeMax
+                    if (this.iclData.tourists[i].priority) {
+                        this.iclData.allExitedLine = 1;
+                        this.iclData.timeMax = this.iclData.time;
+                    }
+                    if (!this.iclData.tourists[i].knows) {
+                        this.iclData.tourists[i].on = this.iclData.tourists[i].icl.length - 1;
+                        this.iclData.tourists[i].knows = true;
+                        j++;
+                    }
+                    // Send out exit alert
+                    if (this.iclData.wireless) {
+                        for (var m = 0; m < this.iclData.tourists.length; m++) {
+                            this.iclData.tourists[m].on = this.iclData.tourists[i].icl.length - 1;
+                            this.iclData.tourists[m].knows = true;
+                        }
+                    }
                 }
             }
-            for (var k = 0; k < this.iclData.touristNum; k++) { //Check every mobile agent
-                if ((this.iclData.tourists[k].x != this.iclData.fieldExit.x) || (this.iclData.tourists[k].y != this.iclData.fieldExit.y)) { //check if not at exit
-                    return;
-                } else if (!this.iclData.priorityExitedLine && this.iclData.tourists[k].priority) { //assuming also at exit...
-                    var holdP = (this.iclData.unit2Px * (10 / 25) + ((this.iclData.time + this.iclData.exitAllow) / this.iclData.timeMax) * (80 / 25) * this.iclData.unit2Px);
-                    this.iclData.priorityExitedLine = 1;
-                    /*graphSVG.select(".overLay").append("line").attr("x1", holdP).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
-                                  .attr("x2", holdP).attr("y2", 1.75 * unit2Px).style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px)
-                                  .style("stroke-opacity", 0.5);*/
-
-                    this.iclData.timeMax = this.iclData.time; //to account for the extra bot getting to its next point
-                }
-            }
-
-            //if (!this.iclData.allExitedLine) {
-            //    var holdX = (this.iclData.unit2Px * (10 / 25) + ((this.iclData.time + this.iclData.exitAllow) / this.iclData.timeMax) * (80 / 25) * this.iclData.unit2Px);
-            //    this.iclData.allExitedLine = 1;
-                /*graphSVG.select(".overLay").append("line").attr("x1", holdX).attr("y1", 4 * unit2Px - unit2Px * (10 / 25))
-                          .attr("x2", holdX).attr("y2", 2 * unit2Px).style("stroke", "#000000").style("stroke-width", (1 / 100) * unit2Px)
-                          .style("stroke-opacity", 0.5);*/
-            //    this.iclData.timeMax = this.iclData.time;
-            //}
-
-
-
         }
-        //if( j == loc.length ) {
-        //  this.iclData.timeMax = this.iclData.time;
-        //}
-      }
+    }
+
+    VInit() { // draw initial graph.
+        for (var i = 0; i < this.iclData.tourists.length; i++) {
+            this.graphLines.push([]);
+        }
+        for (var i = 1; i < 3; i++) { //Create y-axis labels.
+            this.graphSVG.append("text")
+                .attr("x", (0.3 * this.iclData.unit2Px))
+                .attr("y", ((3.5 * this.iclData.unit2Px) - (i * this.iclData.unit2Px)))
+                .style("font-size", this.iclData.unit2Px * (4 / 25))
+                .style("text-anchor", "middle").text(i + 'r');
+        }
+
+        var mtime = Math.floor((100 * this.iclData.timeMax) / this.iclData.fps) / 100;
+
+        for (var i = 0; i <= mtime; i++) { //Create new scaled x-axis labels.
+            this.graphSVG.append("text")
+                .attr("x", (0.5 * this.iclData.unit2Px + i / mtime * 3 * this.iclData.unit2Px))
+                .attr("y", this.iclData.unit2Px * 3.7)
+                .style("font-size", this.iclData.unit2Px * (4 / 25))
+                .style("text-anchor", "middle")
+                .text(i)
+                .attr("class", "graphnum");
+        }
+    }
+
+    VUpdate() {
+        var hold = '';
+        for (var i = 0; i < this.iclData.tourists.length; i++) {
+            if (this.iclData.time > 0) {
+                this.graphLines[i].remove();
+            }
+            for (var j = 0; j < this.iclData.time; j++) {
+                var pt = {
+                    x: (0.5 * this.iclData.unit2Px) + (3 * this.iclData.unit2Px * (j / this.iclData.timeMax)),
+                    y: (3.5 * this.iclData.unit2Px) - this.exitDistances[i][j]
+                };
+                hold += ((j == 0) ? ('M') : ('L')) + pt.x + ',' + pt.y;
+
+            }
+            this.graphLines[i] = this.graphSVG.append("path")
+                .attr("d", hold).attr("stroke-width", 1)
+                .style("stroke", "00ff00").style("fill", "none");
+        }
+
 
     }
 }
@@ -428,30 +446,30 @@ class lineFillMod {
         this.count = -1;
     }
 
-    Init( ) {
-      this.pts = this.iclData.pPath.slice( );
-      this.count = this.iclData.pPath.length;
+    Init() {
+        this.pts = this.iclData.pPath.slice();
+        this.count = this.iclData.pPath.length;
     }
 
-    Update( ) {
-      var loc = this.iclData.history;
-      for( var i = 0; i < loc.length; i++ ) {
-        for( var j = 0; j < this.pts.length; j++ ) {
-          if( this.pts[ j ] ) {
-            var distance = Math.hypot(
-              this.pts[ j ].y - loc[ i ][ loc[ i ].length - 1 ].y,
-              this.pts[ j ].x - loc[ i ][ loc[ i ].length - 1 ].x
-            );
-            if( distance <= this.step / 2 ) {
-              this.pts[ j ] = null;
-              this.count--;
+    Update() {
+        var loc = this.iclData.history;
+        for (var i = 0; i < loc.length; i++) {
+            for (var j = 0; j < this.pts.length; j++) {
+                if (this.pts[j]) {
+                    var distance = Math.hypot(
+                        this.pts[j].y - loc[i][loc[i].length - 1].y,
+                        this.pts[j].x - loc[i][loc[i].length - 1].x
+                    );
+                    if (distance <= this.step / 2) {
+                        this.pts[j] = null;
+                        this.count--;
+                    }
+                }
             }
-          }
         }
-      }
-      if( this.count < 1 ) {
-        this.iclData.timeMax = this.iclData.time;
-      }
+        if (this.count < 1) {
+            this.iclData.timeMax = this.iclData.time;
+        }
     }
 
 }
@@ -499,46 +517,46 @@ class iclVisual {
         //this.Start();
     }
 
-    Init( ) {
-      this.iclData.time = 0;
-      var hold = '';
-      for( var i = 0; i < this.iclData.path.length; i++ ) {
-        var pt = this.iclData.path[ i ];
-        hold += ( ( i == 0 ) ? ( 'M' ) : ( 'L' ) ) + pt.x + ',' + pt.y;
-      }
-      this.fieldSVG.append( "path" )
-        .attr( "d", hold ).attr( "stroke-width", 1 )
-        .style( "stroke", "00ff00" ).style( "fill", "000000ff" );
-
-      for( var i = 0; i < this.iclData.history.length; i++ ) {
-        this.visuals.push( this.fieldSVG.append( "circle" )
-          .attr( "r", 3 )
-          .attr("cx", this.iclData.center.x)
-          .attr("cy", this.iclData.center.y)
-          .attr( "stroke-width", 1 )
-          .style( "fill", "#ff000033" ).style( "stroke", "#ffffff" )
-        );
-      }
-      for( var i = 0; i < this.iclData.mods.length; i++ ) {
-        if( this.iclData.mods[ i ].VInit ) {
-          this.iclData.mods[ i ].VInit( );
+    Init() {
+        this.iclData.time = 0;
+        var hold = '';
+        for (var i = 0; i < this.iclData.path.length; i++) {
+            var pt = this.iclData.path[i];
+            hold += ((i == 0) ? ('M') : ('L')) + pt.x + ',' + pt.y;
         }
-      }
+        this.fieldSVG.append("path")
+            .attr("d", hold).attr("stroke-width", 1)
+            .style("stroke", "00ff00").style("fill", "000000ff");
+
+        for (var i = 0; i < this.iclData.history.length; i++) {
+            this.visuals.push(this.fieldSVG.append("circle")
+                .attr("r", 3)
+                .attr("cx", this.iclData.center.x)
+                .attr("cy", this.iclData.center.y)
+                .attr("stroke-width", 1)
+                .style("fill", "#ff000033").style("stroke", "#ffffff")
+            );
+        }
+        for (var i = 0; i < this.iclData.mods.length; i++) {
+            if (this.iclData.mods[i].VInit) {
+                this.iclData.mods[i].VInit();
+            }
+        }
     }
 
-    static reEnact( ) {
-      if( this.iclData.time < this.iclData.timeMax ) {
-        for( var i = 0; i < this.iclData.history.length; i++ ) {
-          this.visuals[ i ].attr( "cx", this.iclData.history[ i ][ this.iclData.time ].x )
-            .attr( "cy", this.iclData.history[ i ][ this.iclData.time ].y );
+    static reEnact() {
+        if (this.iclData.time < this.iclData.timeMax) {
+            for (var i = 0; i < this.iclData.history.length; i++) {
+                this.visuals[i].attr("cx", this.iclData.history[i][this.iclData.time].x)
+                    .attr("cy", this.iclData.history[i][this.iclData.time].y);
+            }
+            for (var i = 0; i < this.iclData.mods.length; i++) {
+                if (this.iclData.mods[i].VUpdate) {
+                    this.iclData.mods[i].VUpdate();
+                }
+            }
+            this.iclData.time++;
         }
-        for( var i = 0; i < this.iclData.mods.length; i++ ) {
-          if( this.iclData.mods[ i ].VUpdate ) {
-            this.iclData.mods[ i ].VUpdate( );
-          }
-        }
-        this.iclData.time++;
-      }
     }
 
 
