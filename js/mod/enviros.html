@@ -10,92 +10,119 @@
         <script src="modules.js"></script>
         <script>
             function main(id, instruBinder, algorithmName, angle, wireless) {
-                var SVG = d3.select("body").append("svg")
+                var field = d3.select("body").append("svg")
                     .attr("width", 500).attr("height", 500)
                     .style("border", "1px solid red");
-                var SVG2 = d3.select("body").append("svg")
+                var graph = d3.select("body").append("svg")
                     .attr("width", 500).attr("height", 500)
                     .style("border", "1px solid green");
 
-                    var g = .435;
-                    var h = g + 2 * Math.sin( g / 2 );
-                    //var h = g;
-                    var eandf = 2 * Math.sin( h / 2 );
-                    console.log(eandf);
-                    var c = ( 1 / 3 ) * ( 2 * Math.PI - g - 2 * h - 2 * eandf );
-                    var a = 2 * c + eandf + g + h;
-                    var b = 2 * Math.PI - a;
-                    var e = ( (a - (( 2 / 3 ) * Math.PI)) / 2 ) - c;
-                    var f = eandf - e;
-                    var d = eandf + g + h;
-                    console.log("D is " + d);
+                field.append("svg")
+                    .attr("id", "backGround")
+                    .attr("height", "100%")
+                    .attr("width", "100%")
+                    .attr("viewBox", "0 0 100 100");
 
-                    console.log( "Startin at angle: " + ( a - Math.PI ) );
-                    var u1 = 1 + b;
-                    var u3 = 1 + c + e + f + h;
-                    console.log( "UpperBound: " + u1 + " " + u3 );
-                    console.log( "Difference: " + ( Math.abs( Math.abs( u1 ) - Math.abs( u3 ) ) ) );
-                    console.log( "a: " + a + "\nb: " + b + "\nc: " + c + "\ne: " + e + "\nf: " + f + "\ng: " + g + "\nh: " + h );
-                    var icll = [
-                        [//Queen 1
-                            ["info"],
-                            ["GoOutAtAngle", {r:1, d:a*(180/Math.PI)} ],
-                            ["FollowWall", ["left"]],
-                            ["GoToExit", {x:25, y:50}]
-                        ],
-                        [//Queen 2
-                            [ "info" ],
-                            [ "GoOutAtAngle", {r:1, d:0} ],
-                            [ "FollowWall", [ "left"]],//, ( c ) * ( 180 / Math.PI )  ] ],
-                            //[ "GoToWallAtAngle", { r:1, d:( c + h ) * ( 180 / Math.PI )} ],
-                            //[ "FollowWall", [ "right" ]],
-                            [ "GoToExit", {x:25, y:50} ]
-                        ],
-                        [//Helper
-                            [ "info" ],
-                            [ "GoOutAtAngle", {r:1, d:a * ( 180 / Math.PI ) } ],
-                            [ "FollowWall", [ "right"]],
-                            [ "wait", [ null , false] ]
-                        ]
-                    ];
-/*
+                field.append("svg")
+                    .attr("id", "lines")
+                    .attr("height", "100%")
+                    .attr("width", "100%")
+                    .attr("viewBox", "0 0 100 100");
+
+                field.append("svg")
+                    .attr("id", "bots")
+                    .attr("height", "100%")
+                    .attr("width", "100%")
+                    .attr("viewBox", "0 0 100 100");
+
+                field.append("svg")
+                    .attr("id", "overLay")
+                    .attr("height", "100%")
+                    .attr("width", "100%")
+                    .attr("viewBox", "0 0 100 100");
+
+                graph.append("svg")
+                    .attr("id", "backGround")
+                    .attr("height", "100%")
+                    .attr("width", "100%")
+                    .attr("viewBox", "0 0 100 100");
+
+                graph.append("svg")
+                    .attr("id", "lines")
+                    .attr("height", "100%")
+                    .attr("width", "100%")
+                    .attr("viewBox", "0 0 100 100");
+
+                graph.append("svg")
+                    .attr("id", "bots")
+                    .attr("height", "100%")
+                    .attr("width", "100%")
+                    .attr("viewBox", "0 0 100 100");
+
+                graph.append("svg")
+                    .attr("id", "overLay")
+                    .attr("height", "100%")
+                    .attr("width", "100%")
+                    .attr("viewBox", "0 0 100 100");
+
+
+
+
+                var g = .435;
+                var h = g + 2 * Math.sin( g / 2 );
+                //var h = g;
+                var eandf = 2 * Math.sin( h / 2 );
+                var c = ( 1 / 3 ) * ( 2 * Math.PI - g - 2 * h - 2 * eandf );
+                var a = 2 * c + eandf + g + h;
+                var b = 2 * Math.PI - a;
+                var e = ( (a - (( 2 / 3 ) * Math.PI)) / 2 ) - c;
+                var f = eandf - e;
+                var d = eandf + g + h;
+
+                var u1 = 1 + b;
+                var u3 = 1 + c + e + f + h;
                 var icll = [
-                    [
+                    [//Queen 1
                         ["info"],
-                        [ "GoOutAtAngle", {r:1, d:0} ],
-                        [ "FollowWall", [ "left"] ],
-                        ["Intercept"]
+                        ["GoOutAtAngle", {r:1, d:a*(180/Math.PI)} ],
+                        ["FollowWall", ["left"]],
+                        ["GoToExit", {x:25, y:50}]
                     ],
-                    [
-                        ["info"],
-                        [ "GoOutAtAngle", {r:1, d:213} ],
-                        [ "FollowWall", [ "left" ] ],
-                        ["Intercept"]
+                    [//Queen 2
+                        [ "info" ],
+                        [ "GoOutAtAngle", {r:1, d:0} ],
+                        [ "FollowWall", [ "left"]],//, ( c ) * ( 180 / Math.PI )  ] ],
+                        //[ "GoToWallAtAngle", { r:1, d:( c + h ) * ( 180 / Math.PI )} ],
+                        //[ "FollowWall", [ "right" ]],
+                        [ "GoToExit", {x:25, y:50} ]
+                    ],
+                    [//Helper
+                        [ "info" ],
+                        [ "GoOutAtAngle", {r:1, d:a * ( 180 / Math.PI ) } ],
+                        [ "FollowWall", [ "right"]],
+                        [ "wait", [ null , false] ]
                     ]
                 ];
-*/
+
                 worldo = new iclData(
-                    0,
+                    id,
                     icll,
-                    'AlgorithmName',
-                    50,
-                    true,
+                    algorithmName,
+                    angle,
+                    wireless,
                     utils.genPoly({x: 50, y: 50}, 25, 0, 360)
                 );
-
-                //nothing									~25ms
-                //worldo.mods.push( new exitFindMod( worldo, worldo.fieldExit , SVG2) );//light	~5ms
+                // Initialize history no exit, add mods, init history with exit.
                 worldo.createHistory();
                 worldo.mods.push(new lineFillMod(worldo)); //medium			~65ms
-                //worldo.mods.push( new coSuMod( worldo, 0, 1, SVG2 ) );//light		~10ms
-                worldo.mods.push( new exitFindMod( worldo, worldo.fieldExit , SVG2) );//light	~5ms
+                worldo.mods.push( new exitFindMod(worldo, worldo.fieldExit, field, graph));//light	~5ms
                 worldo.createHistory();
-
-                var visuao = new iclVisual(SVG, worldo);
+                // Optional Add visuals. If you would like a data sim only dont add this.
+                // Result, no VInit or VUpdate will happen.
+                var visuao = new iclVisual(worldo, field, graph);
                 worldo.motor = setInterval(iclVisual.reEnact.bind(visuao), 1000 / worldo.fps);
             }
-
-            main(0, [], "Alg", 180, true);
+            main(0, [], "AlgorithmName", 50, true);
         </script>
     </body>
 </html>
