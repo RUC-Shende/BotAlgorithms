@@ -29,20 +29,20 @@ class world {
     var icll = [
       [
         [ "info" ],
-        //[ "GoToWallAtAngle", [ 315 ] ],
+        [ "GoToWallAtAngle", [ 315 ] ],
         //[ "FollowWall", [ "right" ] ],
         [ "wait", [ ] ]
       ],
       [ 
         [ "info" ],
-        //[ "GoToWallAtAngle", [ 135 ] ],
+        [ "GoToWallAtAngle", [ 135 ] ],
         //[ "FollowWall", [ "left" ] ],
         [ "wait", [ ] ]
       ],
       [
         [ "info" ],
         [ "wait", [ 9 ] ],
-        //[ "GoToWallAtAngle", [ 315 ] ],
+        [ "GoToWallAtAngle", [ 315 ] ],
         [ "wait", [ ] ],
         [ "wait", [ ] ]
       ],
@@ -63,8 +63,8 @@ class world {
       60
     );
 
-    //nothing									~25ms
-    worldo.mods.push( new lineFillMod( worldo ) );//medium			~65ms
+    //nothing									~30ms
+    //worldo.mods.push( new lineFillMod( worldo ) );//medium			~65ms
     //worldo.mods.push( new coSuMod( worldo, 0, 1, SVG2 ) );//light		~10ms
     //worldo.mods.push( new exitFindMod( worldo, { x:25, y:50 } ) );//light	~5ms
 
@@ -92,8 +92,7 @@ class world {
     if( this.path[ 0 ].x != this.path[ this.path.length - 1 ].x ||
       this.path[ 0 ].y != this.path[ this.path.length - 1 ].y
     ) {
-      console.log( "%cERROR: Must be a closed path", "color:#ff0000ff" );
-      return null;
+      this.path.push( this.path[ 0 ] );
     }
     var pPath = [ ];
     var curPt = null;
@@ -112,6 +111,7 @@ class world {
       }
       curPt = nextPt;
     }
+    pPath.push( pPath[ 0 ] );
     return( pPath );
   }
 
@@ -175,7 +175,7 @@ class world {
 
 class mobile {
   constructor( world, x, y, num, icl ) {
-    this.world = world;
+    this.w = world;
     this.x = x;
     this.y = y;
     this.num = num;
@@ -206,7 +206,7 @@ class mobile {
   wait( value ) {
     if( value[ 0 ] ) {
       if( this.target == null ) {
-        this.target = value[ 0 ] * this.world.unit;
+        this.target = value[ 0 ] * this.w.unit;
       }
       if ( this.target < this.energy ) {
         this.energy -= this.target;
@@ -230,10 +230,10 @@ class mobile {
   }
 
   GoToCenter( value ) {
-    if ( ( this.x == this.world.start.x ) && ( this.y == this.world.start.y ) ) {
+    if ( ( this.x == this.w.start.x ) && ( this.y == this.w.start.y ) ) {
       this.on++;
     } else {
-      this.DirectTo( this.world.start );
+      this.DirectTo( this.w.start );
     }
   }
 
@@ -241,8 +241,8 @@ class mobile {
     if ( this.target == null ) {
       var angHold = value.d * ( Math.PI / 180 );
       this.target = {
-        x:this.x + value.r * this.world.unit * Math.cos( angHold ),
-        y:this.y - value.r * this.world.unit * Math.sin( angHold )
+        x:this.x + value.r * this.w.unit * Math.cos( angHold ),
+        y:this.y - value.r * this.w.unit * Math.sin( angHold )
       };
     }
     if ( ( this.x == this.target.x ) && ( this.y == this.target.y ) ) {
@@ -263,11 +263,29 @@ class mobile {
     }
   }
 
+  WallAtAngle( worldo, value ) {
+    var closest = worldo.unit / worldo.fps;
+    var who = 0;
+    for( var i = 0; i < worldo.pPath.length; i++ ) {
+      var ang = Math.atan2(
+        worldo.pPath[ i ].y - worldo.start.y,
+        worldo.pPath[ i ].x - worldo.start.x
+      );
+      if( ang < 0 ) {
+        ang += 2 * Math.PI;
+      }
+      ang = Math.abs( value * Math.PI / 180 - ang );
+      if( ang < closest ) {
+        closest = ang;
+        who = i;
+      }
+    }
+    return( worldo.pPath[ who ] );
+  }
+
   GoToWallAtAngle( value ) {
     if ( this.target == null ) {
-      this.target = world.wallAtAngle( this.world.deg, value[ 0 ] );
-      this.target.x = this.world.start.x + this.world.unit * this.target.x;
-      this.target.y = this.world.start.y + this.world.unit * this.target.y;
+      this.target = this.WallAtAngle( this.w, value );
     }
     if ( ( this.x == this.target.x ) && ( this.y == this.target.y ) ) {
       this.a = value[ 0 ];
@@ -279,7 +297,7 @@ class mobile {
 
   FollowWall( value ) {
     var dir = ( value[ 0 ] == "left" ) ? ( 1 ) : ( -1 );
-    var del = ( this.world.unit / this.world.fps ) * dir;
+    var del = ( this.w.unit / this.w.fps ) * dir;
     if ( value[ 1 ] ) {
       if ( this.target == null ) {
         this.target = this.a + value[ 1 ] * ( Math.PI / 180 ) * dir;
@@ -300,9 +318,9 @@ class mobile {
     } else {
       this.a += del;
     }
-    var hold = world.wallAtAngle( this.world.deg, this.a );
-    hold.x = this.world.start.x + this.world.unit * hold.x;
-    hold.y = this.world.start.y + this.world.unit * hold.y;
+    var hold = this.WallAtAngle( this.w.deg, this.a );
+    hold.x = this.w.start.x + this.w.unit * hold.x;
+    hold.y = this.w.start.y + this.w.unit * hold.y;
     this.DirectTo( hold );
   }
 }
@@ -424,11 +442,9 @@ class coSuMod {
         x:loc[ this.m ][ loc[ this.m ].length - 1 ].x - loc[ this.n ][ loc[ this.n ].length - 1 ].x,
         y:loc[ this.m ][ loc[ this.m ].length - 1 ].y - loc[ this.n ][ loc[ this.n ].length - 1 ].y
       }
-      var llnll = Math.hypot( n.y, n.x );
-      var llmll = Math.hypot( m.y, m.x );
       var lloll = Math.hypot( o.y, o.x );
-      var cosn = ( n.x * o.x + n.y * o.y ) / ( llnll * lloll );
-      var cosm = -( m.x * o.x + m.y * o.y ) / ( llmll * lloll );
+      var cosn = ( n.x * o.x + n.y * o.y ) / ( Math.hypot( n.y, n.x ) * lloll );
+      var cosm = -( m.x * o.x + m.y * o.y ) / ( Math.hypot( m.y, m.x ) * lloll );
       this.sum.push( Math.floor( 100 * ( cosn + cosm ) ) / 100 );
     }
   }
