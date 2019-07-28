@@ -1,10 +1,10 @@
-PWD /home/chris/Documents/Algorithms/BotAlgorithms/resources
+PWD /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources
 INPUT /etc/texmf/web2c/texmf.cnf
 INPUT /usr/share/texmf/web2c/texmf.cnf
 INPUT /usr/share/texlive/texmf-dist/web2c/texmf.cnf
 INPUT /var/lib/texmf/web2c/pdftex/pdflatex.fmt
-INPUT PriorityQueens.tex
-OUTPUT PriorityQueens.log
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/PriorityQueens.tex
+OUTPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/PriorityQueens.log
 INPUT /usr/share/texlive/texmf-dist/tex/latex/base/article.cls
 INPUT /usr/share/texlive/texmf-dist/tex/latex/base/article.cls
 INPUT /usr/share/texlive/texmf-dist/tex/latex/base/size11.clo
@@ -37,10 +37,14 @@ INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
-INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
-INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
-INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def
-INPUT /usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def
+INPUT /usr/share/texlive/texmf-dist/tex/latex/latexconfig/graphics.cfg
+INPUT /usr/share/texlive/texmf-dist/tex/latex/latexconfig/graphics.cfg
+INPUT /usr/share/texlive/texmf-dist/tex/latex/pdftex-def/pdftex.def
+INPUT /usr/share/texlive/texmf-dist/tex/latex/pdftex-def/pdftex.def
+INPUT /usr/share/texlive/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+INPUT /usr/share/texlive/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+INPUT /usr/share/texlive/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+INPUT /usr/share/texlive/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty
@@ -49,14 +53,10 @@ INPUT /usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
-INPUT /usr/share/texlive/texmf-dist/tex/generic/oberdiek/infwarerr.sty
-INPUT /usr/share/texlive/texmf-dist/tex/generic/oberdiek/infwarerr.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/oberdiek/grfext.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/oberdiek/grfext.sty
 INPUT /usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
 INPUT /usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
-INPUT /usr/share/texlive/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
-INPUT /usr/share/texlive/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/oberdiek/kvoptions.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/oberdiek/kvoptions.sty
 INPUT /usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
@@ -71,17 +71,17 @@ INPUT /usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 INPUT /usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 INPUT /usr/share/texlive/texmf-dist/tex/latex/tools/multicol.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/tools/multicol.sty
-INPUT /home/chris/texmf/tex/latex/multirow/multirow.sty
-INPUT /home/chris/texmf/tex/latex/multirow/multirow.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/multirow/multirow.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/multirow/multirow.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/tools/tabularx.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/tools/tabularx.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/tools/array.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/tools/array.sty
-INPUT PriorityQueens.aux
-INPUT PriorityQueens.aux
-OUTPUT PriorityQueens.aux
-INPUT /usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
-INPUT /usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/PriorityQueens.aux
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/PriorityQueens.aux
+OUTPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/PriorityQueens.aux
+INPUT /usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
+INPUT /usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr17.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr12.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr8.tfm
@@ -113,82 +113,79 @@ INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmsy10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmex10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
-OUTPUT PriorityQueens.pdf
+OUTPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/PriorityQueens.pdf
 INPUT /var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm
-INPUT mypics/2Q1S_references.pdf
-INPUT ./mypics/2Q1S_references.pdf
-INPUT ./mypics/2Q1S_references.pdf
-INPUT mypics/lemma1-references.pdf
-INPUT ./mypics/lemma1-references.pdf
-INPUT ./mypics/lemma1-references.pdf
-INPUT Q2S1_Eq/eq_1.pdf
-INPUT ./Q2S1_Eq/eq_1.pdf
-INPUT ./Q2S1_Eq/eq_1.pdf
-INPUT Q2S1_Eq/eq_1.pdf
-INPUT ./Q2S1_Eq/eq_1.pdf
-INPUT Q2S1_Eq/eq_1.pdf
-INPUT ./Q2S1_Eq/eq_1.pdf
-INPUT Q2S1_Eq/eq_2.pdf
-INPUT ./Q2S1_Eq/eq_2.pdf
-INPUT ./Q2S1_Eq/eq_2.pdf
-INPUT Q2S1_Eq/eq_2.pdf
-INPUT ./Q2S1_Eq/eq_2.pdf
-INPUT Q2S1_Eq/eq_2.pdf
-INPUT ./Q2S1_Eq/eq_2.pdf
-INPUT Q2S1_Eq/eq_3.pdf
-INPUT ./Q2S1_Eq/eq_3.pdf
-INPUT ./Q2S1_Eq/eq_3.pdf
-INPUT Q2S1_Eq/eq_3.pdf
-INPUT ./Q2S1_Eq/eq_3.pdf
-INPUT Q2S1_Eq/eq_3.pdf
-INPUT ./Q2S1_Eq/eq_3.pdf
-INPUT Q2S1_Eq/eq_4.pdf
-INPUT ./Q2S1_Eq/eq_4.pdf
-INPUT ./Q2S1_Eq/eq_4.pdf
-INPUT Q2S1_Eq/eq_4.pdf
-INPUT ./Q2S1_Eq/eq_4.pdf
-INPUT Q2S1_Eq/eq_4.pdf
-INPUT ./Q2S1_Eq/eq_4.pdf
-INPUT Q2S1_Eq/eq_5.pdf
-INPUT ./Q2S1_Eq/eq_5.pdf
-INPUT ./Q2S1_Eq/eq_5.pdf
-INPUT Q2S1_Eq/eq_5.pdf
-INPUT ./Q2S1_Eq/eq_5.pdf
-INPUT Q2S1_Eq/eq_5.pdf
-INPUT ./Q2S1_Eq/eq_5.pdf
-INPUT Q2S1_Eq/eq_6.pdf
-INPUT ./Q2S1_Eq/eq_6.pdf
-INPUT ./Q2S1_Eq/eq_6.pdf
-INPUT Q2S1_Eq/eq_6.pdf
-INPUT ./Q2S1_Eq/eq_6.pdf
-INPUT Q2S1_Eq/eq_6.pdf
-INPUT ./Q2S1_Eq/eq_6.pdf
-INPUT Q2S1_Eq/ub_1.pdf
-INPUT ./Q2S1_Eq/ub_1.pdf
-INPUT ./Q2S1_Eq/ub_1.pdf
-INPUT Q2S1_Eq/ub_1.pdf
-INPUT ./Q2S1_Eq/ub_1.pdf
-INPUT Q2S1_Eq/ub_1.pdf
-INPUT ./Q2S1_Eq/ub_1.pdf
-INPUT Q2S1_Eq/ub_2.pdf
-INPUT ./Q2S1_Eq/ub_2.pdf
-INPUT ./Q2S1_Eq/ub_2.pdf
-INPUT Q2S1_Eq/ub_2.pdf
-INPUT ./Q2S1_Eq/ub_2.pdf
-INPUT Q2S1_Eq/ub_2.pdf
-INPUT ./Q2S1_Eq/ub_2.pdf
-INPUT Q2S1_Eq/ub_3.pdf
-INPUT ./Q2S1_Eq/ub_3.pdf
-INPUT ./Q2S1_Eq/ub_3.pdf
-INPUT Q2S1_Eq/ub_3.pdf
-INPUT ./Q2S1_Eq/ub_3.pdf
-INPUT Q2S1_Eq/ub_3.pdf
-INPUT ./Q2S1_Eq/ub_3.pdf
-INPUT PriorityQueens.aux
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/mypics/2Q1S_references.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/mypics/2Q1S_references.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/mypics/2Q1S_references.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/mypics/lemma1-references.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/mypics/lemma1-references.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/mypics/lemma1-references.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/mypics/2Q1S_references.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/mypics/2Q1S_references.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_1.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_1.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_1.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_1.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_1.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_1.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_1.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_2.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_2.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_2.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_2.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_2.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_2.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_2.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_4.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_4.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_4.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_4.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_4.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_4.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_4.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_5.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_5.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_5.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_5.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_5.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_5.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_5.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_3.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_3.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_3.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_3.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_3.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_3.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_3.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_6.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_6.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_6.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_6.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_6.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_6.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_6.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/ub_1.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/ub_1.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/ub_1.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/ub_1.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/ub_1.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/ub_1.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/ub_1.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/ub_2.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/ub_2.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/ub_2.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/ub_2.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/ub_2.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/ub_2.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/ub_2.pdf
+INPUT /home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/PriorityQueens.aux
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
+INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
+INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb

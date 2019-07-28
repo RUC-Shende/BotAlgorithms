@@ -85,36 +85,40 @@ listed in the above papers including our own can be shown, and new ones can be c
 \subsection{Our Results}
 
 \begin{flushleft}
-\hspace{\parindent} In our algorithm using 2 Priority and 1 Helper agent with 1 Priority required to exit, we show that a termination time
+\hspace{\parindent} In our initial algorithm using 2 Priority and 1 Helper agent with 1 Priority required to exit, we can show that a termination time
 upper bound of \textbf{3.55 time units} is possible given the specific set of parameters we use
 to guide the agents. We can achieve this by using a \textbf{parameter of angle $\alpha = 5 \pi / 9 - 2\sqrt3 /3$} for the two agents to travel to the perimeter in the third quadrant, i.e, they travel out at
 an angle of \textbf{$\pi + \alpha$}. This allows us to set the two worst-case time predictions equal.
 These are the cases where \textbf{$A)$} $P2$ finds the exit at the very end of its search,
 or \textbf{$B)$} $H$ finds the exit in the second quadrant at the angle \textbf{$\pi - \beta$},
 where \textbf{$\beta = ( \pi / 3 - \alpha) / 2$}.
+
+\hspace{\parindent} As of now, in our second slightly improved algorithm, we predict that we can get a
+better time than was shown in the initial algorithm, by making $P1$ take a detour at some point during its
+search, leaving it a constant distance away from $H$ during the last phase of its search. By making it
+take this detour, we believe that we can improve the upper bound in the case where $P1$ and $P2$ are
+equidistant from $H$ at the time when $H$ finds the exit. By using a slightly modified $\alpha$ and introducing some new variables, we believe we can achieve an upper bound of less than 3.55 time units.
 \end{flushleft}
 
 
 
 
-\section{Upper Bound}
+\section{Initial Algorithm}
 
-\subsection {Evacuation Algorithm for 2 Priority \& 1 Helper}
+\subsection {Evacuation Algorithm \textbf{$Search_{1}$}}
 
 %Our first priority algorithm with 2 queens and 1 servant
 \begin{center}
-    \begin{tabular}{ | p{1.5cm} || r l | }
+    \begin{tabular}{ | p{1.25cm} || r l | l |}
         \hline
-        \multicolumn{3} { | c | }{ Algorithm \textbf{2 Priority 1 Helper}($\alpha$)} \\ \hline
-        \textbf{Robot} & $\textbf{\#}$ & \textbf{Trajectory} \\  \hline
-        \multirow{2}{*}{$P1$} & 0 & Travel from $O$ to $C_{0}$ \\
-        & 1 & Travel CCW until exit is found. \\  \hline
-        \multirow{2}{*}{$P2$} & 0 & Travel from $O$ to $C_{\pi + \alpha}$ \\
-        & 1 & Travel CCW until exit is found.\\ \hline
-        \multirow{4}{*}{$H$} & 0 & Travel from $O$ to $C_{\pi + \alpha}$ \\
-        & 1 & Travel CW until exit is found.\\
-        & (2) & IF exit is found by $H$, broadcast location and wait.\\
-        & (2) & ELSE Wait.\\ \hline
+        \multicolumn{4} { | c | }{ Algorithm \textbf{$Search_{1}$}($\alpha$)} \\ \hline
+        \textbf{Robot} & $\textbf{\#}$ & \textbf{Trajectory} & \textbf{Exit Protocol} \\ \hline
+        \multirow{2}{*}{$P1$} & 0 & Travel from $O$ to $C_{0}$ & IF: Exit found by $P1$ - Done. \\
+        & 1 & Travel CCW. & ELSE: Travel along chord to exit if closer. \\  \hline
+        \multirow{2}{*}{$P2$} & 0 & Travel from $O$ to $C_{\pi + \alpha}$ & IF: Exit found by $P2$ - Done. \\
+        & 1 & Travel CCW. & ELSE: Travel along a chord to exit if closer.\\ \hline
+        \multirow{2}{*}{$H$} & 0 & Travel from $O$ to $C_{\pi + \alpha}$ & \multirow{2}{*}{Broadcast exit location and then wait.} \\
+        & 1 & Travel CW. & \\ \hline
     \end{tabular}
 \includegraphics{mypics/2Q1S_references.pdf} \hfill
 \end{center}
@@ -152,32 +156,75 @@ or at an angle of $ \frac{2\pi}{3}$ for $a >= \frac{2\pi}{3}$ at the time of exi
 
 \end{flushleft}
 
-\subsection {Equations}
+\section {Second Algorithm}
+
+% Our second algorithm with 2 queens and 1 servant.
+\begin{center}
+    \begin{tabular}{ | p{1.5cm} || r l | l |}
+        \hline
+        \multicolumn{4} { | c | }{ Algorithm \textbf{$Search_{2}$}($\alpha$, $c$, $h$)} \\ \hline
+        \textbf{Robot} & $\textbf{\#}$ & \textbf{Trajectory} & \textbf{Exit Protocol} \\ \hline
+        \multirow{2}{*}{$P1$} & 0 & Travel from $O$ to $C_{0}$. & IF: Exit found by $P1$ - Done. \\
+        & 1 & Travel CCW for $c$ time. & ELSE: Travel along chord to exit if closer. \\
+        & 2 & Travel directly to $C_{c+h}$. & \\
+        & 3 & Travel CW. & \\ \hline
+        \multirow{2}{*}{$P2$} & 0 & Travel from $O$ to $C_{\pi + \alpha}$ & IF: Exit found by $P2$ - Done. \\
+        & 1 & Travel CCW. & ELSE: Travel along a chord to exit if closer.\\ \hline
+        \multirow{2}{*}{$H$} & 0 & Travel from $O$ to $C_{\pi + \alpha}$ & \multirow{2}{*}{Broadcast exit location and then wait.} \\
+        & 1 & Travel CW. & \\ \hline
+    \end{tabular}
+\includegraphics{mypics/2Q1S_references.pdf} \hfill
+\end{center}
 
 \begin{flushleft}
     First, we know that we can divide the circle into two sections, where $a$ is the
-    responsibility of the Helper and Priority 1, and the $b$ is the responsibility of Priority 2.
+    responsibility of the $H$ and $P1$, and the $b$ is the responsibility of $P2$.
     Therefore:
 
-    \[ 2\pi = a + b \]
+    \begin{tabularx}{\textwidth}{lXc}
+        \multirow{2}{*}{$2\pi = a+b$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_1.pdf}} \\
+    \end{tabularx}
 
-    We know that Priority 1 and Helper will have to travel a total of $a$ around the circle,
-    and after a certain time $c$, the remaining unsearched area will be $d = a - 2c$, so at this point:
+    We know that $P1$ and $H$ will have to travel a total of $a$ around the circle,
+    and after a certain time $c$, the remaining unsearched area will be
 
-    \[ 2\pi = b + 2c + d \]
+    \begin{tabularx}{\textwidth}{lXc}
+        \multirow{2}{*}{$a = 2c+d$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_2.pdf}} \\
+    \end{tabularx}
+
+
+
 
     If, after more time $e$ of both agents following the perimeter the distance between the two
     would be equal to $\sqrt{3}$, which by Lemma 1 will result in the evacuation time increasing, then
-    we instead send Priority 1 along a chord of angle $h$, such that when Helper reaches point $C_{a - c - e}$, Priority 1 will be travelling somewhere along the chord. The point at which Priority 1 reaches the
-    end of the detour at point $C_{c + h}$, the Helper will be at point $C_{a - c - e - f}$, where $f$ is the extra time taken by Priority 1 to reach the end of its detour.
+    we instead send $P1$ along a chord of angle $h$, such that when $H$ reaches point $C_{a - c - e}$, $P1$ will be travelling somewhere along the chord.
 
-    \[ e + f = 2\sin(\frac{h}{2}) \]
+    \begin{tabularx}{\textwidth}{lXc}
+        \multirow{2}{*}{$c+e = \frac{a - \frac{2\pi}{3}}{2}$} & &  \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_4.pdf}} \\
+    \end{tabularx}
 
-    We call $g$ the remaining unsearched arc between $C_{c + h}$ and $C_{a - c - e - f}$.
-    At this point in the algorithm, we send Priority 1 clockwise to search the area from $C_{c + h}$ until
-    $C_{c}$ and Helper stays clockwise to search the remaining area from $C_{a - c - e - f}$ until $C_{c + h}$. At this point the distance between the two agents stays constant for the rest of the algorithm, and this distance is equal to $2\sin(\frac{g}{2})$. Clearly, the optimal value for $h$ is:
+    The point at which $P1$ reaches the end of the detour at point $C_{c + h}$,
+    the $H$ will be at point $C_{a - c - e - f}$, where $f$ is the extra time
+    taken by $P1$ to reach the end of its detour.
 
-    \[ h = g + 2\sin(\frac{g}{2})\]
+    \begin{tabularx}{\textwidth}{lXc}
+        \multirow{2}{*}{$e+f = 2\sin(\frac{h}{2})$} & & \parbox[c]{0.3\textwidth}{\includegraphics[width=0.3\textwidth]{Q2S1_Eq/eq_5.pdf}} \\
+    \end{tabularx}
+
+    We call $g$ the remaining unsearched arc between $C_{c + h}$ and $C_{a - c - e - f}$
+    such that:
+
+    \begin{tabularx}{\textwidth}{lXc}
+        \multirow{2}{*}{$d = e+f+g+h$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_3.pdf}} \\
+    \end{tabularx}
+
+    At this point in the algorithm, we send $P1$ clockwise to search the area from $C_{c + h}$ until
+    $C_{c}$ and $H$ stays clockwise to search the remaining area from $C_{a - c - e - f}$ until $C_{c + h}$. At this point the distance between the two agents stays constant for the rest of the algorithm, and this distance is equal to $2\sin(\frac{g}{2})$. Clearly, the optimal value for $h$ is:
+
+    \begin{tabularx}{\textwidth}{lXc}
+        \multirow{2}{*}{$h = g+2\sin(\frac{g}{2})$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_6.pdf}} \\
+    \end{tabularx}
+
 
     At this point, we have fully partitioned the circle such that:
 
@@ -185,71 +232,36 @@ or at an angle of $ \frac{2\pi}{3}$ for $a >= \frac{2\pi}{3}$ at the time of exi
 
     which, once simplified, becomes:
 
-    \[ 2\pi = b + 2c + 2\sin(\frac{g + 2\sin(\frac{g}{2})}{2}) + 2g + 2\sin({g}{2}) \]
+    \[ 2\pi = b + 2c + 2\sin(\frac{g + 2\sin(\frac{g}{2})}{2}) + 2g + 2\sin(\frac{g}{2}) \]
 
-    At this point, we identify two upper bounds. One is when Priority 2 finds the exit at the end of its
-    search, after time $t = 1 + b$, and the other is when either Helper or Priority 1
-    finds the exit at the end of their search, after time $t = 1 + c + e + f + h$.
+    At this point, we identify three upper bounds. One is when $P2$ finds the exit at the end of its
+    search, at
 
-    \[b = c + e + f + h\]
-
-\end{flushleft}
-
-\subsection{Figures of Reference}
-\begin{flushleft}
-    This subsection is devoted to showing how we get each variable as it relates to the shape or upper bound.
-\end{flushleft}
-\begin{center}
     \begin{tabularx}{\textwidth}{lXc}
-        \hline
-        \multirow{2}{*}{$2\pi = a+b$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_1.pdf}} \\
-    \end{tabularx}
-    \begin{tabularx}{\textwidth}{lXc}
-        \hline
-        \multirow{2}{*}{$a = 2c+d$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_2.pdf}} \\
-    \end{tabularx}
-    \begin{tabularx}{\textwidth}{lXc}
-        \hline
-        \multirow{2}{*}{$d = e+f+g+h$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_3.pdf}} \\
-    \end{tabularx}
-    \begin{tabularx}{\textwidth}{lXc}
-        \hline
-        \multirow{2}{*}{$c+e = \frac{a - \frac{2\pi}{3}}{2}$} & &  \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_4.pdf}} \\
-    \end{tabularx}
-    \begin{tabularx}{\textwidth}{lXc}
-        \hline
-        \multirow{2}{*}{$e+f = 2\sin(\frac{h}{2})$} & & \parbox[c]{0.3\textwidth}{\includegraphics[width=0.3\textwidth]{Q2S1_Eq/eq_5.pdf}} \\
-    \end{tabularx}
-    \begin{tabularx}{\textwidth}{lXc}
-        \hline
-        \multirow{2}{*}{$h = g+2\sin(\frac{g}{2})$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_6.pdf}} \\
-    \end{tabularx}
-    %\begin{tabularx}{\textwidth}{p{0.4\textwidth}lc}
-        %\hline
-        %\multirow{2}{*}{$2\sin(c+x) =
-        %\sqrt{2}\sqrt{(x-1)\cos(g+h+x) - x\cos(g+x) -
-        %(x-1)x\cos(h) + (x-1)x + 1}$} & \\ \\ %\parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/ub_1.pdf}} \\
-    %\end{tabularx}
-    \begin{tabularx}{\textwidth}{lXc}
-        \hline
         \multirow{2}{*}{$t = 1+b$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/ub_1.pdf}} \\
     \end{tabularx}
+
+    Another upper bound occurs when either $H$ or $P1$ finds the exit at the end of
+    their search, after time
+
     \begin{tabularx}{\textwidth}{lXc}
-        \hline
         \multirow{2}{*}{$t = 1+c+e+f+h$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/ub_2.pdf}} \\
     \end{tabularx}
-    \begin{tabularx}{\textwidth}{lXc}
-        \hline
-        \multirow{2}{*}{$t = 1+c+x+2\sin(c+x)$} & & \parbox[c]{0.3\textwidth}{\includegraphics[width=0.3\textwidth]{Q2S1_Eq/ub_3.pdf}} \\
-        \hline
+
+    Finally, a third bound gets introduced if $H$ finds the exit at a point such that both
+    $P1$ and $P2$ are equidistant from $H$. For the time before the exit is found at this point of equal
+    distance, evacuation is the responsibility of $P1$, and after this time, it is the responsibility
+    of $P2$. The bound will occur after all the agents have travelled for $c+x$ time, and by this point,
+    $P2$ will have begun its detour. The point of equidistance occurs when $P1$ and $H$ are
+    $2\sin(c+x)$ apart, and as such the distance from $P2$'s point inside the circle to $H$'s point on
+    the perimeter is the same.
+
+    \begin{tabularx}{\textwidth}{p{0.4\textwidth}l}
+        \multirow{2}{*}{$2\sin(c+x) =
+        \sqrt{2}\sqrt{(x-1)\cos(g+h+x) - x\cos(g+x) -
+        (x-1)x\cos(h) + (x-1)x + 1}$} & \\
     \end{tabularx}
-\end{center}
 
-
-
-% \includegraphics{mypics/2Q1S_Initial.pdf}
-% \includegraphics{mypics/2Q1S_Second_Step.pdf}
-% \includegraphics{mypics/2Q1S_Initial.pdf}
-% \includegraphics{mypics/2Q1S_Initial.pdf}
+\end{flushleft}
 
 \end{document}
