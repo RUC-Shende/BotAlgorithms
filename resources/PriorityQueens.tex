@@ -101,6 +101,11 @@ equidistant from $H$ at the time when $H$ finds the exit. By using a slightly mo
 \end{flushleft}
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Marks end of section 1 so that it doesnt make the title of section 2 on the same page%
+%If there are issues remove it, it's removed now because the spacing is okay          %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \vfill
 
 
 \section{Initial Algorithm}
@@ -152,11 +157,17 @@ to get to $B$, having started at the opposite side of the arc $a$, would be:
 \vspace*{5mm} Thus, the greatest value for $t$ will occur when the agents are $\sqrt{3}$ apart,
 or at an angle of $ \frac{2\pi}{3}$ for $a >= \frac{2\pi}{3}$ at the time of exit discovery.
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Marks end of section 2 so that it doesnt make the title of section 3 on the same page%
+%If there are issues remove it                                                        %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vfill
 
 \end{flushleft}
 
-\section {Second Algorithm}
+\section{Algorithm Using a Detour}
+
+\subsection{Evacuation Algorithm $Search_{2}$}
 
 % Our second algorithm with 2 queens and 1 servant.
 \begin{center}
@@ -174,7 +185,19 @@ or at an angle of $ \frac{2\pi}{3}$ for $a >= \frac{2\pi}{3}$ at the time of exi
         & 1 & Travel CW. & \\ \hline
     \end{tabular}
 \includegraphics{mypics/2Q1S_references.pdf} \hfill
+\includegraphics{Q2S1_Eq/Q2S1_DetourExample.pdf}
 \end{center}
+\begin{flushleft}
+    In this algorithm, $P1$ utilizes a detour, abandoning its search along the wall
+    in favor of getting closer to $H$ in anticipation of the exit being found when both
+    priority are equidistant from $H$ at the time of exit discovery. By doing this, we minimize
+    $P2$'s responsibility to $H$ allowing it to search the bottom wall faster. Then, by
+    \textbf{Lemma 1} we can prove that for a certain value $c$ and $h$, the total time until $P1$
+    evacuates is decreasing until the end of its detour, and constant for the rest of its seach, as
+    it will always be a constant distance $h$ away from the Helper during its last phase.
+\end{flushleft}
+
+\subsection{Equations}
 
 \begin{flushleft}
     First, we know that we can divide the circle into two sections, where $a$ is the
