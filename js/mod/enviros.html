@@ -91,9 +91,9 @@
                     [//Queen 2
                         [ "info" ],
                         [ "GoOutAtAngle", {r:1, d:0} ],
-                        [ "FollowWall", [ "left"]],//, ( c ) * ( 180 / Math.PI )  ] ],
-                        //[ "GoToWallAtAngle", { r:1, d:( c + h ) * ( 180 / Math.PI )} ],
-                        //[ "FollowWall", [ "right" ]],
+                        [ "FollowWall", [ "left", c * (180/Math.PI)] ],
+                        ["GoToWallAtAngle", {r:1, d:(c+h) * (180/Math.PI)}],
+                        ["FollowWall", ["right"]],
                         [ "GoToExit", {x:25, y:50} ]
                     ],
                     [//Helper
@@ -122,7 +122,7 @@
                 var visuao = new iclVisual(worldo, field, graph);
                 worldo.motor = setInterval(iclVisual.reEnact.bind(visuao), 1000 / worldo.fps);
             }
-            main(0, [], "AlgorithmName", 50, true);
+            main(0, [], "AlgorithmName", 163, true);
         </script>
     </body>
 </html>

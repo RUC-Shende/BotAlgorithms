@@ -106,15 +106,20 @@ class Tourist {
   *
   */
   GoToWallAtAngle(value) {
+      console.log("Coords at start of GTWAA: " + this.x + " " +  this.y)
     if ( this.target == null) {
-      this.target = this.wallAtAngle( this.iclData.degrees, value[0]);
+      this.target = utils.wallAtAngle(360, value.d);
       this.target.x = this.iclData.center.x + this.iclData.unit2Px * this.target.x;
       this.target.y = this.iclData.center.y + this.iclData.unit2Px * this.target.y;
     }
+    console.log(this.x, this.y)
     if ((this.x == this.target.x) && (this.y == this.target.y)) {
+        console.log("Made it to GoToWallAtAngle stop loc")
         this.a = value.d;
       this.on++;
     } else {
+        console.log("Directing to " + this.target.x + " " + this.target.y);
+
       this.DirectTo(this.target);
     }
   }
@@ -158,25 +163,27 @@ class Tourist {
     var del = (this.iclData.unit2Px / this.iclData.fps) * dir;
     if (value[1]) {
         if (this.target == null){
-            this.target = this.a + value[1] * (Math.PI / 180) * dir;
+            this.target = utils.wallAtAngle(360, this.a + (value[1] * (Math.PI / 180)) * dir);
         }
-        var leftCondition = this.a + del;
+        var leftCondition = utils.wallAtAngle(360, this.a + del);
         var rightCondition = this.target;
         if (dir < 0) {
           rightCondition = leftCondition;
           leftCondition = this.target;
         }
-        if (leftCondition > rightCondition) {
+        if (Math.abs(this.a - value[1]) < 0.2) {
+            console.log("Made it to followwall stop location: " + this.x + "," + this.y);
           this.on++;
           this.a = this.target;
           this.target = null;
+          return;
         } else {
           this.a += del;
         }
     } else {
       this.a += del;
     }
-    var hold = this.wallAtAngle(360, this.a);
+    var hold = utils.wallAtAngle(360, this.a);
     hold.x = this.iclData.center.x + this.iclData.unit2Px * hold.x;
     hold.y = this.iclData.center.y + this.iclData.unit2Px * hold.y;
     this.DirectTo(hold);

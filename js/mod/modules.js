@@ -236,7 +236,8 @@ class exitFindMod {
                     // Send out exit alert
                     if (this.iclData.wireless) {
                         for (var m = 0; m < this.iclData.tourists.length; m++) {
-                            this.iclData.tourists[m].on = this.iclData.tourists[i].icl.length - 1;
+                            console.log("Tourist " + m + " on last instruction")
+                            this.iclData.tourists[m].on = this.iclData.tourists[m].icl.length - 1;
                             this.iclData.tourists[m].knows = true;
                         }
                     }
@@ -288,6 +289,8 @@ class exitFindMod {
     }
 
     VUpdate() {
+        var formatvalue = d3.format(",.3f");
+
         var hold = '';
         for (var i = 0; i < this.iclData.tourists.length; i++) {
             if (this.iclData.time > 0) {
@@ -305,6 +308,20 @@ class exitFindMod {
                 .attr("d", hold).attr("stroke-width", 1)
                 .style("stroke", "00ff00").style("fill", "none");
         }
+        if (this.iclData.time == this.iclData.timeMax - 1) {
+            var exitMax = this.graphSVG.select("#backGround").append("text")
+                .attr("x", this.iclData.unit2Px * 2)
+                .attr("y", this.iclData.unit2Px)
+                .style("font-size", 0.2 * this.iclData.unit2Px)
+                .style("text-anchor", "middle")
+                .text("Time taken this run: " + formatvalue((Math.floor((100 * this.iclData.time) / this.iclData.fps) / 100)));
+            var worstPlacement = this.graphSVG.select("#backGround").append("text")
+                .attr("x", this.iclData.unit2Px * 2)
+                .attr("y", this.iclData.unit2Px * 1.2)
+                .style("font-size", 0.2 * this.iclData.unit2Px)
+                .style("text-anchor", "middle")
+                .text("Exit Placement: " + this.iclData.exitAngle + "°");
+        }
 
 
     }
@@ -316,11 +333,19 @@ class lineFillMod {
         this.step = this.iclData.unit2Px / this.iclData.fps;
         this.pts = null;
         this.count = -1;
+
+        this.exitTimes = [];
+        this.exitEnvelopeGraph = null;
+        this.exitEnvelopeLine = null;
+        this.hold = null;
     }
 
     Init() {
         this.pts = this.iclData.pPath.slice();
         this.count = this.iclData.pPath.length;
+        for (var p = 0; p < this.pts.length; p++) {
+            this.exitTimes.push(0);
+        }
     }
 
     Update() {
@@ -335,6 +360,7 @@ class lineFillMod {
                     if (distance <= this.step / 2) {
                         this.pts[j] = null;
                         this.count--;
+                        this.exitDistChecker(i, j);
                     }
                 }
             }
@@ -344,7 +370,117 @@ class lineFillMod {
         }
     }
 
+    // For checking priority end times only. Does not work on normal or F2F algorithms!
+    exitDistChecker(i, j){
+        if (this.iclData.tourists[i].priority) {
+            this.exitTimes[j] = (Math.floor((100 * this.iclData.time) / this.iclData.fps) / 100);
+        }
+        else {
+            // Helper is tourist i
+            var posHold = [];
+            var distHold = [];
+            for (var t = 0; t < this.iclData.tourists.length; t++) {
+                if (t != i) {
+                    posHold.push({x:this.iclData.tourists[t].x, y:this.iclData.tourists[t].y});
+                    var dVec = {
+                        x:Math.abs(this.iclData.tourists[i].x - this.iclData.tourists[t].x),
+                        y:Math.abs(this.iclData.tourists[i].y - this.iclData.tourists[t].y)
+                    }
+                    distHold.push(Math.hypot(dVec.y, dVec.x));
+                }
+            }
+            this.exitTimes[j] = (Math.floor((100 * this.iclData.time) / this.iclData.fps) / 100) + (Math.min(...distHold) / this.iclData.unit2Px);
+
+        }
+    }
+
+    VInit() {
+        this.exitEnvelopeGraph = d3.select("body").append("svg")
+            .attr("class", "exitEnvelope")
+            .attr("width", 500)
+            .attr("height", 500)
+            .style("border", "1px solid blue")
+        .append("svg")
+            .attr("id", "backGround")
+            .attr("height", "100%")
+            .attr("width", "100%")
+            .attr("viewBox", "0 0 100 100");
+
+        this.exitEnvelopeGraph.append("path")
+            .attr("d", "M" + (0.4 * this.iclData.unit2Px) + "," + (1.5 * this.iclData.unit2Px) +
+                       "L" + (0.4 * this.iclData.unit2Px) + "," + (3.5 * this.iclData.unit2Px) +
+                       "L" + (3.5 * this.iclData.unit2Px) + "," + (3.5 * this.iclData.unit2Px))
+            .style("stroke", "#000000")
+            .style("stroke-width", 1)
+            .style("fill", "none");
+
+        for (var i = 0; i < (Math.floor((100 * this.iclData.timeMax) / this.iclData.fps) / 100); i++) { //Create y-axis labels.
+            this.exitEnvelopeGraph.append("text")
+                .attr("x", (0.3 * this.iclData.unit2Px))
+                .attr("y", ((3.5 * this.iclData.unit2Px) - (i * 0.5 *this.iclData.unit2Px)))
+                .style("font-size", this.iclData.unit2Px * (4 / 25))
+                .style("text-anchor", "middle").text(i + 's');
+        }
+
+        for (var i = 0; i < 7; i ++){
+            this.exitEnvelopeGraph.append("text")
+                .attr("x", (0.5 * this.iclData.unit2Px) + (3 * this.iclData.unit2Px * ((i * 60) / 360)))
+                .attr("y", (3.7 * this.iclData.unit2Px))
+                .style("font-size", this.iclData.unit2Px * (4 / 25))
+                .text((i * 60) + "°");
+
+        }
+        var graphName = this.exitEnvelopeGraph.append("text")
+            .attr("x", this.iclData.unit2Px * 2)
+            .attr("y", this.iclData.unit2Px * 0.5)
+            .style("font-size", 0.15 * this.iclData.unit2Px)
+            .style("text-anchor", "middle")
+            .text("Time until evacuation condition for each exit placement");
+    }
+
+    VUpdate() {
+        var formatvalue = d3.format(",.3f");
+        var hold = '';
+        if (this.iclData.time > 0) {
+            this.exitEnvelopeLine.remove();
+        }
+        for (var j = 0; j < this.exitTimes.length - 1; j++) {
+            var pt = {
+                x: (0.5 * this.iclData.unit2Px) + (3 * this.iclData.unit2Px * (j / this.exitTimes.length)),
+                y: (3.5 * this.iclData.unit2Px) - (this.exitTimes[j] * 0.5  *this.iclData.unit2Px)
+            };
+            hold += ((j == 0) ? ('M') : ('L')) + pt.x + ',' + pt.y;
+
+        }
+        if (this.iclData.time == this.iclData.timeMax - 1){
+            var exitMax = this.exitEnvelopeGraph.append("text")
+                .attr("x", this.iclData.unit2Px * 2)
+                .attr("y", this.iclData.unit2Px)
+                .style("font-size", 0.2 * this.iclData.unit2Px)
+                .style("text-anchor", "middle")
+                .text("Max time taken: " + formatvalue(Math.max(...this.exitTimes)));
+            var worstPlacement = this.exitEnvelopeGraph.append("text")
+                .attr("x", this.iclData.unit2Px * 2)
+                .attr("y", this.iclData.unit2Px * 1.2)
+                .style("font-size", 0.2 * this.iclData.unit2Px)
+                .style("text-anchor", "middle")
+                .text("Worst Exit Placement: " + (this.exitTimes.indexOf(Math.max(...this.exitTimes))) / 2 + "°");
+        }
+
+        this.exitEnvelopeLine = this.exitEnvelopeGraph.append("path")
+            .attr("d", hold)
+            .attr("stroke-width", 1)
+            .style("stroke", "00ff00")
+            .style("fill", "none");
+
+
+    }
+
 }
+
+/*
+Module to graph the upper bound of exit times based on algorithm.
+*/
 
 /**
  *All visual updates and d3 calls for the sim happen in this.
@@ -412,7 +548,7 @@ class iclVisual {
     }
 
     static reEnact() {
-        if (this.iclData.time < this.iclData.timeMax) {
+        if (this.iclData.time <= this.iclData.timeMax) {
             for (var i = 0; i < this.iclData.history.length; i++) {
                 this.visuals[i].attr("cx", this.iclData.history[i][this.iclData.time].x)
                     .attr("cy", this.iclData.history[i][this.iclData.time].y);
