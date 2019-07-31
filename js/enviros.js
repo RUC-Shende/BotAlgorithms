@@ -3,19 +3,8 @@
 //var worldo;
 //var visuao;
 
-class world {
-  constructor( path, start, icll, fps ) {
-    this.unit = 25;
-    this.path = path;
-    this.start = start;
-    this.icll = icll;
-    this.fps = fps;
-    this.pPath = this.genPath( );
-    this.history = null;
-    this.time = 0;
-    this.tTime = 10 * this.fps;
-    this.mobiles = [ ];
-    this.mods = [ ];
+class utils {
+  constructor( ) {
   }
 
   static main( ) {
@@ -29,50 +18,105 @@ class world {
     var icll = [
       [
         [ "info" ],
-        [ "GoToWallAtAngle", [ 315 ] ],
-        //[ "FollowWall", [ "right" ] ],
+        [ "GoToWallFromCenter", [ 0 ] ],
+        [ "GoToWallFromCenter", [ 90 ] ],
+        [ "GoToWallFromCenter", [ 180 ] ],
+        [ "GoToWallFromCenter", [ 270 ] ],
+        [ "GoToWallFromCenter", [ 360 ] ],
+        [ "wait", [ ] ],
         [ "wait", [ ] ]
       ],
       [ 
         [ "info" ],
-        [ "GoToWallAtAngle", [ 135 ] ],
-        //[ "FollowWall", [ "left" ] ],
+        [ "GoToWallFromCenter", [ 45 ] ],
+        [ "GoToWallFromCenter", [ 135 ] ],
+        [ "GoToWallFromCenter", [ 225 ] ],
+        [ "GoToWallFromCenter", [ 315 ] ],
+        [ "GoToWallFromCenter", [ 45 ] ],
+        [ "wait", [ ] ],
         [ "wait", [ ] ]
       ],
-      [
+      [ 
         [ "info" ],
-        [ "wait", [ 9 ] ],
-        [ "GoToWallAtAngle", [ 315 ] ],
+        [ "GoToWallFromCenter", [ 107.5 ] ],
+        [ "FollowWall", [ "left" ] ],
         [ "wait", [ ] ],
         [ "wait", [ ] ]
       ],
       [
         [ "info" ],
-        [ "GoToPoint", { x:25, y:50 } ],
-        [ "GoToCenter", [ ] ],
-        [ "GoOutAtAngle", { r:1, d:45 } ],
+        [ "GoToWallFromTourist", [ 180 ] ],
+        [ "GoToWallFromTourist", [ 315 ] ],
+        [ "GoToWallFromTourist", [ 45 ] ],
+        [ "GoToWallFromTourist", [ 135 ] ],
+        [ "GoToWallFromTourist", [ 225 ] ],
+        [ "wait", [ ] ],
+        [ "wait", [ ] ]
+      ],
+      [
+        [ "info" ],
+        [ "GoToWallFromTourist", [ 225 ] ],
+        [ "GoToWallFromTourist", [ 0 ] ],
+        [ "GoToWallFromTourist", [ 90 ] ],
+        [ "GoToWallFromTourist", [ 180 ] ],
+        [ "GoToWallFromTourist", [ 270 ] ],
+        [ "wait", [ ] ],
+        [ "wait", [ ] ]
+      ],
+      [ 
+        [ "info" ],
+        [ "GoToWallFromCenter", [ 287.5 ] ],
+        [ "FollowWall", [ "left" ] ],
         [ "wait", [ ] ],
         [ "wait", [ ] ]
       ]
     ];
 
     var worldo = new world(
-      world.genPoly( { x:50, y:50 }, 25, 0, 360 ),
+      utils.genPoly( { x:50, y:50 }, 25, 0, 6 ),
       { x:50, y:50 },
       icll,
-      60
+      100
     );
 
-    //nothing									~30ms
-    //worldo.mods.push( new lineFillMod( worldo ) );//medium			~65ms
-    //worldo.mods.push( new coSuMod( worldo, 0, 1, SVG2 ) );//light		~10ms
-    //worldo.mods.push( new exitFindMod( worldo, { x:25, y:50 } ) );//light	~5ms
+    //nothing									~26ms
+    //worldo.mods.push( new lineFillMod( worldo ) );//medium			~+66ms
+    //worldo.mods.push( new coSuMod( worldo, 0, 1, SVG2 ) );//light		~+10ms
+    //worldo.mods.push( new exitFindMod( worldo, { x:25, y:50 } ) );//light	~+5ms
 
     worldo.createHistory( );
     //worldo.createHistory( );	//exitFindMod requires two createHistory's
 
     var visuao = new visual( SVG, worldo );
     var motor = setInterval( visual.reEnact.bind( visuao ), 1000 / worldo.fps );
+  }
+
+  static cmpVectors( v1, v2 ) {
+    if( ( v1.x == v2.x ) && ( v1.y == v2.y ) ) {
+      return( true );
+    }
+    return( false );
+  }
+
+  static AddAround( val, max, amt ) {
+    if( max < 1 ) {
+      console.log( "%cERROR: max must be positive", "color:#ff0000" );
+      return( null );
+    }
+    if( !amt ) {
+      console.log( "%cERROR: amt must be nonzero", "color:#ff0000" );
+      return( null );
+    }
+    var hold = val + amt;
+    while( 1 ) {
+      if( hold < 0 ) {
+        hold += max;
+      } else if( hold >= max ) {
+        hold -= max;
+      } else {
+        return( hold );
+      }
+    }
   }
 
   static genPoly( c, r, a, n ) {
@@ -88,45 +132,33 @@ class world {
     return( poly );
   }
 
-  genPath( ) {
-    if( this.path[ 0 ].x != this.path[ this.path.length - 1 ].x ||
-      this.path[ 0 ].y != this.path[ this.path.length - 1 ].y
-    ) {
-      this.path.push( this.path[ 0 ] );
+  static WhereLineSegsCross( pt1, pt2, pt3, pt4 ) {
+    var m1 = ( pt2.y - pt1.y ) / ( pt2.x - pt1.x );//divide by zero fine
+    var m2 = ( pt4.y - pt3.y ) / ( pt4.x - pt3.x );
+    var b1 = pt1.y - m1 * pt1.x;
+    var b2 = pt3.y - m2 * pt3.x;
+    var s1 = ( pt3.y - m1 * pt3.x - b1 ) * ( pt4.y - m1 * pt4.x - b1 );
+    var s2 = ( pt1.y - m2 * pt1.x - b2 ) * ( pt2.y - m2 * pt2.x - b2 );
+    if( s1 <= 0 && s2 <= 0 ) {
+      var d = m2 - m1;
+      return( { x:( b1 - b2 ) / d, y:( m2 * b1 - m1 * b2 ) / d } );
     }
-    var pPath = [ ];
-    var curPt = null;
-    for( var i = 0; i < this.path.length; i++ ) {
-      var nextPt = this.path[ i ];
-      if( curPt ) {
-        var distance = Math.hypot( nextPt.y - curPt.y, nextPt.x - curPt.x );
-        var totalSteps = Math.floor( this.fps * distance / this.unit ) + 1;
-        for( var j = 0; j < totalSteps; j++ ) {
-          var pt = {
-            x:curPt.x + ( j / totalSteps ) * ( nextPt.x - curPt.x ),
-            y:curPt.y + ( j / totalSteps ) * ( nextPt.y - curPt.y )
-          };
-          pPath.push( pt );
-        }
-      }
-      curPt = nextPt;
-    }
-    pPath.push( pPath[ 0 ] );
-    return( pPath );
+    return( null );
   }
+}
 
-  //returns point relative to a unit polygon at origin, code is reduced rel. to p11 = 0,0
-  static wallAtAngle( deg, angle ) {
-    var fa = Math.floor( ( angle / 360 ) * deg );
-    var d2r = Math.PI / 180;
-    var p12 = { x:Math.cos( angle * d2r ), y:-Math.sin( angle * d2r ) };
-    var p21 = { x:Math.cos( fa * d2r ), y:-Math.sin( fa * d2r ) };
-    var p22 = { x:Math.cos( ( fa + 1 ) * d2r ), y:-Math.sin( ( fa + 1 ) * d2r ) };
-    var m1 = p12.y / p12.x;
-    var m2 = ( p22.y - p21.y ) / ( p22.x - p21.x );
-    var c2 = p22.y - m2 * p22.x;
-    var d = m2 - m1;
-    return( { x:( -c2 ) / d, y:( -m1 * c2 ) / d } );
+class world {
+  constructor( path, start, icll, fps ) {
+    this.unit = 25;
+    this.path = path;
+    this.start = start;
+    this.icll = icll;
+    this.fps = fps;
+    this.history = null;
+    this.time = 0;
+    this.tTime = 10 * this.fps;
+    this.mobiles = [ ];
+    this.mods = [ ];
   }
 
   Init( ) {
@@ -182,7 +214,7 @@ class mobile {
     this.on = 1;
     this.icl = icl;
     this.vel = 1;
-    this.a = 0;
+    this.a = -1;
     this.energy = 0;
     this.target = null;
     this.know = 0;
@@ -253,75 +285,81 @@ class mobile {
     }
   }
 
-  GoToWall( value ) {
-    for( var i = 0; i < this.pPath.length - 1; i++ ) {
-      var u = { x:this.x - this.path[ i ].x, y:this.y - this.path[ i ].y };
-      var v = {
-        x:this.path[ i + 1 ].x - this.path[ i ].x,
-        y:this.path[ i + 1 ].y - this.path[ i ].y
-      };
-    }
-  }
-
-  WallAtAngle( worldo, value ) {
-    var closest = worldo.unit / worldo.fps;
-    var who = 0;
-    for( var i = 0; i < worldo.pPath.length; i++ ) {
-      var ang = Math.atan2(
-        worldo.pPath[ i ].y - worldo.start.y,
-        worldo.pPath[ i ].x - worldo.start.x
-      );
-      if( ang < 0 ) {
-        ang += 2 * Math.PI;
-      }
-      ang = Math.abs( value * Math.PI / 180 - ang );
-      if( ang < closest ) {
-        closest = ang;
-        who = i;
+  GoToWallFromCenter( value ) {//Works perfectly, so far
+    if( !this.target ) {
+      for( var i = 0; i < this.w.path.length - 1; i++ ) {
+        var hold = utils.WhereLineSegsCross(
+          this.w.start,
+          {
+            x:this.w.start.x + 8 * this.w.unit * Math.cos( value[ 0 ] * Math.PI / 180 ),
+            y:this.w.start.y - 8 * this.w.unit * Math.sin( value[ 0 ] * Math.PI / 180 )
+          },
+          this.w.path[ i ],
+          this.w.path[ i + 1 ]
+        );
+        if( hold ) {
+          this.a = i;
+          this.target = hold;
+          break;
+        }
       }
     }
-    return( worldo.pPath[ who ] );
-  }
-
-  GoToWallAtAngle( value ) {
-    if ( this.target == null ) {
-      this.target = this.WallAtAngle( this.w, value );
-    }
-    if ( ( this.x == this.target.x ) && ( this.y == this.target.y ) ) {
-      this.a = value[ 0 ];
+    if( ( this.x == this.target.x ) && ( this.y == this.target.y ) ) {
       this.on++;
+      this.target = null;
     } else {
       this.DirectTo( this.target );
     }
   }
 
-  FollowWall( value ) {
-    var dir = ( value[ 0 ] == "left" ) ? ( 1 ) : ( -1 );
-    var del = ( this.w.unit / this.w.fps ) * dir;
-    if ( value[ 1 ] ) {
-      if ( this.target == null ) {
-        this.target = this.a + value[ 1 ] * ( Math.PI / 180 ) * dir;
+  GoToWallFromTourist( value ) {//WIP
+    if( !this.target ) {
+      for( var i = 0; i < this.w.path.length - 1; i++ ) {
+        var pts = {
+          a:this,
+          b:{
+            x:this.x + 8 * this.w.unit * Math.cos( value[ 0 ] * Math.PI / 180 ),
+            y:this.y - 8 * this.w.unit * Math.sin( value[ 0 ] * Math.PI / 180 )
+          },
+          c:this.w.path[ i ],
+          d:this.w.path[ i + 1 ]
+        }
+        var m2 = ( pts.d.y - pts.c.y ) / ( pts.d.x - pts.c.x );
+        var b2 = pts.c.y - m2 * pts.c.x;
+        var s2 = ( this.y - m2 * this.x - b2 );
+        if( s2 != 0 ) {
+          var hold = utils.WhereLineSegsCross( pts.a, pts.b, pts.c, pts.d );
+          if( hold ) {
+            this.a = i;
+            this.target = hold;
+            break;
+          }
+        }
       }
-      var leftCondition = this.a + del;
-      var rightCondition = this.target;
-      if ( dir < 0 ) {
-        rightCondition = leftCondition;
-        leftCondition = this.target;
-      }
-      if ( leftCondition > rightCondition ) {
-        this.on++;
-        this.a = this.target;
-        this.target = null;
-      } else {
-        this.a += del;
-      }
-    } else {
-      this.a += del;
     }
-    var hold = this.WallAtAngle( this.w.deg, this.a );
-    hold.x = this.w.start.x + this.w.unit * hold.x;
-    hold.y = this.w.start.y + this.w.unit * hold.y;
-    this.DirectTo( hold );
+    if( ( this.x == this.target.x ) && ( this.y == this.target.y ) ) {
+      this.on++;
+      this.target = null;
+    } else {
+      this.DirectTo( this.target );
+    }
+  }
+
+  FollowWall( value ) {//Only follows path for now
+    if( this.a > -1 ) {
+      var dir = ( value[ 0 ] == "left" ) ? ( 1 ) : ( -1 );
+      if( !this.target ) {
+        this.target = utils.AddAround( this.a, this.w.path.length, dir );
+      }
+      if( utils.cmpVectors( this, this.w.path[ this.target ] ) ) {
+        this.a = utils.AddAround( this.a, this.w.path.length - 1, dir ); 
+        this.target = utils.AddAround( this.a, this.w.path.length - 1, dir );
+      }
+      this.DirectTo( this.w.path[ this.target ] );
+    } else {
+      console.log( "%cERROR: Can't follow wall, if not on it", "color:#ff0000" );
+      this.on++;
+    }
   }
 }
 
@@ -330,7 +368,7 @@ class mobile {
 
 
 class exitFindMod {
-  constructor( world, exit, ) {
+  constructor( world, exit ) {
     this.w = world;
     this.step = this.w.unit / this.w.fps;
     this.premo = null;
@@ -374,13 +412,41 @@ class lineFillMod {
   constructor( world ) {
     this.w = world;
     this.step = this.w.unit / this.w.fps;
+    this.pPath = this.genPath( );
     this.pts = null;
     this.count = -1;
   }
 
+  genPath( ) {
+    if( this.w.path[ 0 ].x != this.w.path[ this.w.path.length - 1 ].x ||
+      this.w.path[ 0 ].y != this.w.path[ this.w.path.length - 1 ].y
+    ) {
+      this.w.path.push( this.w.path[ 0 ] );
+    }
+    var pPath = [ ];
+    var curPt = null;
+    for( var i = 0; i < this.w.path.length; i++ ) {
+      var nextPt = this.w.path[ i ];
+      if( curPt ) {
+        var distance = Math.hypot( nextPt.y - curPt.y, nextPt.x - curPt.x );
+        var totalSteps = Math.floor(distance / this.step ) + 1;
+        for( var j = 0; j < totalSteps; j++ ) {
+          var pt = {
+            x:curPt.x + ( j / totalSteps ) * ( nextPt.x - curPt.x ),
+            y:curPt.y + ( j / totalSteps ) * ( nextPt.y - curPt.y )
+          };
+          pPath.push( pt );
+        }
+      }
+      curPt = nextPt;
+    }
+    pPath.push( pPath[ 0 ] );
+    return( pPath );
+  }
+
   Init( ) {
-    this.pts = this.w.pPath.slice( );
-    this.count = this.w.pPath.length;
+    this.pts = this.pPath.slice( );
+    this.count = this.pPath.length;
   }
 
   Update( ) {
