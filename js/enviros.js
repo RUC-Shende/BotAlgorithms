@@ -3,6 +3,8 @@
 //var worldo;
 //var visuao;
 
+//
+
 class utils {
   constructor( ) {
   }
@@ -18,42 +20,47 @@ class utils {
     var icll = [
       [
         [ "info" ],
-        [ "GoToWallFromCenter", [ 0 ] ],
-        [ "GoToWallFromCenter", [ 90 ] ],
-        [ "GoToWallFromCenter", [ 180 ] ],
-        [ "GoToWallFromCenter", [ 270 ] ],
-        [ "GoToWallFromCenter", [ 360 ] ],
-        [ "wait", [ ] ],
-        [ "wait", [ ] ]
-      ],
-      [ 
-        [ "info" ],
-        [ "GoToWallFromCenter", [ 45 ] ],
-        [ "GoToWallFromCenter", [ 135 ] ],
         [ "GoToWallFromCenter", [ 225 ] ],
-        [ "GoToWallFromCenter", [ 315 ] ],
+        /*[ "GoToWallFromCenter", [ 0 ] ],
         [ "GoToWallFromCenter", [ 45 ] ],
+        [ "GoToWallFromCenter", [ 90 ] ],
+        [ "GoToWallFromCenter", [ 135 ] ],
+        [ "GoToWallFromCenter", [ 180 ] ],
+        [ "GoToWallFromCenter", [ 225 ] ],
+        [ "GoToWallFromCenter", [ 270 ] ],
+        [ "GoToWallFromCenter", [ 315 ] ],
+        [ "GoToWallFromCenter", [ 360 ] ],*/
         [ "wait", [ ] ],
         [ "wait", [ ] ]
       ],
-      [ 
+      /*[ 
+        [ "info" ],
+        [ "GoToWallFromCenter", [ 270 ] ],
+        //[ "GoToWallFromCenter", [ 135 ] ],
+        //[ "GoToWallFromCenter", [ 225 ] ],
+        //[ "GoToWallFromCenter", [ 315 ] ],
+        //[ "GoToWallFromCenter", [ 45 ] ],
+        [ "wait", [ ] ],
+        [ "wait", [ ] ]
+      ],*/
+      /*[ 
         [ "info" ],
         [ "GoToWallFromCenter", [ 107.5 ] ],
         [ "FollowWall", [ "left" ] ],
         [ "wait", [ ] ],
         [ "wait", [ ] ]
-      ],
-      [
+      ],*/
+      /*[
         [ "info" ],
         [ "GoToWallFromTourist", [ 180 ] ],
         [ "GoToWallFromTourist", [ 315 ] ],
         [ "GoToWallFromTourist", [ 45 ] ],
         [ "GoToWallFromTourist", [ 135 ] ],
-        [ "GoToWallFromTourist", [ 225 ] ],
+        //[ "GoToWallFromTourist", [ 225 ] ],
         [ "wait", [ ] ],
         [ "wait", [ ] ]
-      ],
-      [
+      ],*/
+      /*[
         [ "info" ],
         [ "GoToWallFromTourist", [ 225 ] ],
         [ "GoToWallFromTourist", [ 0 ] ],
@@ -62,24 +69,30 @@ class utils {
         [ "GoToWallFromTourist", [ 270 ] ],
         [ "wait", [ ] ],
         [ "wait", [ ] ]
-      ],
-      [ 
+      ],*/
+      /*[ 
         [ "info" ],
-        [ "GoToWallFromCenter", [ 287.5 ] ],
+        [ "GoToWallFromCenter", [ 180 ] ],
         [ "FollowWall", [ "left" ] ],
         [ "wait", [ ] ],
         [ "wait", [ ] ]
-      ]
+      ]*/
+    ];
+
+    var path = [
+      { x:25, y:25 }, { x:30, y:30 }, { x:75, y:25 }, { x:60, y:40 }, { x:60, y:60 },
+      { x:75, y:75 }, { x:25, y:75 }, { x:40, y:50 }, { x:25, y:25 }
     ];
 
     var worldo = new world(
-      utils.genPoly( { x:50, y:50 }, 25, 0, 6 ),
+      //utils.genPoly( { x:50, y:50 }, 25, 0, 3 ),
+      path,
       { x:50, y:50 },
       icll,
       100
     );
 
-    //nothing									~26ms
+    //nothing									~36ms
     //worldo.mods.push( new lineFillMod( worldo ) );//medium			~+66ms
     //worldo.mods.push( new coSuMod( worldo, 0, 1, SVG2 ) );//light		~+10ms
     //worldo.mods.push( new exitFindMod( worldo, { x:25, y:50 } ) );//light	~+5ms
@@ -91,7 +104,7 @@ class utils {
     var motor = setInterval( visual.reEnact.bind( visuao ), 1000 / worldo.fps );
   }
 
-  static cmpVectors( v1, v2 ) {
+  static cmpXYPairs( v1, v2 ) {
     if( ( v1.x == v2.x ) && ( v1.y == v2.y ) ) {
       return( true );
     }
@@ -133,15 +146,36 @@ class utils {
   }
 
   static WhereLineSegsCross( pt1, pt2, pt3, pt4 ) {
-    var m1 = ( pt2.y - pt1.y ) / ( pt2.x - pt1.x );//divide by zero fine
-    var m2 = ( pt4.y - pt3.y ) / ( pt4.x - pt3.x );
-    var b1 = pt1.y - m1 * pt1.x;
-    var b2 = pt3.y - m2 * pt3.x;
-    var s1 = ( pt3.y - m1 * pt3.x - b1 ) * ( pt4.y - m1 * pt4.x - b1 );
-    var s2 = ( pt1.y - m2 * pt1.x - b2 ) * ( pt2.y - m2 * pt2.x - b2 );
+    var a1 = ( pt2.y - pt1.y ) / ( pt2.x - pt1.x );	//slope
+    var b1 = 1;
+    if( pt2.x - pt1.x == 0 ) {	//Line one is vertical, change values to proper equation
+      a1 = 1;
+      b1 = 0;
+    }
+    var c1 = b1 * pt1.y - a1 * pt1.x;	//y-intercept
+
+    var a2 = ( pt4.y - pt3.y ) / ( pt4.x - pt3.x );
+    var b2 = 1;
+    if( pt4.x - pt3.x == 0 ) {	//Line two is vertical, change values to proper equation
+      a2 = 1;
+      b2 = 0;
+    }
+    var c2 = b2 * pt3.y - a2 * pt3.x;
+
+    var s1 = ( b1 * pt3.y - a1 * pt3.x - c1 ) * ( b1 * pt4.y - a1 * pt4.x - c1 );
+    var s2 = ( b2 * pt1.y - a2 * pt1.x - c2 ) * ( b2 * pt2.y - a2 * pt2.x - c2 );
+
     if( s1 <= 0 && s2 <= 0 ) {
-      var d = m2 - m1;
-      return( { x:( b1 - b2 ) / d, y:( m2 * b1 - m1 * b2 ) / d } );
+      var d = a1 * b2 - a2 * b1;
+      if( d == 0 ) {
+        return( null );
+      }
+      var dx = c1 * b2 - c2 * b1;
+      var dy = a1 * c2 - a2 * c1;
+      console.log( pt1, pt2, pt3, pt4 );
+      //console.log( "1: ", "a1:" + a1, "b1:" + b1, "c1:" + c1, "a2:" + a2, "b2:" + b2, "b2:" + c2 );
+      //console.log( "2: ", "dx:" + dx, "dy:" + dy, "d:" + d, "dxld:" + dx / d, "dyld:" + dy / d );
+      return( { x:-dx / d, y:dy / d } );
     }
     return( null );
   }
@@ -285,7 +319,7 @@ class mobile {
     }
   }
 
-  GoToWallFromCenter( value ) {//Works perfectly, so far
+  GoToWallFromCenter( value ) {
     if( !this.target ) {
       for( var i = 0; i < this.w.path.length - 1; i++ ) {
         var hold = utils.WhereLineSegsCross(
@@ -299,6 +333,7 @@ class mobile {
         );
         if( hold ) {
           this.a = i;
+          console.log( hold );
           this.target = hold;
           break;
         }
@@ -312,7 +347,8 @@ class mobile {
     }
   }
 
-  GoToWallFromTourist( value ) {//WIP
+  /*
+  GoToWallFromTourist( value ) {//Fails on small sided shapes, needs adjustments.
     if( !this.target ) {
       for( var i = 0; i < this.w.path.length - 1; i++ ) {
         var pts = {
@@ -324,17 +360,17 @@ class mobile {
           c:this.w.path[ i ],
           d:this.w.path[ i + 1 ]
         }
-        var m2 = ( pts.d.y - pts.c.y ) / ( pts.d.x - pts.c.x );
-        var b2 = pts.c.y - m2 * pts.c.x;
-        var s2 = ( this.y - m2 * this.x - b2 );
-        if( s2 != 0 ) {
-          var hold = utils.WhereLineSegsCross( pts.a, pts.b, pts.c, pts.d );
-          if( hold ) {
+        var hold = utils.WhereLineSegsCross( pts.a, pts.b, pts.c, pts.d );
+        if( hold ) {
+          if( Math.hypot( hold.y - this.y, hold.x - this.x ) > this.w.unit / this.w.fps ) {
             this.a = i;
             this.target = hold;
             break;
           }
         }
+      }
+      if( i == this.w.path.length - 1 ) {
+        console.log( "No target found" );
       }
     }
     if( ( this.x == this.target.x ) && ( this.y == this.target.y ) ) {
@@ -344,17 +380,29 @@ class mobile {
       this.DirectTo( this.target );
     }
   }
+  */
 
   FollowWall( value ) {//Only follows path for now
     if( this.a > -1 ) {
       var dir = ( value[ 0 ] == "left" ) ? ( 1 ) : ( -1 );
       if( !this.target ) {
-        this.target = utils.AddAround( this.a, this.w.path.length, dir );
+        if( dir > 0 ) {
+          this.target = utils.AddAround( this.a, this.w.path.length, dir );
+        } else {
+          this.target = this.a;
+        }
+        console.log( "1:", this.num, this.a, this.target );
       }
-      if( utils.cmpVectors( this, this.w.path[ this.target ] ) ) {
-        this.a = utils.AddAround( this.a, this.w.path.length - 1, dir ); 
-        this.target = utils.AddAround( this.a, this.w.path.length - 1, dir );
+      if( utils.cmpXYPairs( this, this.w.path[ this.target ] ) ) {
+          this.a = utils.AddAround( this.a, this.w.path.length, dir );
+        if( dir > 0 ) { 
+          this.target = utils.AddAround( this.a, this.w.path.length, dir );
+        } else {
+          this.target = this.a;
+        }
+        console.log( "2:", this.num, this.a, this.target );
       }
+      console.log( "3:", this.num, this.a, this.target );
       this.DirectTo( this.w.path[ this.target ] );
     } else {
       console.log( "%cERROR: Can't follow wall, if not on it", "color:#ff0000" );
