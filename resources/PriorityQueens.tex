@@ -173,19 +173,19 @@ or at an angle of $ \frac{2\pi}{3}$ for $a >= \frac{2\pi}{3}$ at the time of exi
 \begin{center}
     \begin{tabular}{ | p{1.5cm} || r l | l |}
         \hline
-        \multicolumn{4} { | c | }{ Algorithm \textbf{$Search_{2}$}($\alpha$, $c$, $h$)} \\ \hline
+        \multicolumn{4} { | c | }{ Algorithm \textbf{$Search_{2}$}($a$, $c$, $h$)} \\ \hline
         \textbf{Robot} & $\textbf{\#}$ & \textbf{Trajectory} & \textbf{Exit Protocol} \\ \hline
         \multirow{2}{*}{$P1$} & 0 & Travel from $O$ to $C_{0}$. & IF: Exit found by $P1$ - Done. \\
-        & 1 & Travel CCW for $c$ time. & ELSE: Travel along chord to exit if closer. \\
-        & 2 & Travel directly to $C_{c+h}$. & \\
-        & 3 & Travel CW. & \\ \hline
-        \multirow{2}{*}{$P2$} & 0 & Travel from $O$ to $C_{\pi + \alpha}$ & IF: Exit found by $P2$ - Done. \\
-        & 1 & Travel CCW. & ELSE: Travel along a chord to exit if closer.\\ \hline
-        \multirow{2}{*}{$H$} & 0 & Travel from $O$ to $C_{\pi + \alpha}$ & \multirow{2}{*}{Broadcast exit location and then wait.} \\
-        & 1 & Travel CW. & \\ \hline
+        & 1 & Travel CCW to $C_{c}$. & ELSE: Travel along chord to exit if closer. \\
+        & 2 & Travel along chord to $C_{c+h}$. & \\
+        & 3 & Travel CW towards $C_{c}$. & \\ \hline
+        \multirow{2}{*}{$P2$} & 0 & Travel from $O$ to $C_{a}$ & IF: Exit found by $P2$ - Done. \\
+        & 1 & Travel CCW towards $C_{0}$. & ELSE: Travel along a chord to exit if closer.\\ \hline
+        \multirow{2}{*}{$H$} & 0 & Travel from $O$ to $C_{a}$ & \multirow{2}{*}{Broadcast exit location and then wait.} \\
+        & 1 & Travel CW towards $C_{c+h}$. & \\ \hline
     \end{tabular}
-\includegraphics{mypics/2Q1S_references.pdf} \hfill
-\includegraphics{Q2S1_Eq/Q2S1_DetourExample.pdf}
+\includegraphics{Q2S1_Eq/Q2S1_Old/Q2S1_DetourExample0.pdf} \hfill
+\includegraphics{Q2S1_Eq/Q2S1_Old/Q2S1_DetourExample.pdf}
 \end{center}
 \begin{flushleft}
     In this algorithm, $P1$ utilizes a detour, abandoning its search along the wall
@@ -205,14 +205,14 @@ or at an angle of $ \frac{2\pi}{3}$ for $a >= \frac{2\pi}{3}$ at the time of exi
     Therefore:
 
     \begin{tabularx}{\textwidth}{lXc}
-        \multirow{2}{*}{$2\pi = a+b$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_1.pdf}} \\
+        \multirow{2}{*}{$2\pi = a+b$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/Q2S1_Old/eq_1.pdf}} \\
     \end{tabularx}
 
     We know that $P1$ and $H$ will have to travel a total of $a$ around the circle,
     and after a certain time $c$, the remaining unsearched area will be
 
     \begin{tabularx}{\textwidth}{lXc}
-        \multirow{2}{*}{$a = 2c+d$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_2.pdf}} \\
+        \multirow{2}{*}{$a = 2c+d$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/Q2S1_Old/eq_2.pdf}} \\
     \end{tabularx}
 
 
@@ -223,7 +223,7 @@ or at an angle of $ \frac{2\pi}{3}$ for $a >= \frac{2\pi}{3}$ at the time of exi
     we instead send $P1$ along a chord of angle $h$, such that when $H$ reaches point $C_{a - c - e}$, $P1$ will be travelling somewhere along the chord.
 
     \begin{tabularx}{\textwidth}{lXc}
-        \multirow{2}{*}{$c+e = \frac{a - \frac{2\pi}{3}}{2}$} & &  \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_4.pdf}} \\
+        \multirow{2}{*}{$c+e = \frac{a - \frac{2\pi}{3}}{2}$} & &  \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/Q2S1_Old/eq_4.pdf}} \\
     \end{tabularx}
 
     The point at which $P1$ reaches the end of the detour at point $C_{c + h}$,
@@ -231,21 +231,21 @@ or at an angle of $ \frac{2\pi}{3}$ for $a >= \frac{2\pi}{3}$ at the time of exi
     taken by $P1$ to reach the end of its detour.
 
     \begin{tabularx}{\textwidth}{lXc}
-        \multirow{2}{*}{$e+f = 2\sin(\frac{h}{2})$} & & \parbox[c]{0.3\textwidth}{\includegraphics[width=0.3\textwidth]{Q2S1_Eq/eq_5.pdf}} \\
+        \multirow{2}{*}{$e+f = 2\sin(\frac{h}{2})$} & & \parbox[c]{0.3\textwidth}{\includegraphics[width=0.3\textwidth]{Q2S1_Eq/Q2S1_Old/eq_5.pdf}} \\
     \end{tabularx}
 
     We call $g$ the remaining unsearched arc between $C_{c + h}$ and $C_{a - c - e - f}$
     such that:
 
     \begin{tabularx}{\textwidth}{lXc}
-        \multirow{2}{*}{$d = e+f+g+h$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_3.pdf}} \\
+        \multirow{2}{*}{$d = e+f+g+h$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/Q2S1_Old/eq_3.pdf}} \\
     \end{tabularx}
 
     At this point in the algorithm, we send $P1$ clockwise to search the area from $C_{c + h}$ until
     $C_{c}$ and $H$ stays clockwise to search the remaining area from $C_{a - c - e - f}$ until $C_{c + h}$. At this point the distance between the two agents stays constant for the rest of the algorithm, and this distance is equal to $2\sin(\frac{g}{2})$. Clearly, the optimal value for $h$ is:
 
     \begin{tabularx}{\textwidth}{lXc}
-        \multirow{2}{*}{$h = g+2\sin(\frac{g}{2})$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_6.pdf}} \\
+        \multirow{2}{*}{$h = g+2\sin(\frac{g}{2})$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/Q2S1_Old/eq_6.pdf}} \\
     \end{tabularx}
 
 
@@ -261,14 +261,14 @@ or at an angle of $ \frac{2\pi}{3}$ for $a >= \frac{2\pi}{3}$ at the time of exi
     search, at
 
     \begin{tabularx}{\textwidth}{lXc}
-        \multirow{2}{*}{$t = 1+b$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/ub_1.pdf}} \\
+        \multirow{2}{*}{$t = 1+b$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/Q2S1_Old/ub_1.pdf}} \\
     \end{tabularx}
 
     Another upper bound occurs when either $H$ or $P1$ finds the exit at the end of
     their search, after time
 
     \begin{tabularx}{\textwidth}{lXc}
-        \multirow{2}{*}{$t = 1+c+e+f+h$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/ub_2.pdf}} \\
+        \multirow{2}{*}{$t = 1+c+e+f+h$} & & \parbox[c]{0.25\textwidth}{\includegraphics[width=0.25\textwidth]{Q2S1_Eq/Q2S1_Old/ub_2.pdf}} \\
     \end{tabularx}
 
     Finally, a third bound gets introduced if $H$ finds the exit at a point such that both
@@ -286,5 +286,18 @@ or at an angle of $ \frac{2\pi}{3}$ for $a >= \frac{2\pi}{3}$ at the time of exi
     \end{tabularx}
 
 \end{flushleft}
+
+\section {Stacked Equations Temp}
+
+\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_1.pdf}
+\hfill
+\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_2.pdf}
+\hfill
+\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_3.pdf}
+\includegraphics[width=0.25\textwidth]{Q2S1_Eq/eq_4.pdf}
+\includegraphics[width=0.25\textwidth]{Q2S1_Eq/lb_1.pdf}
+\includegraphics[width=0.25\textwidth]{Q2S1_Eq/lb_2.pdf}
+\includegraphics[width=0.25\textwidth]{Q2S1_Eq/lb_3.pdf}
+
 
 \end{document}
