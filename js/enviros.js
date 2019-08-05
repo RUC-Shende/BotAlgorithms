@@ -20,8 +20,8 @@ class utils {
     var icll = [
       [
         [ "info" ],
-        [ "GoToWallFromCenter", [ 225 ] ],
-        /*[ "GoToWallFromCenter", [ 0 ] ],
+        //[ "GoToWallFromCenter", [ 225 ] ],
+        [ "GoToWallFromCenter", [ 0 ] ],
         [ "GoToWallFromCenter", [ 45 ] ],
         [ "GoToWallFromCenter", [ 90 ] ],
         [ "GoToWallFromCenter", [ 135 ] ],
@@ -29,7 +29,7 @@ class utils {
         [ "GoToWallFromCenter", [ 225 ] ],
         [ "GoToWallFromCenter", [ 270 ] ],
         [ "GoToWallFromCenter", [ 315 ] ],
-        [ "GoToWallFromCenter", [ 360 ] ],*/
+        [ "GoToWallFromCenter", [ 360 ] ],
         [ "wait", [ ] ],
         [ "wait", [ ] ]
       ],
@@ -43,13 +43,13 @@ class utils {
         [ "wait", [ ] ],
         [ "wait", [ ] ]
       ],*/
-      /*[ 
+      [ 
         [ "info" ],
-        [ "GoToWallFromCenter", [ 107.5 ] ],
-        [ "FollowWall", [ "left" ] ],
+        [ "GoToWallFromCenter", [ 0 ] ],
+        [ "FollowWall", [ "left", 1 ] ],
         [ "wait", [ ] ],
         [ "wait", [ ] ]
-      ],*/
+      ],
       /*[
         [ "info" ],
         [ "GoToWallFromTourist", [ 180 ] ],
@@ -70,13 +70,13 @@ class utils {
         [ "wait", [ ] ],
         [ "wait", [ ] ]
       ],*/
-      /*[ 
+      [ 
         [ "info" ],
         [ "GoToWallFromCenter", [ 180 ] ],
-        [ "FollowWall", [ "left" ] ],
+        [ "FollowWall", [ "left", 2 ] ],
         [ "wait", [ ] ],
         [ "wait", [ ] ]
-      ]*/
+      ]
     ];
 
     var path = [
@@ -85,7 +85,7 @@ class utils {
     ];
 
     var worldo = new world(
-      //utils.genPoly( { x:50, y:50 }, 25, 0, 3 ),
+      //utils.genPoly( { x:50, y:50 }, 25, 0, 359 ),
       path,
       { x:50, y:50 },
       icll,
@@ -146,6 +146,11 @@ class utils {
   }
 
   static WhereLineSegsCross( pt1, pt2, pt3, pt4 ) {
+    if( pt1.x > pt2.x ) {
+      var hold = pt1;
+      pt1 = pt2;
+      pt2 = hold;
+    }
     var a1 = ( pt2.y - pt1.y ) / ( pt2.x - pt1.x );	//slope
     var b1 = 1;
     if( pt2.x - pt1.x == 0 ) {	//Line one is vertical, change values to proper equation
@@ -154,6 +159,11 @@ class utils {
     }
     var c1 = b1 * pt1.y - a1 * pt1.x;	//y-intercept
 
+    if( pt3.x > pt4.x ) {
+      var hold = pt3;
+      pt3 = pt4;
+      pt4 = hold;
+    }
     var a2 = ( pt4.y - pt3.y ) / ( pt4.x - pt3.x );
     var b2 = 1;
     if( pt4.x - pt3.x == 0 ) {	//Line two is vertical, change values to proper equation
@@ -172,8 +182,8 @@ class utils {
       }
       var dx = c1 * b2 - c2 * b1;
       var dy = a1 * c2 - a2 * c1;
-      console.log( pt1, pt2, pt3, pt4 );
-      //console.log( "1: ", "a1:" + a1, "b1:" + b1, "c1:" + c1, "a2:" + a2, "b2:" + b2, "b2:" + c2 );
+      //console.log( pt1, pt2, pt3, pt4 );
+      //console.log( "1: ", "a1:" + a1, "b1:" + b1, "c1:" + c1, "a2:" + a2, "b2:" + b2, "c2:" + c2 );
       //console.log( "2: ", "dx:" + dx, "dy:" + dy, "d:" + d, "dxld:" + dx / d, "dyld:" + dy / d );
       return( { x:-dx / d, y:dy / d } );
     }
@@ -333,7 +343,7 @@ class mobile {
         );
         if( hold ) {
           this.a = i;
-          console.log( hold );
+          //console.log( hold );
           this.target = hold;
           break;
         }
@@ -347,8 +357,7 @@ class mobile {
     }
   }
 
-  /*
-  GoToWallFromTourist( value ) {//Fails on small sided shapes, needs adjustments.
+  GoToWallFromTourist( value ) {
     if( !this.target ) {
       for( var i = 0; i < this.w.path.length - 1; i++ ) {
         var pts = {
@@ -380,30 +389,42 @@ class mobile {
       this.DirectTo( this.target );
     }
   }
-  */
 
   FollowWall( value ) {//Only follows path for now
     if( this.a > -1 ) {
       var dir = ( value[ 0 ] == "left" ) ? ( 1 ) : ( -1 );
       if( !this.target ) {
+	this.target = { a:null, t:-1 };
         if( dir > 0 ) {
-          this.target = utils.AddAround( this.a, this.w.path.length, dir );
+          this.target.a = utils.AddAround( this.a, this.w.path.length, dir );
         } else {
-          this.target = this.a;
+          this.target.a = this.a;
         }
-        console.log( "1:", this.num, this.a, this.target );
+        if( value[ 1 ] ) {
+          this.target.t = value[ 1 ] * this.w.unit;
+        }
       }
-      if( utils.cmpXYPairs( this, this.w.path[ this.target ] ) ) {
-          this.a = utils.AddAround( this.a, this.w.path.length, dir );
+      if( utils.cmpXYPairs( this, this.w.path[ this.target.a ] ) ) {
+        this.a = utils.AddAround( this.a, this.w.path.length, dir );
         if( dir > 0 ) { 
-          this.target = utils.AddAround( this.a, this.w.path.length, dir );
+          this.target.a = utils.AddAround( this.a, this.w.path.length, dir );
         } else {
-          this.target = this.a;
+          this.target.a = this.a;
         }
-        console.log( "2:", this.num, this.a, this.target );
       }
-      console.log( "3:", this.num, this.a, this.target );
-      this.DirectTo( this.w.path[ this.target ] );
+      if( this.target.t == -1 ) {
+        this.DirectTo( this.w.path[ this.target.a ] );
+      } else if ( this.target.t > this.energy ) {
+        this.target.t -= this.energy;
+        this.DirectTo( this.w.path[ this.target.a ] );
+        console.log( this.num, this.target.t );
+      } else {
+        var holdX = ( this.target.t / this.energy ) * ( this.w.path[ this.target.a ].x - this.x );
+        var holdY = ( this.target.t / this.energy ) * ( this.w.path[ this.target.a ].y - this.y );
+        this.DirectTo( { x:holdX, y:holdY } );
+        this.on++;
+        this.target = null;
+      }
     } else {
       console.log( "%cERROR: Can't follow wall, if not on it", "color:#ff0000" );
       this.on++;
