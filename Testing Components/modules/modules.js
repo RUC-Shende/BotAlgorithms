@@ -43,6 +43,87 @@ class utils {
         return (poly);
     }
 
+    static midpoint(pt1, pt2) {
+        if (pt1.x == pt2.x && pt1.y == pt2.y) {
+            console.log("%cERROR: Must be different points.", "color:#ff0000ff");
+            return null;
+        }
+        return {x:(pt1.x + pt2.x)/2, y:(pt1.y + pt2.y)/2};
+    }
+
+    static cmpXYPairs( v1, v2 ) {
+      if( ( v1.x == v2.x ) && ( v1.y == v2.y ) ) {
+        return( true );
+      }
+      return( false );
+    }
+
+    static AddAround( val, max, amt ) {
+      if( max < 1 ) {
+        console.log( "%cERROR: max must be positive", "color:#ff0000" );
+        return( null );
+      }
+      if( !amt ) {
+        console.log( "%cERROR: amt must be nonzero", "color:#ff0000" );
+        return( null );
+      }
+      var hold = val + amt;
+      while( 1 ) {
+        if( hold < 0 ) {
+          hold += max;
+        } else if( hold >= max ) {
+          hold -= max;
+        } else {
+          return( hold );
+        }
+      }
+    }
+
+    static WhereLineSegsCross( pt1, pt2, pt3, pt4 ) {
+      if( pt1.x > pt2.x ) {
+        var hold = pt1;
+        pt1 = pt2;
+        pt2 = hold;
+      }
+      var a1 = ( pt2.y - pt1.y ) / ( pt2.x - pt1.x );	//slope
+      var b1 = 1;
+      if( pt2.x - pt1.x == 0 ) {	//Line one is vertical, change values to proper equation
+        a1 = 1;
+        b1 = 0;
+      }
+      var c1 = b1 * pt1.y - a1 * pt1.x;	//y-intercept
+
+      if( pt3.x > pt4.x ) {
+        var hold = pt3;
+        pt3 = pt4;
+        pt4 = hold;
+      }
+      var a2 = ( pt4.y - pt3.y ) / ( pt4.x - pt3.x );
+      var b2 = 1;
+      if( pt4.x - pt3.x == 0 ) {	//Line two is vertical, change values to proper equation
+        a2 = 1;
+        b2 = 0;
+      }
+      var c2 = b2 * pt3.y - a2 * pt3.x;
+
+      var s1 = ( b1 * pt3.y - a1 * pt3.x - c1 ) * ( b1 * pt4.y - a1 * pt4.x - c1 );
+      var s2 = ( b2 * pt1.y - a2 * pt1.x - c2 ) * ( b2 * pt2.y - a2 * pt2.x - c2 );
+
+      if( s1 <= 0 && s2 <= 0 ) {
+        var d = a1 * b2 - a2 * b1;
+        if( d == 0 ) {
+          return( null );
+        }
+        var dx = c1 * b2 - c2 * b1;
+        var dy = a1 * c2 - a2 * c1;
+        //console.log( pt1, pt2, pt3, pt4 );
+        //console.log( "1: ", "a1:" + a1, "b1:" + b1, "c1:" + c1, "a2:" + a2, "b2:" + b2, "c2:" + c2 );
+        //console.log( "2: ", "dx:" + dx, "dy:" + dy, "d:" + d, "dxld:" + dx / d, "dyld:" + dy / d );
+        return( { x:-dx / d, y:dy / d } );
+      }
+      return( null );
+    }
+
 }
 
 /**
@@ -76,7 +157,7 @@ class iclData {
         /** The maximum time before we stop the simulation for good. */
         this.timeMax = 10 * this.fps;
         /** Points of the equilateral shape to search. Ex. 3 = Triangle, 4 = square, 360 = circle */
-        this.degrees = 360;
+        this.degrees = path.length - 1;
         /** 1 unit == 1 Radius. How many pixels per unit. */
         this.unit2Px = 25;
         /** Center of the current shape in {float}[x,y]. */
@@ -87,10 +168,7 @@ class iclData {
         /** Angle of the exit to use for the sim. */
         this.exitAngle = angle;
         /** Exit to use for the sim in {float}[x,y]. */
-        this.fieldExit = {
-            x: this.center.x + this.unit2Px * Math.cos(this.exitAngle * Math.PI / 180),
-            y: this.center.y - this.unit2Px * Math.sin(this.exitAngle * Math.PI / 180)
-        };
+        this.fieldExit = utils.wallAtAngle(this.degrees, this.exitAngle);
         /** How many tourists this data structure is in control of. */
         this.touristNum = 0;
         /** Array of valid trajectories for robots. Length is how many tourists are being used. */

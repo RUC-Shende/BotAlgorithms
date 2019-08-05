@@ -98,6 +98,112 @@ class Tourist {
     }
   }
 
+  GoToWallFromCenter( value ) {
+    if( !this.target ) {
+      for( var i = 0; i < this.iclData.path.length - 1; i++ ) {
+        var hold = utils.WhereLineSegsCross(
+          this.iclData.center,
+          {
+            x:this.iclData.center.x + 8 * this.iclData.unit2Px * Math.cos( value[ 0 ] * Math.PI / 180 ),
+            y:this.iclData.center.y - 8 * this.iclData.unit2Px * Math.sin( value[ 0 ] * Math.PI / 180 )
+          },
+          this.iclData.path[ i ],
+          this.iclData.path[ i + 1 ]
+        );
+        if( hold ) {
+          this.a = i;
+          //console.log( hold );
+          this.target = hold;
+          break;
+        }
+      }
+    }
+    if( ( this.x == this.target.x ) && ( this.y == this.target.y ) ) {
+      this.on++;
+      this.target = null;
+    } else {
+      this.DirectTo( this.target );
+    }
+  }
+
+
+    GoToWallFromTourist( value ) {
+      if( !this.target ) {
+        for( var i = 0; i < this.iclData.path.length - 1; i++ ) {
+          var pts = {
+            a:this,
+            b:{
+              x:this.x + 8 * this.iclData.unit2Px * Math.cos( value[ 0 ] * Math.PI / 180 ),
+              y:this.y - 8 * this.iclData.unit2Px * Math.sin( value[ 0 ] * Math.PI / 180 )
+            },
+            c:this.iclData.path[ i ],
+            d:this.iclData.path[ i + 1 ]
+          }
+          var hold = utils.WhereLineSegsCross( pts.a, pts.b, pts.c, pts.d );
+          if( hold ) {
+            if( Math.hypot( hold.y - this.y, hold.x - this.x ) > this.iclData.unit2Px / this.iclData.fps ) {
+              this.a = i;
+              this.target = hold;
+              break;
+            }
+          }
+        }
+        if( i == this.iclData.path.length - 1 ) {
+          console.log( "No target found" );
+        }
+      }
+      if( ( this.x == this.target.x ) && ( this.y == this.target.y ) ) {
+        this.on++;
+        this.target = null;
+      } else {
+        this.DirectTo( this.target );
+      }
+    }
+
+    FollowWall( value ) {//Only follows path for now
+      if( this.a > -1 ) {
+        var dir = ( value[ 0 ] == "left" ) ? ( 1 ) : ( -1 );
+        if( !this.target ) {	//Get target relative to location and time
+  	this.target = { a:null, t:-1 };
+          if( dir > 0 ) {
+            this.target.a = utils.AddAround( this.a, this.iclData.path.length, dir );
+          } else {
+            this.target.a = this.a;
+          }
+          if( value[ 1 ] ) {
+            this.target.t = value[ 1 ] * this.iclData.unit2Px;
+          }
+        }
+        if( utils.cmpXYPairs( this, this.iclData.path[ this.target.a ] ) ) {	//Check for point update
+          this.a = utils.AddAround( this.a, this.iclData.path.length, dir );
+          if( dir > 0 ) {
+            this.target.a = utils.AddAround( this.a, this.iclData.path.length, dir );
+          } else {
+            this.target.a = this.a;
+          }
+        }
+        if( this.target.t == -1 ) {	//Is there no time limit
+          this.DirectTo( this.iclData.path[ this.target.a ] );
+      } else if( this.target.t > this.allowance ) {	//If there is do I have plenty of time
+          this.target.t -= this.allowance;
+          this.DirectTo( this.iclData.path[ this.target.a ] );
+        } else {		//Do I have more energy than time
+          if( Math.hypot( this.iclData.path[ this.target.a ].y - this.y, this.iclData.path[ this.target.a ].x - this.x ) < this.allowance ) {	//Is the next vertex dist shorter than energy
+            this.DirectTo( this.iclData.path[ this.target.a ] );
+          } else {	//travel as far as the energy will take you to the next vert
+            var holdX = ( this.target.t / this.allowance ) * ( this.iclData.path[ this.target.a ].x - this.x );
+            var holdY = ( this.target.t / this.allowance ) * ( this.iclData.path[ this.target.a ].y - this.y );
+            this.DirectTo( { x:holdX, y:holdY } );
+            this.on++;
+            this.target = null;
+          }
+        }
+      } else {
+        console.log( "%cERROR: Can't follow wall, if not on it", "color:#ff0000" );
+        this.on++;
+      }
+    }
+
   /**
   * Makes a robot go to the wall at a specific angle on the shape.
   *
@@ -106,7 +212,6 @@ class Tourist {
   *
   */
   GoToWallAtAngle(value) {
-      console.log("Coords at start of GTWAA: " + this.x + " " +  this.y)
     if ( this.target == null) {
       this.target = utils.wallAtAngle(360, value.d);
       this.target.x = this.iclData.center.x + this.iclData.unit2Px * this.target.x;
@@ -114,7 +219,6 @@ class Tourist {
     }
     console.log(this.x, this.y)
     if ((this.x == this.target.x) && (this.y == this.target.y)) {
-        console.log("Made it to GoToWallAtAngle stop loc")
         this.a = value.d;
       this.on++;
     } else {
@@ -147,46 +251,6 @@ class Tourist {
     } else {
       this.DirectTo(this.target);
     }
-  }
-
-  /**
-  * A robot will follow the perimeter for a certain number of seconds, or indefinitely if no time specified.
-  * value[0] Will default to 'right' if no direction specified.
-  * Robot is required to be at a position on the perimeter.
-  *
-  *@param {Array} value [Direction string 'left' or 'right', <Optional>time to follow wall in seconds]
-  *
-  *
-  */
-  FollowWall(value) {
-    var dir = (value[0] == "left") ? (1) : (-1);
-    var del = (this.iclData.unit2Px / this.iclData.fps) * dir;
-    if (value[1]) {
-        if (this.target == null){
-            this.target = utils.wallAtAngle(360, this.a + (value[1] * (Math.PI / 180)) * dir);
-        }
-        var leftCondition = utils.wallAtAngle(360, this.a + del);
-        var rightCondition = this.target;
-        if (dir < 0) {
-          rightCondition = leftCondition;
-          leftCondition = this.target;
-        }
-        if (Math.abs(this.a - value[1]) < 0.2) {
-            console.log("Made it to followwall stop location: " + this.x + "," + this.y);
-          this.on++;
-          this.a = this.target;
-          this.target = null;
-          return;
-        } else {
-          this.a += del;
-        }
-    } else {
-      this.a += del;
-    }
-    var hold = utils.wallAtAngle(360, this.a);
-    hold.x = this.iclData.center.x + this.iclData.unit2Px * hold.x;
-    hold.y = this.iclData.center.y + this.iclData.unit2Px * hold.y;
-    this.DirectTo(hold);
   }
 
   /**
@@ -227,10 +291,35 @@ class Tourist {
   */
   GoToExit(value) {
     if ((this.x == this.iclData.fieldExit.x) && (this.y == this.iclData.fieldExit.y)) {
-      this.wait([]);
+      this.iclDataait([]);
     } else {
       this.DirectTo(this.iclData.fieldExit);
     }
+  }
+
+  GoToPoint( value ) {
+    if ( ( this.x == value.x ) && ( this.y == value.y ) ) {
+      this.on++;
+    } else {
+      this.DirectTo( value );
+    }
+  }
+
+  // Go to midpoint of current wall.
+  GoToMidPoint(value) {
+      if (this.a > -1) {
+          var pt = utils.midpoint(this.iclData.path[this.a], this.iclData.path[this.a+1]);
+          if (utils.cmpXYPairs(this, pt)) {
+              this.on++;
+          }
+          else{
+              this.DirectTo(pt);
+          }
+      }
+      else {
+          console.log( "%cERROR: Can't follow wall, if not on it", "color:#ff0000" );
+          this.on++;
+      }
   }
 
   /**
@@ -243,9 +332,7 @@ class Tourist {
   *@param {null} value null
   */
   Intercept(value) {
-      console.log("inside intercept function......")
     if (((this.target == null) || !this.target) && (!this.iclData.wireless)) {
-        console.log("in intercept if statment");
       var holdTime = 0;
       var closest = Infinity;
       outer:

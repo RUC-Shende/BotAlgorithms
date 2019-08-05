@@ -1,0 +1,123 @@
+<!doctype html>
+
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+    </head>
+    <body>
+        <script src="tourist.js"> </script>
+        <script src="modules.js"></script>
+        <script>
+            function main(id, instruBinder, algorithmName, angle, wireless) {
+                var field = d3.select("body").append("svg")
+                    .attr("width", 500).attr("height", 500)
+                    .style("border", "1px solid red");
+                var graph = d3.select("body").append("svg")
+                    .attr("width", 500).attr("height", 500)
+                    .style("border", "1px solid green");
+
+                field.append("svg")
+                    .attr("id", "backGround")
+                    .attr("height", "100%")
+                    .attr("width", "100%")
+                    .attr("viewBox", "0 0 100 100");
+
+                field.append("svg")
+                    .attr("id", "lines")
+                    .attr("height", "100%")
+                    .attr("width", "100%")
+                    .attr("viewBox", "0 0 100 100");
+
+                field.append("svg")
+                    .attr("id", "bots")
+                    .attr("height", "100%")
+                    .attr("width", "100%")
+                    .attr("viewBox", "0 0 100 100");
+
+                field.append("svg")
+                    .attr("id", "overLay")
+                    .attr("height", "100%")
+                    .attr("width", "100%")
+                    .attr("viewBox", "0 0 100 100");
+
+                graph.append("svg")
+                    .attr("id", "backGround")
+                    .attr("height", "100%")
+                    .attr("width", "100%")
+                    .attr("viewBox", "0 0 100 100");
+
+                graph.append("svg")
+                    .attr("id", "lines")
+                    .attr("height", "100%")
+                    .attr("width", "100%")
+                    .attr("viewBox", "0 0 100 100");
+
+                graph.append("svg")
+                    .attr("id", "bots")
+                    .attr("height", "100%")
+                    .attr("width", "100%")
+                    .attr("viewBox", "0 0 100 100");
+
+                graph.append("svg")
+                    .attr("id", "overLay")
+                    .attr("height", "100%")
+                    .attr("width", "100%")
+                    .attr("viewBox", "0 0 100 100");
+
+
+
+
+                var g = .435;
+                var h = g + 2 * Math.sin( g / 2 );
+                //var h = g;
+                var eandf = 2 * Math.sin( h / 2 );
+                var c = ( 1 / 3 ) * ( 2 * Math.PI - g - 2 * h - 2 * eandf );
+                var a = 2 * c + eandf + g + h;
+                var b = 2 * Math.PI - a;
+                var e = ( (a - (( 2 / 3 ) * Math.PI)) / 2 ) - c;
+                var f = eandf - e;
+                var d = eandf + g + h;
+
+                var u1 = 1 + b;
+                var u3 = 1 + c + e + f + h;
+                var icll = [
+                    [//Queen 1
+                        ["info"],
+                        ["GoToWallFromCenter", [220] ],
+                        ["GoToMidPoint", []],
+                        ["FollowWall", ["left"]],
+                        ["GoToExit", {x:25, y:50}]
+                    ],
+                    [//Queen 2
+                        [ "info" ],
+                        [ "GoToWallFromCenter", [220] ],
+                        ["GoToMidPoint", []],
+                        [ "FollowWall", [ "right"] ],
+                        [ "GoToExit", {x:25, y:50} ]
+                    ],
+                ];
+
+
+                worldo = new iclData(
+                    id,
+                    icll,
+                    algorithmName,
+                    angle,
+                    wireless,
+                    utils.genPoly({x: 50, y: 50}, 25, 0, 3)
+                );
+                // Initialize history no exit, add mods, init history with exit.
+                worldo.createHistory();
+                worldo.mods.push(new lineFillMod(worldo)); //medium			~65ms
+                worldo.mods.push( new exitFindMod(worldo, {x:75, y:50}, field, graph));//light	~5ms
+                worldo.createHistory();
+                // Optional Add visuals. If you would like a data sim only dont add this.
+                // Result, no VInit or VUpdate will happen.
+                var visuao = new iclVisual(worldo, field, graph);
+                worldo.motor = setInterval(iclVisual.reEnact.bind(visuao), 1000 / worldo.fps);
+            }
+            main(0, [], "AlgorithmName", 0, true);
+        </script>
+    </body>
+</html>

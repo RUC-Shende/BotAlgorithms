@@ -6,6 +6,9 @@
         <script src="https://d3js.org/d3.v5.min.js"></script>
     </head>
     <body>
+        <script src="enviros.js"></script>
+        <script>utils.main();</script>
+        <!--
         <script src="mobiles.js"> </script>
         <script src="modules.js"></script>
         <script>
@@ -96,12 +99,6 @@
                         ["FollowWall", ["right"]],
                         [ "GoToExit", {x:25, y:50} ]
                     ],
-                    [//Helper
-                        [ "info" ],
-                        [ "GoOutAtAngle", {r:1, d:a * ( 180 / Math.PI ) } ],
-                        [ "FollowWall", [ "right"]],
-                        [ "wait", [ null , false] ]
-                    ]
                 ];
 
                 worldo = new iclData(
@@ -110,7 +107,7 @@
                     algorithmName,
                     angle,
                     wireless,
-                    utils.genPoly({x: 50, y: 50}, 25, 0, 360)
+                    utils.genPoly({x: 50, y: 50}, 25, 0, 3)
                 );
                 // Initialize history no exit, add mods, init history with exit.
                 worldo.createHistory();
@@ -122,7 +119,8 @@
                 var visuao = new iclVisual(worldo, field, graph);
                 worldo.motor = setInterval(iclVisual.reEnact.bind(visuao), 1000 / worldo.fps);
             }
-            main(0, [], "AlgorithmName", 163, true);
+            main(0, [], "AlgorithmName", 0, true);
         </script>
+    -->
     </body>
 </html>

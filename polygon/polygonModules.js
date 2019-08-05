@@ -17,7 +17,10 @@ class utils {
       .attr( "width", 500 ).attr( "height", 500 )
       .style( "border", "1px solid green" );
 
+      var path = utils.genPoly({x:50,y:50}, 25, 0, 3)
+
     var icll = [
+        /*
       [
         [ "info" ],
         //[ "GoToWallFromCenter", [ 225 ] ],
@@ -33,6 +36,7 @@ class utils {
         [ "wait", [ ] ],
         [ "wait", [ ] ]
       ],
+      */
       /*[
         [ "info" ],
         [ "GoToWallFromCenter", [ 270 ] ],
@@ -45,8 +49,9 @@ class utils {
       ],*/
       [
         [ "info" ],
-        [ "GoToWallFromCenter", [ 0 ] ],
-        [ "FollowWall", [ "left", 1 ] ],
+        [ "GoToWallFromCenter", [ 220 ] ],
+        [ "GoToMidPoint", [] ],
+        [ "FollowWall", ["right"] ],
         [ "wait", [ ] ],
         [ "wait", [ ] ]
       ],
@@ -72,20 +77,20 @@ class utils {
       ],*/
       [
         [ "info" ],
-        [ "GoToWallFromCenter", [ 180 ] ],
-        [ "FollowWall", [ "left", 2 ] ],
+        [ "GoToWallFromCenter", [ 220 ] ],
+        [ "GoToMidPoint", [ ] ],
+        [ "FollowWall", [ "left" ] ],
         [ "wait", [ ] ],
         [ "wait", [ ] ]
       ]
     ];
-
+/*
     var path = [
       { x:25, y:25 }, { x:30, y:30 }, { x:75, y:25 }, { x:60, y:40 }, { x:60, y:60 },
       { x:75, y:75 }, { x:25, y:75 }, { x:40, y:50 }, { x:25, y:25 }
     ];
-
-    var worldo = new world(
-      //utils.genPoly( { x:50, y:50 }, 25, 0, 359 ),
+*/
+    window.worldo = new world(
       path,
       { x:50, y:50 },
       icll,
@@ -93,15 +98,45 @@ class utils {
     );
 
     //nothing									~36ms
-    //worldo.mods.push( new lineFillMod( worldo ) );//medium			~+66ms
+    worldo.mods.push( new lineFillMod( worldo ) );//medium			~+66ms
     //worldo.mods.push( new coSuMod( worldo, 0, 1, SVG2 ) );//light		~+10ms
-    //worldo.mods.push( new exitFindMod( worldo, { x:25, y:50 } ) );//light	~+5ms
+    var exit = utils.wallAtAngle(3, 340);
+    exit.x = exit.x * worldo.unit;
+    exit.y = exit.y * worldo.unit;
+    worldo.mods.push( new exitFindMod( worldo, {x:75, y:50 } ) );//light	~+5ms
+
+    console.log(exit);
 
     worldo.createHistory( );
-    //worldo.createHistory( );	//exitFindMod requires two createHistory's
+    worldo.createHistory( );	//exitFindMod requires two createHistory's
 
     var visuao = new visual( SVG, worldo );
     var motor = setInterval( visual.reEnact.bind( visuao ), 1000 / worldo.fps );
+  }
+
+  static wallAtAngle(deg, angle) {
+      var fa = Math.floor((angle / 360) * deg);
+      var d2r = Math.PI / 180;
+      var p12 = {
+          x: Math.cos(angle * d2r),
+          y: -Math.sin(angle * d2r)
+      };
+      var p21 = {
+          x: Math.cos(fa * d2r),
+          y: -Math.sin(fa * d2r)
+      };
+      var p22 = {
+          x: Math.cos((fa + 1) * d2r),
+          y: -Math.sin((fa + 1) * d2r)
+      };
+      var m1 = p12.y / p12.x;
+      var m2 = (p22.y - p21.y) / (p22.x - p21.x);
+      var c2 = p22.y - m2 * p22.x;
+      var d = m2 - m1;
+      return ({
+          x: (-c2) / d,
+          y: (-m1 * c2) / d
+      });
   }
 
   static cmpXYPairs( v1, v2 ) {
@@ -191,7 +226,7 @@ class utils {
   }
 
   static midpoint(pt1, pt2) {
-      if (cmpXYPairs(pt1, pt2)) {
+      if (utils.cmpXYPairs(pt1, pt2)) {
           console.log("%cERROR: Must be different points.", "color:#ff0000ff");
           return null;
       }
@@ -316,7 +351,7 @@ class mobile {
   // Go to midpoint of current wall.
   GoToMidPoint(value) {
       if (this.a > -1) {
-          var pt = utils.midpoint(this.iclData.path[this.a], this.iclData.path[this.a+1]);
+          var pt = utils.midpoint(this.w.path[this.a], this.w.path[this.a+1]);
           if (utils.cmpXYPairs(this, pt)) {
               this.on++;
           }

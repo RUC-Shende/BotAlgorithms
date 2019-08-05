@@ -157,6 +157,24 @@ to get to $B$, having started at the opposite side of the arc $a$, would be:
 \vspace*{5mm} Thus, the greatest value for $t$ will occur when the agents are $\sqrt{3}$ apart,
 or at an angle of $ \frac{2\pi}{3}$ for $a >= \frac{2\pi}{3}$ at the time of exit discovery.
 
+\subsection{Results of $Search_{1}$}
+
+We can show that by sending $P2$ and $H$ out to the perimeter at an angle $a = \frac{5\pi}{9} -
+\frac{2\sqrt(3)}{3}$, we can achieve a lower bound of 3.55 time units for algorithm completion.
+We achieve this by taking two bounds and equating them. First, we take the time it would take $P2$ to
+search its entire portion of the circle, as a sort of "goal" time for $P1$ and $H$ to achieve in searching
+their portions. The time for this lower bound is $t = 1 + \beta$, where $\beta = \pi - \alpha$.
+Secondly, we can see that for a certain time $c$ after $H$ and $P2$ have started searching the perimeter,
+finding the exit will be the responsibility of $P2$, as it will be closer if $H$ finds the exit.
+However, after $H$ passes point
+$C_{\pi + \alpha - c}$, travelling to the exit found by $H$ becomes
+the responsibility of $P1$, and by Lemma 1, we can show that
+from this point on in the algorithm, the total time it takes $P1$ to evacuate is decreasing.
+This means that we find our second and third lower bound at the point $C_{\pi + \alpha - c}$, as at this
+point both $P1$ and $P2$ are equidistant from $H$ when $H$ discovers the exit.
+Our second bound is $t = 1 + c + 2\sin(c)$, and represents $P2$'s distance from $H$. Our third bound is
+$t = 1 + c + 2\sin(\frac{a}{2} - c)$ and represents $P1$'s distance from $H$. 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Marks end of section 2 so that it doesnt make the title of section 3 on the same page%
 %If there are issues remove it                                                        %

@@ -751,7 +751,7 @@
                 clearInterval(superlist[controllerID].iclData.motor);
                 superlist[controllerID].iclData.motor = setInterval(function() {
                     superlist[controllerID].AlterAnim();
-                }, 1);
+                }, 1000 / superlist[controllerID].iclData.fps);
                 d3.select(".exitText").remove();
             }
 
@@ -1053,7 +1053,6 @@
                             ]
                         ];
                         */
-                        /*
                         instruBinder = [
                             [
                                 ["GoToExit", [null, true]],

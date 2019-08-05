@@ -1,7 +1,7 @@
 # Fdb version 3
-["pdflatex"] 1564588168 "PriorityQueens.tex" "/home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/PriorityQueens.pdf" "PriorityQueens" 1564588169
+["pdflatex"] 1565042718 "PriorityQueens.tex" "/home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/PriorityQueens.pdf" "PriorityQueens" 1565042719
   "/etc/texmf/web2c/texmf.cnf" 1533053036 1101 af7716885e081ab43982cab7b4672c1a ""
-  "/home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/PriorityQueens.aux" 1564588168 849 f69102fac72e7a393d1b11e282b8c31d ""
+  "/home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/PriorityQueens.aux" 1565042718 939 32fdb4b34c1be69dbc5f16cfe80acefd ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1272929888 3287 e6b82fe08f5336d4d5ebc73fb1152e87 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -85,8 +85,8 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1503343927 31343 93828589fb0cea665e553ee5a17ad2d4 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1533053042 1863403 f3ff9a4253bcb5fb9a9baaf0c572cb01 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1540166407 3870932 53260ba5e44415e75b9f6d5da17df1a3 ""
-  "PriorityQueens.aux" 1564588168 849 f69102fac72e7a393d1b11e282b8c31d ""
-  "PriorityQueens.tex" 1564588159 15885 49036e7275c53d057277755d7c2d3f98 ""
+  "PriorityQueens.aux" 1565042718 939 32fdb4b34c1be69dbc5f16cfe80acefd ""
+  "PriorityQueens.tex" 1565023395 17245 3de749ccf73a13ad5db88948c04bf899 ""
   "Q2S1_Eq/Q2S1_Old/Q2S1_DetourExample.pdf" 1564583963 51128 b37847319458aeb0251f2677adff22fa ""
   "Q2S1_Eq/Q2S1_Old/Q2S1_DetourExample0.pdf" 1564583801 42254 e3341f7a8b7ef37ecc07244383361d33 ""
   "Q2S1_Eq/Q2S1_Old/eq_1.pdf" 1563891285 12604 c1e0779997ba40d3332c9e6cb3d0f6a0 ""
@@ -107,10 +107,10 @@
   "mypics/2Q1S_references.pdf" 1562618534 41386 5f030ce1da5c844b58da1578fac75b6e ""
   "mypics/lemma1-references.pdf" 1562618534 17803 e09140d9f4eae2c3e86cf2ee5fbae7bc ""
   (generated)
-  "PriorityQueens.log"
-  "PriorityQueens.aux"
   "PriorityQueens.pdf"
-  "/home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/PriorityQueens.pdf"
   "/home/chris/Documents/Algorithms/BotAlgorithms/resources/PriorityQueens.pdf"
-  "/home/chris/Documents/Algorithms/BotAlgorithms/resources/PriorityQueens.log"
+  "PriorityQueens.aux"
+  "PriorityQueens.log"
+  "/home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/PriorityQueens.pdf"
   "/home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/PriorityQueens.log"
+  "/home/chris/Documents/Algorithms/BotAlgorithms/resources/PriorityQueens.log"

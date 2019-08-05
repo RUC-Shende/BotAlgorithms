@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.10.21)  31 JUL 2019 11:49
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.10.21)  5 AUG 2019 18:05
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -301,118 +301,117 @@ File: mypics/lemma1-references.pdf Graphic file (type pdf)
  <use mypics/lemma1-references.pdf>
 Package pdftex.def Info: mypics/lemma1-references.pdf used on input line 141.
 (pdftex.def)             Requested size: 121.12521pt x 99.07188pt.
- [3 </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/mypics/2Q1S_references.pdf>] <Q2S1_Eq/Q2S1_Old/Q2S1_DetourExample0.pdf, id=51, 144.96259pt x 129.88524pt>
+ [3 </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/mypics/2Q1S_references.pdf>] [4 </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/mypics/lemma1-references.pdf>] <Q2S1_Eq/Q2S1_Old/Q2S1_DetourExample0.pdf, id=68, 144.96259pt x 129.88524pt>
 File: Q2S1_Eq/Q2S1_Old/Q2S1_DetourExample0.pdf Graphic file (type pdf)
  <use Q2S1_Eq/Q2S1_Old/Q2S1_DetourExample0.pdf>
-Package pdftex.def Info: Q2S1_Eq/Q2S1_Old/Q2S1_DetourExample0.pdf used on input line 187.
+Package pdftex.def Info: Q2S1_Eq/Q2S1_Old/Q2S1_DetourExample0.pdf used on input line 205.
 (pdftex.def)             Requested size: 144.96222pt x 129.88492pt.
- <Q2S1_Eq/Q2S1_Old/Q2S1_DetourExample.pdf, id=52, 145.48955pt x 140.46777pt>
+ <Q2S1_Eq/Q2S1_Old/Q2S1_DetourExample.pdf, id=69, 145.48955pt x 140.46777pt>
 File: Q2S1_Eq/Q2S1_Old/Q2S1_DetourExample.pdf Graphic file (type pdf)
  <use Q2S1_Eq/Q2S1_Old/Q2S1_DetourExample.pdf>
-Package pdftex.def Info: Q2S1_Eq/Q2S1_Old/Q2S1_DetourExample.pdf used on input line 188.
+Package pdftex.def Info: Q2S1_Eq/Q2S1_Old/Q2S1_DetourExample.pdf used on input line 206.
 (pdftex.def)             Requested size: 145.48918pt x 140.46742pt.
 
-Overfull \hbox (62.6697pt too wide) in paragraph at lines 174--189
+Overfull \hbox (62.6697pt too wide) in paragraph at lines 192--207
  [] 
  []
 
-[4 </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/mypics/lemma1-references.pdf>] <Q2S1_Eq/Q2S1_Old/eq_1.pdf, id=69, 129.88524pt x 129.88524pt> <use Q2S1_Eq/Q2S1_Old/eq_1.pdf> <use Q2S1_Eq/Q2S1_Old/eq_1.pdf>
+<Q2S1_Eq/Q2S1_Old/eq_1.pdf, id=70, 129.88524pt x 129.88524pt> <use Q2S1_Eq/Q2S1_Old/eq_1.pdf> <use Q2S1_Eq/Q2S1_Old/eq_1.pdf> [5]
 File: Q2S1_Eq/Q2S1_Old/eq_1.pdf Graphic file (type pdf)
  <use Q2S1_Eq/Q2S1_Old/eq_1.pdf>
-Package pdftex.def Info: Q2S1_Eq/Q2S1_Old/eq_1.pdf used on input line 209.
+Package pdftex.def Info: Q2S1_Eq/Q2S1_Old/eq_1.pdf used on input line 227.
 (pdftex.def)             Requested size: 96.66823pt x 96.66849pt.
- [5 </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/Q2S1_Old/Q2S1_DetourExample0.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/Q2S1_Old/Q2S1_DetourExample.pdf>] <Q2S1_Eq/Q2S1_Old/eq_2.pdf, id=115, 129.88524pt x 129.88524pt> <use Q2S1_Eq/Q2S1_Old/eq_2.pdf> <use Q2S1_Eq/Q2S1_Old/eq_2.pdf>
+ [6 </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/Q2S1_Old/Q2S1_DetourExample0.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/Q2S1_Old/Q2S1_DetourExample.pdf>] <Q2S1_Eq/Q2S1_Old/eq_2.pdf, id=119, 129.88524pt x 129.88524pt> <use Q2S1_Eq/Q2S1_Old/eq_2.pdf> <use Q2S1_Eq/Q2S1_Old/eq_2.pdf>
 File: Q2S1_Eq/Q2S1_Old/eq_2.pdf Graphic file (type pdf)
  <use Q2S1_Eq/Q2S1_Old/eq_2.pdf>
-Package pdftex.def Info: Q2S1_Eq/Q2S1_Old/eq_2.pdf used on input line 216.
+Package pdftex.def Info: Q2S1_Eq/Q2S1_Old/eq_2.pdf used on input line 234.
 (pdftex.def)             Requested size: 96.66823pt x 96.66849pt.
- <Q2S1_Eq/Q2S1_Old/eq_4.pdf, id=116, 129.88524pt x 129.88524pt> <use Q2S1_Eq/Q2S1_Old/eq_4.pdf> <use Q2S1_Eq/Q2S1_Old/eq_4.pdf>
+ <Q2S1_Eq/Q2S1_Old/eq_4.pdf, id=120, 129.88524pt x 129.88524pt> <use Q2S1_Eq/Q2S1_Old/eq_4.pdf> <use Q2S1_Eq/Q2S1_Old/eq_4.pdf>
 File: Q2S1_Eq/Q2S1_Old/eq_4.pdf Graphic file (type pdf)
  <use Q2S1_Eq/Q2S1_Old/eq_4.pdf>
-Package pdftex.def Info: Q2S1_Eq/Q2S1_Old/eq_4.pdf used on input line 227.
+Package pdftex.def Info: Q2S1_Eq/Q2S1_Old/eq_4.pdf used on input line 245.
 (pdftex.def)             Requested size: 96.66823pt x 96.66849pt.
- <Q2S1_Eq/Q2S1_Old/eq_5.pdf, id=117, 160.34404pt x 129.88524pt> <use Q2S1_Eq/Q2S1_Old/eq_5.pdf> <use Q2S1_Eq/Q2S1_Old/eq_5.pdf>
+ <Q2S1_Eq/Q2S1_Old/eq_5.pdf, id=121, 160.34404pt x 129.88524pt> <use Q2S1_Eq/Q2S1_Old/eq_5.pdf> <use Q2S1_Eq/Q2S1_Old/eq_5.pdf>
 File: Q2S1_Eq/Q2S1_Old/eq_5.pdf Graphic file (type pdf)
  <use Q2S1_Eq/Q2S1_Old/eq_5.pdf>
-Package pdftex.def Info: Q2S1_Eq/Q2S1_Old/eq_5.pdf used on input line 235.
+Package pdftex.def Info: Q2S1_Eq/Q2S1_Old/eq_5.pdf used on input line 253.
 (pdftex.def)             Requested size: 116.00307pt x 93.97115pt.
-
-<Q2S1_Eq/Q2S1_Old/eq_3.pdf, id=118, 129.88524pt x 129.88524pt> <use Q2S1_Eq/Q2S1_Old/eq_3.pdf> <use Q2S1_Eq/Q2S1_Old/eq_3.pdf>
+ <Q2S1_Eq/Q2S1_Old/eq_3.pdf, id=122, 129.88524pt x 129.88524pt> <use Q2S1_Eq/Q2S1_Old/eq_3.pdf> <use Q2S1_Eq/Q2S1_Old/eq_3.pdf>
 File: Q2S1_Eq/Q2S1_Old/eq_3.pdf Graphic file (type pdf)
- <use Q2S1_Eq/Q2S1_Old/eq_3.pdf>
-Package pdftex.def Info: Q2S1_Eq/Q2S1_Old/eq_3.pdf used on input line 242.
+
+<use Q2S1_Eq/Q2S1_Old/eq_3.pdf>
+Package pdftex.def Info: Q2S1_Eq/Q2S1_Old/eq_3.pdf used on input line 260.
 (pdftex.def)             Requested size: 96.66823pt x 96.66849pt.
- [6 </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/Q2S1_Old/eq_1.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/Q2S1_Old/eq_2.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/Q2S1_Old/eq_4.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/Q2S1_Old/eq_5.pdf>] <Q2S1_Eq/Q2S1_Old/eq_6.pdf, id=178, 141.88708pt x 141.87202pt> <use Q2S1_Eq/Q2S1_Old/eq_6.pdf> <use Q2S1_Eq/Q2S1_Old/eq_6.pdf>
+ [7 </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/Q2S1_Old/eq_1.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/Q2S1_Old/eq_2.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/Q2S1_Old/eq_4.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/Q2S1_Old/eq_5.pdf>] <Q2S1_Eq/Q2S1_Old/eq_6.pdf, id=182, 141.88708pt x 141.87202pt> <use Q2S1_Eq/Q2S1_Old/eq_6.pdf> <use Q2S1_Eq/Q2S1_Old/eq_6.pdf>
 File: Q2S1_Eq/Q2S1_Old/eq_6.pdf Graphic file (type pdf)
  <use Q2S1_Eq/Q2S1_Old/eq_6.pdf>
-Package pdftex.def Info: Q2S1_Eq/Q2S1_Old/eq_6.pdf used on input line 249.
+Package pdftex.def Info: Q2S1_Eq/Q2S1_Old/eq_6.pdf used on input line 267.
 (pdftex.def)             Requested size: 96.66823pt x 96.66003pt.
- <Q2S1_Eq/Q2S1_Old/ub_1.pdf, id=179, 137.53986pt x 137.4455pt> <use Q2S1_Eq/Q2S1_Old/ub_1.pdf> <use Q2S1_Eq/Q2S1_Old/ub_1.pdf>
+ <Q2S1_Eq/Q2S1_Old/ub_1.pdf, id=183, 137.53986pt x 137.4455pt> <use Q2S1_Eq/Q2S1_Old/ub_1.pdf> <use Q2S1_Eq/Q2S1_Old/ub_1.pdf>
 File: Q2S1_Eq/Q2S1_Old/ub_1.pdf Graphic file (type pdf)
  <use Q2S1_Eq/Q2S1_Old/ub_1.pdf>
-Package pdftex.def Info: Q2S1_Eq/Q2S1_Old/ub_1.pdf used on input line 265.
+Package pdftex.def Info: Q2S1_Eq/Q2S1_Old/ub_1.pdf used on input line 283.
 (pdftex.def)             Requested size: 96.66823pt x 96.60126pt.
- <Q2S1_Eq/Q2S1_Old/ub_2.pdf, id=180, 141.66928pt x 141.9453pt> <use Q2S1_Eq/Q2S1_Old/ub_2.pdf> <use Q2S1_Eq/Q2S1_Old/ub_2.pdf>
+ <Q2S1_Eq/Q2S1_Old/ub_2.pdf, id=184, 141.66928pt x 141.9453pt> <use Q2S1_Eq/Q2S1_Old/ub_2.pdf> <use Q2S1_Eq/Q2S1_Old/ub_2.pdf>
 File: Q2S1_Eq/Q2S1_Old/ub_2.pdf Graphic file (type pdf)
  <use Q2S1_Eq/Q2S1_Old/ub_2.pdf>
-Package pdftex.def Info: Q2S1_Eq/Q2S1_Old/ub_2.pdf used on input line 272.
+Package pdftex.def Info: Q2S1_Eq/Q2S1_Old/ub_2.pdf used on input line 290.
 (pdftex.def)             Requested size: 96.66823pt x 96.85939pt.
-
-[7 </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/Q2S1_Old/eq_3.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/Q2S1_Old/eq_6.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/Q2S1_Old/ub_1.pdf>]
-Overfull \hbox (269.32947pt too wide) in paragraph at lines 286--286
+ [8 </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/Q2S1_Old/eq_3.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/Q2S1_Old/eq_6.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/Q2S1_Old/ub_1.pdf>]
+Overfull \hbox (269.32947pt too wide) in paragraph at lines 304--304
 []|[]| 
  []
 
 
-Underfull \hbox (badness 10000) in alignment at lines 286--286
+Underfull \hbox (badness 10000) in alignment at lines 304--304
 [][] 
  []
 
-<Q2S1_Eq/eq_1.pdf, id=240, 129.88524pt x 129.88524pt>
+<Q2S1_Eq/eq_1.pdf, id=243, 129.88524pt x 129.88524pt>
 File: Q2S1_Eq/eq_1.pdf Graphic file (type pdf)
  <use Q2S1_Eq/eq_1.pdf>
-Package pdftex.def Info: Q2S1_Eq/eq_1.pdf used on input line 292.
+Package pdftex.def Info: Q2S1_Eq/eq_1.pdf used on input line 310.
 (pdftex.def)             Requested size: 96.66823pt x 96.66849pt.
- <Q2S1_Eq/eq_2.pdf, id=241, 170.84026pt x 140.37244pt>
+ <Q2S1_Eq/eq_2.pdf, id=244, 170.84026pt x 140.37244pt>
 File: Q2S1_Eq/eq_2.pdf Graphic file (type pdf)
  <use Q2S1_Eq/eq_2.pdf>
-Package pdftex.def Info: Q2S1_Eq/eq_2.pdf used on input line 294.
+Package pdftex.def Info: Q2S1_Eq/eq_2.pdf used on input line 312.
 (pdftex.def)             Requested size: 96.66823pt x 79.42836pt.
- <Q2S1_Eq/eq_3.pdf, id=242, 166.50906pt x 140.81609pt>
+ <Q2S1_Eq/eq_3.pdf, id=245, 166.50906pt x 140.81609pt>
 File: Q2S1_Eq/eq_3.pdf Graphic file (type pdf)
  <use Q2S1_Eq/eq_3.pdf>
-Package pdftex.def Info: Q2S1_Eq/eq_3.pdf used on input line 296.
+Package pdftex.def Info: Q2S1_Eq/eq_3.pdf used on input line 314.
 (pdftex.def)             Requested size: 96.66823pt x 81.75073pt.
- <Q2S1_Eq/eq_4.pdf, id=243, 164.88701pt x 151.64955pt>
+ <Q2S1_Eq/eq_4.pdf, id=246, 164.88701pt x 151.64955pt>
 File: Q2S1_Eq/eq_4.pdf Graphic file (type pdf)
  <use Q2S1_Eq/eq_4.pdf>
-Package pdftex.def Info: Q2S1_Eq/eq_4.pdf used on input line 297.
+Package pdftex.def Info: Q2S1_Eq/eq_4.pdf used on input line 315.
 (pdftex.def)             Requested size: 96.66823pt x 88.90784pt.
- <Q2S1_Eq/lb_1.pdf, id=244, 146.12793pt x 143.97389pt>
+ <Q2S1_Eq/lb_1.pdf, id=247, 146.12793pt x 143.97389pt>
 File: Q2S1_Eq/lb_1.pdf Graphic file (type pdf)
  <use Q2S1_Eq/lb_1.pdf>
-Package pdftex.def Info: Q2S1_Eq/lb_1.pdf used on input line 298.
+Package pdftex.def Info: Q2S1_Eq/lb_1.pdf used on input line 316.
 (pdftex.def)             Requested size: 96.66823pt x 95.24274pt.
- <Q2S1_Eq/lb_2.pdf, id=245, 144.41351pt x 129.88524pt>
+ <Q2S1_Eq/lb_2.pdf, id=248, 144.41351pt x 129.88524pt>
 File: Q2S1_Eq/lb_2.pdf Graphic file (type pdf)
  <use Q2S1_Eq/lb_2.pdf>
-Package pdftex.def Info: Q2S1_Eq/lb_2.pdf used on input line 299.
+Package pdftex.def Info: Q2S1_Eq/lb_2.pdf used on input line 317.
 (pdftex.def)             Requested size: 96.66823pt x 86.94734pt.
- <Q2S1_Eq/lb_3.pdf, id=246, 182.77083pt x 168.43527pt>
+ <Q2S1_Eq/lb_3.pdf, id=249, 182.77083pt x 168.43527pt>
 File: Q2S1_Eq/lb_3.pdf Graphic file (type pdf)
  <use Q2S1_Eq/lb_3.pdf>
-Package pdftex.def Info: Q2S1_Eq/lb_3.pdf used on input line 300.
+Package pdftex.def Info: Q2S1_Eq/lb_3.pdf used on input line 318.
 (pdftex.def)             Requested size: 96.66823pt x 89.08778pt.
 
-Overfull \hbox (7.29996pt too wide) in paragraph at lines 292--301
+Overfull \hbox (7.29996pt too wide) in paragraph at lines 310--319
 [] [] [] [] 
  []
 
-[8 </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/Q2S1_Old/ub_2.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_1.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_2.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_3.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_4.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/lb_1.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/lb_2.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/lb_3.pdf>] (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/PriorityQueens.aux) ) 
+[9 </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/Q2S1_Old/ub_2.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_1.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_2.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_3.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/eq_4.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/lb_1.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/lb_2.pdf> </home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/Q2S1_Eq/lb_3.pdf>] (/home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/PriorityQueens.aux) ) 
 Here is how much of TeX's memory you used:
  3177 strings out of 493029
  46282 string characters out of 6136233
- 115205 words of memory out of 5000000
+ 116205 words of memory out of 5000000
  6644 multiletter control sequences out of 15000+600000
  11352 words of font info for 43 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -420,10 +419,10 @@ Here is how much of TeX's memory you used:
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts
 /type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dis
 t/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-Output written on "/home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/PriorityQueens.pdf" (8 pages, 465743 bytes).
+Output written on "/home/chris/Documents/WebStuff/NSF Grant/Algorithms/resources/PriorityQueens.pdf" (9 pages, 468729 bytes).
 PDF statistics:
- 443 PDF objects out of 1000 (max. 8388607)
- 284 compressed objects within 3 object streams
+ 446 PDF objects out of 1000 (max. 8388607)
+ 286 compressed objects within 3 object streams
  0 named destinations out of 1000 (max. 500000)
  96 words of extra memory for PDF output out of 10000 (max. 10000000)
 
