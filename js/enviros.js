@@ -393,7 +393,7 @@ class mobile {
   FollowWall( value ) {//Only follows path for now
     if( this.a > -1 ) {
       var dir = ( value[ 0 ] == "left" ) ? ( 1 ) : ( -1 );
-      if( !this.target ) {
+      if( !this.target ) {	//Get target relative to location and time
 	this.target = { a:null, t:-1 };
         if( dir > 0 ) {
           this.target.a = utils.AddAround( this.a, this.w.path.length, dir );
@@ -404,7 +404,7 @@ class mobile {
           this.target.t = value[ 1 ] * this.w.unit;
         }
       }
-      if( utils.cmpXYPairs( this, this.w.path[ this.target.a ] ) ) {
+      if( utils.cmpXYPairs( this, this.w.path[ this.target.a ] ) ) {	//Check for point update
         this.a = utils.AddAround( this.a, this.w.path.length, dir );
         if( dir > 0 ) { 
           this.target.a = utils.AddAround( this.a, this.w.path.length, dir );
@@ -412,18 +412,21 @@ class mobile {
           this.target.a = this.a;
         }
       }
-      if( this.target.t == -1 ) {
+      if( this.target.t == -1 ) {	//Is there no time limit
         this.DirectTo( this.w.path[ this.target.a ] );
-      } else if ( this.target.t > this.energy ) {
+      } else if( this.target.t > this.energy ) {	//If there is do I have plenty of time
         this.target.t -= this.energy;
         this.DirectTo( this.w.path[ this.target.a ] );
-        console.log( this.num, this.target.t );
-      } else {
-        var holdX = ( this.target.t / this.energy ) * ( this.w.path[ this.target.a ].x - this.x );
-        var holdY = ( this.target.t / this.energy ) * ( this.w.path[ this.target.a ].y - this.y );
-        this.DirectTo( { x:holdX, y:holdY } );
-        this.on++;
-        this.target = null;
+      } else {		//Do I have more energy than time
+        if( Math.hypot( this.w.path[ this.target.a ].y - this.y, this.w.path[ this.target.a ].x - this.x ) < this.energy ) {	//Is the next vertex dist shorter than energy
+          this.DirectTo( this.w.path[ this.target.a ] );
+        } else {	//travel as far as the energy will take you to the next vert
+          var holdX = ( this.target.t / this.energy ) * ( this.w.path[ this.target.a ].x - this.x );
+          var holdY = ( this.target.t / this.energy ) * ( this.w.path[ this.target.a ].y - this.y );
+          this.DirectTo( { x:holdX, y:holdY } );
+          this.on++;
+          this.target = null;
+        }
       }
     } else {
       console.log( "%cERROR: Can't follow wall, if not on it", "color:#ff0000" );
