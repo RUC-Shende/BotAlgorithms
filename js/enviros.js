@@ -33,7 +33,7 @@ class utils {
         [ "wait", [ ] ],
         [ "wait", [ ] ]
       ],
-      /*[
+      /*[ 
         [ "info" ],
         [ "GoToWallFromCenter", [ 270 ] ],
         //[ "GoToWallFromCenter", [ 135 ] ],
@@ -43,10 +43,10 @@ class utils {
         [ "wait", [ ] ],
         [ "wait", [ ] ]
       ],*/
-      [
+      [ 
         [ "info" ],
-        [ "GoToWallFromCenter", [ 0 ] ],
-        [ "FollowWall", [ "left", 1 ] ],
+        [ "GoToWallFromCenter", [ 90 ] ],
+        [ "FollowWall", [ "right", 1 * Math.sqrt( 2 ) ] ],
         [ "wait", [ ] ],
         [ "wait", [ ] ]
       ],
@@ -70,10 +70,10 @@ class utils {
         [ "wait", [ ] ],
         [ "wait", [ ] ]
       ],*/
-      [
+      [ 
         [ "info" ],
-        [ "GoToWallFromCenter", [ 180 ] ],
-        [ "FollowWall", [ "left", 2 ] ],
+        [ "GoToWallFromCenter", [ 90 ] ],
+        [ "FollowWall", [ "left", 3 * Math.sqrt( 2 ) ] ],
         [ "wait", [ ] ],
         [ "wait", [ ] ]
       ]
@@ -85,8 +85,8 @@ class utils {
     ];
 
     var worldo = new world(
-      //utils.genPoly( { x:50, y:50 }, 25, 0, 359 ),
-      path,
+      utils.genPoly( { x:50, y:50 }, 25, 0, 4 ),
+      //path,
       { x:50, y:50 },
       icll,
       100
@@ -102,6 +102,10 @@ class utils {
 
     var visuao = new visual( SVG, worldo );
     var motor = setInterval( visual.reEnact.bind( visuao ), 1000 / worldo.fps );
+  }
+
+  static distance( p1, p2 ) {
+    return( Math.hypot( p2.y - p1.y, p2.x - p1.x ) );
   }
 
   static cmpXYPairs( v1, v2 ) {
@@ -188,14 +192,6 @@ class utils {
       return( { x:-dx / d, y:dy / d } );
     }
     return( null );
-  }
-
-  static midpoint(pt1, pt2) {
-      if (cmpXYPairs(pt1, pt2)) {
-          console.log("%cERROR: Must be different points.", "color:#ff0000ff");
-          return null;
-      }
-      return {x:(pt1.x + pt2.x)/2, y:(pt1.y + pt2.y)/2};
   }
 }
 
@@ -313,23 +309,6 @@ class mobile {
     }
   }
 
-  // Go to midpoint of current wall.
-  GoToMidPoint(value) {
-      if (this.a > -1) {
-          var pt = utils.midpoint(this.iclData.path[this.a], this.iclData.path[this.a+1]);
-          if (utils.cmpXYPairs(this, pt)) {
-              this.on++;
-          }
-          else{
-              this.DirectTo(pt);
-          }
-      }
-      else {
-          console.log( "%cERROR: Can't follow wall, if not on it", "color:#ff0000" );
-          this.on++;
-      }
-  }
-
   GoToCenter( value ) {
     if ( ( this.x == this.w.start.x ) && ( this.y == this.w.start.y ) ) {
       this.on++;
@@ -415,45 +394,43 @@ class mobile {
     }
   }
 
-  FollowWall( value ) {//Only follows path for now
+  FollowWall( value ) {
     if( this.a > -1 ) {
       var dir = ( value[ 0 ] == "left" ) ? ( 1 ) : ( -1 );
-      if( !this.target ) {	//Get target relative to location and time
+      if( !this.target ) {						//Create time and wall target
 	this.target = { a:null, t:-1 };
         if( dir > 0 ) {
-          this.target.a = utils.AddAround( this.a, this.w.path.length, dir );
+          this.target.a = utils.AddAround( this.a, this.w.path.length - 1, dir );
         } else {
           this.target.a = this.a;
         }
-        if( value[ 1 ] ) {
+        if( value[ 1 ] ) {						//Activate timer if given
           this.target.t = value[ 1 ] * this.w.unit;
         }
       }
-      if( utils.cmpXYPairs( this, this.w.path[ this.target.a ] ) ) {	//Check for point update
-        this.a = utils.AddAround( this.a, this.w.path.length, dir );
-        if( dir > 0 ) {
-          this.target.a = utils.AddAround( this.a, this.w.path.length, dir );
-        } else {
-          this.target.a = this.a;
-        }
+      if( utils.cmpXYPairs( this, this.w.path[ this.target.a ] ) ) {	//Update wall position and target
+        this.a = this.target.a;
+        this.target.a = utils.AddAround( this.a, this.w.path.length - 1, dir );
       }
-      if( this.target.t == -1 ) {	//Is there no time limit
+      if( this.target.t == -1 ) {					//Endlessly follow wall
         this.DirectTo( this.w.path[ this.target.a ] );
-      } else if( this.target.t > this.energy ) {	//If there is do I have plenty of time
-        this.target.t -= this.energy;
-        this.DirectTo( this.w.path[ this.target.a ] );
-      } else {		//Do I have more energy than time
-        if( Math.hypot( this.w.path[ this.target.a ].y - this.y, this.w.path[ this.target.a ].x - this.x ) < this.energy ) {	//Is the next vertex dist shorter than energy
+      } else {
+        var dis = utils.distance( this, this.w.path[ this.target.a ] );
+        if( dis <= this.target.t ) {					//Reaches wall target before timer runs out
+          this.target.t -= this.energy;
           this.DirectTo( this.w.path[ this.target.a ] );
-        } else {	//travel as far as the energy will take you to the next vert
-          var holdX = ( this.target.t / this.energy ) * ( this.w.path[ this.target.a ].x - this.x );
-          var holdY = ( this.target.t / this.energy ) * ( this.w.path[ this.target.a ].y - this.y );
+        } else {							//Aim towards where the timer runs out
+          var holdX = this.x + ( this.target.t / dis ) * ( this.w.path[ this.target.a ].x - this.x );
+          var holdY = this.y + ( this.target.t / dis ) * ( this.w.path[ this.target.a ].y - this.y );
           this.DirectTo( { x:holdX, y:holdY } );
-          this.on++;
-          this.target = null;
+
+          if( utils.cmpXYPairs( this, { x:holdX, y:holdY } ) ) {	//Timer ended
+            this.on++;
+            this.target = null;
+          }
         }
       }
-    } else {
+    } else {								//Error
       console.log( "%cERROR: Can't follow wall, if not on it", "color:#ff0000" );
       this.on++;
     }
@@ -487,7 +464,7 @@ class exitFindMod {
           this.exit.y - loc[ i ][ loc[ i ].length - 1 ].y,
           this.exit.x - loc[ i ][ loc[ i ].length - 1 ].x
         );
-
+        
         if( distance <= this.step / 2 ) {
           this.w.mobiles[ i ].on = this.w.mobiles[ i ].icl.length - 1;
           this.w.mobiles[ i ].know = 1;
@@ -675,3 +652,19 @@ class visual {
     }
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
