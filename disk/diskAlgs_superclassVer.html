@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel='stylesheet' type='text/css' href='circleShowcase.css' />
+    <link rel='stylesheet' type='text/css' href='../css/circleShowcase.css' />
 
 
 </head>
@@ -972,25 +972,16 @@
                         ]
                     ];
 */
-                        var g = .435;
-                        var h = g + 2 * Math.sin( g / 2 );
-                        //var h = g;
-                        var eandf = 2 * Math.sin( h / 2 );
-                        console.log(eandf);
-                        var c = ( 1 / 3 ) * ( 2 * Math.PI - g - 2 * h - 2 * eandf );
-                        var a = 2 * c + eandf + g + h;
-                        var b = 2 * Math.PI - a;
-                        var e = ( (a - (( 2 / 3 ) * Math.PI)) / 2 ) - c;
-                        var f = eandf - e;
-                        var d = eandf + g + h;
-                        console.log("D is " + d);
+                        var a = 3.78774602;
+                        var b = 2.52258854;
+                        var c = 0.835157481;
+                        var d = 2.1174310622;
+                        var e = 0.0115179799;
+                        var f = 0.819218225699;
+                        var g = 0.43;
+                        var h = 0.85669485566;
+                        var x = 0.09;
 
-                        console.log( "Startin at angle: " + ( a - Math.PI ) );
-                        var u1 = 1 + b;
-                        var u3 = 1 + c + e + f + h;
-                        console.log( "UpperBound: " + u1 + " " + u3 );
-                        console.log( "Difference: " + ( Math.abs( Math.abs( u1 ) - Math.abs( u3 ) ) ) );
-                        console.log( "a: " + a + "\nb: " + b + "\nc: " + c + "\ne: " + e + "\nf: " + f + "\ng: " + g + "\nh: " + h );
                         instruBinder = [
                             [//Queen 1
                                 ["GoToExit", [null, true]],
@@ -1053,6 +1044,7 @@
                             ]
                         ];
                         */
+                        /*
                         instruBinder = [
                             [
                                 ["GoToExit", [null, true]],
@@ -1070,6 +1062,7 @@
                                 ["FollowWall", ["right"]]
                             ]
                         ];
+                        */
                             /*
                             [["GoToExit", [null, true]], ["GoToWallAtAngle", [0]], ["FollowWall", ["left"]]],
                             [["GoToExit", [null, true]], ["GoToWallAtAngle", [240]], ["FollowWall", ["left"]]],

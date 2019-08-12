@@ -98,6 +98,30 @@ class Tourist {
     }
   }
 
+  GoToMidPoint(value) {
+      if (this.a > -1) {
+          var pt = utils.midpoint(this.iclData.path[this.a], this.iclData.path[this.a+1]);
+          if (utils.cmpXYPairs(this, pt)) {
+              this.on++;
+          }
+          else{
+              this.DirectTo(pt);
+          }
+      }
+      else {
+          console.log( "%cERROR: Can't follow wall, if not on it", "color:#ff0000" );
+          this.on++;
+      }
+  }
+
+  GoToCenter( value ) {
+    if ( ( this.x == this.iclData.center.x ) && ( this.y == this.iclData.center.y ) ) {
+      this.on++;
+    } else {
+      this.DirectTo( this.iclData.center );
+    }
+  }
+
   GoToWallFromCenter( value ) {
     if( !this.target ) {
       for( var i = 0; i < this.iclData.path.length - 1; i++ ) {
@@ -160,10 +184,57 @@ class Tourist {
       }
     }
 
+    FollowWall( value ) {
+      if( this.a > -1 ) {
+        var dir = ( value[ 0 ] == "left" ) ? ( 1 ) : ( -1 );
+        if( !this.target ) {						//Create time and wall target
+  	this.target = { a:null, t:-1 };
+          if( dir > 0 ) {
+            this.target.a = utils.AddAround( this.a, this.iclData.path.length - 1, dir );
+          } else {
+            this.target.a = this.a;
+          }
+          if( value[ 1 ] ) {						//Activate timer if given
+            this.target.t = value[ 1 ] * this.iclData.unit2Px;
+          }
+        }
+        if( utils.cmpXYPairs( this, this.iclData.path[ this.target.a ] ) ) {	//Update wall position and target
+          this.a = this.target.a;
+          this.target.a = utils.AddAround( this.a, this.iclData.path.length - 1, dir );
+        }
+        if( this.target.t == -1 ) {					//Endlessly follow wall
+          this.DirectTo( this.iclData.path[ this.target.a ] );
+        } else {
+          var dis = utils.distance( this, this.iclData.path[ this.target.a ] );
+          if( dis <= this.target.t ) {
+              				//Reaches wall target before timer runs out
+            var hold = this.allowance;
+            //this.target.t -= this.allowance;
+            this.DirectTo( this.iclData.path[ this.target.a ] );
+            this.target.t -= hold - this.allowance;
+          } else {							//Aim towards where the timer runs out
+            var holdX = this.x + ( this.target.t / dis ) * ( this.iclData.path[ this.target.a ].x - this.x );
+            var holdY = this.y + ( this.target.t / dis ) * ( this.iclData.path[ this.target.a ].y - this.y );
+            this.DirectTo( { x:holdX, y:holdY } );
+
+            if( utils.cmpXYPairs( this, { x:holdX, y:holdY } ) ) {	//Timer ended
+              this.on++;
+              this.target = null;
+            }
+          }
+        }
+      } else {								//Error
+        console.log( "%cERROR: Can't follow wall, if not on it", "color:#ff0000" );
+        this.on++;
+      }
+    }
+
+/*
     FollowWall( value ) {//Only follows path for now
       if( this.a > -1 ) {
         var dir = ( value[ 0 ] == "left" ) ? ( 1 ) : ( -1 );
         if( !this.target ) {	//Get target relative to location and time
+
   	this.target = { a:null, t:-1 };
           if( dir > 0 ) {
             this.target.a = utils.AddAround( this.a, this.iclData.path.length, dir );
@@ -203,55 +274,7 @@ class Tourist {
         this.on++;
       }
     }
-
-  /**
-  * Makes a robot go to the wall at a specific angle on the shape.
-  *
-  *@param {integer} value Angle on the shape of the perimeter
-  *
-  *
-  */
-  GoToWallAtAngle(value) {
-    if ( this.target == null) {
-      this.target = utils.wallAtAngle(360, value.d);
-      this.target.x = this.iclData.center.x + this.iclData.unit2Px * this.target.x;
-      this.target.y = this.iclData.center.y + this.iclData.unit2Px * this.target.y;
-    }
-    console.log(this.x, this.y)
-    if ((this.x == this.target.x) && (this.y == this.target.y)) {
-        this.a = value.d;
-      this.on++;
-    } else {
-        console.log("Directing to " + this.target.x + " " + this.target.y);
-
-      this.DirectTo(this.target);
-    }
-  }
-
-  /**
-  * The robot will go from the interior of the object to an angle on the perimeter.
-  * Robot is required to be in the interior (not in perimeter) of the object.
-  *
-  *@param {Array} value [angle on the shape of the perimeter, percent distance of a radius]
-  *
-  *
-  */
-  GoOutAtAngle(value) {
-    if (this.target == null) {
-      var angHold = value.d * (Math.PI / 180);
-      this.target = {
-          x:this.x + value.r * this.iclData.unit2Px * Math.cos(angHold),
-          y:this.y - value.r * this.iclData.unit2Px * Math.sin(angHold)
-      };
-    }
-    if ((this.x == this.target.x) && (this.y == this.target.y)) {
-      this.a = value.d;
-      this.on++;
-      this.target = null;
-    } else {
-      this.DirectTo(this.target);
-    }
-  }
+    */
 
   /**
   * The robot will go to the center (origin) of the shape. Robot is not required to be at any specific position.
@@ -291,7 +314,7 @@ class Tourist {
   */
   GoToExit(value) {
     if ((this.x == this.iclData.fieldExit.x) && (this.y == this.iclData.fieldExit.y)) {
-      this.iclDataait([]);
+      this.wait([]);
     } else {
       this.DirectTo(this.iclData.fieldExit);
     }
@@ -332,24 +355,23 @@ class Tourist {
   *@param {null} value null
   */
   Intercept(value) {
-    if (((this.target == null) || !this.target) && (!this.iclData.wireless)) {
+
+    if ((this.target == null) && (!this.iclData.wireless)) {
       var holdTime = 0;
       var closest = Infinity;
       outer:
       for (var i = 0; i < this.iclData.instruBinder.length; i++) {
           console.log(i);
-        if ((!this.iclData.tourists[i].knows) && ((this.iclData.tourists[i].hunted == this.number) || (this.iclData.tourists[i].hunted == null))) {
+        if ((!this.iclData.tourists[i].knows)) {
           inner:
-          console.log("INNER");
           for (var j = 0; j < 8 * this.iclData.unit2Px; j++) {
             if (this.iclData.time + j < this.iclData.timeMax) {
-                console.log(this.iclData.history[i]);
               var intercept = this.iclData.mods[0].premo[i][this.iclData.time + j - 2];
               var bVec = [intercept.x - this.x, intercept.y - this.y];
               var botDist = Math.sqrt(Math.pow(bVec[1], 2) + Math.pow(bVec[0], 2));
-              //var botDist = Math.hypot(intercept.y - this.y, intercept.x - this.x);
               if ((Math.abs(j * this.iclData.unit2Px / this.iclData.fps - botDist) <= this.velocity * this.iclData.unit2Px / (2 * this.iclData.fps)) && (botDist < closest)) {
                 this.target = [i, intercept];
+                console.log(this.target);
                 if (value && value[0] == i){
                     console.log("DEBUG: Found Priority");
                     break outer;
@@ -365,7 +387,8 @@ class Tourist {
     if (this.priority || this.target == null) {
       this.GoToExit(this.iclData.fieldExit);
     } else {
-      this.iclData.tourists[this.target[0]].hunted = this.number;
+      //this.target[0].hunted = this.number;
+      console.log(this.target);
       var pVec = [this.target[1].x - this.x, this.target[1].y - this.y];
       var pointDist = Math.sqrt(Math.pow(pVec[1], 2) + Math.pow(pVec[0], 2));
       //var pointDist = Math.hypot(this.target[1].y - this.y, this.target[1].x - this.x);
@@ -376,6 +399,9 @@ class Tourist {
       }
       this.DirectTo({x:this.target[1].x, y:this.target[1].y});
       if (this.iclData.tourists[this.target[0]].knows) {
+          console.log(this.target[0])
+        this.iclData.tourists[this.target[0]].on = this.iclData.tourists[this.target[0]].icl.length - 1;
+        this.iclData.tourists[this.target[0]].target = null;
         this.target = null;
         this.GoToExit(this.iclData.fieldExit);
       }

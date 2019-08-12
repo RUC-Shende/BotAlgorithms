@@ -17,7 +17,7 @@ class utils {
       .attr( "width", 500 ).attr( "height", 500 )
       .style( "border", "1px solid green" );
 
-      var path = utils.genPoly({x:50,y:50}, 25, 0, 3)
+      var path = utils.genPoly({x:50,y:50}, 25, 45, 4)
 
     var icll = [
         /*

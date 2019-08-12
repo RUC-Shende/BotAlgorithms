@@ -6,9 +6,11 @@
         <script src="https://d3js.org/d3.v5.min.js"></script>
     </head>
     <body>
-        <script src="tourist.js"> </script>
-        <script src="modules.js"></script>
+        <script src="module.js"> </script>
+        <script src="touristmodule.js"></script>
+
         <script>
+
             function main(id, instruBinder, algorithmName, angle, wireless) {
                 var field = d3.select("body").append("svg")
                     .attr("width", 500).attr("height", 500)
@@ -66,6 +68,34 @@
                     .attr("viewBox", "0 0 100 100");
 
 
+                var exitEnv = d3.select("body").append("svg")
+                    .attr("width", 500).attr("height", 500)
+                    .style("border", "1px solid green");
+
+                exitEnv.append("svg")
+                    .attr("id", "backGround")
+                    .attr("height", "100%")
+                    .attr("width", "100%")
+                    .attr("viewBox", "0 0 100 100");
+
+                exitEnv.append("svg")
+                    .attr("id", "lines")
+                    .attr("height", "100%")
+                    .attr("width", "100%")
+                    .attr("viewBox", "0 0 100 100");
+
+                exitEnv.append("svg")
+                    .attr("id", "bots")
+                    .attr("height", "100%")
+                    .attr("width", "100%")
+                    .attr("viewBox", "0 0 100 100");
+
+                exitEnv.append("svg")
+                    .attr("id", "overLay")
+                    .attr("height", "100%")
+                    .attr("width", "100%")
+                    .attr("viewBox", "0 0 100 100");
+
 
 
                 var g = .435;
@@ -83,21 +113,28 @@
                 var u3 = 1 + c + e + f + h;
                 var icll = [
                     [//Queen 1
-                        ["info"],
-                        ["GoToWallFromCenter", [220] ],
-                        ["GoToMidPoint", []],
+                        ["#0000ff"],
+                        ["GoToWallFromCenter", [ a * ( 180 / Math.PI ) ] ],
                         ["FollowWall", ["left"]],
-                        ["GoToExit", {x:25, y:50}]
+                        ["GoToExit", [null, true]]
                     ],
                     [//Queen 2
-                        [ "info" ],
-                        [ "GoToWallFromCenter", [220] ],
-                        ["GoToMidPoint", []],
-                        [ "FollowWall", [ "right"] ],
-                        [ "GoToExit", {x:25, y:50} ]
+                        ["#ff0000"],
+                        [ "GoToWallFromCenter", [ 0 ] ],
+                        [ "FollowWall", [ "left", ( c )  ] ],
+                        [ "GoToWallFromCenter", [ ( c + h ) * ( 180 / Math.PI ) ] ],
+                        [ "FollowWall", [ "right" ]],
+                        [ "GoToExit", [null, true]]
                     ],
+                    [//Helper
+                        [ "#00ff00" ],
+                        [ "GoToWallFromCenter", [ a * ( 180 / Math.PI ) ] ],
+                        [ "FollowWall", [ "right"]],
+                        ["wait", []]
+                    ]
                 ];
 
+                var path = utils.genPoly({x: 50, y: 50}, 25, 0, 360)
 
                 worldo = new iclData(
                     id,
@@ -105,19 +142,19 @@
                     algorithmName,
                     angle,
                     wireless,
-                    utils.genPoly({x: 50, y: 50}, 25, 0, 3)
+                    path
                 );
                 // Initialize history no exit, add mods, init history with exit.
                 worldo.createHistory();
-                worldo.mods.push(new lineFillMod(worldo)); //medium			~65ms
-                worldo.mods.push( new exitFindMod(worldo, {x:75, y:50}, field, graph));//light	~5ms
+                worldo.mods.push(new lineFillMod(worldo, exitEnv)); //medium			~65ms
+                worldo.mods.push( new exitFindMod(worldo, utils.wallAtAngle(path, {x:50,y:50}, angle), field, graph));//light	~5ms
                 worldo.createHistory();
                 // Optional Add visuals. If you would like a data sim only dont add this.
                 // Result, no VInit or VUpdate will happen.
                 var visuao = new iclVisual(worldo, field, graph);
                 worldo.motor = setInterval(iclVisual.reEnact.bind(visuao), 1000 / worldo.fps);
             }
-            main(0, [], "AlgorithmName", 0, true);
+            main(0, [], "AlgorithmName", 359, true);
         </script>
     </body>
 </html>

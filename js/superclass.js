@@ -25,7 +25,7 @@ class iclData {
         /** Current velocity of the simulation. 1 - Forward. 0 - Stopped. -1 - Rewind. (0,1) - Slow */
         this.timeDirect = 0;
         /** Frames per second. Too high (> 100) == bad performance. */
-        this.fps = 100;
+        this.fps = 60;
         /** The maximum time before we stop the simulation for good. */
         this.timeMax = 10 * this.fps;
         /** Points of the equilateral shape to search. Ex. 3 = Triangle, 4 = square, 360 = circle */

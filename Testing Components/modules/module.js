@@ -5,29 +5,23 @@ class utils {
 
     constructor() {}
 
-    static wallAtAngle(deg, angle) {
-        var fa = Math.floor((angle / 360) * deg);
-        var d2r = Math.PI / 180;
-        var p12 = {
-            x: Math.cos(angle * d2r),
-            y: -Math.sin(angle * d2r)
-        };
-        var p21 = {
-            x: Math.cos(fa * d2r),
-            y: -Math.sin(fa * d2r)
-        };
-        var p22 = {
-            x: Math.cos((fa + 1) * d2r),
-            y: -Math.sin((fa + 1) * d2r)
-        };
-        var m1 = p12.y / p12.x;
-        var m2 = (p22.y - p21.y) / (p22.x - p21.x);
-        var c2 = p22.y - m2 * p22.x;
-        var d = m2 - m1;
-        return ({
-            x: (-c2) / d,
-            y: (-m1 * c2) / d
-        });
+    static wallAtAngle(path, center, angle) {
+        var unit2Px = 25;
+        for( var i = 0; i < path.length - 1; i++ ) {
+          var hold = utils.WhereLineSegsCross(
+            center,
+            {
+              x:center.x + 8 * unit2Px * Math.cos( angle * Math.PI / 180 ),
+              y:center.y - 8 * unit2Px * Math.sin( angle * Math.PI / 180 )
+            },
+            path[ i ],
+            path[ i + 1 ]
+          );
+          if( hold ) {
+            return hold;
+          }
+        }
+        return null;
     }
 
     static genPoly(c, r, a, n) {
@@ -168,7 +162,7 @@ class iclData {
         /** Angle of the exit to use for the sim. */
         this.exitAngle = angle;
         /** Exit to use for the sim in {float}[x,y]. */
-        this.fieldExit = utils.wallAtAngle(this.degrees, this.exitAngle);
+        this.fieldExit = utils.wallAtAngle(path, this.center, angle);
         /** How many tourists this data structure is in control of. */
         this.touristNum = 0;
         /** Array of valid trajectories for robots. Length is how many tourists are being used. */
@@ -262,7 +256,6 @@ class iclData {
             }
             this.time++;
         }
-        console.log(this.history)
     }
 
 }
@@ -314,17 +307,35 @@ class exitFindMod {
                     // Send out exit alert
                     if (this.iclData.wireless) {
                         for (var m = 0; m < this.iclData.tourists.length; m++) {
-                            console.log("Tourist " + m + " on last instruction")
                             this.iclData.tourists[m].on = this.iclData.tourists[m].icl.length - 1;
                             this.iclData.tourists[m].knows = true;
                         }
                     }
                 }
+
+            }
+            var allKnowing = false;
+            for (var t = 0; t < this.iclData.tourists.length; t ++ ) {
+                allKnowing = utils.cmpXYPairs(this.iclData.tourists[t], this.iclData.fieldExit);
+                if (!allKnowing){
+                    break;
+                }
+            }
+            if (allKnowing) {
+                this.iclData.timeMax = this.iclData.time;
             }
         }
     }
 
+    VReset() {
+        this.graphSVG.select("#backGround").html(null);
+        this.graphSVG.select("#lines").html(null);
+        this.graphSVG.select("#bots").html(null);
+        this.graphSVG.select("#overLay").html(null);
+    }
+
     VInit() { // draw initial graph.
+        //this.VReset();
         for (var i = 0; i < this.iclData.tourists.length; i++) {
             this.graphLines.push([]);
         }
@@ -333,8 +344,8 @@ class exitFindMod {
             .attr("cy", this.iclData.fieldExit.y)
             .attr("r",  1)
             .attr("id", "exit")
-            .style("fill", "#ff0000")
-            .style("stroke", "#ff0000")
+            .style("fill", "#ffffff")
+            .style("stroke", "#000000")
             .style("stroke-width", "0.1");
 
         this.graphSVG.select("#backGround").append("path")
@@ -371,6 +382,8 @@ class exitFindMod {
 
         var hold = '';
         for (var i = 0; i < this.iclData.tourists.length; i++) {
+            var hold = '';
+
             if (this.iclData.time > 0) {
                 this.graphLines[i].remove();
             }
@@ -384,7 +397,7 @@ class exitFindMod {
             }
             this.graphLines[i] = this.graphSVG.select("#lines").append("path")
                 .attr("d", hold).attr("stroke-width", 1)
-                .style("stroke", "00ff00").style("fill", "none");
+                .style("stroke", this.iclData.tourists[i].icl[0][0] ).style("fill", "none");
         }
         if (this.iclData.time == this.iclData.timeMax - 1) {
             var exitMax = this.graphSVG.select("#backGround").append("text")
@@ -406,14 +419,14 @@ class exitFindMod {
 }
 
 class lineFillMod {
-    constructor(iclData) {
+    constructor(iclData, exitEnvelopeGraph) {
         this.iclData = iclData;
         this.step = this.iclData.unit2Px / this.iclData.fps;
         this.pts = null;
         this.count = -1;
 
         this.exitTimes = [];
-        this.exitEnvelopeGraph = null;
+        this.exitEnvelopeGraph = exitEnvelopeGraph;
         this.exitEnvelopeLine = null;
         this.hold = null;
     }
@@ -451,7 +464,7 @@ class lineFillMod {
     // For checking priority end times only. Does not work on normal or F2F algorithms!
     exitDistChecker(i, j){
         if (this.iclData.tourists[i].priority) {
-            this.exitTimes[j] = (Math.floor((100 * this.iclData.time) / this.iclData.fps) / 100);
+            this.exitTimes[j] = (Math.floor((1000 * this.iclData.time) / this.iclData.fps) / 1000);
         }
         else {
             // Helper is tourist i
@@ -472,19 +485,16 @@ class lineFillMod {
         }
     }
 
-    VInit() {
-        this.exitEnvelopeGraph = d3.select("body").append("svg")
-            .attr("class", "exitEnvelope")
-            .attr("width", 500)
-            .attr("height", 500)
-            .style("border", "1px solid blue")
-        .append("svg")
-            .attr("id", "backGround")
-            .attr("height", "100%")
-            .attr("width", "100%")
-            .attr("viewBox", "0 0 100 100");
+    VReset() {
+        this.exitEnvelopeGraph.select("#backGround").html(null);
+        this.exitEnvelopeGraph.select("#lines").html(null);
+        this.exitEnvelopeGraph.select("#bots").html(null);
+        this.exitEnvelopeGraph.select("#overLay").html(null);
+    }
 
-        this.exitEnvelopeGraph.append("path")
+    VInit() {
+        //this.VReset();
+        this.exitEnvelopeGraph.select("#lines").append("path")
             .attr("d", "M" + (0.4 * this.iclData.unit2Px) + "," + (1.5 * this.iclData.unit2Px) +
                        "L" + (0.4 * this.iclData.unit2Px) + "," + (3.5 * this.iclData.unit2Px) +
                        "L" + (3.5 * this.iclData.unit2Px) + "," + (3.5 * this.iclData.unit2Px))
@@ -492,8 +502,8 @@ class lineFillMod {
             .style("stroke-width", 1)
             .style("fill", "none");
 
-        for (var i = 0; i < (Math.floor((100 * this.iclData.timeMax) / this.iclData.fps) / 100); i++) { //Create y-axis labels.
-            this.exitEnvelopeGraph.append("text")
+        for (var i = 0; i < (Math.floor((100 * this.iclData.timeMax) / this.iclData.fps) / 100)+1; i++) { //Create y-axis labels.
+            this.exitEnvelopeGraph.select("backGround").append("text")
                 .attr("x", (0.3 * this.iclData.unit2Px))
                 .attr("y", ((3.5 * this.iclData.unit2Px) - (i * 0.5 *this.iclData.unit2Px)))
                 .style("font-size", this.iclData.unit2Px * (4 / 25))
@@ -501,14 +511,14 @@ class lineFillMod {
         }
 
         for (var i = 0; i < 7; i ++){
-            this.exitEnvelopeGraph.append("text")
+            this.exitEnvelopeGraph.select("#backGround").append("text")
                 .attr("x", (0.5 * this.iclData.unit2Px) + (3 * this.iclData.unit2Px * ((i * 60) / 360)))
                 .attr("y", (3.7 * this.iclData.unit2Px))
                 .style("font-size", this.iclData.unit2Px * (4 / 25))
                 .text((i * 60) + "°");
 
         }
-        var graphName = this.exitEnvelopeGraph.append("text")
+        var graphName = this.exitEnvelopeGraph.select("#backGround").append("text")
             .attr("x", this.iclData.unit2Px * 2)
             .attr("y", this.iclData.unit2Px * 0.5)
             .style("font-size", 0.15 * this.iclData.unit2Px)
@@ -531,13 +541,13 @@ class lineFillMod {
 
         }
         if (this.iclData.time == this.iclData.timeMax - 1){
-            var exitMax = this.exitEnvelopeGraph.append("text")
+            var exitMax = this.exitEnvelopeGraph.select("backGround").append("text")
                 .attr("x", this.iclData.unit2Px * 2)
                 .attr("y", this.iclData.unit2Px)
                 .style("font-size", 0.2 * this.iclData.unit2Px)
                 .style("text-anchor", "middle")
                 .text("Max time taken: " + formatvalue(Math.max(...this.exitTimes)));
-            var worstPlacement = this.exitEnvelopeGraph.append("text")
+            var worstPlacement = this.exitEnvelopeGraph.select("backGround").append("text")
                 .attr("x", this.iclData.unit2Px * 2)
                 .attr("y", this.iclData.unit2Px * 1.2)
                 .style("font-size", 0.2 * this.iclData.unit2Px)
@@ -545,7 +555,7 @@ class lineFillMod {
                 .text("Worst Exit Placement: " + (this.exitTimes.indexOf(Math.max(...this.exitTimes))) / 2 + "°");
         }
 
-        this.exitEnvelopeLine = this.exitEnvelopeGraph.append("path")
+        this.exitEnvelopeLine = this.exitEnvelopeGraph.select("#lines").append("path")
             .attr("d", hold)
             .attr("stroke-width", 1)
             .style("stroke", "00ff00")
@@ -606,16 +616,18 @@ class iclVisual {
             hold += ((i == 0) ? ('M') : ('L')) + pt.x + ',' + pt.y;
         }
         this.fieldSVG.select("#lines").append("path")
-            .attr("d", hold).attr("stroke-width", 1)
-            .style("stroke", "00ff00").style("fill", "000000ff");
+            .attr("d", hold).attr("stroke-width", 0.25)
+            .style("stroke", "000000").style("fill", "none");
+
+        //var colors = ["#ff0000", "00ff00", "0000ff"];
 
         for (var i = 0; i < this.iclData.history.length; i++) {
             this.visuals.push(this.fieldSVG.select("#bots").append("circle")
                 .attr("r", 3)
                 .attr("cx", this.iclData.center.x)
                 .attr("cy", this.iclData.center.y)
-                .attr("stroke-width", 1)
-                .style("fill", "#ff000033").style("stroke", "#ffffff")
+                .attr("stroke-width", 0.25)
+                .style("fill", this.iclData.tourists[i].icl[0][0] ).style("stroke", "none")
             );
         }
         for (var i = 0; i < this.iclData.mods.length; i++) {

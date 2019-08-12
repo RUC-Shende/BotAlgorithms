@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta charset="ISO-8859-1">
+    <title>Disk Algorithm Showcase</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <!-- <script src='d3.min.js'></script>-->
+    <!--Offline support-->
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel='stylesheet' type='text/css' href='../css/circleShowcase.css' />
+
+    <script>
+        function showCat(id){
+            descriptors = {
+                "tri" : "<b>Triangle</b> Agents start at the interior or on the wall of an equilateral triangle with sides of unit length.",
+                "square"  : "<b>Square</b> Agents start at the interior or on the wall of a unit square.",
+            }
+            d3.select("#description").style("display", "inline-block").html("<h3 style='color: black;'>" + descriptors[id] + "</h3>");
+
+        }
+
+        function showAlgs(id){
+            d3.selectAll(".algs").style("display", "none");
+            document.getElementById("alglist " +id).style.display = "inline-block";
+        }
+
+    </script>
+
+
+</head>
+
+<body>
+    <a href="../disk/circleShowcase.html" style="all:initial;">
+    <div id="backbutton" class="openNav" style="margin-bottom:5px;">
+        <span style="width: 100%;" class='openButton'>
+            <img src="../resources/back.svg" style="width:1.25em; height:1.25em;" ><img>
+        </span>
+    </div>
+    </a>
+    <h1 style="color:black;">Choose a type of Algorithm on a Regular Polygon</h1>
+    <div id="start" class="w3-display-container infobox" style="display:inline-block;">
+        <div>
+            <p>
+                Hover over the category of algorithm you would like to see for an explanation, and click to choose it.
+            </p>
+            <ul>
+                <li><span class="tooltip" onclick="showAlgs('tri');" onmouseover="showCat('tri')">On a Triangle</span></li>
+                <ul id="alglist tri" class="algs" style="display:none;">
+                    <li>
+                        <a href="polygonAlgs.html#3_cStart">Triangle Search 1 (Center Start)</a>
+                    </li>
+                    <li>
+                        <a href="polygonAlgs.html#3_wStart">Triangle Search 1 (Wall Start)</a>
+                    </li>
+                </ul>
+                <li><span class="tooltip" onclick="showAlgs('square');" onmouseover="showCat('square')">On a Square</span></li>
+                <ul id="alglist square" class="algs" style="display:none;">
+                    <li>
+                        <a href="polygonAlgs.html#4_cStart">Square Search 1 (Center Start)</a>
+                    </li>
+                    <li>
+                        <a href="polygonAlgs.html#4_wStart">Square Search 1 (Wall Start)</a>
+                    </li>
+                </ul>
+            </ul>
+        </div>
+        <div id="description" style="float:left; display: inline-block; margin-bottom: 5%;">
+        </div>
+
+        <h5 style="float:left;">This research is supported by the National Science Foundation under grant
+                    # CCF-AF 1813940 (RUI: Search, Evacuation and Reconfiguration with Coordinated Mobile Agents).</h5>
+    </div>
+</body>

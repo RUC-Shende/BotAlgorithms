@@ -4,123 +4,313 @@
     <head>
         <meta charset="utf-8" />
         <script src="https://d3js.org/d3.v5.min.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel='stylesheet' type='text/css' href='../css/circleShowcase.css' />
+        <title>Polygon Algorithm Showcase</title>
+
     </head>
     <body>
-        <script src="enviros.js"></script>
-        <script>utils.main();</script>
-        <!--
-        <script src="mobiles.js"> </script>
-        <script src="modules.js"></script>
+
+        <a href="polygonSelect.html" style="all:initial;">
+            <div id="backbutton" class="openNav" style="margin-bottom:5px;">
+                <span style="width: 100%;" class='openButton'>
+                    <img src="../resources/back.svg" style="width:1.25em; height:1.25em;"><img>
+                </span>
+            </div>
+        </a>
+
+        <h4 style="margin-top:5px;">Input a number to choose an exit angle.</h4>
+        <input id="exitAngle" onchange="exitPreview();" type=number min=0 max=360 value=0 />
+        <input type="submit" onclick="exitPreview();" value="Preview Exit Location" />
+        <input type="submit" onclick="exitChosen();">
+        <div style="width:100%;margin: 0 auto;">
+            <svg id="anim0" width=500px height=500px>
+
+                <svg border:"1px solid black" viewBox="0 0 100 100" id="backGround" >
+                    <text x=50 y=5 style="font-size:5;text-anchor:middle">Search and Exit</text>
+                    <text id="Desc0" x=50 y=8 style="font-size:3;text-anchor:middle"> Wireless</text>
+                    <line x1=50 y1=25 x2=50 y2=75 style="stroke:#000000;stroke-width:.25"></line>
+                    <line x1=25 y1=50 x2=75 y2=50 style="stroke:#000000;stroke-width:.25"></line>
+                    <text x=77.5 y=51.5 font-size=5 style="text-anchor:middle;">0</text>
+                    <text x=50 y=23.5 font-size=5 style="text-anchor:middle;">90</text>
+
+                    <circle id="center" cx=50 cy=50 r=.8 style="fill:#ffffff;stroke:#000000;stroke-width:.1"></circle>
+                </svg>
+                <circle id="exit" cx=0 cy=0 r=0.8 style="stroke:#000000; fill:#ffffff; stroke-width:0.1;"></circle>
+                <svg border:"1px solid black" viewBox="0 0 100 100"  id="lines" ></svg>
+
+                <svg border:"1px solid black" viewBox="0 0 100 100" id="bots" ></svg>
+                <svg border:"1px solid black" viewBox="0 0 100 100" id="overLay" ></svg>
+            </svg>
+            <svg id="graph0" height=500px width=500px>
+                <svg border:"1px solid black" viewBox="0 0 100 100" id="backGround" >
+                    <text x=15 y=70 transform="rotate(-90,10,75)" style="fill:#000000;font-size:5;text-anchor:middle">Dist. from Exit(radius)</text>
+                    <text x=50 y=98 style="fill:#000000;font-size:5;text-anchor:middle">Time(seconds)</text>
+                </svg>
+                <svg border:"1px solid black" viewBox="0 0 100 100"  id="lines" ></svg>
+                <svg border:"1px solid black" viewBox="0 0 100 100"  id="bots" ></svg>
+                <svg border:"1px solid black" viewBox="0 0 100 100"  id="overLay" ></svg>
+                </svg>
+            </svg>
+            <!--
+            <svg id="exitEnvelope0" height=500px width=500px>
+                <svg border:"1px solid black" viewBox="0 0 100 100" id="backGround" ></svg>
+                <svg border:"1px solid black" viewBox="0 0 100 100"  id="lines" ></svg>
+                <svg border:"1px solid black" viewBox="0 0 100 100"  id="bots" ></svg>
+                <svg border:"1px solid black" viewBox="0 0 100 100"  id="overLay" ></svg>
+                </svg>
+            </svg>
+        -->
+        </div>
+        <script src="../js/modules.js"></script>
+        <script src="../js/touristmodule.js"></script>
         <script>
-            function main(id, instruBinder, algorithmName, angle, wireless) {
-                var field = d3.select("body").append("svg")
-                    .attr("width", 500).attr("height", 500)
-                    .style("border", "1px solid red");
-                var graph = d3.select("body").append("svg")
-                    .attr("width", 500).attr("height", 500)
-                    .style("border", "1px solid green");
+            function main(id, icll, algorithmName, angle, wireless, center, start) {
+                var field = d3.select("#anim0");
+                var graph = d3.select("#graph0");
+                var exitEnvelope = d3.select("#exitEnvelope0");
 
-                field.append("svg")
-                    .attr("id", "backGround")
-                    .attr("height", "100%")
-                    .attr("width", "100%")
-                    .attr("viewBox", "0 0 100 100");
-
-                field.append("svg")
-                    .attr("id", "lines")
-                    .attr("height", "100%")
-                    .attr("width", "100%")
-                    .attr("viewBox", "0 0 100 100");
-
-                field.append("svg")
-                    .attr("id", "bots")
-                    .attr("height", "100%")
-                    .attr("width", "100%")
-                    .attr("viewBox", "0 0 100 100");
-
-                field.append("svg")
-                    .attr("id", "overLay")
-                    .attr("height", "100%")
-                    .attr("width", "100%")
-                    .attr("viewBox", "0 0 100 100");
-
-                graph.append("svg")
-                    .attr("id", "backGround")
-                    .attr("height", "100%")
-                    .attr("width", "100%")
-                    .attr("viewBox", "0 0 100 100");
-
-                graph.append("svg")
-                    .attr("id", "lines")
-                    .attr("height", "100%")
-                    .attr("width", "100%")
-                    .attr("viewBox", "0 0 100 100");
-
-                graph.append("svg")
-                    .attr("id", "bots")
-                    .attr("height", "100%")
-                    .attr("width", "100%")
-                    .attr("viewBox", "0 0 100 100");
-
-                graph.append("svg")
-                    .attr("id", "overLay")
-                    .attr("height", "100%")
-                    .attr("width", "100%")
-                    .attr("viewBox", "0 0 100 100");
+                field.select("#bots").html(null);
+                field.select("#lines").html(null);
+                field.select("#overLay").html(null);
+                graph.select("#bots").html(null);
+                graph.select("#lines").html(null);
+                graph.select("#overLay").html(null);
+                exitEnvelope.select("#bots").html(null);
+                exitEnvelope.select("#lines").html(null);
+                exitEnvelope.select("#overLay").html(null);
 
 
 
+                var path = infoPacket.path;
 
-                var g = .435;
-                var h = g + 2 * Math.sin( g / 2 );
-                //var h = g;
-                var eandf = 2 * Math.sin( h / 2 );
-                var c = ( 1 / 3 ) * ( 2 * Math.PI - g - 2 * h - 2 * eandf );
-                var a = 2 * c + eandf + g + h;
-                var b = 2 * Math.PI - a;
-                var e = ( (a - (( 2 / 3 ) * Math.PI)) / 2 ) - c;
-                var f = eandf - e;
-                var d = eandf + g + h;
+                console.log(icll);
 
-                var u1 = 1 + b;
-                var u3 = 1 + c + e + f + h;
-                var icll = [
-                    [//Queen 1
-                        ["info"],
-                        ["GoOutAtAngle", {r:1, d:a*(180/Math.PI)} ],
-                        ["FollowWall", ["left"]],
-                        ["GoToExit", {x:25, y:50}]
-                    ],
-                    [//Queen 2
-                        [ "info" ],
-                        [ "GoOutAtAngle", {r:1, d:0} ],
-                        [ "FollowWall", [ "left", c * (180/Math.PI)] ],
-                        ["GoToWallAtAngle", {r:1, d:(c+h) * (180/Math.PI)}],
-                        ["FollowWall", ["right"]],
-                        [ "GoToExit", {x:25, y:50} ]
-                    ],
-                ];
-
-                worldo = new iclData(
+                window.worldo = new iclData(
                     id,
                     icll,
                     algorithmName,
                     angle,
                     wireless,
-                    utils.genPoly({x: 50, y: 50}, 25, 0, 3)
+                    path,
+                    start
                 );
                 // Initialize history no exit, add mods, init history with exit.
                 worldo.createHistory();
-                worldo.mods.push(new lineFillMod(worldo)); //medium			~65ms
-                worldo.mods.push( new exitFindMod(worldo, worldo.fieldExit, field, graph));//light	~5ms
+                worldo.mods.push( new exitFindMod(worldo, utils.wallAtAngle(path, center, angle), field, graph));//light	~5ms
+                worldo.mods.push(new lineFillMod(worldo, exitEnvelope)); //medium			~65ms
+                console.log(path, center, angle);
+                //worldo.mods.push( new exitFindMod(worldo, utils.wallAtAngle(path, center, angle), field, graph));//light	~5ms
                 worldo.createHistory();
                 // Optional Add visuals. If you would like a data sim only dont add this.
                 // Result, no VInit or VUpdate will happen.
-                var visuao = new iclVisual(worldo, field, graph);
+                window.visuao = new iclVisual(worldo, field, graph);
                 worldo.motor = setInterval(iclVisual.reEnact.bind(visuao), 1000 / worldo.fps);
+
             }
-            main(0, [], "AlgorithmName", 0, true);
+
+            function exitPreview() {
+                if (!infoPacket){
+                    console.log("ERROR: Could not preview exit location. Ensure that infopacket has been initialized and that the # selector in the URL is correct.");
+                    return;
+                }
+                var exitAngle = d3.select("#exitAngle").node().value;
+                var exitLoc = utils.wallAtAngle(infoPacket.path, infoPacket.center, exitAngle);
+                console.log(exitLoc);
+
+                d3.select("#exit").attr("cx", exitLoc.x).attr("cy", exitLoc.y);
+
+
+            }
+
+            function exitChosen() {
+                var exitAngle = d3.select("#exitAngle").node().value;
+                var id = 0;
+                if (infoPacket) {
+                    main(id, infoPacket.icll, infoPacket.algName, exitAngle, infoPacket.wireless, infoPacket.center, infoPacket.start);
+                }
+                else {
+                    console.log("ERROR: No information about how to start algorithm. You can try setting values for window.infoPacket and resubmitting.")
+                }
+
+            }
+
+            function showAlgorithmDesc(s, w) {
+                var center = {x:50,y:50};
+                infoPacket = null;
+                switch (s) {
+                    case "3_cStart":
+                        var icll = [
+                            [//Queen 1
+                                ["#ff0000"],
+                                ["GoToWallFromCenter", [210] ],
+                                ["GoToMidPoint", []],
+                                ["FollowWall", ["left"]],
+                                ["GoToExit", {x:25, y:50} ]
+                            ],
+                            [//Queen 2
+                                [ "#00ff00" ],
+                                [ "GoToWallFromCenter", [210] ],
+                                ["GoToMidPoint", []],
+                                [ "FollowWall", [ "right"] ],
+                                [ "GoToExit", {x:25, y:50} ]
+                            ],
+                        ];
+                        var degrees = s.slice(0, s.indexOf("_"));
+                        console.log("DEGREES: " + degrees);
+                        var algName = "Triangle Search 1 (Center Start)";
+                        var wireless = true;
+                        var start = center;
+                        var path = utils.genPoly(center, 25, 0, degrees)
+                        break;
+                    case "3_wStart":
+                        var icll = [
+                            [//Queen 1
+                                ["#ff0000"],
+                                ["GoToWallFromCenter", [220]],
+                                ["GoToMidPoint", []],
+                                ["FollowWall", ["left"]],
+                                ["GoToExit", {x:25, y:50} ]
+                            ],
+                            [//Queen 2
+                                [ "#00ff00" ],
+                                [ "GoToWallFromCenter", [220] ],
+                                ["GoToMidPoint", []],
+                                [ "FollowWall", [ "right"] ],
+                                [ "GoToExit", {x:25, y:50} ]
+                            ],
+                        ];
+                        var degrees = s.slice(0, s.indexOf("_"));
+                        var algName = "Triangle Search 1 (Wall Start)";
+                        var wireless = true;
+                        var path = utils.genPoly(center, 25, 0, degrees);
+                        var start = utils.wallAtAngle(path, center, 220);
+                        break;
+                    case "4_cStart":
+                        var startOnWallAtAngle = 140;
+                        var icll = [
+                            [
+                                ["#ff0000"],
+                                ["GoToWallFromCenter", [startOnWallAtAngle]],
+                                ["FollowWall", ["left"]],
+                                ["GoToExit", [null, false]]
+                            ],
+                            [
+                                ["#00ff00"],
+                                ["GoToWallFromCenter", [startOnWallAtAngle]],
+                                ["FollowWall", ["right"]],
+                                ["GoToExit", [null, false]]
+                            ]
+                        ];
+                        var degrees = s.slice(0, s.indexOf("_"));
+                        var algName = "Square Search 1 (Wall Start)";
+                        var wireless = true;
+                        var path = utils.genPoly(center, 25, 45, degrees);
+                        var start = center;
+                        break;
+                    case "4_wStart":
+                        var startOnWallAtAngle = 140;
+                        var icll = [
+                            [
+                                ["#ff0000"],
+                                ["GoToWallFromCenter", [startOnWallAtAngle]],
+                                ["FollowWall", ["left"]],
+                                ["GoToExit", [null, false]]
+                            ],
+                            [
+                                ["#00ff00"],
+                                ["GoToWallFromCenter", [startOnWallAtAngle]],
+                                ["FollowWall", ["right"]],
+                                ["GoToExit", [null, false]]
+                            ]
+                        ];
+                        var degrees = s.slice(0, s.indexOf("_"));
+                        var algName = "Square Search 1 (Wall Start)";
+                        var wireless = true;
+                        var path = utils.genPoly(center, 25, 45, degrees);
+                        var start = utils.wallAtAngle(path, center, startOnWallAtAngle);
+                        break;
+
+
+
+                }
+
+                algShortName = s;
+                infoPacket = {
+                    'algShortName': algShortName,
+                    'algName':algName,
+                    'wireless':wireless,
+                    'icll':icll,
+                    'center':center,
+                    'start':start,
+                    'degrees':degrees,
+                    'path':path
+
+                };
+                return(infoPacket);
+
+            }
+
+            var infoPacket = null;
+
+            if (window.location.href.includes("#")) {
+                algSelector = window.location.href.indexOf("#");
+                var l = window.location.href.length;
+                console.log("DEBUG: Algorithm: " + window.location.href.slice(algSelector + 1, l));
+                var wire = true;
+                if (window.location.href.includes("wl") || window.location.href.includes("Q")) {
+                    wire = true;
+                } else {
+                    wire = false;
+                }
+                var infoPacket = showAlgorithmDesc(window.location.href.slice(algSelector + 1, l), wire);
+            } else {
+                var infoPacket = showAlgorithmDesc("3_cStart", false);
+            }
+
+            function showHelp(s) {
+                d3.selectAll(".w3-display-container").style("display", "none");
+                switch (s) {
+                    case "steps":
+                        document.getElementById(infoPacket.algShortName).style.display = "block";
+                        break;
+                    default:
+                        document.getElementById(s).style.display = "block";
+                        break;
+                }
+                return;
+            }
+
+            //PREDRAW PATH....
+            if (!infoPacket){
+                console.log("ERROR: Pre-Drawing failed. Check that infopacket has the required data and that the #selector in the URL is correct.");
+            }
+            var hold = '';
+            var path = infoPacket.path;
+            for (var i = 0; i < path.length; i++) {
+                var pt = path[i];
+                hold += ((i == 0) ? ('M') : ('L')) + pt.x + ',' + pt.y;
+            }
+            d3.select("#anim0").select("#backGround").append("path")
+                .attr("d", hold).attr("stroke-width", 0.25)
+                .style("stroke", "000000").style("fill", "none");
+            for (var i = 0; i < infoPacket.icll.length; i++) {
+                d3.select("#anim0").select("#bots").append("circle")
+                    .attr("r", 25/16) //unit2Px /16
+                    .attr("cx", infoPacket.start.x)
+                    .attr("cy", infoPacket.start.y)
+                    .attr("stroke-width", 0.25)
+                    .style("fill", infoPacket.icll[i][0][0] ).style("stroke", "none");
+            }
+            d3.select("#Desc0").text(infoPacket.algName + ((infoPacket.wireless) ? (" Wireless") : ( " Face-to-Face")));
+
+
+
+
+
         </script>
-    -->
     </body>
 </html>
