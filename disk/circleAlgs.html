@@ -432,7 +432,9 @@
         <h4 style="margin-top:5px;">Input a number to choose an exit angle.</h4>
         <input id="exitAngle" onchange="exitPreview();" type=number min=0 max=360 value=0 />
         <input type="submit" onclick="exitPreview();" value="Preview Exit Location" />
-        <input type="submit" onclick="exitChosen();">
+        <input type="submit" onclick="exitChosen();"style="background-color:#83e57e;">
+        <input type="submit" onclick="reset_predraw();" value="Reset" style="background-color:#f56d7c; color:white;" />
+
         <div style="width:100%;margin: 0 auto;">
             <svg id="anim0" width=500px height=500px>
 
@@ -1031,22 +1033,8 @@
 
             }
 
-            var infoPacket = null;
 
-            if (window.location.href.includes("#")) {
-                algSelector = window.location.href.indexOf("#");
-                var l = window.location.href.length;
-                console.log("DEBUG: Algorithm: " + window.location.href.slice(algSelector + 1, l));
-                var wire = true;
-                if (window.location.href.includes("wl") || window.location.href.includes("Q")) {
-                    wire = true;
-                } else {
-                    wire = false;
-                }
-                var infoPacket = showAlgorithmDesc(window.location.href.slice(algSelector + 1, l), wire);
-            } else {
-                var infoPacket = showAlgorithmDesc("Awl", true);
-            }
+
 
             function showHelp(s) {
                 d3.selectAll(".w3-display-container").style("display", "none");
@@ -1061,29 +1049,61 @@
                 return;
             }
 
-            //PREDRAW PATH....
-            if (!infoPacket){
-                console.log("ERROR: Pre-Drawing failed. Check that infopacket has the required data and that the #selector in the URL is correct.");
-            }
-            var hold = '';
-            var path = infoPacket.path;
-            for (var i = 0; i < path.length; i++) {
-                var pt = path[i];
-                hold += ((i == 0) ? ('M') : ('L')) + pt.x + ',' + pt.y;
-            }
-            d3.select("#anim0").select("#backGround").append("path")
-                .attr("d", hold).attr("stroke-width", 0.25)
-                .style("stroke", "000000").style("fill", "none");
-            for (var i = 0; i < infoPacket.icll.length; i++) {
-                d3.select("#anim0").select("#bots").append("circle")
-                    .attr("r", 25/16) //unit2Px / 16
-                    .attr("cx", infoPacket.start.x)
-                    .attr("cy", infoPacket.start.y)
-                    .attr("stroke-width", 0.25)
-                    .style("fill", infoPacket.icll[i][0][0] ).style("stroke", "none");
-            }
-            d3.select("#Desc0").text(infoPacket.algName + ((infoPacket.wireless) ? (" Wireless") : ( " Face-to-Face")));
+            function reset_predraw(){
+                var field = d3.select("#anim0");
+                var graph = d3.select("#graph0");
+                var exitEnvelope = d3.select("#exitEnvelope0");
 
+                field.select("#bots").html(null);
+                field.select("#lines").html(null);
+                field.select("#overLay").html(null);
+                graph.select("#bots").html(null);
+                graph.select("#lines").html(null);
+                graph.select("#overLay").html(null);
+                exitEnvelope.select("#bots").html(null);
+                exitEnvelope.select("#lines").html(null);
+                exitEnvelope.select("#overLay").html(null);
+                window.infoPacket = null;
+
+                if (window.location.href.includes("#")) {
+                    algSelector = window.location.href.indexOf("#");
+                    var l = window.location.href.length;
+                    console.log("DEBUG: Algorithm: " + window.location.href.slice(algSelector + 1, l));
+                    var wire = true;
+                    if (window.location.href.includes("wl") || window.location.href.includes("Q")) {
+                        wire = true;
+                    } else {
+                        wire = false;
+                    }
+                    var infoPacket = showAlgorithmDesc(window.location.href.slice(algSelector + 1, l), wire);
+                } else {
+                    var infoPacket = showAlgorithmDesc("Awl", true);
+                }
+
+                //PREDRAW PATH....
+                if (!infoPacket){
+                    console.log("ERROR: Pre-Drawing failed. Check that infopacket has the required data and that the #selector in the URL is correct.");
+                }
+                var hold = '';
+                var path = infoPacket.path;
+                for (var i = 0; i < path.length; i++) {
+                    var pt = path[i];
+                    hold += ((i == 0) ? ('M') : ('L')) + pt.x + ',' + pt.y;
+                }
+                d3.select("#anim0").select("#backGround").append("path")
+                    .attr("d", hold).attr("stroke-width", 0.25)
+                    .style("stroke", "000000").style("fill", "none");
+                for (var i = 0; i < infoPacket.icll.length; i++) {
+                    d3.select("#anim0").select("#bots").append("circle")
+                        .attr("r", 25/16) //unit2Px / 16
+                        .attr("cx", infoPacket.start.x)
+                        .attr("cy", infoPacket.start.y)
+                        .attr("stroke-width", 0.25)
+                        .style("fill", infoPacket.icll[i][0][0] ).style("stroke", "none");
+                }
+                d3.select("#Desc0").text(infoPacket.algName + ((infoPacket.wireless) ? (" Wireless") : ( " Face-to-Face")));
+            }
+            reset_predraw();
 
 
 

@@ -25,7 +25,9 @@
         <h4 style="margin-top:5px;">Input a number to choose an exit angle.</h4>
         <input id="exitAngle" onchange="exitPreview();" type=number min=0 max=360 value=0 />
         <input type="submit" onclick="exitPreview();" value="Preview Exit Location" />
-        <input type="submit" onclick="exitChosen();">
+        <input type="submit" onclick="exitChosen();" style="background-color:#83e57e;">
+        <input type="submit" onclick="reset_predraw();" value="Reset" style="background-color:#f56d7c; color:white;" />
+
         <div style="width:100%;margin: 0 auto;">
             <svg id="anim0" width=500px height=500px>
 
@@ -87,7 +89,6 @@
 
                 var path = infoPacket.path;
 
-                console.log(icll);
 
                 window.worldo = new iclData(
                     id,
@@ -102,7 +103,6 @@
                 worldo.createHistory();
                 worldo.mods.push( new exitFindMod(worldo, utils.wallAtAngle(path, center, angle), field, graph));//light	~5ms
                 worldo.mods.push(new lineFillMod(worldo, exitEnvelope)); //medium			~65ms
-                console.log(path, center, angle);
                 //worldo.mods.push( new exitFindMod(worldo, utils.wallAtAngle(path, center, angle), field, graph));//light	~5ms
                 worldo.createHistory();
                 // Optional Add visuals. If you would like a data sim only dont add this.
@@ -119,9 +119,8 @@
                 }
                 var exitAngle = d3.select("#exitAngle").node().value;
                 var exitLoc = utils.wallAtAngle(infoPacket.path, infoPacket.center, exitAngle);
-                console.log(exitLoc);
-
-                d3.select("#exit").attr("cx", exitLoc.x).attr("cy", exitLoc.y);
+                console.log(d3.select("#exit"));
+                d3.select("#anim0").select("#exit").attr("cx", exitLoc.x * 5).attr("cy", exitLoc.y * 5);
 
 
             }
@@ -140,7 +139,6 @@
 
             function showAlgorithmDesc(s, w) {
                 var center = {x:50,y:50};
-                infoPacket = null;
                 switch (s) {
                     case "3_cStart":
                         var icll = [
@@ -189,6 +187,48 @@
                         var path = utils.genPoly(center, 25, 0, degrees);
                         var start = utils.wallAtAngle(path, center, 220);
                         break;
+                    case "3_iStart":
+                        if (!infoPacket){
+                            var start = {x:50 - (-1 * Math.sqrt(3)/2), y:40};
+                        }
+                        else {
+
+                            var start = infoPacket.start;
+                            console.log(start);
+                        }
+                        var degrees = s.slice(0, s.indexOf("_"));
+                        var path = utils.genPoly(center, 25, 0, degrees);
+
+                        // Calculate the closest wall midpoint to travel to first.
+                        var midpoints = [];
+                        var minDistance = {i:-1, d:Infinity, x:0, y:0};
+                        for (var i = 0; i < degrees; i++) {
+                            midpoints.push(utils.midpoint(path[i], path[i+1]));
+                            if (utils.distance(start, midpoints[i]) < minDistance.d){
+                                minDistance.wall = i;
+                                minDistance.d = utils.distance(start, midpoints[i]);
+                                minDistance.x = midpoints[i].x;
+                                minDistance.y = midpoints[i].y;
+                            }
+                        }
+
+                        var icll = [
+                            [
+                                ["#ff0000"],
+                                ["GoToMidPointFromInterior", [minDistance]],
+                                ["FollowWall", ["left"]],
+                                ["GoToExit", [null, false]]
+                            ],
+                            [
+                                ["#00ff00"],
+                                ["GoToMidPointFromInterior", [minDistance]],
+                                ["FollowWall", ["right"]],
+                                ["GoToExit", [null, false]]
+                            ]
+                        ];
+                        var wireless = true;
+                        var algName = "Triangle Search 1 (Interior Start)";
+                        break;
                     case "4_cStart":
                         var startOnWallAtAngle = 140;
                         var icll = [
@@ -206,7 +246,7 @@
                             ]
                         ];
                         var degrees = s.slice(0, s.indexOf("_"));
-                        var algName = "Square Search 1 (Wall Start)";
+                        var algName = "Square Search 1 (Center Start)";
                         var wireless = true;
                         var path = utils.genPoly(center, 25, 45, degrees);
                         var start = center;
@@ -234,6 +274,48 @@
                         var start = utils.wallAtAngle(path, center, startOnWallAtAngle);
                         break;
 
+                    case "4_iStart":
+                        if (!infoPacket){
+                            var start = {x:35 - (-1 * Math.sqrt(3)/2), y:60};
+                        }
+                        else {
+                            console.log("DEBUG: Start location changed: " + infoPacket.start);
+                            var start = infoPacket.start;
+                        }
+                        var degrees = s.slice(0, s.indexOf("_"));
+                        var path = utils.genPoly(center, 25, 45, degrees);
+
+                        // Calculate the closest wall midpoint to travel to first.
+                        var midpoints = [];
+                        var minDistance = {i:-1, d:Infinity, x:0, y:0};
+                        for (var i = 0; i < 4; i++) {
+                            midpoints.push(utils.midpoint(path[i], path[i+1]));
+                            if (utils.distance(start, midpoints[i]) < minDistance.d){
+                                minDistance.wall = i;
+                                minDistance.d = utils.distance(start, midpoints[i]);
+                                minDistance.x = midpoints[i].x;
+                                minDistance.y = midpoints[i].y;
+                            }
+                        }
+
+                        var icll = [
+                            [
+                                ["#ff0000"],
+                                ["GoToMidPointFromInterior", [minDistance]],
+                                ["FollowWall", ["left"]],
+                                ["GoToExit", [null, false]]
+                            ],
+                            [
+                                ["#00ff00"],
+                                ["GoToMidPointFromInterior", [minDistance]],
+                                ["FollowWall", ["right"]],
+                                ["GoToExit", [null, false]]
+                            ]
+                        ];
+                        var wireless = true;
+                        var algName = "Square Search 1 (Interior Start)";
+                        break;
+
 
 
                 }
@@ -254,22 +336,7 @@
 
             }
 
-            var infoPacket = null;
 
-            if (window.location.href.includes("#")) {
-                algSelector = window.location.href.indexOf("#");
-                var l = window.location.href.length;
-                console.log("DEBUG: Algorithm: " + window.location.href.slice(algSelector + 1, l));
-                var wire = true;
-                if (window.location.href.includes("wl") || window.location.href.includes("Q")) {
-                    wire = true;
-                } else {
-                    wire = false;
-                }
-                var infoPacket = showAlgorithmDesc(window.location.href.slice(algSelector + 1, l), wire);
-            } else {
-                var infoPacket = showAlgorithmDesc("3_cStart", false);
-            }
 
             function showHelp(s) {
                 d3.selectAll(".w3-display-container").style("display", "none");
@@ -284,29 +351,150 @@
                 return;
             }
 
-            //PREDRAW PATH....
-            if (!infoPacket){
-                console.log("ERROR: Pre-Drawing failed. Check that infopacket has the required data and that the #selector in the URL is correct.");
-            }
-            var hold = '';
-            var path = infoPacket.path;
-            for (var i = 0; i < path.length; i++) {
-                var pt = path[i];
-                hold += ((i == 0) ? ('M') : ('L')) + pt.x + ',' + pt.y;
-            }
-            d3.select("#anim0").select("#backGround").append("path")
-                .attr("d", hold).attr("stroke-width", 0.25)
-                .style("stroke", "000000").style("fill", "none");
-            for (var i = 0; i < infoPacket.icll.length; i++) {
-                d3.select("#anim0").select("#bots").append("circle")
-                    .attr("r", 25/16) //unit2Px /16
-                    .attr("cx", infoPacket.start.x)
-                    .attr("cy", infoPacket.start.y)
-                    .attr("stroke-width", 0.25)
-                    .style("fill", infoPacket.icll[i][0][0] ).style("stroke", "none");
-            }
-            d3.select("#Desc0").text(infoPacket.algName + ((infoPacket.wireless) ? (" Wireless") : ( " Face-to-Face")));
+            // Should only ever run in the case of an iStart algorithm.
+            function chooseInteriorStart() {
+              // get mouse position
+              // divide by 5 because of scaling of svg viewbox from 100x100 -> 500x500
+              // obviously change if scaling changes.
+              var ipos = {x:d3.mouse(this)[0]/5, y:d3.mouse(this)[1]/5};
+              switch (infoPacket.degrees) {
+                  case "3":
+                    // http://www.jeffreythompson.org/collision-detection/tri-point.php
+                    var path = infoPacket.path;
 
+                      //Heron's formula: abs( (x2-x1)*(y3-y1) - (x3-x1)*(y2-y1) );
+                      var area = Math.abs( (path[1].x-path[0].x)*(path[2].y-path[0].y)
+                                            - (path[2].x-path[0].x)*(path[1].y-path[0].y) );
+                      // Calculate the other 3 triangles made by the interior point.
+                      // area1 =    abs( (x1-px)*(y2-py) - (x2-px)*(y1-py) );
+                      // area2 =    abs( (x2-px)*(y3-py) - (x3-px)*(y2-py) );
+                      // area3 =    abs( (x3-px)*(y1-py) - (x1-px)*(y3-py) );
+                      var a1 = Math.abs( (path[0].x - ipos.x) * (path[1].y - ipos.y) - (path[1].x-ipos.x) * (path[0].y-ipos.y));
+                      var a2 = Math.abs( (path[1].x - ipos.x) * (path[2].y - ipos.y) - (path[2].x-ipos.x) * (path[1].y-ipos.y));
+                      var a3 = Math.abs( (path[2].x - ipos.x) * (path[0].y - ipos.y) - (path[0].x-ipos.x) * (path[2].y-ipos.y));
+                      if (a1 + a2 + a3 == area) {
+
+                          d3.selectAll("#interiorstart").remove();
+                          d3.select("#anim0").select("#overLay").append("circle")
+                            .attr("cx", ipos.x)
+                            .attr("cy", ipos.y)
+                            .attr("r",  0.8)
+                            .attr("id", "interiorstart")
+                            .style("stroke", "black")
+                            .style("fill", "white")
+                            .style("stroke-width", 0.25);
+                          infoPacket.start = {x:ipos.x, y:ipos.y};
+
+                      }
+                      break;
+                  case "4":
+                    var path = infoPacket.path;
+                    var xmin, ymin = Infinity;
+                    var xmax, ymax = -1;
+                    for (var i = 0; i < path.length; i++) {
+                        xmax = (xmax > path[i].x) ? xmax : path[i].x;
+                        ymax = (ymax > path[i].y) ? ymax : path[i].y;
+                        xmin = (xmin < path[i].x) ? xmin : path[i].x;
+                        ymin = (ymin < path[i].y) ? ymin : path[i].y;
+                    }
+                    if (ipos.x > xmin && ipos.x < xmax && ipos.y > ymin && ipos.y < ymax) {
+                        d3.selectAll("#interiorstart").remove();
+                        d3.select("#anim0").select("#overLay").append("circle")
+                          .attr("cx", ipos.x)
+                          .attr("cy", ipos.y)
+                          .attr("r",  0.8)
+                          .attr("id", "interiorstart")
+                          .style("stroke", "black")
+                          .style("fill", "white")
+                          .style("stroke-width", 0.25);
+                        infoPacket.start = {x:ipos.x, y:ipos.y};
+                    }
+                    break;
+
+              }
+            }
+
+            // Should only ever run in the case of an iStart algorithm.
+            function changeStart() {
+                d3.select("#anim0").on("mousemove", null).on("click", null);
+                var l = window.location.href.length;
+                showAlgorithmDesc(window.location.href.slice(algSelector + 1, l), true);
+                d3.select("#anim0").select("#bots").selectAll("circle").remove();
+                for (var i = 0; i < infoPacket.icll.length; i++) {
+                    d3.select("#anim0").select("#bots").append("circle")
+                        .attr("r", 25/16) //unit2Px /16
+                        .attr("cx", infoPacket.start.x)
+                        .attr("cy", infoPacket.start.y)
+                        .attr("stroke-width", 0.25)
+                        .style("fill", infoPacket.icll[i][0][0] ).style("stroke", "none");
+                }
+                return;
+            }
+
+            //initialize infopacket
+
+            function reset_predraw(){
+
+                var field = d3.select("#anim0");
+                var graph = d3.select("#graph0");
+                var exitEnvelope = d3.select("#exitEnvelope0");
+
+                field.select("#bots").html(null);
+                field.select("#lines").html(null);
+                field.select("#overLay").html(null);
+                graph.select("#bots").html(null);
+                graph.select("#lines").html(null);
+                graph.select("#overLay").html(null);
+                exitEnvelope.select("#bots").html(null);
+                exitEnvelope.select("#lines").html(null);
+                exitEnvelope.select("#overLay").html(null);
+                window.infoPacket = null;
+
+                if (window.location.href.includes("#")) {
+                    algSelector = window.location.href.indexOf("#");
+                    var l = window.location.href.length;
+                    console.log("DEBUG: Algorithm: " + window.location.href.slice(algSelector + 1, l));
+                    var wire = true;
+                    if (window.location.href.includes("wl") || window.location.href.includes("Q")) {
+                        wire = true;
+                    } else {
+                        wire = false;
+                    }
+                    var infoPacket = showAlgorithmDesc(window.location.href.slice(algSelector + 1, l), wire);
+                } else {
+                    var infoPacket = showAlgorithmDesc("3_cStart", false);
+                }
+
+                //PREDRAW PATH....
+                if (!infoPacket){
+                    console.log("ERROR: Pre-Drawing failed. Check that infopacket has the required data and that the #selector in the URL is correct.");
+                }
+                var hold = '';
+                var path = infoPacket.path;
+                for (var i = 0; i < path.length; i++) {
+                    var pt = path[i];
+                    hold += ((i == 0) ? ('M') : ('L')) + pt.x + ',' + pt.y;
+                }
+                var polygonPath = d3.select("#anim0").select("#backGround").append("path")
+                    .attr("d", hold).attr("stroke-width", 0.25)
+                    .style("stroke", "000000").style("fill", "none");
+
+                if (window.location.href.includes("iStart")) {
+                    d3.select("#anim0").on("mousemove", chooseInteriorStart).on("click", changeStart);
+                }
+
+
+                for (var i = 0; i < infoPacket.icll.length; i++) {
+                    d3.select("#anim0").select("#bots").append("circle")
+                        .attr("r", 25/16) //unit2Px /16
+                        .attr("cx", infoPacket.start.x)
+                        .attr("cy", infoPacket.start.y)
+                        .attr("stroke-width", 0.25)
+                        .style("fill", infoPacket.icll[i][0][0] ).style("stroke", "none");
+                }
+                d3.select("#Desc0").text(infoPacket.algName + ((infoPacket.wireless) ? (" Wireless") : ( " Face-to-Face")));
+        }
+        reset_predraw();
 
 
 
