@@ -354,9 +354,11 @@
             // Should only ever run in the case of an iStart algorithm.
             function chooseInteriorStart() {
               // get mouse position
-              // divide by 5 because of scaling of svg viewbox from 100x100 -> 500x500
+              // divide by scaleX, scaleY because of scaling of svg viewbox
               // obviously change if scaling changes.
-              var ipos = {x:d3.mouse(this)[0]/5, y:d3.mouse(this)[1]/5};
+              var scaleX = d3.select("#anim0").node().getBoundingClientRect().width / 100;
+              var scaleY = d3.select("#anim0").node().getBoundingClientRect().height / 100;
+              var ipos = {x:d3.mouse(this)[0]/scaleX, y:d3.mouse(this)[1]/scaleY};
               switch (infoPacket.degrees) {
                   case "3":
                     // http://www.jeffreythompson.org/collision-detection/tri-point.php
