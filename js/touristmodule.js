@@ -114,6 +114,11 @@ class Tourist {
       }
   }
 
+  GoToMidPointFromInterior(value) {
+      this.a = value[0].wall;
+      this.GoToMidPoint(value);
+  }
+
   GoToCenter( value ) {
     if ( ( this.x == this.iclData.center.x ) && ( this.y == this.iclData.center.y ) ) {
       this.on++;
