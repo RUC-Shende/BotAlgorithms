@@ -1,6 +1,38 @@
 Project History
 ===============
 
+08/13/19: Module system released, Version 3.0
+---------------------------------------------
+
+For the past month or so, we have been working on a redesign for the visualizer,
+and we have come up with the module solution. As of this post, the feature is on
+the alpha branch only, but will be pushed to the live site soon once we ensure everything is working.
+
+The idea behind the Modules is that now the iclData class can focus solely on
+creating the points travelled by the robots, which we now call our "history."
+Once this history has been created, we can use it in different places to calculate all sorts of things,
+but we decided it would be best to separate them out as much as possible so that the base simulator
+did not get too cluttered. As such, we have designed a system that allows for any number of modules to be added
+or taken out of the base simulation, and what we can do or visualize changes with the modules enabled.
+
+Modules are defined by their Init and Update functions, which run upon mod creation and per-frame respectively.
+They run as a sort of late update: meaning only after the data for the current frame is calculated in the main
+simulation will they be able to run their respective Updates.
+
+Similarly, they can be given visual instructions in the form of VInit and VUpdate functions, which run as
+the simulation is being reenacted. No new data is being calculated at the time of reenactment, so we are free to
+keep visual and data-related updates separate for a nice clean workflow.
+The best part is, once a module is added, nothing else needs to be done as long as it contains these 4 functions.
+Every important function will be called at its respective time automatically and consistently, so no changes need to be
+made to the base simulation other than which modules to enable.
+
+With this update, we also release polygon algorithms. These are algorithms which are performed on regular polygons, and
+can be very easily modified to fit triangles, squares, and any other n-gons, with consistent results.
+As such, the base code for circles and polygons is now exactly the same, with the only changes being the number of
+sides and the actual algorithm instructions passed in.
+
+Next up, hopefully the ability to write these algorithms down and modify/run them in-browser with no code required.
+
 06/25/19: Comparisons Released, Version 2.2.0
 -----------------------------------------------
 

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Project History &#8212; Search and Exit Algorithms 3.0.3 (207) documentation</title>
+    <title>Project History &#8212; Search and Exit Algorithms 3.0.3 (208) documentation</title>
     <link rel="stylesheet" href="_static/style.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -33,7 +33,7 @@
         <li class="right" >
           <a href="references.html" title="References and Bibliography"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 3.0.3 (207) documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 3.0.3 (208) documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -44,6 +44,32 @@
             
   <div class="section" id="project-history">
 <h1>Project History<a class="headerlink" href="#project-history" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-system-released-version-3-0">
+<h2>08/13/19: Module system released, Version 3.0<a class="headerlink" href="#module-system-released-version-3-0" title="Permalink to this headline">¶</a></h2>
+<p>For the past month or so, we have been working on a redesign for the visualizer,
+and we have come up with the module solution. As of this post, the feature is on
+the alpha branch only, but will be pushed to the live site soon once we ensure everything is working.</p>
+<p>The idea behind the Modules is that now the iclData class can focus solely on
+creating the points travelled by the robots, which we now call our “history.”
+Once this history has been created, we can use it in different places to calculate all sorts of things,
+but we decided it would be best to separate them out as much as possible so that the base simulator
+did not get too cluttered. As such, we have designed a system that allows for any number of modules to be added
+or taken out of the base simulation, and what we can do or visualize changes with the modules enabled.</p>
+<p>Modules are defined by their Init and Update functions, which run upon mod creation and per-frame respectively.
+They run as a sort of late update: meaning only after the data for the current frame is calculated in the main
+simulation will they be able to run their respective Updates.</p>
+<p>Similarly, they can be given visual instructions in the form of VInit and VUpdate functions, which run as
+the simulation is being reenacted. No new data is being calculated at the time of reenactment, so we are free to
+keep visual and data-related updates separate for a nice clean workflow.
+The best part is, once a module is added, nothing else needs to be done as long as it contains these 4 functions.
+Every important function will be called at its respective time automatically and consistently, so no changes need to be
+made to the base simulation other than which modules to enable.</p>
+<p>With this update, we also release polygon algorithms. These are algorithms which are performed on regular polygons, and
+can be very easily modified to fit triangles, squares, and any other n-gons, with consistent results.
+As such, the base code for circles and polygons is now exactly the same, with the only changes being the number of
+sides and the actual algorithm instructions passed in.</p>
+<p>Next up, hopefully the ability to write these algorithms down and modify/run them in-browser with no code required.</p>
+</div>
 <div class="section" id="comparisons-released-version-2-2-0">
 <h2>06/25/19: Comparisons Released, Version 2.2.0<a class="headerlink" href="#comparisons-released-version-2-2-0" title="Permalink to this headline">¶</a></h2>
 <p>As of this update, a beta comparisons feature is available to select from
@@ -238,6 +264,7 @@ once they choose their options.</p>
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Project History</a><ul>
+<li><a class="reference internal" href="#module-system-released-version-3-0">08/13/19: Module system released, Version 3.0</a></li>
 <li><a class="reference internal" href="#comparisons-released-version-2-2-0">06/25/19: Comparisons Released, Version 2.2.0</a></li>
 <li><a class="reference internal" href="#version-2-1-0-released">06/24/19: Version 2.1.0 Released</a></li>
 <li><a class="reference internal" href="#version-2-0-released">06/21/19: Version 2.0 Released</a></li>
@@ -296,7 +323,7 @@ once they choose their options.</p>
         <li class="right" >
           <a href="references.html" title="References and Bibliography"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 3.0.3 (207) documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 3.0.3 (208) documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
