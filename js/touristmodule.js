@@ -1,7 +1,11 @@
 'use strict';
 /**
 * @param {iclData} iclData Represents the data of the overall simulation, robots' tourlines and graphlines.
-* @param {boolean} p True if bot is Priority Agents, false otherwise.
+* @param {integer} x Tourist start x position, before visual scaling.
+* @param {integer} y Tourist start y position, before visual scaling.
+* @param {integer} num Tourist id number.
+* @param {Array} icl Instruction checklist. Index 0 is info such as priority status and color.
+* @param {boolean} p True if bot is Priority Agent, false otherwise.
 */
 class Tourist {
 
@@ -26,7 +30,7 @@ class Tourist {
     this.allowance = 0;
     /** This tourist's current instruction function. */
     this.on = 1;
-    /** Tourist's current angle. */
+    /** Tourist's current angle or wall number in relation to shape. */
     this.a = 0;
     /** Tourist's current x position. */
     this.x = x;
@@ -36,33 +40,14 @@ class Tourist {
     this.priority = p;
     /** Whether or not the robot is at the exit. */
     this.atExit = false;
+    /** Instruction checklist. Index 0 is info such as priority and color. */
     this.icl = icl;
-  }
-
-  /**
-  *Calculates the wall position on the shape, given an angle.
-  *
-  * @param {float} angle Used to calculate the wall position of the shape.
-  *
-  * @return {Array} Array with x,y position of the wall relative to the shape.
-  */
-  wallAtAngle( deg, angle ) {
-    var fa = Math.floor( ( angle / 360 ) * deg );
-    var d2r = Math.PI / 180;
-    var p12 = { x:Math.cos( angle * d2r ), y:-Math.sin( angle * d2r ) };
-    var p21 = { x:Math.cos( fa * d2r ), y:-Math.sin( fa * d2r ) };
-    var p22 = { x:Math.cos( ( fa + 1 ) * d2r ), y:-Math.sin( ( fa + 1 ) * d2r ) };
-    var m1 = p12.y / p12.x;
-    var m2 = ( p22.y - p21.y ) / ( p22.x - p21.x );
-    var c2 = p22.y - m2 * p22.x;
-    var d = m2 - m1;
-    return( { x:( -c2 ) / d, y:( -m1 * c2 ) / d } );
   }
 
   /**
   *Send the robot to its next location (next frame) based on its current instruction or allowance.
   *
-  * @param {Array} value [x,y] coordinates of the robot's next calculated location.
+  * @param {Object} value {x,y} coordinates of the robot's next calculated location.
   *
   */
   DirectTo(value) {
@@ -80,6 +65,11 @@ class Tourist {
     }
   }
 
+  /**
+  * Instruct the robot to wait for a certain time <value>, or indefinitely.
+  *
+  * @param {Array} value [time] to wait for. If not specified or value[0] is null, wait indefinitely.
+  */
   wait( value ) {
     if( value[ 0 ] ) {
       if( this.target == null ) {
@@ -98,6 +88,12 @@ class Tourist {
     }
   }
 
+  /**
+  *Go to the point which is the midpoint of the current wall of the shape.
+  *Current wall is defined by Tourist.a
+  *
+  *@param {Array} value value[0] is null. Done out of consistency with other functions.
+  */
   GoToMidPoint(value) {
       if (this.a > -1) {
           var pt = utils.midpoint(this.iclData.path[this.a], this.iclData.path[this.a+1]);
@@ -114,11 +110,21 @@ class Tourist {
       }
   }
 
+  /**
+  *Given an Object with a .wall attribute, go to the midpoint of that wall number.
+  *
+  *@param {Object} value object with at the very least, a valid wall number on the shape.
+  */
   GoToMidPointFromInterior(value) {
       this.a = value[0].wall;
       this.GoToMidPoint(value);
   }
 
+  /**
+  * Go to the iclData.center point.
+  *
+  *@param {Array} value [null].
+  */
   GoToCenter( value ) {
     if ( ( this.x == this.iclData.center.x ) && ( this.y == this.iclData.center.y ) ) {
       this.on++;
@@ -127,6 +133,11 @@ class Tourist {
     }
   }
 
+  /**
+  *Instructions to go the wall at angle relative to the center point.
+  *
+  *@param {Array} value [angle] to go to wall at.
+  */
   GoToWallFromCenter( value ) {
     if( !this.target ) {
       for( var i = 0; i < this.iclData.path.length - 1; i++ ) {
@@ -155,7 +166,12 @@ class Tourist {
     }
   }
 
-
+    /**
+    *Instructions to go the wall at angle relative to the tourists current point.
+    *Useful in concave shape situations where there might be more than one wall reachable with the same given angle.
+    *
+    *@param {Array} value [angle] to go to wall at.
+    */
     GoToWallFromTourist( value ) {
       if( !this.target ) {
         for( var i = 0; i < this.iclData.path.length - 1; i++ ) {
@@ -188,7 +204,11 @@ class Tourist {
         this.DirectTo( this.target );
       }
     }
-
+    /**
+    *Instructions to follow wall and search for a certain time or indefinitely.
+    *
+    *@param {Array} value [direction, time]. If time is null, follow forever.
+    */
     FollowWall( value ) {
       if( this.a > -1 ) {
         var dir = ( value[ 0 ] == "left" ) ? ( 1 ) : ( -1 );
@@ -234,74 +254,12 @@ class Tourist {
       }
     }
 
-/*
-    FollowWall( value ) {//Only follows path for now
-      if( this.a > -1 ) {
-        var dir = ( value[ 0 ] == "left" ) ? ( 1 ) : ( -1 );
-        if( !this.target ) {	//Get target relative to location and time
-
-  	this.target = { a:null, t:-1 };
-          if( dir > 0 ) {
-            this.target.a = utils.AddAround( this.a, this.iclData.path.length, dir );
-          } else {
-            this.target.a = this.a;
-          }
-          if( value[ 1 ] ) {
-            this.target.t = value[ 1 ] * this.iclData.unit2Px;
-          }
-        }
-        if( utils.cmpXYPairs( this, this.iclData.path[ this.target.a ] ) ) {	//Check for point update
-          this.a = utils.AddAround( this.a, this.iclData.path.length, dir );
-          if( dir > 0 ) {
-            this.target.a = utils.AddAround( this.a, this.iclData.path.length, dir );
-          } else {
-            this.target.a = this.a;
-          }
-        }
-        if( this.target.t == -1 ) {	//Is there no time limit
-          this.DirectTo( this.iclData.path[ this.target.a ] );
-      } else if( this.target.t > this.allowance ) {	//If there is do I have plenty of time
-          this.target.t -= this.allowance;
-          this.DirectTo( this.iclData.path[ this.target.a ] );
-        } else {		//Do I have more energy than time
-          if( Math.hypot( this.iclData.path[ this.target.a ].y - this.y, this.iclData.path[ this.target.a ].x - this.x ) < this.allowance ) {	//Is the next vertex dist shorter than energy
-            this.DirectTo( this.iclData.path[ this.target.a ] );
-          } else {	//travel as far as the energy will take you to the next vert
-            var holdX = ( this.target.t / this.allowance ) * ( this.iclData.path[ this.target.a ].x - this.x );
-            var holdY = ( this.target.t / this.allowance ) * ( this.iclData.path[ this.target.a ].y - this.y );
-            this.DirectTo( { x:holdX, y:holdY } );
-            this.on++;
-            this.target = null;
-          }
-        }
-      } else {
-        console.log( "%cERROR: Can't follow wall, if not on it", "color:#ff0000" );
-        this.on++;
-      }
-    }
-    */
-
-  /**
-  * The robot will go to the center (origin) of the shape. Robot is not required to be at any specific position.
-  *
-  *@param {null} value null
-  *
-  *
-  */
-  GoToCenter(value) {
-    if ((this.x == this.iclData.center.x) && (this.y == this.iclData.center.y)) {
-      this.on++;
-    } else {
-      this.DirectTo(this.iclData.center);
-    }
-  }
-
   /**
   *
   * The robot will go to a point on the shape defined by cartesian coordinates (x, y)
   * Based on original center point defined in this.iclData (before visual scaling)
   *
-  *@param {Array} value [float x position,  float y position]
+  *@param {Object} value {x:float x position,  y:float y position}
   */
   GoToPoint(value) {
     if ((this.x == value.x) && (this.y == value.y)) {
@@ -312,10 +270,10 @@ class Tourist {
   }
 
   /**
-  * Robot will go to the exit at cartestian coordinates (x, y).
+  * Robot will go to the exit at iclData.fieldExit.
   * This is not the same as exitAngle.
   *
-  *@param {Array} value [float x position, float y position]
+  *@param {Array} value null
   */
   GoToExit(value) {
     if ((this.x == this.iclData.fieldExit.x) && (this.y == this.iclData.fieldExit.y)) {
@@ -325,31 +283,6 @@ class Tourist {
     }
   }
 
-  GoToPoint( value ) {
-    if ( ( this.x == value.x ) && ( this.y == value.y ) ) {
-      this.on++;
-    } else {
-      this.DirectTo( value );
-    }
-  }
-
-  // Go to midpoint of current wall.
-  GoToMidPoint(value) {
-      if (this.a > -1) {
-          var pt = utils.midpoint(this.iclData.path[this.a], this.iclData.path[this.a+1]);
-          if (utils.cmpXYPairs(this, pt)) {
-              this.on++;
-          }
-          else{
-              this.DirectTo(pt);
-          }
-      }
-      else {
-          console.log( "%cERROR: Can't follow wall, if not on it", "color:#ff0000" );
-          this.on++;
-      }
-  }
-
   /**
   * Robot will calculate the shortest to path to the closest targetable robot and
   * create a straight path to intercept it.
@@ -357,7 +290,7 @@ class Tourist {
   * closest of them.
   * In case we ever use face-to-face priority algorithms.
   *
-  *@param {null} value null
+  *@param {null} value usually [null], however sometimes it is [priority robot id] in case of priority f2f algorithms.
   */
   Intercept(value) {
 

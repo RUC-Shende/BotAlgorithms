@@ -3,39 +3,8 @@ Search-and-Exit Tourist and Superclass Method Documentation
 
 This document aims to explain the methods and functions used in
 the superclass (``iclData`` and ``iclVisual`` classes) as well as some non-API functions found in
-the ``Tourist`` class.
-
-The use of global variables
----------------------------
-
-Our original design of the algorithm simulator used way too many global variables to
-successfully keep developing on top of. The biggest reason for the switch to classes for all this
-information is that otherwise it would require us to essentially double the amount of global
-variables used to do things like comparison, and that just wasn't a safe or efficient choice.
-
-We do, however keep some global vars just because its easier.
-In the current implementation of ``superclass.js``, we use a variable called ``superlist``
-to keep track of all of our instances of ``iclVisual``. We understand that this might not be the best practice, but is
-certainly better than before, and helps us meet the requirements to make this simulator work.
-Remember, we are essentially creating our own small game engine here with graphics, etc., and
-because Javascript is so weird about certain things (for example ``setInterval()``'s context) we have to adapt to JS's
-way of working.
-
-To help implement comparisons and make switching between indices in the superlist easier,
-we create the ``controllerID`` which would just be the index of the current ``iclVisual`` we
-want to modify. When implementing comparisons we will likely just be switch between 1 and 0 for the
-``controllerID`` the whole time.
-
-This simulation is built on a mechanism that Javascript provides called an Interval. When we refer
-to our own Interval that makes the thing work, we call it ``theMotor``. We are still testing comparisons, so
-there could be a chance of adding a second motor that focuses just on the second comparison, but we have to see how they play
-together before making that decision. The whole reason for the use of these global variables is because of
-this Interval, when a function is called on an interval, even if the method that is being called is specific
-to an instance of a class, the method's reference for ``this`` change from the usual reference to the
-instance to a reference to the window. So, we have to use window variables to get what we want.
-
-Other global variables that aren't nearly as vital include a copy of ``instruBinder`` and ``algName`` that are changed depending on the
-current algorithm we are loading in, and  ``unit2Px`` and ``center``, which will be defined below as they relate to ``iclData``.
+the ``Tourist`` class. As of version 3.0, we have introduced the modules system which allows for
+easy addition and substraction of features from the base ``iclData`` class.
 
 The Tourist
 ===========
@@ -43,21 +12,16 @@ The Tourist
 A tourist in this case is the same exact thing as saying a 'robot' or 'mobile agent'. It's
 just a name we've had for the little circles in the sim since the beginning.
 
-.. js:autoclass:: tourist.Tourist(iclData, p)
+.. js:autoclass:: touristmodule.Tourist(iclData, x, y, num, icl, p)
     :members:
 
 Other API methods are defined in `the API section of these docs <api.html>`_, so this
 will just be going over the methods behind the API.
 
-Calculating the Wall Position at a Given Angle
-----------------------------------------------
-
-.. js:autofunction:: tourist.Tourist#WallAtAngle
-
 Direct Tourist to its Next Destination
 --------------------------------------
 
-.. js:autofunction:: tourist.Tourist#DirectTo
+.. js:autofunction:: touristmodule.Tourist#DirectTo
 
 ICLData
 =======
@@ -67,11 +31,11 @@ other relevant data when running the sim.
 We tried to keep it as removed from visuals as possible, data-only.
 ICLVisual uses this a lot when running the actual simulation.
 
-.. js:autoclass:: superclass.iclData(id, instruBinder, algorithmName, angle, wireless)
+.. js:autoclass:: modules.iclData(id, instruBinder, algorithmName, angle, wireless, path, start)
     :members:
 
 The ID given on creation is a nice way to ensure we are not mucking about in the data
-of another instance of iclData when using ``superlist[controllerID]``.
+of another instance of iclData when using ``superlist[controllerID]`` during comparisons.
 
 ICLVisual
 =========
@@ -80,24 +44,86 @@ This is the data structure which maintains all the visuals and updates the graph
 on each frame. It does a mixture of modifying data in its own iclData member variable,
 and updating graphics based on them.
 
-.. js:autoclass:: superclass.iclVisual(iclData)
+.. js:autoclass:: modules.iclVisual(iclData, field, graph)
+    :members:
+
+Modules
+=======
+
+These modules are generally required to make the visualizer do anything other than just go for
+10 seconds and stop, but other modules can be added to add more visualizers or track data in a different way.
+Modules must always have an instance of iclData sent in to be able to see anything.
+
+Creating a module: Arguments
+----------------------------
+
+The only requirement of a module is the use of an instance of ``iclData``.
+Anything else you could like to include at the time of module creation is up to you.
+Because ``iclData`` instances generally don't have access to ANY visuals, it can be handy to
+pass in d3 references to the SVGs you would like to visually initialize and update. More on this later.
+
+
+Creating a module: Init and Update
+----------------------------------
+
+By including these functions in your module, they will run at the time that the data is calculated.
+``Init()`` runs once and thus is used for initializing important class vars etc.
+``Update()`` runs once every frame, AFTER the tourists' positions have been updated and all iclData
+attributes have been updated. Basically, every frame will contain new lateUpdate style data.
+
+There is nothing needed to set these up, just create a ``Init()`` and ``Update()`` function in your
+module and they will run as scheduled.
+
+Creating a module: VInit, VUpdate, and VReset
+---------------------------------------------
+
+To show visuals based on data calculated in your module, you need a VInit and VUpdate.
+Having these functions in your module will allow the ``iclVisual.reEnact`` function to call them
+at similar times to when ``Init`` and ``Update`` were called. The difference between these
+two types of functions is that when running visual updates, no new data is being calculated by
+``iclData``.
+
+There is nothing needed to set these up, just create a ``VInit()`` and ``VUpdate()`` function in your
+module and they will run as scheduled.
+
+It has been helpful thus far to give the module a ``VReset`` function and call it at the beginning of
+``VInit()`` to get rid of all old d3 elements. This is not required.
+
+
+ExitFindMod
+-----------
+
+ExitFindMod allows for the placement of an exit. The caveat is that ``iclData.createHistory()``
+must always be run TWICE when this mod is active, in order to create the "pre-history" and the
+"real history." The old history will be kept in ExitFindMod.premo and never usually visualized.
+
+.. js:autoclass:: modules.exitFindMod(iclData, exit, field, graph)
+    :members:
+
+
+LineFillMod
+-----------
+
+LineFillMod is interesting in that it keeps track of the number of points searched. Once all points on a
+path have been searched, ``lineFillMod.count`` will be 0, and the ``lineFillmod.pts`` array will be empty.
+As it proved to be useful for calculating things such as total exit time if exit had been found at a certain point,
+it has been modified from its original to also keep track of this. For all points searched,
+``lineFillMod.exitTimes`` keeps track of the time it takes an algorithm to terminate based on the conditions.
+This doesn't yet work in face-to-face algorithms, but it calculates the distance of robots from the exit keeping
+priority status in mind to attempt to determine a worst-case exit placement and termination time.
+
+.. js:autoclass:: modules.lineFillMod(iclData, exitEnvelopeGraph)
     :members:
 
 Other Useful Functions
 ======================
+Defined by the ``utils`` class, these are a set of static functions designed to be
+accessed from anywhere and used to calculate common things.
 
-.. js:autofunction:: helpers.editAnims
-
-.. js:autofunction:: helpers.showAnims
-
-.. js:autofunction:: helpers.changeInstructions
-
-.. js:autofunction:: helpers.ChoosExit
-
-.. js:autofunction:: helpers.exitPreview
-
-.. js:autofunction:: helpers.exitChosen
-
-.. js:autofunction:: helpers.showHelp
-
-.. js:autofunction:: helpers.showAlgorithmDesc
+.. js:autofunction:: utils.wallAtAngle
+.. js:autofunction:: utils.genPoly
+.. js:autofunction:: utils.distance
+.. js:autofunction:: utils.midpoint
+.. js:autofunction:: utils.cmpXYPairs
+.. js:autofunction:: utils.AddAround
+.. js:autofunction:: utils.WhereLineSegsCross

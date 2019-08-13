@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Search-and-Exit Tourist and Superclass Method Documentation &#8212; Search and Exit Algorithms 2.2.1 (178) documentation</title>
+    <title>Search-and-Exit Tourist and Superclass Method Documentation &#8212; Search and Exit Algorithms 3.0.3 (207) documentation</title>
     <link rel="stylesheet" href="_static/style.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -33,7 +33,7 @@
         <li class="right" >
           <a href="api.html" title="Search and Exit Tourist API"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 2.2.1 (178) documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 3.0.3 (207) documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -46,64 +46,42 @@
 <h1>Search-and-Exit Tourist and Superclass Method Documentation<a class="headerlink" href="#search-and-exit-tourist-and-superclass-method-documentation" title="Permalink to this headline">¶</a></h1>
 <p>This document aims to explain the methods and functions used in
 the superclass (<code class="docutils literal notranslate"><span class="pre">iclData</span></code> and <code class="docutils literal notranslate"><span class="pre">iclVisual</span></code> classes) as well as some non-API functions found in
-the <code class="docutils literal notranslate"><span class="pre">Tourist</span></code> class.</p>
-<div class="section" id="the-use-of-global-variables">
-<h2>The use of global variables<a class="headerlink" href="#the-use-of-global-variables" title="Permalink to this headline">¶</a></h2>
-<p>Our original design of the algorithm simulator used way too many global variables to
-successfully keep developing on top of. The biggest reason for the switch to classes for all this
-information is that otherwise it would require us to essentially double the amount of global
-variables used to do things like comparison, and that just wasn’t a safe or efficient choice.</p>
-<p>We do, however keep some global vars just because its easier.
-In the current implementation of <code class="docutils literal notranslate"><span class="pre">superclass.js</span></code>, we use a variable called <code class="docutils literal notranslate"><span class="pre">superlist</span></code>
-to keep track of all of our instances of <code class="docutils literal notranslate"><span class="pre">iclVisual</span></code>. We understand that this might not be the best practice, but is
-certainly better than before, and helps us meet the requirements to make this simulator work.
-Remember, we are essentially creating our own small game engine here with graphics, etc., and
-because Javascript is so weird about certain things (for example <code class="docutils literal notranslate"><span class="pre">setInterval()</span></code>’s context) we have to adapt to JS’s
-way of working.</p>
-<p>To help implement comparisons and make switching between indices in the superlist easier,
-we create the <code class="docutils literal notranslate"><span class="pre">controllerID</span></code> which would just be the index of the current <code class="docutils literal notranslate"><span class="pre">iclVisual</span></code> we
-want to modify. When implementing comparisons we will likely just be switch between 1 and 0 for the
-<code class="docutils literal notranslate"><span class="pre">controllerID</span></code> the whole time.</p>
-<p>This simulation is built on a mechanism that Javascript provides called an Interval. When we refer
-to our own Interval that makes the thing work, we call it <code class="docutils literal notranslate"><span class="pre">theMotor</span></code>. We are still testing comparisons, so
-there could be a chance of adding a second motor that focuses just on the second comparison, but we have to see how they play
-together before making that decision. The whole reason for the use of these global variables is because of
-this Interval, when a function is called on an interval, even if the method that is being called is specific
-to an instance of a class, the method’s reference for <code class="docutils literal notranslate"><span class="pre">this</span></code> change from the usual reference to the
-instance to a reference to the window. So, we have to use window variables to get what we want.</p>
-<p>Other global variables that aren’t nearly as vital include a copy of <code class="docutils literal notranslate"><span class="pre">instruBinder</span></code> and <code class="docutils literal notranslate"><span class="pre">algName</span></code> that are changed depending on the
-current algorithm we are loading in, and  <code class="docutils literal notranslate"><span class="pre">unit2Px</span></code> and <code class="docutils literal notranslate"><span class="pre">center</span></code>, which will be defined below as they relate to <code class="docutils literal notranslate"><span class="pre">iclData</span></code>.</p>
-</div>
+the <code class="docutils literal notranslate"><span class="pre">Tourist</span></code> class. As of version 3.0, we have introduced the modules system which allows for
+easy addition and substraction of features from the base <code class="docutils literal notranslate"><span class="pre">iclData</span></code> class.</p>
 </div>
 <div class="section" id="the-tourist">
 <h1>The Tourist<a class="headerlink" href="#the-tourist" title="Permalink to this headline">¶</a></h1>
 <p>A tourist in this case is the same exact thing as saying a ‘robot’ or ‘mobile agent’. It’s
 just a name we’ve had for the little circles in the sim since the beginning.</p>
 <dl class="class">
-<dt id="tourist.Tourist">
-<em class="property">class </em><code class="descclassname">tourist.</code><code class="descname">Tourist</code><span class="sig-paren">(</span><em>iclData</em>, <em>p</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist" title="Permalink to this definition">¶</a></dt>
+<dt id="touristmodule.Tourist">
+<em class="property">class </em><code class="descclassname">touristmodule.</code><code class="descname">Tourist</code><span class="sig-paren">(</span><em>iclData</em>, <em>x</em>, <em>y</em>, <em>num</em>, <em>icl</em>, <em>p</em><span class="sig-paren">)</span><a class="headerlink" href="#touristmodule.Tourist" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
 <li><strong>iclData</strong> (<em>iclData</em>) – Represents the data of the overall simulation, robots’ tourlines and graphlines.</li>
-<li><strong>p</strong> (<em>boolean</em>) – True if bot is Priority Agents, false otherwise.</li>
+<li><strong>x</strong> (<em>integer</em>) – Tourist start x position, before visual scaling.</li>
+<li><strong>y</strong> (<em>integer</em>) – Tourist start y position, before visual scaling.</li>
+<li><strong>num</strong> (<em>integer</em>) – Tourist id number.</li>
+<li><strong>icl</strong> (<em>Array</em>) – Instruction checklist. Index 0 is info such as priority status and color.</li>
+<li><strong>p</strong> (<em>boolean</em>) – True if bot is Priority Agent, false otherwise.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="function">
-<dt id="tourist.Tourist.DirectTo">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">DirectTo</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.DirectTo" title="Permalink to this definition">¶</a></dt>
+<dt id="touristmodule.Tourist.DirectTo">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">DirectTo</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#touristmodule.Tourist.DirectTo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send the robot to its next location (next frame) based on its current instruction or allowance.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>value</strong> (<em>Array</em>) – [x,y] coordinates of the robot’s next calculated location.</li>
+<li><strong>value</strong> (<em>Object</em>) – {x,y} coordinates of the robot’s next calculated location.</li>
 </ul>
 </td>
 </tr>
@@ -112,17 +90,15 @@ just a name we’ve had for the little circles in the sim since the beginning.</
 </dd></dl>
 
 <dl class="function">
-<dt id="tourist.Tourist.FollowWall">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">FollowWall</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.FollowWall" title="Permalink to this definition">¶</a></dt>
-<dd><p>A robot will follow the perimeter for a certain number of seconds, or indefinitely if no time specified.
-value[0] Will default to ‘right’ if no direction specified.
-Robot is required to be at a position on the perimeter.</p>
+<dt id="touristmodule.Tourist.FollowWall">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">FollowWall</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#touristmodule.Tourist.FollowWall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instructions to follow wall and search for a certain time or indefinitely.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>value</strong> (<em>Array</em>) – [Direction string ‘left’ or ‘right’, &lt;Optional&gt;time to follow wall in seconds]</li>
+<li><strong>value</strong> (<em>Array</em>) – [direction, time]. If time is null, follow forever.</li>
 </ul>
 </td>
 </tr>
@@ -131,16 +107,15 @@ Robot is required to be at a position on the perimeter.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="tourist.Tourist.GoOutAtAngle">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">GoOutAtAngle</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.GoOutAtAngle" title="Permalink to this definition">¶</a></dt>
-<dd><p>The robot will go from the interior of the object to an angle on the perimeter.
-Robot is required to be in the interior (not in perimeter) of the object.</p>
+<dt id="touristmodule.Tourist.GoToCenter">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">GoToCenter</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#touristmodule.Tourist.GoToCenter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Go to the iclData.center point.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>value</strong> (<em>Array</em>) – [angle on the shape of the perimeter, percent distance of a radius]</li>
+<li><strong>value</strong> (<em>Array</em>) – [null].</li>
 </ul>
 </td>
 </tr>
@@ -149,33 +124,16 @@ Robot is required to be in the interior (not in perimeter) of the object.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="tourist.Tourist.GoToCenter">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">GoToCenter</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.GoToCenter" title="Permalink to this definition">¶</a></dt>
-<dd><p>The robot will go to the center (origin) of the shape. Robot is not required to be at any specific position.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>value</strong> (<em>null</em>) – null</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="tourist.Tourist.GoToExit">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">GoToExit</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.GoToExit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Robot will go to the exit at cartestian coordinates (x, y).
+<dt id="touristmodule.Tourist.GoToExit">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">GoToExit</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#touristmodule.Tourist.GoToExit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Robot will go to the exit at iclData.fieldExit.
 This is not the same as exitAngle.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>value</strong> (<em>Array</em>) – [float x position, float y position]</li>
+<li><strong>value</strong> (<em>Array</em>) – null</li>
 </ul>
 </td>
 </tr>
@@ -184,8 +142,43 @@ This is not the same as exitAngle.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="tourist.Tourist.GoToPoint">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">GoToPoint</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.GoToPoint" title="Permalink to this definition">¶</a></dt>
+<dt id="touristmodule.Tourist.GoToMidPoint">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">GoToMidPoint</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#touristmodule.Tourist.GoToMidPoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Go to the point which is the midpoint of the current wall of the shape.
+Current wall is defined by Tourist.a</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>value</strong> (<em>Array</em>) – value[0] is null. Done out of consistency with other functions.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="touristmodule.Tourist.GoToMidPointFromInterior">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">GoToMidPointFromInterior</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#touristmodule.Tourist.GoToMidPointFromInterior" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given an Object with a .wall attribute, go to the midpoint of that wall number.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>value</strong> (<em>Object</em>) – object with at the very least, a valid wall number on the shape.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="touristmodule.Tourist.GoToPoint">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">GoToPoint</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#touristmodule.Tourist.GoToPoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>The robot will go to a point on the shape defined by cartesian coordinates (x, y)
 Based on original center point defined in this.iclData (before visual scaling)</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -193,7 +186,7 @@ Based on original center point defined in this.iclData (before visual scaling)</
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>value</strong> (<em>Array</em>) – [float x position,  float y position]</li>
+<li><strong>value</strong> (<em>Object</em>) – {x:float x position,  y:float y position}</li>
 </ul>
 </td>
 </tr>
@@ -202,15 +195,15 @@ Based on original center point defined in this.iclData (before visual scaling)</
 </dd></dl>
 
 <dl class="function">
-<dt id="tourist.Tourist.GoToWallAtAngle">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">GoToWallAtAngle</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.GoToWallAtAngle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Makes a robot go to the wall at a specific angle on the shape.</p>
+<dt id="touristmodule.Tourist.GoToWallFromCenter">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">GoToWallFromCenter</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#touristmodule.Tourist.GoToWallFromCenter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instructions to go the wall at angle relative to the center point.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>value</strong> (<em>integer</em>) – Angle on the shape of the perimeter</li>
+<li><strong>value</strong> (<em>Array</em>) – [angle] to go to wall at.</li>
 </ul>
 </td>
 </tr>
@@ -219,8 +212,26 @@ Based on original center point defined in this.iclData (before visual scaling)</
 </dd></dl>
 
 <dl class="function">
-<dt id="tourist.Tourist.Intercept">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">Intercept</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.Intercept" title="Permalink to this definition">¶</a></dt>
+<dt id="touristmodule.Tourist.GoToWallFromTourist">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">GoToWallFromTourist</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#touristmodule.Tourist.GoToWallFromTourist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instructions to go the wall at angle relative to the tourists current point.
+Useful in concave shape situations where there might be more than one wall reachable with the same given angle.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>value</strong> (<em>Array</em>) – [angle] to go to wall at.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="touristmodule.Tourist.Intercept">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">Intercept</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#touristmodule.Tourist.Intercept" title="Permalink to this definition">¶</a></dt>
 <dd><p>Robot will calculate the shortest to path to the closest targetable robot and
 create a straight path to intercept it.
 If there exist Priority Agents, the robot following this command will then target the
@@ -231,79 +242,8 @@ In case we ever use face-to-face priority algorithms.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>value</strong> (<em>null</em>) – null</li>
+<li><strong>value</strong> (<em>null</em>) – usually [null], however sometimes it is [priority robot id] in case of priority f2f algorithms.</li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="tourist.Tourist.Pursue">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">Pursue</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.Pursue" title="Permalink to this definition">¶</a></dt>
-<dd><p>Robot will continuously move in the direction of the closest target, until it catches it.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>value</strong> (<em>null</em>) – null</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="tourist.Tourist.Wait">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">Wait</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.Wait" title="Permalink to this definition">¶</a></dt>
-<dd><p>A robot will wait for a time in seconds, or indefinitely if no time is specified.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>value</strong> (<em>float</em>) – Time to wait for in seconds.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="tourist.Tourist.WaitAverage">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">WaitAverage</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.WaitAverage" title="Permalink to this definition">¶</a></dt>
-<dd><p>A robot will wait at the average position of all robots NOT doing the WaitAverage command.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>value</strong> (<em>null</em>) – null</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="tourist.Tourist.WallAtAngle">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">WallAtAngle</code><span class="sig-paren">(</span><em>angle</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.WallAtAngle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the wall position on the shape, given an angle.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
-<li><strong>angle</strong> (<em>float</em>) – Used to calculate the wall position of the shape.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>Array</strong> – Array with x,y position of the wall relative to the shape.</p>
 </td>
 </tr>
 </tbody>
@@ -311,92 +251,115 @@ In case we ever use face-to-face priority algorithms.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="tourist.Tourist.a">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">a</code><a class="headerlink" href="#tourist.Tourist.a" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tourist’s current angle.</p>
+<dt id="touristmodule.Tourist.a">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">a</code><a class="headerlink" href="#touristmodule.Tourist.a" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tourist’s current angle or wall number in relation to shape.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="tourist.Tourist.allowance">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">allowance</code><a class="headerlink" href="#tourist.Tourist.allowance" title="Permalink to this definition">¶</a></dt>
+<dt id="touristmodule.Tourist.allowance">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">allowance</code><a class="headerlink" href="#touristmodule.Tourist.allowance" title="Permalink to this definition">¶</a></dt>
 <dd><p>How far the tourist can move in one frame.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="tourist.Tourist.atExit">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">atExit</code><a class="headerlink" href="#tourist.Tourist.atExit" title="Permalink to this definition">¶</a></dt>
+<dt id="touristmodule.Tourist.atExit">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">atExit</code><a class="headerlink" href="#touristmodule.Tourist.atExit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether or not the robot is at the exit.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="tourist.Tourist.hunted">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">hunted</code><a class="headerlink" href="#tourist.Tourist.hunted" title="Permalink to this definition">¶</a></dt>
+<dt id="touristmodule.Tourist.hunted">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">hunted</code><a class="headerlink" href="#touristmodule.Tourist.hunted" title="Permalink to this definition">¶</a></dt>
 <dd><p>The tourist that is currently pursuing this one.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="tourist.Tourist.iclData">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">iclData</code><a class="headerlink" href="#tourist.Tourist.iclData" title="Permalink to this definition">¶</a></dt>
+<dt id="touristmodule.Tourist.icl">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">icl</code><a class="headerlink" href="#touristmodule.Tourist.icl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instruction checklist. Index 0 is info such as priority and color.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="touristmodule.Tourist.iclData">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">iclData</code><a class="headerlink" href="#touristmodule.Tourist.iclData" title="Permalink to this definition">¶</a></dt>
 <dd><p>This holds all of what used to be global variables!</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="tourist.Tourist.knew">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">knew</code><a class="headerlink" href="#tourist.Tourist.knew" title="Permalink to this definition">¶</a></dt>
+<dt id="touristmodule.Tourist.knew">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">knew</code><a class="headerlink" href="#touristmodule.Tourist.knew" title="Permalink to this definition">¶</a></dt>
 <dd><p>The tourist has known of the exit for more than one frame.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="tourist.Tourist.knows">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">knows</code><a class="headerlink" href="#tourist.Tourist.knows" title="Permalink to this definition">¶</a></dt>
+<dt id="touristmodule.Tourist.knows">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">knows</code><a class="headerlink" href="#touristmodule.Tourist.knows" title="Permalink to this definition">¶</a></dt>
 <dd><p>The tourist has learned of the exit on this frame.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="tourist.Tourist.number">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">number</code><a class="headerlink" href="#tourist.Tourist.number" title="Permalink to this definition">¶</a></dt>
+<dt id="touristmodule.Tourist.number">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">number</code><a class="headerlink" href="#touristmodule.Tourist.number" title="Permalink to this definition">¶</a></dt>
 <dd><p>The tourist’s ID as an integer.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="tourist.Tourist.on">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">on</code><a class="headerlink" href="#tourist.Tourist.on" title="Permalink to this definition">¶</a></dt>
+<dt id="touristmodule.Tourist.on">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">on</code><a class="headerlink" href="#touristmodule.Tourist.on" title="Permalink to this definition">¶</a></dt>
 <dd><p>This tourist’s current instruction function.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="tourist.Tourist.priority">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">priority</code><a class="headerlink" href="#tourist.Tourist.priority" title="Permalink to this definition">¶</a></dt>
+<dt id="touristmodule.Tourist.priority">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">priority</code><a class="headerlink" href="#touristmodule.Tourist.priority" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether or not the robot is a Priority Agent.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="tourist.Tourist.target">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">target</code><a class="headerlink" href="#tourist.Tourist.target" title="Permalink to this definition">¶</a></dt>
+<dt id="touristmodule.Tourist.target">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">target</code><a class="headerlink" href="#touristmodule.Tourist.target" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tourist’s current goal according to its command. Can be a point on the shape or another tourist.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="tourist.Tourist.velocity">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">velocity</code><a class="headerlink" href="#tourist.Tourist.velocity" title="Permalink to this definition">¶</a></dt>
+<dt id="touristmodule.Tourist.velocity">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">velocity</code><a class="headerlink" href="#touristmodule.Tourist.velocity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Speed of the tourist.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="tourist.Tourist.visual">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">visual</code><a class="headerlink" href="#tourist.Tourist.visual" title="Permalink to this definition">¶</a></dt>
+<dt id="touristmodule.Tourist.visual">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">visual</code><a class="headerlink" href="#touristmodule.Tourist.visual" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reference to a visual DOM element</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="touristmodule.Tourist.wait">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">wait</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#touristmodule.Tourist.wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instruct the robot to wait for a certain time &lt;value&gt;, or indefinitely.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>value</strong> (<em>Array</em>) – [time] to wait for. If not specified or value[0] is null, wait indefinitely.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
-<dt id="tourist.Tourist.x">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">x</code><a class="headerlink" href="#tourist.Tourist.x" title="Permalink to this definition">¶</a></dt>
+<dt id="touristmodule.Tourist.x">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">x</code><a class="headerlink" href="#touristmodule.Tourist.x" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tourist’s current x position.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="tourist.Tourist.y">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">y</code><a class="headerlink" href="#tourist.Tourist.y" title="Permalink to this definition">¶</a></dt>
+<dt id="touristmodule.Tourist.y">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">y</code><a class="headerlink" href="#touristmodule.Tourist.y" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tourist’s current y position.</p>
 </dd></dl>
 
@@ -404,41 +367,18 @@ In case we ever use face-to-face priority algorithms.</p>
 
 <p>Other API methods are defined in <a class="reference external" href="api.html">the API section of these docs</a>, so this
 will just be going over the methods behind the API.</p>
-<div class="section" id="calculating-the-wall-position-at-a-given-angle">
-<h2>Calculating the Wall Position at a Given Angle<a class="headerlink" href="#calculating-the-wall-position-at-a-given-angle" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="tourist.Tourist.WallAtAngle">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">WallAtAngle</code><span class="sig-paren">(</span><em>angle</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.WallAtAngle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the wall position on the shape, given an angle.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first simple">
-<li><strong>angle</strong> (<em>float</em>) – Used to calculate the wall position of the shape.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><strong>Array</strong> – Array with x,y position of the wall relative to the shape.</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
 <div class="section" id="direct-tourist-to-its-next-destination">
 <h2>Direct Tourist to its Next Destination<a class="headerlink" href="#direct-tourist-to-its-next-destination" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
-<dt id="tourist.Tourist.DirectTo">
-<code class="descclassname">tourist.Tourist.</code><code class="descname">DirectTo</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#tourist.Tourist.DirectTo" title="Permalink to this definition">¶</a></dt>
+<dt id="touristmodule.Tourist.DirectTo">
+<code class="descclassname">touristmodule.Tourist.</code><code class="descname">DirectTo</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#touristmodule.Tourist.DirectTo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send the robot to its next location (next frame) based on its current instruction or allowance.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>value</strong> (<em>Array</em>) – [x,y] coordinates of the robot’s next calculated location.</li>
+<li><strong>value</strong> (<em>Object</em>) – {x,y} coordinates of the robot’s next calculated location.</li>
 </ul>
 </td>
 </tr>
@@ -455,8 +395,8 @@ other relevant data when running the sim.
 We tried to keep it as removed from visuals as possible, data-only.
 ICLVisual uses this a lot when running the actual simulation.</p>
 <dl class="class">
-<dt id="superclass.iclData">
-<em class="property">class </em><code class="descclassname">superclass.</code><code class="descname">iclData</code><span class="sig-paren">(</span><em>id</em>, <em>instruBinder</em>, <em>algorithmName</em>, <em>angle</em>, <em>wireless</em><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclData" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclData">
+<em class="property">class </em><code class="descclassname">modules.</code><code class="descname">iclData</code><span class="sig-paren">(</span><em>id</em>, <em>instruBinder</em>, <em>algorithmName</em>, <em>angle</em>, <em>wireless</em>, <em>path</em>, <em>start</em><span class="sig-paren">)</span><a class="headerlink" href="#modules.iclData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Data necessary to run a simulation of a given algorithm, create visual paths, etc.
 Tourist == Agent == Robot.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -468,224 +408,132 @@ Tourist == Agent == Robot.</p>
 <li><strong>instruBinder</strong> (<em>Array</em>) – Array of valid trajectories for Tourists to follow. Length of this is touristNum.</li>
 <li><strong>algorithmName</strong> (<em>string</em>) – Full clean name of the algorithm instruBinder is supposed to represent.</li>
 <li><strong>angle</strong> (<em>float</em>) – Angle of the exit location on the shape. Exit location will be at the wall of the shape.</li>
-<li><strong>wireless</strong> (<em>boolean</em>) – True if using Wireless communication model, false otherwise.4</li>
+<li><strong>wireless</strong> (<em>boolean</em>) – True if using Wireless communication model, false otherwise.</li>
+<li><strong>path</strong> (<em>Array</em>) – An array of points with which to create the target shape.</li>
+<li><strong>start</strong> (<em>Object</em>) – {x, y} coordinates of tourist start location.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<dl class="function">
-<dt id="superclass.iclData.AllAtExit">
-<code class="descclassname">superclass.iclData.</code><code class="descname">AllAtExit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclData.AllAtExit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check to see that the exit conditions have been satisfied.
-If so, modify this.time and this.timeMax to signal end of sim.</p>
-<p>Called from this.AlterAnim(), Tourist.DirectTo(), Tourist.GoToExit().</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="superclass.iclData.LoadAnim">
-<code class="descclassname">superclass.iclData.</code><code class="descname">LoadAnim</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclData.LoadAnim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load and calculate the entirety of the animation, until time runs out.
-Used in the no-exit sim portion of this.Start().
-Called from this.Start().</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="superclass.iclData.LoadPoints">
-<code class="descclassname">superclass.iclData.</code><code class="descname">LoadPoints</code><span class="sig-paren">(</span><em>i</em><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclData.LoadPoints" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create points {x:x’, y:y’}, so intercept function knows
-where a mobile agent will be.
-All agents will know others’ trajectories during the sim,
-this is a way of getting that info quickly.
-Used in the no-exit sim portion of this.Start().
-Called from this.LoadAnim().</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>i</strong> (<em>integer</em>) – Which frame of the sim we will be calculating for.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="superclass.iclData.Start">
-<code class="descclassname">superclass.iclData.</code><code class="descname">Start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclData.Start" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initializes the data structure, and runs a no-exit sim to initialize important values.
-Create and initialize all Tourists.
-Called from constructor.</p>
-</dd></dl>
-
 <dl class="attribute">
-<dt id="superclass.iclData.algorithmName">
-<code class="descclassname">superclass.iclData.</code><code class="descname">algorithmName</code><a class="headerlink" href="#superclass.iclData.algorithmName" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclData.algorithmName">
+<code class="descclassname">modules.iclData.</code><code class="descname">algorithmName</code><a class="headerlink" href="#modules.iclData.algorithmName" title="Permalink to this definition">¶</a></dt>
 <dd><p>Full clean name of algorithm.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclData.allExitedLine">
-<code class="descclassname">superclass.iclData.</code><code class="descname">allExitedLine</code><a class="headerlink" href="#superclass.iclData.allExitedLine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Whether or not all have exited. Can represent a visual.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="superclass.iclData.center">
-<code class="descclassname">superclass.iclData.</code><code class="descname">center</code><a class="headerlink" href="#superclass.iclData.center" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclData.center">
+<code class="descclassname">modules.iclData.</code><code class="descname">center</code><a class="headerlink" href="#modules.iclData.center" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of the current shape in {float}[x,y].</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclData.degrees">
-<code class="descclassname">superclass.iclData.</code><code class="descname">degrees</code><a class="headerlink" href="#superclass.iclData.degrees" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclData.degrees">
+<code class="descclassname">modules.iclData.</code><code class="descname">degrees</code><a class="headerlink" href="#modules.iclData.degrees" title="Permalink to this definition">¶</a></dt>
 <dd><p>Points of the equilateral shape to search. Ex. 3 = Triangle, 4 = square, 360 = circle</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclData.exitAlert">
-<code class="descclassname">superclass.iclData.</code><code class="descname">exitAlert</code><a class="headerlink" href="#superclass.iclData.exitAlert" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclData.exitAlert">
+<code class="descclassname">modules.iclData.</code><code class="descname">exitAlert</code><a class="headerlink" href="#modules.iclData.exitAlert" title="Permalink to this definition">¶</a></dt>
 <dd><p>Someone learned where the exit is.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclData.exitAllow">
-<code class="descclassname">superclass.iclData.</code><code class="descname">exitAllow</code><a class="headerlink" href="#superclass.iclData.exitAllow" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclData.exitAllow">
+<code class="descclassname">modules.iclData.</code><code class="descname">exitAllow</code><a class="headerlink" href="#modules.iclData.exitAllow" title="Permalink to this definition">¶</a></dt>
 <dd><p>How far into a frame the exit was found.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclData.exitAngle">
-<code class="descclassname">superclass.iclData.</code><code class="descname">exitAngle</code><a class="headerlink" href="#superclass.iclData.exitAngle" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclData.exitAngle">
+<code class="descclassname">modules.iclData.</code><code class="descname">exitAngle</code><a class="headerlink" href="#modules.iclData.exitAngle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Angle of the exit to use for the sim.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclData.exitFoundFrame">
-<code class="descclassname">superclass.iclData.</code><code class="descname">exitFoundFrame</code><a class="headerlink" href="#superclass.iclData.exitFoundFrame" title="Permalink to this definition">¶</a></dt>
-<dd><p>Frame on which the exit was found.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="superclass.iclData.exitFoundLine">
-<code class="descclassname">superclass.iclData.</code><code class="descname">exitFoundLine</code><a class="headerlink" href="#superclass.iclData.exitFoundLine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Whether or not the exit has been found yet. Can represent a visual.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="superclass.iclData.fieldExit">
-<code class="descclassname">superclass.iclData.</code><code class="descname">fieldExit</code><a class="headerlink" href="#superclass.iclData.fieldExit" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclData.fieldExit">
+<code class="descclassname">modules.iclData.</code><code class="descname">fieldExit</code><a class="headerlink" href="#modules.iclData.fieldExit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exit to use for the sim in {float}[x,y].</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclData.fps">
-<code class="descclassname">superclass.iclData.</code><code class="descname">fps</code><a class="headerlink" href="#superclass.iclData.fps" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclData.fps">
+<code class="descclassname">modules.iclData.</code><code class="descname">fps</code><a class="headerlink" href="#modules.iclData.fps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Frames per second. Too high (&gt; 100) == bad performance.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclData.graphDots">
-<code class="descclassname">superclass.iclData.</code><code class="descname">graphDots</code><a class="headerlink" href="#superclass.iclData.graphDots" title="Permalink to this definition">¶</a></dt>
-<dd><p>Array of touristNum visuals of the robots on the graph.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="superclass.iclData.graphLine">
-<code class="descclassname">superclass.iclData.</code><code class="descname">graphLine</code><a class="headerlink" href="#superclass.iclData.graphLine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Array of touristNum strings, representing the current line left behind by a Tourist’s graph positions.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="superclass.iclData.graphPoints">
-<code class="descclassname">superclass.iclData.</code><code class="descname">graphPoints</code><a class="headerlink" href="#superclass.iclData.graphPoints" title="Permalink to this definition">¶</a></dt>
-<dd><p>Array of Arrays of {x:, y:} objects to represent points on the graph. touristNum == number of inner arrays.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="superclass.iclData.id">
-<code class="descclassname">superclass.iclData.</code><code class="descname">id</code><a class="headerlink" href="#superclass.iclData.id" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclData.id">
+<code class="descclassname">modules.iclData.</code><code class="descname">id</code><a class="headerlink" href="#modules.iclData.id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Global identifier to this data structure.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclData.instruBinder">
-<code class="descclassname">superclass.iclData.</code><code class="descname">instruBinder</code><a class="headerlink" href="#superclass.iclData.instruBinder" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclData.instruBinder">
+<code class="descclassname">modules.iclData.</code><code class="descname">instruBinder</code><a class="headerlink" href="#modules.iclData.instruBinder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Array of valid trajectories for robots. Length is how many tourists are being used.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclData.motor">
-<code class="descclassname">superclass.iclData.</code><code class="descname">motor</code><a class="headerlink" href="#superclass.iclData.motor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interval for this iclData instance. Typically set to 1000/fps</p>
+<dt id="modules.iclData.motor">
+<code class="descclassname">modules.iclData.</code><code class="descname">motor</code><a class="headerlink" href="#modules.iclData.motor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interval for this iclData instance. Typically set to 1000/fps. Initialized to just a number.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclData.time">
-<code class="descclassname">superclass.iclData.</code><code class="descname">time</code><a class="headerlink" href="#superclass.iclData.time" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclData.start">
+<code class="descclassname">modules.iclData.</code><code class="descname">start</code><a class="headerlink" href="#modules.iclData.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>tourist start location</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="modules.iclData.time">
+<code class="descclassname">modules.iclData.</code><code class="descname">time</code><a class="headerlink" href="#modules.iclData.time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Current time of the simulation (frames).</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclData.timeDirect">
-<code class="descclassname">superclass.iclData.</code><code class="descname">timeDirect</code><a class="headerlink" href="#superclass.iclData.timeDirect" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclData.timeDirect">
+<code class="descclassname">modules.iclData.</code><code class="descname">timeDirect</code><a class="headerlink" href="#modules.iclData.timeDirect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Current velocity of the simulation. 1 - Forward. 0 - Stopped. -1 - Rewind. (0,1) - Slow</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclData.timeMax">
-<code class="descclassname">superclass.iclData.</code><code class="descname">timeMax</code><a class="headerlink" href="#superclass.iclData.timeMax" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclData.timeMax">
+<code class="descclassname">modules.iclData.</code><code class="descname">timeMax</code><a class="headerlink" href="#modules.iclData.timeMax" title="Permalink to this definition">¶</a></dt>
 <dd><p>The maximum time before we stop the simulation for good.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclData.tourColors">
-<code class="descclassname">superclass.iclData.</code><code class="descname">tourColors</code><a class="headerlink" href="#superclass.iclData.tourColors" title="Permalink to this definition">¶</a></dt>
-<dd><p>Hex color values of robots.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="superclass.iclData.tourLine">
-<code class="descclassname">superclass.iclData.</code><code class="descname">tourLine</code><a class="headerlink" href="#superclass.iclData.tourLine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Array of touristNum strings, representing the current line left behind by a Tourist’s trajectory.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="superclass.iclData.tourPoints">
-<code class="descclassname">superclass.iclData.</code><code class="descname">tourPoints</code><a class="headerlink" href="#superclass.iclData.tourPoints" title="Permalink to this definition">¶</a></dt>
-<dd><p>Array of Arrays of {x:, y:} objects to represent points on the field. touristNum == number of inner arrays.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="superclass.iclData.touristNum">
-<code class="descclassname">superclass.iclData.</code><code class="descname">touristNum</code><a class="headerlink" href="#superclass.iclData.touristNum" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclData.touristNum">
+<code class="descclassname">modules.iclData.</code><code class="descname">touristNum</code><a class="headerlink" href="#modules.iclData.touristNum" title="Permalink to this definition">¶</a></dt>
 <dd><p>How many tourists this data structure is in control of.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclData.tourists">
-<code class="descclassname">superclass.iclData.</code><code class="descname">tourists</code><a class="headerlink" href="#superclass.iclData.tourists" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclData.tourists">
+<code class="descclassname">modules.iclData.</code><code class="descname">tourists</code><a class="headerlink" href="#modules.iclData.tourists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Array of {Tourist}s</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclData.unit2Px">
-<code class="descclassname">superclass.iclData.</code><code class="descname">unit2Px</code><a class="headerlink" href="#superclass.iclData.unit2Px" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclData.unit2Px">
+<code class="descclassname">modules.iclData.</code><code class="descname">unit2Px</code><a class="headerlink" href="#modules.iclData.unit2Px" title="Permalink to this definition">¶</a></dt>
 <dd><p>1 unit == 1 Radius. How many pixels per unit.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclData.wireless">
-<code class="descclassname">superclass.iclData.</code><code class="descname">wireless</code><a class="headerlink" href="#superclass.iclData.wireless" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclData.wireless">
+<code class="descclassname">modules.iclData.</code><code class="descname">wireless</code><a class="headerlink" href="#modules.iclData.wireless" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether or not the simulation is using the wireless model.</p>
 </dd></dl>
 
 </dd></dl>
 
 <p>The ID given on creation is a nice way to ensure we are not mucking about in the data
-of another instance of iclData when using <code class="docutils literal notranslate"><span class="pre">superlist[controllerID]</span></code>.</p>
+of another instance of iclData when using <code class="docutils literal notranslate"><span class="pre">superlist[controllerID]</span></code> during comparisons.</p>
 </div>
 <div class="section" id="iclvisual">
 <h1>ICLVisual<a class="headerlink" href="#iclvisual" title="Permalink to this headline">¶</a></h1>
@@ -693,8 +541,8 @@ of another instance of iclData when using <code class="docutils literal notransl
 on each frame. It does a mixture of modifying data in its own iclData member variable,
 and updating graphics based on them.</p>
 <dl class="class">
-<dt id="superclass.iclVisual">
-<em class="property">class </em><code class="descclassname">superclass.</code><code class="descname">iclVisual</code><span class="sig-paren">(</span><em>iclData</em><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclVisual">
+<em class="property">class </em><code class="descclassname">modules.</code><code class="descname">iclVisual</code><span class="sig-paren">(</span><em>iclData</em>, <em>field</em>, <em>graph</em><span class="sig-paren">)</span><a class="headerlink" href="#modules.iclVisual" title="Permalink to this definition">¶</a></dt>
 <dd><p>All visual updates and d3 calls for the sim happen in this.
 Rests on top of an instance of iclData.
 Field: The Shape, usually the left panel.
@@ -706,173 +554,285 @@ Multiple instances can and will be used for algorithm comparisons.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
 <li><strong>iclData</strong> (<em>iclData</em>) – The values necessary to update the visuals.</li>
+<li><strong>field</strong> (<em>d3.SVG</em>) – d3 instance of our main field SVG.</li>
+<li><strong>graph</strong> (<em>d3.SVG</em>) – d3 instance of our main graph SVG.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="function">
-<dt id="superclass.iclVisual.AlterAnim">
-<code class="descclassname">superclass.iclVisual.</code><code class="descname">AlterAnim</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.AlterAnim" title="Permalink to this definition">¶</a></dt>
-<dd><p>The main function used to control an algorithm when it is running for the first time.
-Recalculates all necessary points based on new exit location.
-This is due to the nature of calling AlterAnim from weird places, such as a time interval.
-Does both data calculation and visual updates at once, so while it does not
-really fit in either class, putting it in iclVisual was the best way to do it
-because this class rests on iclData. The two are really meant to always work together.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="superclass.iclVisual.AlterLines">
-<code class="descclassname">superclass.iclVisual.</code><code class="descname">AlterLines</code><span class="sig-paren">(</span><em>i</em><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.AlterLines" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the a given tourist’s current lines up to the current time.
-Called from this.AlterAnim().</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>i</strong> (<em>integer</em>) – The given tourist id for which to calculate the path.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="superclass.iclVisual.ESlide">
-<code class="descclassname">superclass.iclVisual.</code><code class="descname">ESlide</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.ESlide" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclVisual.ESlide">
+<code class="descclassname">modules.iclVisual.</code><code class="descname">ESlide</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#modules.iclVisual.ESlide" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function for time slider.
 Disables the slider and shows help text again.
 Called by anonymous function inside LoadGraph().</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="superclass.iclVisual.Load">
-<code class="descclassname">superclass.iclVisual.</code><code class="descname">Load</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.Load" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create tourist graph and field visuals
-Called by this.Start().</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="superclass.iclVisual.LoadField">
-<code class="descclassname">superclass.iclVisual.</code><code class="descname">LoadField</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.LoadField" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create field visuals, including shape, reference angles and algorithm description.
-Called by this.Load().</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="superclass.iclVisual.LoadGraph">
-<code class="descclassname">superclass.iclVisual.</code><code class="descname">LoadGraph</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.LoadGraph" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create graph visuals, including graph axes, labels, replay buttons, time/frame data and slider.
-Called by this.Load().</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="superclass.iclVisual.MSlide">
-<code class="descclassname">superclass.iclVisual.</code><code class="descname">MSlide</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.MSlide" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclVisual.MSlide">
+<code class="descclassname">modules.iclVisual.</code><code class="descname">MSlide</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#modules.iclVisual.MSlide" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function for time slider.
 Makes sure the slider stays within the bounds of timeMax.
 Called by anonymous function inside LoadGraph().</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="superclass.iclVisual.PlayAnim">
-<code class="descclassname">superclass.iclVisual.</code><code class="descname">PlayAnim</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.PlayAnim" title="Permalink to this definition">¶</a></dt>
-<dd><p>The post-run algorithm controller. Allows for playback.
-timeDirect is defined in iclData.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="superclass.iclVisual.SSlide">
-<code class="descclassname">superclass.iclVisual.</code><code class="descname">SSlide</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.SSlide" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclVisual.SSlide">
+<code class="descclassname">modules.iclVisual.</code><code class="descname">SSlide</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#modules.iclVisual.SSlide" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function for time slider.
 Initializes the slider to be moved.
 Removes help text for visibility.
 Called by anonymous function inside LoadGraph().</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="superclass.iclVisual.Start">
-<code class="descclassname">superclass.iclVisual.</code><code class="descname">Start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.Start" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initializes the layers and ensures they take up the whole of
-the given SVG.</p>
-<p>Called by constructor.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="superclass.iclVisual.UpdateVisuals">
-<code class="descclassname">superclass.iclVisual.</code><code class="descname">UpdateVisuals</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#superclass.iclVisual.UpdateVisuals" title="Permalink to this definition">¶</a></dt>
-<dd><p>The last part that happens after data has been updated.
-Redraws tourist visuals, usually in relation to current time.</p>
-</dd></dl>
-
 <dl class="attribute">
-<dt id="superclass.iclVisual.fieldSVG">
-<code class="descclassname">superclass.iclVisual.</code><code class="descname">fieldSVG</code><a class="headerlink" href="#superclass.iclVisual.fieldSVG" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclVisual.fieldSVG">
+<code class="descclassname">modules.iclVisual.</code><code class="descname">fieldSVG</code><a class="headerlink" href="#modules.iclVisual.fieldSVG" title="Permalink to this definition">¶</a></dt>
 <dd><p>A D3 reference to the Field. Contains 4 Layers - 1: BackGround, 2: Lines, 3: Bots, 4: OverLay</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclVisual.frameText">
-<code class="descclassname">superclass.iclVisual.</code><code class="descname">frameText</code><a class="headerlink" href="#superclass.iclVisual.frameText" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclVisual.frameText">
+<code class="descclassname">modules.iclVisual.</code><code class="descname">frameText</code><a class="headerlink" href="#modules.iclVisual.frameText" title="Permalink to this definition">¶</a></dt>
 <dd><p>A D3 reference to the text which shows the current time in the sim (frames).</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclVisual.graphSVG">
-<code class="descclassname">superclass.iclVisual.</code><code class="descname">graphSVG</code><a class="headerlink" href="#superclass.iclVisual.graphSVG" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclVisual.graphSVG">
+<code class="descclassname">modules.iclVisual.</code><code class="descname">graphSVG</code><a class="headerlink" href="#modules.iclVisual.graphSVG" title="Permalink to this definition">¶</a></dt>
 <dd><p>A D3 reference to the Graph. Contains 4 Layers - 1: BackGround, 2: Lines, 3: Bots, 4: OverLay</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclVisual.iclData">
-<code class="descclassname">superclass.iclVisual.</code><code class="descname">iclData</code><a class="headerlink" href="#superclass.iclVisual.iclData" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclVisual.iclData">
+<code class="descclassname">modules.iclVisual.</code><code class="descname">iclData</code><a class="headerlink" href="#modules.iclVisual.iclData" title="Permalink to this definition">¶</a></dt>
 <dd><p>An instance of iclData to use to update visuals</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclVisual.lineFx">
-<code class="descclassname">superclass.iclVisual.</code><code class="descname">lineFx</code><a class="headerlink" href="#superclass.iclVisual.lineFx" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclVisual.lineFx">
+<code class="descclassname">modules.iclVisual.</code><code class="descname">lineFx</code><a class="headerlink" href="#modules.iclVisual.lineFx" title="Permalink to this definition">¶</a></dt>
 <dd><p>A reference to a D3 line function to create valid lines out of strings.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclVisual.timeSlider">
-<code class="descclassname">superclass.iclVisual.</code><code class="descname">timeSlider</code><a class="headerlink" href="#superclass.iclVisual.timeSlider" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclVisual.timeSlider">
+<code class="descclassname">modules.iclVisual.</code><code class="descname">timeSlider</code><a class="headerlink" href="#modules.iclVisual.timeSlider" title="Permalink to this definition">¶</a></dt>
 <dd><p>A D3 reference to the movable time slider that appears at the end of a normal sim.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="superclass.iclVisual.timeText">
-<code class="descclassname">superclass.iclVisual.</code><code class="descname">timeText</code><a class="headerlink" href="#superclass.iclVisual.timeText" title="Permalink to this definition">¶</a></dt>
+<dt id="modules.iclVisual.timeText">
+<code class="descclassname">modules.iclVisual.</code><code class="descname">timeText</code><a class="headerlink" href="#modules.iclVisual.timeText" title="Permalink to this definition">¶</a></dt>
 <dd><p>A D3 reference to the text which shows the current time in the sim (seconds).</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="superclass.iclVisual.tourColors">
-<code class="descclassname">superclass.iclVisual.</code><code class="descname">tourColors</code><a class="headerlink" href="#superclass.iclVisual.tourColors" title="Permalink to this definition">¶</a></dt>
-<dd><p>An array of hex color codes for Tourists</p>
 </dd></dl>
 
 </dd></dl>
 
 </div>
+<div class="section" id="modules">
+<h1>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h1>
+<p>These modules are generally required to make the visualizer do anything other than just go for
+10 seconds and stop, but other modules can be added to add more visualizers or track data in a different way.
+Modules must always have an instance of iclData sent in to be able to see anything.</p>
+<div class="section" id="creating-a-module-arguments">
+<h2>Creating a module: Arguments<a class="headerlink" href="#creating-a-module-arguments" title="Permalink to this headline">¶</a></h2>
+<p>The only requirement of a module is the use of an instance of <code class="docutils literal notranslate"><span class="pre">iclData</span></code>.
+Anything else you could like to include at the time of module creation is up to you.
+Because <code class="docutils literal notranslate"><span class="pre">iclData</span></code> instances generally don’t have access to ANY visuals, it can be handy to
+pass in d3 references to the SVGs you would like to visually initialize and update. More on this later.</p>
+</div>
+<div class="section" id="creating-a-module-init-and-update">
+<h2>Creating a module: Init and Update<a class="headerlink" href="#creating-a-module-init-and-update" title="Permalink to this headline">¶</a></h2>
+<p>By including these functions in your module, they will run at the time that the data is calculated.
+<code class="docutils literal notranslate"><span class="pre">Init()</span></code> runs once and thus is used for initializing important class vars etc.
+<code class="docutils literal notranslate"><span class="pre">Update()</span></code> runs once every frame, AFTER the tourists’ positions have been updated and all iclData
+attributes have been updated. Basically, every frame will contain new lateUpdate style data.</p>
+<p>There is nothing needed to set these up, just create a <code class="docutils literal notranslate"><span class="pre">Init()</span></code> and <code class="docutils literal notranslate"><span class="pre">Update()</span></code> function in your
+module and they will run as scheduled.</p>
+</div>
+<div class="section" id="creating-a-module-vinit-vupdate-and-vreset">
+<h2>Creating a module: VInit, VUpdate, and VReset<a class="headerlink" href="#creating-a-module-vinit-vupdate-and-vreset" title="Permalink to this headline">¶</a></h2>
+<p>To show visuals based on data calculated in your module, you need a VInit and VUpdate.
+Having these functions in your module will allow the <code class="docutils literal notranslate"><span class="pre">iclVisual.reEnact</span></code> function to call them
+at similar times to when <code class="docutils literal notranslate"><span class="pre">Init</span></code> and <code class="docutils literal notranslate"><span class="pre">Update</span></code> were called. The difference between these
+two types of functions is that when running visual updates, no new data is being calculated by
+<code class="docutils literal notranslate"><span class="pre">iclData</span></code>.</p>
+<p>There is nothing needed to set these up, just create a <code class="docutils literal notranslate"><span class="pre">VInit()</span></code> and <code class="docutils literal notranslate"><span class="pre">VUpdate()</span></code> function in your
+module and they will run as scheduled.</p>
+<p>It has been helpful thus far to give the module a <code class="docutils literal notranslate"><span class="pre">VReset</span></code> function and call it at the beginning of
+<code class="docutils literal notranslate"><span class="pre">VInit()</span></code> to get rid of all old d3 elements. This is not required.</p>
+</div>
+<div class="section" id="exitfindmod">
+<h2>ExitFindMod<a class="headerlink" href="#exitfindmod" title="Permalink to this headline">¶</a></h2>
+<p>ExitFindMod allows for the placement of an exit. The caveat is that <code class="docutils literal notranslate"><span class="pre">iclData.createHistory()</span></code>
+must always be run TWICE when this mod is active, in order to create the “pre-history” and the
+“real history.” The old history will be kept in ExitFindMod.premo and never usually visualized.</p>
+<dl class="class">
+<dt id="modules.exitFindMod">
+<em class="property">class </em><code class="descclassname">modules.</code><code class="descname">exitFindMod</code><span class="sig-paren">(</span><em>iclData</em>, <em>exit</em>, <em>field</em>, <em>graph</em><span class="sig-paren">)</span><a class="headerlink" href="#modules.exitFindMod" title="Permalink to this definition">¶</a></dt>
+<dd><p>A module for keep track of the number of points searched along a shapes path.
+Also doubles as drawing the worst case envelope.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>iclData</strong> (<em>iclData</em>) – A reference to iclData that this module is enabled in.</li>
+<li><strong>exit</strong> (<em>Object</em>) – {x,y} coordinates to the exit location.</li>
+<li><strong>field</strong> (<em>d3.SVG</em>) – A d3 reference to the SVG used to display the main field.</li>
+<li><strong>graph</strong> (<em>d3.SVG</em>) – A d3 reference to the SVG used to display the main graph.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="modules.exitFindMod.exit">
+<code class="descclassname">modules.exitFindMod.</code><code class="descname">exit</code><a class="headerlink" href="#modules.exitFindMod.exit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exit location {x,y}</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="modules.exitFindMod.exitDistances">
+<code class="descclassname">modules.exitFindMod.</code><code class="descname">exitDistances</code><a class="headerlink" href="#modules.exitFindMod.exitDistances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Array of termination times for each exit placement. Only gets points searched, otherwise they will be 0.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="modules.exitFindMod.fieldSVG">
+<code class="descclassname">modules.exitFindMod.</code><code class="descname">fieldSVG</code><a class="headerlink" href="#modules.exitFindMod.fieldSVG" title="Permalink to this definition">¶</a></dt>
+<dd><p>D3 reference to the field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="modules.exitFindMod.graphLines">
+<code class="descclassname">modules.exitFindMod.</code><code class="descname">graphLines</code><a class="headerlink" href="#modules.exitFindMod.graphLines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Array of graphlines showing distance from exit for each tourist.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="modules.exitFindMod.graphSVG">
+<code class="descclassname">modules.exitFindMod.</code><code class="descname">graphSVG</code><a class="headerlink" href="#modules.exitFindMod.graphSVG" title="Permalink to this definition">¶</a></dt>
+<dd><p>D3 reference to the graph</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="modules.exitFindMod.iclData">
+<code class="descclassname">modules.exitFindMod.</code><code class="descname">iclData</code><a class="headerlink" href="#modules.exitFindMod.iclData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference to iclData this module is enabled in.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="modules.exitFindMod.premo">
+<code class="descclassname">modules.exitFindMod.</code><code class="descname">premo</code><a class="headerlink" href="#modules.exitFindMod.premo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pre-history AKA before exit was placed anywhere.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="modules.exitFindMod.step">
+<code class="descclassname">modules.exitFindMod.</code><code class="descname">step</code><a class="headerlink" href="#modules.exitFindMod.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>One step size.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="modules.exitFindMod.tourlines">
+<code class="descclassname">modules.exitFindMod.</code><code class="descname">tourlines</code><a class="headerlink" href="#modules.exitFindMod.tourlines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Array of lines showing where tourist has travelled on field.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="linefillmod">
+<h2>LineFillMod<a class="headerlink" href="#linefillmod" title="Permalink to this headline">¶</a></h2>
+<p>LineFillMod is interesting in that it keeps track of the number of points searched. Once all points on a
+path have been searched, <code class="docutils literal notranslate"><span class="pre">lineFillMod.count</span></code> will be 0, and the <code class="docutils literal notranslate"><span class="pre">lineFillmod.pts</span></code> array will be empty.
+As it proved to be useful for calculating things such as total exit time if exit had been found at a certain point,
+it has been modified from its original to also keep track of this. For all points searched,
+<code class="docutils literal notranslate"><span class="pre">lineFillMod.exitTimes</span></code> keeps track of the time it takes an algorithm to terminate based on the conditions.
+This doesn’t yet work in face-to-face algorithms, but it calculates the distance of robots from the exit keeping
+priority status in mind to attempt to determine a worst-case exit placement and termination time.</p>
+<dl class="class">
+<dt id="modules.lineFillMod">
+<em class="property">class </em><code class="descclassname">modules.</code><code class="descname">lineFillMod</code><span class="sig-paren">(</span><em>iclData</em>, <em>exitEnvelopeGraph</em><span class="sig-paren">)</span><a class="headerlink" href="#modules.lineFillMod" title="Permalink to this definition">¶</a></dt>
+<dd><p>A module for keep track of the number of points searched along a shapes path.
+Also doubles as drawing the worst case envelope.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>iclData</strong> (<em>iclData</em>) – A reference to iclData that this module is enabled in.</li>
+<li><strong>exitEnvelopeGraph</strong> (<em>d3.SVG</em>) – A d3 reference to the SVG used to display the worst case graph.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="modules.lineFillMod.count">
+<code class="descclassname">modules.lineFillMod.</code><code class="descname">count</code><a class="headerlink" href="#modules.lineFillMod.count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Points searched. Decrements with each one searched.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="modules.lineFillMod.exitEnvelopeGraph">
+<code class="descclassname">modules.lineFillMod.</code><code class="descname">exitEnvelopeGraph</code><a class="headerlink" href="#modules.lineFillMod.exitEnvelopeGraph" title="Permalink to this definition">¶</a></dt>
+<dd><p>D3 Reference to exit envelope graph.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="modules.lineFillMod.exitEnvelopeLine">
+<code class="descclassname">modules.lineFillMod.</code><code class="descname">exitEnvelopeLine</code><a class="headerlink" href="#modules.lineFillMod.exitEnvelopeLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>D3 reference to the exit envelope line drawn at the end.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="modules.lineFillMod.exitTimes">
+<code class="descclassname">modules.lineFillMod.</code><code class="descname">exitTimes</code><a class="headerlink" href="#modules.lineFillMod.exitTimes" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of termination times based on exit location.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="modules.lineFillMod.iclData">
+<code class="descclassname">modules.lineFillMod.</code><code class="descname">iclData</code><a class="headerlink" href="#modules.lineFillMod.iclData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference to the instance of iclData this module is enabled in.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="modules.lineFillMod.pts">
+<code class="descclassname">modules.lineFillMod.</code><code class="descname">pts</code><a class="headerlink" href="#modules.lineFillMod.pts" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of points. A copy of iclData.pPath</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="modules.lineFillMod.step">
+<code class="descclassname">modules.lineFillMod.</code><code class="descname">step</code><a class="headerlink" href="#modules.lineFillMod.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>One step size.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
 <div class="section" id="other-useful-functions">
 <h1>Other Useful Functions<a class="headerlink" href="#other-useful-functions" title="Permalink to this headline">¶</a></h1>
+<p>Defined by the <code class="docutils literal notranslate"><span class="pre">utils</span></code> class, these are a set of static functions designed to be
+accessed from anywhere and used to calculate common things.</p>
 <dl class="function">
-<dt id="helpers.editAnims">
-<code class="descclassname">helpers.</code><code class="descname">editAnims</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#helpers.editAnims" title="Permalink to this definition">¶</a></dt>
-<dd><p>Outside controller for letting the buttons choose timeDirect.
-<strong>Relies on window.superlist</strong>.
-Called from the HTML &lt;text&gt;s relating to playback.</p>
+<dt id="utils.wallAtAngle">
+<code class="descclassname">utils.</code><code class="descname">wallAtAngle</code><span class="sig-paren">(</span><em>path</em>, <em>center</em>, <em>angle</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.wallAtAngle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate point on path at angle relative to center and shape.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>s</strong> (<em>string</em>) – The direction which to send the playback. Gotten from hardcoded method calls in HTML.</li>
+<li><strong>path</strong> (<em>Array</em>) – path of a shape, usually generated by utils.genPoly.</li>
+<li><strong>center</strong> (<em>Object</em>) – {x,y} coordinates of center of shape.</li>
+<li><strong>angle</strong> (<em>float</em>) – Angle of point 0-360.</li>
 </ul>
 </td>
 </tr>
@@ -881,18 +841,18 @@ Called from the HTML &lt;text&gt;s relating to playback.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="helpers.showAnims">
-<code class="descclassname">helpers.</code><code class="descname">showAnims</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#helpers.showAnims" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unused function used to show two comparisons.
-Lets the user choose whether the want to see
-the graphs side by side, or the fields.
-<strong>Relies on window.superlist</strong>.</p>
+<dt id="utils.genPoly">
+<code class="descclassname">utils.</code><code class="descname">genPoly</code><span class="sig-paren">(</span><em>c</em>, <em>r</em>, <em>a</em>, <em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.genPoly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a polygon with n sides, radius r (center to vertex), and angle of rotation a.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>s</strong> (<em>string</em>) – The part of the animation to show side by side with another. Gotten from hardcoded method calls in HTML.</li>
+<li><strong>c</strong> (<em>Object</em>) – {x,y} coordinates center of shape.</li>
+<li><strong>r</strong> (<em>float</em>) – distance from center point to each. radius.</li>
+<li><strong>a</strong> (<em>float</em>) – angle of rotation of all sides.</li>
+<li><strong>n</strong> (<em>integer</em>) – Number of sides. 3 for triangle, 360 for circle, etc.</li>
 </ul>
 </td>
 </tr>
@@ -901,18 +861,16 @@ the graphs side by side, or the fields.
 </dd></dl>
 
 <dl class="function">
-<dt id="helpers.changeInstructions">
-<code class="descclassname">helpers.</code><code class="descname">changeInstructions</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#helpers.changeInstructions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unused function to swap instructions on the fly.
-Not really used anymore because we choose the algorithm based on the current #value in the URL,
-but I’ll leave it here just in case.
-Works best when having the user select an alg from a &lt;select&gt; HTML element.</p>
+<dt id="utils.distance">
+<code class="descclassname">utils.</code><code class="descname">distance</code><span class="sig-paren">(</span><em>p1</em>, <em>p2</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return distance between two points.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>n</strong> (<em>string</em>) – Algorithm Shortname. Will be defined in the docs… somewhere.</li>
+<li><strong>p1</strong> (<em>Object</em>) – {x,y} coordinates of point 1.</li>
+<li><strong>p2</strong> (<em>Object</em>) – {x,y} coordinates of point 2.</li>
 </ul>
 </td>
 </tr>
@@ -921,38 +879,16 @@ Works best when having the user select an alg from a &lt;select&gt; HTML element
 </dd></dl>
 
 <dl class="function">
-<dt id="helpers.ChoosExit">
-<code class="descclassname">helpers.</code><code class="descname">ChoosExit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helpers.ChoosExit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unused function which lets a user choose the exit with a mouse.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="helpers.exitPreview">
-<code class="descclassname">helpers.</code><code class="descname">exitPreview</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helpers.exitPreview" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the current value of an &lt;input type=’number’&gt; HTML element
-and displays the exit at that location for a preview.
-<strong>Relies on window.superlist</strong>.
-Reuses code from Tourist.DirectTo().</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="helpers.exitChosen">
-<code class="descclassname">helpers.</code><code class="descname">exitChosen</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#helpers.exitChosen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Starts up the interval after clearing the field and graph of debris.
-Any new elements that need to be cleared after a run and before a new one… do it here.
-<strong>Relies on window.superlist</strong>.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="helpers.showHelp">
-<code class="descclassname">helpers.</code><code class="descname">showHelp</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#helpers.showHelp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Select an algorithm or element description box to show based on current algorithm shortname.</p>
+<dt id="utils.midpoint">
+<code class="descclassname">utils.</code><code class="descname">midpoint</code><span class="sig-paren">(</span><em>p1</em>, <em>p2</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.midpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns {x,y} coordinates of midpoint between two points.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>s</strong> (<em>string</em>) – The id of the box to show. “steps” if you want to select an algorithm desc. box you’ve created based on shortname.</li>
+<li><strong>p1</strong> (<em>Object</em>) – {x,y} coordinates of point 1.</li>
+<li><strong>p2</strong> (<em>Object</em>) – {x,y} coordinates of point 2.</li>
 </ul>
 </td>
 </tr>
@@ -961,18 +897,44 @@ Any new elements that need to be cleared after a run and before a new one… do 
 </dd></dl>
 
 <dl class="function">
-<dt id="helpers.showAlgorithmDesc">
-<code class="descclassname">helpers.</code><code class="descname">showAlgorithmDesc</code><span class="sig-paren">(</span><em>s</em>, <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#helpers.showAlgorithmDesc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Contains the commands for all the algorithms. Give it a shortname and wireless true/false
-and it’ll change the instrubinder to match. Used on page load.
-The color isn’t really necessary.</p>
+<dt id="utils.cmpXYPairs">
+<code class="descclassname">utils.</code><code class="descname">cmpXYPairs</code><span class="sig-paren">(</span><em>v1</em>, <em>v2</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.cmpXYPairs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether {x,y} pairs are equal.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
-<li><strong>s</strong> (<em>string</em>) – Algorithm shortname. Add ‘wl’ to shortnames where the algorithm has the potential to be f2f.</li>
-<li><strong>w</strong> (<em>boolean</em>) – Wireless true/false. A legacy value from before shortnames were more specific.</li>
+<li><strong>v1</strong> (<em>Object</em>) – {x,y} coordinates of point 1.</li>
+<li><strong>v2</strong> (<em>Object</em>) – {x,y} coordinates of point 2.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.AddAround">
+<code class="descclassname">utils.</code><code class="descname">AddAround</code><span class="sig-paren">(</span><em>val</em>, <em>max</em>, <em>amt</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.AddAround" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a value within a certain range given a value higher or lower.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.WhereLineSegsCross">
+<code class="descclassname">utils.</code><code class="descname">WhereLineSegsCross</code><span class="sig-paren">(</span><em>pt1</em>, <em>pt2</em>, <em>pt3</em>, <em>pt4</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.WhereLineSegsCross" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a {x,y} point where two line segments cross.
+Points 1,2 are the first line segment,
+points 3,4 are the second line segment.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pt1</strong> (<em>Object</em>) – {x,y} coordinates of point 1.</li>
+<li><strong>pt2</strong> (<em>Object</em>) – {x,y} coordinates of point 2.</li>
+<li><strong>pt3</strong> (<em>Object</em>) – {x,y} coordinates of point 3.</li>
+<li><strong>pt4</strong> (<em>Object</em>) – {x,y} coordinates of point 4.</li>
 </ul>
 </td>
 </tr>
@@ -990,17 +952,21 @@ The color isn’t really necessary.</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Search-and-Exit Tourist and Superclass Method Documentation</a><ul>
-<li><a class="reference internal" href="#the-use-of-global-variables">The use of global variables</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#">Search-and-Exit Tourist and Superclass Method Documentation</a></li>
 <li><a class="reference internal" href="#the-tourist">The Tourist</a><ul>
-<li><a class="reference internal" href="#calculating-the-wall-position-at-a-given-angle">Calculating the Wall Position at a Given Angle</a></li>
 <li><a class="reference internal" href="#direct-tourist-to-its-next-destination">Direct Tourist to its Next Destination</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#icldata">ICLData</a></li>
 <li><a class="reference internal" href="#iclvisual">ICLVisual</a></li>
+<li><a class="reference internal" href="#modules">Modules</a><ul>
+<li><a class="reference internal" href="#creating-a-module-arguments">Creating a module: Arguments</a></li>
+<li><a class="reference internal" href="#creating-a-module-init-and-update">Creating a module: Init and Update</a></li>
+<li><a class="reference internal" href="#creating-a-module-vinit-vupdate-and-vreset">Creating a module: VInit, VUpdate, and VReset</a></li>
+<li><a class="reference internal" href="#exitfindmod">ExitFindMod</a></li>
+<li><a class="reference internal" href="#linefillmod">LineFillMod</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#other-useful-functions">Other Useful Functions</a></li>
 </ul>
 
@@ -1045,12 +1011,12 @@ The color isn’t really necessary.</p>
         <li class="right" >
           <a href="api.html" title="Search and Exit Tourist API"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 2.2.1 (178) documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 3.0.3 (207) documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Chris Till, David Bushta.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
     </div>
   </body>
 </html>

@@ -81,28 +81,46 @@ Disk
 ----
 
 `Face-to-Face, 2 Robots. Algorithm A.
-</BotAlgorithms/disk/diskAlgs.html#A>`_.
+</BotAlgorithms/disk/circleAlgs.html#A>`_.
 
 `Face-to-Face, 2 Robots. Algorithm B.
-</BotAlgorithms/disk/diskAlgs.html#B>`_.
+</BotAlgorithms/disk/circleAlgs.html#B>`_.
 
 `Face-to-Face, 2 Robots. Algorithm C.
-</BotAlgorithms/disk/diskAlgs.html#C>`_.
+</BotAlgorithms/disk/circleAlgs.html#C>`_.
 
 `Wireless, 2 Robots. Algorithm A.
-</BotAlgorithms/disk/diskAlgs.html#Awl>`_.
+</BotAlgorithms/disk/circleAlgs.html#Awl>`_.
 
 `Wireless, 2 Robots. Algorithm B.
-</BotAlgorithms/disk/diskAlgs.html#Bwl>`_.
+</BotAlgorithms/disk/circleAlgs.html#Bwl>`_.
 
 `Wireless, 2 Robots. Algorithm C.
-</BotAlgorithms/disk/diskAlgs.html#Cwl>`_.
+</BotAlgorithms/disk/circleAlgs.html#Cwl>`_.
 
 `Wireless, 1 Robot + Priority Robot.
-</BotAlgorithms/disk/diskAlgs.html#Q1>`_.
+</BotAlgorithms/disk/circleAlgs.html#Q1>`_.
 
 `Wireless, 2 Robots + Priority Robot.
-</BotAlgorithms/disk/diskAlgs.html#Q2>`_.
+</BotAlgorithms/disk/circleAlgs.html#Q2>`_.
 
 `Wireless, 1 Robot + 2 Priority.
-</BotAlgorithms/disk/diskAlgs.html#Q2S1>`_.
+</BotAlgorithms/disk/circleAlgs.html#Q2S1>`_.
+
+Triangle
+--------
+`Wireless, 2 Robots, starting at Center.
+</BotAlgorithms/polygon/polygonAlgs.html#3_cStart>`_.
+`Wireless, 2 Robots, starting on Wall.
+</BotAlgorithms/polygon/polygonAlgs.html#3_wStart>`_.
+`Wireless, 2 Robots, starting in Interior with start selection.
+</BotAlgorithms/polygon/polygonAlgs.html#3_iStart>`_.
+
+Square
+------
+`Wireless, 2 Robots, starting at Center.
+</BotAlgorithms/polygon/polygonAlgs.html#4_cStart>`_.
+`Wireless, 2 Robots, starting on Wall.
+</BotAlgorithms/polygon/polygonAlgs.html#4_wStart>`_.
+`Wireless, 2 Robots, starting in Interior with start selection.
+</BotAlgorithms/polygon/polygonAlgs.html#4_iStart>`_.
