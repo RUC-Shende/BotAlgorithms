@@ -6,6 +6,76 @@
 	</head>
 	<body>
 		<script>
+			function genWilsonMaze( h, w ) {
+
+			}
+
+
+
+
+
+			function genPrimMaze( h, w ) {
+				var maze = [ ];
+				for( var i = 0; i < h; i++ ) {
+					maze.push( [ ] );
+					for( var j = 0; j < w; j++ ) {
+						maze[ i ].push(
+							{ x:j, y:i, u:true, c:[ null, null, null, null ], p:null }
+						);
+					}
+				}
+				var cc = maze[ Math.floor( h * Math.random( ) ) ]
+					[ Math.floor( w * Math.random( ) ) ];
+
+				cc.u = false;
+
+				var list = [ cc ];
+
+				do {//while list is not empty
+					//pick random wall, remove from list, and update adjacencies to list
+
+					var next = Math.floor( list.length * Math.random( ) );
+					cc = list[ next ];
+					list[ next ] = list[ list.length - 1 ];
+					list.pop( );
+
+					if( ( cc.y + 1 < h && ( maze[ cc.y + 1 ][ cc.x ].u ) ) ) {
+						list.push( maze[ cc.y + 1 ][ cc.x ] );
+						maze[ cc.y + 1 ][ cc.x ].u = false;
+						maze[ cc.y + 1 ][ cc.x ].p = cc;
+						maze[ cc.y + 1 ][ cc.x ].c[ 2 ] = cc;
+						cc.c[ 0 ] = maze[ cc.y + 1 ][ cc.x ];
+					}
+					if( ( cc.x + 1 < w ) && ( maze[ cc.y ][ cc.x + 1 ].u ) ) {
+						list.push( maze[ cc.y ][ cc.x + 1 ] );
+						maze[ cc.y ][ cc.x + 1 ].u = false;
+						maze[ cc.y ][ cc.x + 1 ].p = cc;
+						maze[ cc.y ][ cc.x + 1 ].c[ 3 ] = cc;
+						cc.c[ 1 ] = maze[ cc.y ][ cc.x + 1 ];
+					}
+					if( ( cc.y - 1 >= 0 && ( maze[ cc.y - 1 ][ cc.x ].u ) ) ) {
+						list.push( maze[ cc.y - 1 ][ cc.x ] );
+						maze[ cc.y - 1 ][ cc.x ].u = false;
+						maze[ cc.y - 1 ][ cc.x ].p = cc;
+						maze[ cc.y - 1 ][ cc.x ].c[ 0 ] = cc;
+						cc.c[ 2 ] = maze[ cc.y - 1 ][ cc.x ];
+					}
+					if( ( cc.x - 1 >= 0 ) && ( maze[ cc.y ][ cc.x - 1 ].u ) ) {
+						list.push( maze[ cc.y ][ cc.x - 1 ] );
+						maze[ cc.y ][ cc.x - 1 ].u = false;
+						maze[ cc.y ][ cc.x - 1 ].p = cc;
+						maze[ cc.y ][ cc.x - 1 ].c[ 1 ] = cc;
+						cc.c[ 3 ] = maze[ cc.y ][ cc.x - 1 ];
+					}
+				} while( list.length > 0 );//eventually, no more walls to check
+				return( maze );
+
+			}
+
+
+
+
+
 			function genDFSMaze( h, w ) {		//Problem here with edges.
 				var maze = [ ];
 				for( var i = 0; i < h; i++ ) {
@@ -51,7 +121,11 @@
 				return( maze );
 			}
 
-			function picMaze( maze, unit ) {
+
+
+
+
+			function picMaze( maze, unit, color ) {
 				var svg = d3.select( "body" ).append( "svg" )
 					.attr( "height", unit * ( 2 * maze.length + 1 ) )
 					.attr( "width", unit * ( 2 * maze[ 0 ].length + 1 ) )
@@ -59,7 +133,7 @@
 				svg.append( "rect" )
 					.attr( "height", "100%" )
 					.attr( "width", "100%" )
-					.style( "fill", "#000000ff" );
+					.style( "fill", color );
 
 				for( var i = 0; i < maze.length; i++ ) {
 					for( var j = 0; j < maze[ 0 ].length; j++ ) {
@@ -67,18 +141,22 @@
 							.attr( "x", unit * ( 2 * j + 1 ) )
 							.attr( "y", unit * ( 2 * i + 1 ) )
 							.attr( "width", unit ).attr( "height", unit )
-							.style( "fill", "#ffffffff" );
+							.style( "fill", "#000000ff" );
 						var p = maze[ i ][ j ].p;
 						if( p ) {
 							svg.append( "rect" )
 								.attr( "x", unit + 2 * unit * ( j + p.x ) / 2 )
 								.attr( "y", unit + 2 * unit * ( i + p.y ) / 2 )
 								.attr( "width", unit ).attr( "height", unit )
-								.style( "fill", "#eeeeeeff" );
+								.style( "fill", "#444444ff" );
 						}
 					}
 				}
 			}
+
+
+
+
 
 			class traverser {
 				constructor( maze, unit ) {
@@ -94,20 +172,14 @@
 				}
 				
 				traverse( ) {
-					var count = 0;
 					do {
-						//console.log( "Pos: ", this.pos.x, this.pos.y, "dir: ", this.dirs[ this.dir ] );
-						count++;
-						if( this.pos.c[ this.dir ] ) {	
-							//console.log( "forward" );	
+						if( this.pos.c[ this.dir ] ) {		
 							this.goForward( );
 							if( this.pos.c[ this.toTheRight( ) ] ) {
-								//console.log( "-left forward" );
 								this.dir = this.toTheRight( );
 								this.placeVert( );
 								this.goForward( );
 								if( this.pos.c[ this.toTheRight( ) ] ) {
-									//console.log( "-left forward" );
 									this.dir = this.toTheRight( );
 									this.placeVert( );
 									this.goForward( );
@@ -115,18 +187,13 @@
 							}
 							this.placeVert( );
 						} else {
-							//console.log( "-right" );
 							this.dir = this.toTheLeft( );
 							this.placeVert( );
 						}
 					} while(
-						(
-							( this.path[ 0 ].x != this.path[ this.path.length - 1 ].x ) ||
-							( this.path[ 0 ].y != this.path[ this.path.length - 1 ].y )
-						)// && ( count < 2000 )
+						( this.path[ 0 ].x != this.path[ this.path.length - 1 ].x ) ||
+						( this.path[ 0 ].y != this.path[ this.path.length - 1 ].y )
 					);
-					console.log( this.path );
-					console.log( "Count: " + count );
 				}
 
 				placeVert( ) {
@@ -155,7 +222,11 @@
 				}
 			}
 
-			function lineFill( maze, traveler ) {
+
+
+
+
+			function lineFill( maze, traveler, color ) {
 				var svg = d3.select( "body" ).append( "svg" )
 					.attr( "height", unit * ( maze.length + 2 ) )
 					.attr( "width", unit * ( maze[ 0 ].length + 2 ) )
@@ -166,8 +237,8 @@
 							.attr( "x", unit * ( 1 + j ) )
 							.attr( "y", unit * ( 1 + i ) )
 							.attr( "width", unit ).attr( "height", unit )
-							.style( "stroke", "#eeeeee" )
-							.style( "fill", "#ffffffff" );
+							.style( "stroke", "#444444" )
+							.style( "fill", "#000000ff" );
 					}
 				}
 				var hold = '';
@@ -177,17 +248,26 @@
 				}
 				svg.append( "path" )
 					.attr( "d", hold ).attr( "stroke-width", 1 )
-					.style( "stroke", "000000" ).style( "fill", "none" );
+					.style( "stroke", color ).style( "fill", "None" );
 			}
+
+
+
+
 
 			var unit = 5;
 
 			var maze = genDFSMaze( 25, 25 );
-			picMaze( maze, unit );
+			picMaze( maze, unit, "#ff0000" );
 			var traveler = new traverser( maze, unit );
 			traveler.traverse( );
-			lineFill( maze, traveler );
+			lineFill( maze, traveler, "#ff0000" );
 
+			var maze2 = genPrimMaze( 25, 25 );
+			picMaze( maze2, unit, "#00ff00" );
+			var traveler2 = new traverser( maze2, unit );
+			traveler2.traverse( );
+			lineFill( maze2, traveler2, "#00ff00" );
 
 
 
