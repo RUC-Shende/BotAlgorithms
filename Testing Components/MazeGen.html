@@ -85,37 +85,48 @@
 					this.maze = maze;
 					this.unit = unit;
 					this.pos = maze[ 0 ][ 0 ];
+					this.dirs = [ "-down", "right", "-up", "left" ];
 					this.vPos = [
-						{ x:unit, y:0 }, { x:unit, y:unit }, { x:0, y:unit }, { x:0, y:0 }
+						{ x:unit, y:unit }, { x:unit, y:0 }, { x:0, y:0 }, { x:0, y:unit }
 					];
 					this.dir = 2;
-					this.path = [ ];
-					this.placeVert( );
-					this.traverse( );
+					this.path = [ { x:0, y:0 } ];
 				}
 				
 				traverse( ) {
 					var count = 0;
 					do {
+						//console.log( "Pos: ", this.pos.x, this.pos.y, "dir: ", this.dirs[ this.dir ] );
 						count++;
-						if( this.pos.c[ this.dir ] ) {		//check forward
+						if( this.pos.c[ this.dir ] ) {	
+							//console.log( "forward" );	
 							this.goForward( );
-							if( this.pos.c[ this.toTheRight( ) ] ) {	//check right
+							if( this.pos.c[ this.toTheRight( ) ] ) {
+								//console.log( "-left forward" );
 								this.dir = this.toTheRight( );
+								this.placeVert( );
 								this.goForward( );
+								if( this.pos.c[ this.toTheRight( ) ] ) {
+									//console.log( "-left forward" );
+									this.dir = this.toTheRight( );
+									this.placeVert( );
+									this.goForward( );
+								}
 							}
-						} else {				//turn left
+							this.placeVert( );
+						} else {
+							//console.log( "-right" );
 							this.dir = this.toTheLeft( );
+							this.placeVert( );
 						}
-						this.placeVert( );
-
 					} while(
 						(
 							( this.path[ 0 ].x != this.path[ this.path.length - 1 ].x ) ||
 							( this.path[ 0 ].y != this.path[ this.path.length - 1 ].y )
-						) && ( count < 4000 )
+						)// && ( count < 2000 )
 					);
-					console.log( count );
+					console.log( this.path );
+					console.log( "Count: " + count );
 				}
 
 				placeVert( ) {
@@ -144,21 +155,42 @@
 				}
 			}
 
-			var maze = genDFSMaze( 25, 25 );
-
-			/*for( var i = 0; i < maze.length; i++ ) {
-				for( var j = 0; j < maze[ 0 ].length; j++ ) {
-					console.log(
-						maze[ i ][ j ].c[ 0 ] + ", " +
-						maze[ i ][ j ].c[ 1 ] + ", " +
-						maze[ i ][ j ].c[ 2 ] + ", " +
-						maze[ i ][ j ].c[ 3 ]
-					);
+			function lineFill( maze, traveler ) {
+				var svg = d3.select( "body" ).append( "svg" )
+					.attr( "height", unit * ( maze.length + 2 ) )
+					.attr( "width", unit * ( maze[ 0 ].length + 2 ) )
+					.style( "border", "1px solid black" );
+				for( var i = 0; i < maze.length; i++ ) {
+					for( var j = 0; j < maze[ 0 ].length; j++ ) {
+						svg.append( "rect" )
+							.attr( "x", unit * ( 1 + j ) )
+							.attr( "y", unit * ( 1 + i ) )
+							.attr( "width", unit ).attr( "height", unit )
+							.style( "stroke", "#eeeeee" )
+							.style( "fill", "#ffffffff" );
+					}
 				}
-			}*/
+				var hold = '';
+				for( var k = 0; k < traveler.path.length; k++ ) {
+					var pt = traveler.path[ k ];
+					hold += ( ( k == 0 ) ? ( 'M' ) : ( 'L' ) ) + ( unit + pt.x ) + ',' + ( unit + pt.y );
+				}
+				svg.append( "path" )
+					.attr( "d", hold ).attr( "stroke-width", 1 )
+					.style( "stroke", "000000" ).style( "fill", "none" );
+			}
 
-			picMaze( maze, 5 );
-			//var traveler = new traverser( maze, 5 );
+			var unit = 5;
+
+			var maze = genDFSMaze( 25, 25 );
+			picMaze( maze, unit );
+			var traveler = new traverser( maze, unit );
+			traveler.traverse( );
+			lineFill( maze, traveler );
+
+
+
+
 		</script>
 	</body>
 </html>
