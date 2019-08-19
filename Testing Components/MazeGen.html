@@ -9,33 +9,38 @@
 		<script>
 			function genWilsonMaze( h, w ) {
 				var maze = [ ];
-				var list = [ ];
 				for( var i = 0; i < h; i++ ) {
 					maze.push( [ ] );
 					for( var j = 0; j < w; j++ ) {
 						maze[ i ].push(
-							{ x:j, y:i, n:null, c:[ null, null, null, null ], p:null }
+							{ x:j, y:i, u:false, n:null, c:[ null, null, null, null ], p:null }
 						);
-						list.push( maze[ i ][ j ] );
 					}
 				}
 
+				var next = maze[ Math.floor( h * Math.random( ) ) ]
+					[ Math.floor( w * Math.random( ) ) ];
+				next.n = 1;
 				var pathNum = 2;
-				var next = Math.floor( list.length * Math.random( ) );
-				list[ next ].n = 1;
-				list[ next ] = list[ list.length - 1 ];
-				list.pop( );
 
 				do {
-					var next = Math.floor( list.length * Math.random( ) );
-					var cc = list[ next ];
-					list[ next ] = list[ list.length - 1 ];
-					list.pop( );
+					var open = [ ];
+					for( var k = 0; k < h; k++ ) {
+						for( var l = 0; l < w; l++ ) {
+							if( !maze[ k ][ l ].n ) {
+								open.push( maze[ k ][ l ] );
+							}
+						}
+					}
+					//alert( open.length );
+					if( open.length < 1 ) {
+						break;
+					}
+					var next = Math.floor( open.length * Math.random( ) );
+					var cc = open[ next ];
 					cc.n = pathNum;
 
 					while( cc.n == pathNum ) {
-						//while current is not target or attached to maze, wander
-						//if found self, backtrack
 						var opts = [ ];
 						if( cc.y + 1 < h ) {
 							opts.push( { n:0, b:maze[ cc.y + 1 ][ cc.x ] } );
@@ -51,10 +56,23 @@
 						}
 
 						var next = opts[ Math.floor( opts.length * Math.random( ) ) ];
+
 						if( next.b.n == pathNum ) {
 							var bc = next.b;
-							while( ( cc.x != bc.x ) || ( ccy != cc.x ) ) {
-								
+							while( ( cc.x != bc.x ) || ( cc.y != bc.y ) ) {
+								//find before direction
+								for( var m = 0; m < 4; m++ ) {
+									if( cc.c[ m ] && cc.c[ m ].x == cc.p.x && cc.c[ m ].y == cc.p.y ) {
+										next = m;
+									}
+								}//readjust
+								var back = ( next + 2 >= 4 ) ? ( next - 2 ) : ( next + 2 );
+
+								cc.c[ next ] = null;	//undo current adjacent
+								cc.n = null;		//undo current pathNum
+								cc = cc.p		//set current to before
+								cc.c[ back ].p = null;	//undo current parent
+								cc.c[ back ] = null;	//undo before adjacent
 							}
 						} else {
 							var back = ( next.n + 2 >= 4 ) ? ( next.n - 2 ) : ( next.n + 2 );
@@ -69,7 +87,7 @@
 					}
 					pathNum++;
 
-				} while( list.length > 0 );
+				} while( 1 );
 				return( maze );
 			}
 
@@ -316,25 +334,35 @@
 					.attr( "height", unit * ( 2 * maze.length + 1 ) )
 					.attr( "width", unit * ( 2 * maze[ 0 ].length + 1 ) )
 					.style( "border", "1px solid black" );
-				svg.append( "rect" )
-					.attr( "height", "100%" )
-					.attr( "width", "100%" )
-					.style( "fill", color );
+
+				var blocks = [ ];
+				for( var i = 0; i < 2 * maze.length + 1; i++ ) {
+					blocks.push( [ ] );
+					for( var j = 0; j < 2 * maze[ 0 ].length + 1; j++ ) {
+						blocks[ i ].push( svg.append( "rect" )
+							.attr( "x", unit * j + 1 )
+							.attr( "y", unit * i + 1 )
+							.attr( "width", unit ).attr( "height", unit )
+							.style( "fill", color )
+							.style( "stroke", "#777777" )
+						);
+					}
+				}
 
 				for( var i = 0; i < maze.length; i++ ) {
 					for( var j = 0; j < maze[ 0 ].length; j++ ) {
-						svg.append( "rect" )
-							.attr( "x", unit * ( 2 * j + 1 ) )
-							.attr( "y", unit * ( 2 * i + 1 ) )
-							.attr( "width", unit ).attr( "height", unit )
-							.style( "fill", "#000000ff" );
-						var p = maze[ i ][ j ].p;
-						if( p ) {
-							svg.append( "rect" )
-								.attr( "x", unit + 2 * unit * ( j + p.x ) / 2 )
-								.attr( "y", unit + 2 * unit * ( i + p.y ) / 2 )
-								.attr( "width", unit ).attr( "height", unit )
-								.style( "fill", "#444444ff" );
+						blocks[ 2 * i + 1 ][ 2 * j + 1 ].style( "fill", "#000000ff" );
+						if( maze[ i ][ j ].c[ 0 ] ) {
+							blocks[ 2 * i + 2 ][ 2 * j + 1 ].style( "fill", "#000000ff" );
+						}
+						if( maze[ i ][ j ].c[ 1 ] ) {
+							blocks[ 2 * i + 1 ][ 2 * j + 2 ].style( "fill", "#000000ff" );
+						}
+						if( maze[ i ][ j ].c[ 2 ] ) {
+							blocks[ 2 * i ][ 2 * j + 1 ].style( "fill", "#000000ff" );
+						}
+						if( maze[ i ][ j ].c[ 3 ] ) {
+							blocks[ 2 * i + 1 ][ 2 * j ].style( "fill", "#000000ff" );
 						}
 					}
 				}
@@ -355,7 +383,7 @@
 							.attr( "x", unit * ( 1 + j ) )
 							.attr( "y", unit * ( 1 + i ) )
 							.attr( "width", unit ).attr( "height", unit )
-							.style( "stroke", "#444444" )
+							.style( "stroke", "#777777" )
 							.style( "fill", "#000000ff" );
 					}
 				}
@@ -375,16 +403,17 @@
 
 			var unit = 5;
 
+			
 			var maze = genDFSMaze( 25, 25 );
-			squareMaze( maze, unit, "#ff0000" );
+			squareMaze( maze, unit, "#ffff00" );
 
 			var traveler11 = new wallTraverser( maze, unit );
 			traveler11.traverse( );
-			lineMaze( maze, traveler11, "#ff0000" );
+			lineMaze( maze, traveler11, "#ffff00" );
 
 			var traveler12 = new pathTraverser( maze, unit );
 			traveler12.traverse( );
-			lineMaze( maze, traveler12, "#ff0000" );
+			lineMaze( maze, traveler12, "#ffff00" );
 
 
 
@@ -398,7 +427,19 @@
 			var traveler22 = new pathTraverser( maze2, unit );
 			traveler22.traverse( );
 			lineMaze( maze2, traveler22, "#00ff00" );
+			
 
+
+			var maze3 = genWilsonMaze( 25, 25 );
+			squareMaze( maze3, unit, "#00ffff" );
+
+			var traveler31 = new wallTraverser( maze3, unit );
+			traveler31.traverse( );
+			lineMaze( maze3, traveler31, "#00ffff" );
+
+			var traveler32 = new pathTraverser( maze3, unit );
+			traveler32.traverse( );
+			lineMaze( maze3, traveler32, "#00ffff" );
 
 
 		</script>
