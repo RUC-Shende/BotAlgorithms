@@ -8,36 +8,40 @@
 	<body>
 		<script>
 			function genWilsonMaze( h, w ) {
-				var maze = [ ];
-				var list = [ ];
+				var maze = [ ];					//Fill Maze
 				for( var i = 0; i < h; i++ ) {
 					maze.push( [ ] );
 					for( var j = 0; j < w; j++ ) {
 						maze[ i ].push(
-							{ x:j, y:i, n:null, c:[ null, null, null, null ], p:null }
+							{ x:j, y:i, u:false, n:null, c:[ null, null, null, null ], p:null }
 						);
-						list.push( maze[ i ][ j ] );
 					}
 				}
-
-				var pathNum = 2;
-				var next = Math.floor( list.length * Math.random( ) );
-				list[ next ].n = 1;
-				list[ next ] = list[ list.length - 1 ];
-				list.pop( );
+										//Randomly chose a point
+				var next = maze[ Math.floor( h * Math.random( ) ) ]
+					[ Math.floor( w * Math.random( ) ) ];
+				next.n = 1;					//Set path number to 1 as the very first
+				var pathNum = 2;				//All following paths are two or greater
 
 				do {
-					var next = Math.floor( list.length * Math.random( ) );
-					var cc = list[ next ];
-					list[ next ] = list[ list.length - 1 ];
-					list.pop( );
+					var open = [ ];				//Find all unexplored points
+					for( var k = 0; k < h; k++ ) {
+						for( var l = 0; l < w; l++ ) {
+							if( !maze[ k ][ l ].n ) {
+								open.push( maze[ k ][ l ] );
+							}
+						}
+					}
+					if( open.length < 1 ) {			//Escape when all explored
+						break;
+					}
+					var next = Math.floor( open.length * Math.random( ) );
+					var cc = open[ next ];			//Pick a random unexplored point
 					cc.n = pathNum;
 
-					while( cc.n == pathNum ) {
-						//while current is not target or attached to maze, wander
-						//if found self, backtrack
+					while( cc.n == pathNum ) {	
 						var opts = [ ];
-						if( cc.y + 1 < h ) {
+						if( cc.y + 1 < h ) {		//Check options around point
 							opts.push( { n:0, b:maze[ cc.y + 1 ][ cc.x ] } );
 						}
 						if( cc.x + 1 < w ) {
@@ -49,27 +53,41 @@
 						if( cc.x - 1 >= 0 ) {
 							opts.push( { n:3, b:maze[ cc.y ][ cc.x - 1 ] } );
 						}
-
+										//Pick an option
 						var next = opts[ Math.floor( opts.length * Math.random( ) ) ];
-						if( next.b.n == pathNum ) {
+
+						if( next.b.n == pathNum ) {	//Traveler finds itself
 							var bc = next.b;
-							while( ( cc.x != bc.x ) || ( ccy != cc.x ) ) {
-								
+										//Undo path until at collision
+							while( ( cc.x != bc.x ) || ( cc.y != bc.y ) ) {
+										//What direction is my parent
+								for( var m = 0; m < 4; m++ ) {
+									if( cc.c[ m ] && cc.c[ m ].x == cc.p.x && cc.c[ m ].y == cc.p.y ) {
+										next = m;
+									}
+								}
+										//back up to parent
+								var back = ( next + 2 >= 4 ) ? ( next - 2 ) : ( next + 2 );
+								cc.c[ next ] = null;	//undo current adjacent
+								cc.n = null;		//undo current pathNum
+								cc = cc.p		//set current to before
+								cc.c[ back ].p = null;	//undo current parent
+								cc.c[ back ] = null;	//undo before adjacent
 							}
-						} else {
+						} else {			//Found different point, update
 							var back = ( next.n + 2 >= 4 ) ? ( next.n - 2 ) : ( next.n + 2 );
 							cc.c[ next.n ] = next.b;	//set next into cur adj
 							next.b.p = cc;			//set next parent
 							next.b.c[ back ] = cc;		//set next adj to cur
-							if( !next.b.n ) {
+							if( !next.b.n ) {	//Found a point not in a path
 								next.b.n = pathNum;	//set cur number
 							}
 							cc = next.b;
 						}
 					}
-					pathNum++;
+					pathNum++;				//Set number for next path
 
-				} while( list.length > 0 );
+				} while( 1 );
 				return( maze );
 			}
 
@@ -78,7 +96,7 @@
 
 
 			function genPrimMaze( h, w ) {
-				var maze = [ ];
+				var maze = [ ];					//Fill Maze
 				for( var i = 0; i < h; i++ ) {
 					maze.push( [ ] );
 					for( var j = 0; j < w; j++ ) {
@@ -94,12 +112,12 @@
 
 				var list = [ cc ];
 
-				do {
+				do {						//Grab random point from list
 					var next = Math.floor( list.length * Math.random( ) );
 					cc = list[ next ];
 					list[ next ] = list[ list.length - 1 ];
 					list.pop( );
-
+										//Check and add adjacents to list
 					if( ( cc.y + 1 < h && ( maze[ cc.y + 1 ][ cc.x ].u ) ) ) {
 						list.push( maze[ cc.y + 1 ][ cc.x ] );
 						maze[ cc.y + 1 ][ cc.x ].u = false;
@@ -137,8 +155,8 @@
 
 
 
-			function genDFSMaze( h, w ) {		//Problem here with edges.
-				var maze = [ ];
+			function genDFSMaze( h, w ) {
+				var maze = [ ];					//Fill maze
 				for( var i = 0; i < h; i++ ) {
 					maze.push( [ ] );
 					for( var j = 0; j < w; j++ ) {
@@ -153,7 +171,7 @@
 				var sc = cc;
 
 				cc.u = false;
-				do {
+				do {						//Check adjacents, and pick one
 					var opts = [ ];
 					if( ( cc.y + 1 < h && ( maze[ cc.y + 1 ][ cc.x ].u ) ) ) {
 						opts.push( { n:0, b:maze[ cc.y + 1 ][ cc.x ] } );
@@ -167,7 +185,7 @@
 					if( ( cc.x - 1 >= 0 ) && ( maze[ cc.y ][ cc.x - 1 ].u ) ) {
 						opts.push( { n:3, b:maze[ cc.y ][ cc.x - 1 ] } );
 					}
-					if( opts.length > 0 ) {
+					if( opts.length > 0 ) {			//Update picked adjacent
 						var next = opts[ Math.floor( opts.length * Math.random( ) ) ];
 						var back = ( next.n + 2 >= 4 ) ? ( next.n - 2 ) : ( next.n + 2 );
 						cc.c[ next.n ] = next.b;	//set next into cur adj
@@ -189,23 +207,25 @@
 			class wallTraverser {
 				constructor( maze, unit ) {
 					this.maze = maze;
-					this.unit = unit;
-					this.pos = maze[ 0 ][ 0 ];
-					this.vPos = [
+					this.unit = unit;			//How large should the maze corridor width be
+					this.pos = maze[ 0 ][ 0 ];		//Starting point
+					this.vPos = [				//Where post is relative to point
 						{ x:unit, y:unit }, { x:unit, y:0 }, { x:0, y:0 }, { x:0, y:unit }
 					];
-					this.dir = 2;
-					this.path = [ { x:0, y:0 } ];
+					this.dir = 2;				//Traverser direction
+					this.path = [ { x:0, y:0 } ];		//Path so far
 				}
 				
 				traverse( ) {
-					do {
-						if( this.pos.c[ this.dir ] ) {		
+					do {					//Forward open
+						if( this.pos.c[ this.dir ] ) {
 							this.goForward( );
+										//Right open
 							if( this.pos.c[ this.toTheRight( ) ] ) {
 								this.dir = this.toTheRight( );
 								this.placeVert( );
 								this.goForward( );
+										//Next right open as well, for small c hallways
 								if( this.pos.c[ this.toTheRight( ) ] ) {
 									this.dir = this.toTheRight( );
 									this.placeVert( );
@@ -264,13 +284,16 @@
 				
 				traverse( ) {
 					do {
+										//Check right, since no advanced checks needed
 						if( this.pos.c[ this.toTheRight( ) ] ) {
 							this.dir = this.toTheRight( );
 							this.goForward( );
 							this.placeVert( );
+										//Check forward
 						} else if( this.pos.c[ this.dir ] ) {	
 							this.goForward( );
 							this.placeVert( );
+										//Turn left otherwise
 						} else {
 							this.dir = this.toTheLeft( );
 						}
@@ -316,25 +339,36 @@
 					.attr( "height", unit * ( 2 * maze.length + 1 ) )
 					.attr( "width", unit * ( 2 * maze[ 0 ].length + 1 ) )
 					.style( "border", "1px solid black" );
-				svg.append( "rect" )
-					.attr( "height", "100%" )
-					.attr( "width", "100%" )
-					.style( "fill", color );
 
-				for( var i = 0; i < maze.length; i++ ) {
-					for( var j = 0; j < maze[ 0 ].length; j++ ) {
-						svg.append( "rect" )
-							.attr( "x", unit * ( 2 * j + 1 ) )
-							.attr( "y", unit * ( 2 * i + 1 ) )
+				var blocks = [ ];				//Fill maze with squares, misnomer
+				for( var i = 0; i < 2 * maze.length + 1; i++ ) {
+					blocks.push( [ ] );
+					for( var j = 0; j < 2 * maze[ 0 ].length + 1; j++ ) {
+						blocks[ i ].push( svg.append( "rect" )
+							.attr( "x", unit * j + 1 )
+							.attr( "y", unit * i + 1 )
 							.attr( "width", unit ).attr( "height", unit )
-							.style( "fill", "#000000ff" );
-						var p = maze[ i ][ j ].p;
-						if( p ) {
-							svg.append( "rect" )
-								.attr( "x", unit + 2 * unit * ( j + p.x ) / 2 )
-								.attr( "y", unit + 2 * unit * ( i + p.y ) / 2 )
-								.attr( "width", unit ).attr( "height", unit )
-								.style( "fill", "#444444ff" );
+							.style( "fill", color )
+							.style( "stroke", "#777777" )
+						);
+					}
+				}
+
+				for( var i = 0; i < maze.length; i++ ) {	//Fill current checked block
+					for( var j = 0; j < maze[ 0 ].length; j++ ) {
+										//Fill chldren of current block
+						blocks[ 2 * i + 1 ][ 2 * j + 1 ].style( "fill", "#000000ff" );
+						if( maze[ i ][ j ].c[ 0 ] ) {
+							blocks[ 2 * i + 2 ][ 2 * j + 1 ].style( "fill", "#000000ff" );
+						}
+						if( maze[ i ][ j ].c[ 1 ] ) {
+							blocks[ 2 * i + 1 ][ 2 * j + 2 ].style( "fill", "#000000ff" );
+						}
+						if( maze[ i ][ j ].c[ 2 ] ) {
+							blocks[ 2 * i ][ 2 * j + 1 ].style( "fill", "#000000ff" );
+						}
+						if( maze[ i ][ j ].c[ 3 ] ) {
+							blocks[ 2 * i + 1 ][ 2 * j ].style( "fill", "#000000ff" );
 						}
 					}
 				}
@@ -349,17 +383,18 @@
 					.attr( "height", unit * ( maze.length + 2 ) )
 					.attr( "width", unit * ( maze[ 0 ].length + 2 ) )
 					.style( "border", "1px solid black" );
+										//FIll maze with blocks
 				for( var i = 0; i < maze.length; i++ ) {
 					for( var j = 0; j < maze[ 0 ].length; j++ ) {
 						svg.append( "rect" )
 							.attr( "x", unit * ( 1 + j ) )
 							.attr( "y", unit * ( 1 + i ) )
 							.attr( "width", unit ).attr( "height", unit )
-							.style( "stroke", "#444444" )
+							.style( "stroke", "#777777" )
 							.style( "fill", "#000000ff" );
 					}
 				}
-				var hold = '';
+				var hold = '';					//Fill path from traverser
 				for( var k = 0; k < traveler.path.length; k++ ) {
 					var pt = traveler.path[ k ];
 					hold += ( ( k == 0 ) ? ( 'M' ) : ( 'L' ) ) + ( unit + pt.x ) + ',' + ( unit + pt.y );
@@ -375,19 +410,21 @@
 
 			var unit = 5;
 
+			
+			//Long corridors
 			var maze = genDFSMaze( 25, 25 );
-			squareMaze( maze, unit, "#ff0000" );
+			squareMaze( maze, unit, "#ffff00" );
 
 			var traveler11 = new wallTraverser( maze, unit );
 			traveler11.traverse( );
-			lineMaze( maze, traveler11, "#ff0000" );
+			lineMaze( maze, traveler11, "#ffff00" );
 
 			var traveler12 = new pathTraverser( maze, unit );
 			traveler12.traverse( );
-			lineMaze( maze, traveler12, "#ff0000" );
+			lineMaze( maze, traveler12, "#ffff00" );
 
 
-
+			//Lotsa short dead ends
 			var maze2 = genPrimMaze( 25, 25 );
 			squareMaze( maze2, unit, "#00ff00" );
 
@@ -398,7 +435,19 @@
 			var traveler22 = new pathTraverser( maze2, unit );
 			traveler22.traverse( );
 			lineMaze( maze2, traveler22, "#00ff00" );
+			
 
+			//Mix of previous two
+			var maze3 = genWilsonMaze( 25, 25 );
+			squareMaze( maze3, unit, "#00ffff" );
+
+			var traveler31 = new wallTraverser( maze3, unit );
+			traveler31.traverse( );
+			lineMaze( maze3, traveler31, "#00ffff" );
+
+			var traveler32 = new pathTraverser( maze3, unit );
+			traveler32.traverse( );
+			lineMaze( maze3, traveler32, "#00ffff" );
 
 
 		</script>
