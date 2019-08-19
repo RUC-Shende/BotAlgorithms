@@ -2,12 +2,75 @@
 
 <html>
 	<head>
-		<script src="d3/d3.min.js"></script>
+		<!--<script src = "https://d3js.org/d3.v5.min.js"></script>-->
+		<script src="../../d3/d3.min.js"></script>
 	</head>
 	<body>
 		<script>
 			function genWilsonMaze( h, w ) {
+				var maze = [ ];
+				var list = [ ];
+				for( var i = 0; i < h; i++ ) {
+					maze.push( [ ] );
+					for( var j = 0; j < w; j++ ) {
+						maze[ i ].push(
+							{ x:j, y:i, n:null, c:[ null, null, null, null ], p:null }
+						);
+						list.push( maze[ i ][ j ] );
+					}
+				}
 
+				var pathNum = 2;
+				var next = Math.floor( list.length * Math.random( ) );
+				list[ next ].n = 1;
+				list[ next ] = list[ list.length - 1 ];
+				list.pop( );
+
+				do {
+					var next = Math.floor( list.length * Math.random( ) );
+					var cc = list[ next ];
+					list[ next ] = list[ list.length - 1 ];
+					list.pop( );
+					cc.n = pathNum;
+
+					while( cc.n == pathNum ) {
+						//while current is not target or attached to maze, wander
+						//if found self, backtrack
+						var opts = [ ];
+						if( cc.y + 1 < h ) {
+							opts.push( { n:0, b:maze[ cc.y + 1 ][ cc.x ] } );
+						}
+						if( cc.x + 1 < w ) {
+							opts.push( { n:1, b:maze[ cc.y ][ cc.x + 1 ] } );
+						}
+						if( cc.y - 1 >= 0 ) {
+							opts.push( { n:2, b:maze[ cc.y - 1 ][ cc.x ] } );
+						}
+						if( cc.x - 1 >= 0 ) {
+							opts.push( { n:3, b:maze[ cc.y ][ cc.x - 1 ] } );
+						}
+
+						var next = opts[ Math.floor( opts.length * Math.random( ) ) ];
+						if( next.b.n == pathNum ) {
+							var bc = next.b;
+							while( ( cc.x != bc.x ) || ( ccy != cc.x ) ) {
+								
+							}
+						} else {
+							var back = ( next.n + 2 >= 4 ) ? ( next.n - 2 ) : ( next.n + 2 );
+							cc.c[ next.n ] = next.b;	//set next into cur adj
+							next.b.p = cc;			//set next parent
+							next.b.c[ back ] = cc;		//set next adj to cur
+							if( !next.b.n ) {
+								next.b.n = pathNum;	//set cur number
+							}
+							cc = next.b;
+						}
+					}
+					pathNum++;
+
+				} while( list.length > 0 );
+				return( maze );
 			}
 
 
@@ -31,9 +94,7 @@
 
 				var list = [ cc ];
 
-				do {//while list is not empty
-					//pick random wall, remove from list, and update adjacencies to list
-
+				do {
 					var next = Math.floor( list.length * Math.random( ) );
 					cc = list[ next ];
 					list[ next ] = list[ list.length - 1 ];
@@ -67,7 +128,7 @@
 						maze[ cc.y ][ cc.x - 1 ].c[ 1 ] = cc;
 						cc.c[ 3 ] = maze[ cc.y ][ cc.x - 1 ];
 					}
-				} while( list.length > 0 );//eventually, no more walls to check
+				} while( list.length > 0 );
 				return( maze );
 
 			}
@@ -125,45 +186,11 @@
 
 
 
-			function picMaze( maze, unit, color ) {
-				var svg = d3.select( "body" ).append( "svg" )
-					.attr( "height", unit * ( 2 * maze.length + 1 ) )
-					.attr( "width", unit * ( 2 * maze[ 0 ].length + 1 ) )
-					.style( "border", "1px solid black" );
-				svg.append( "rect" )
-					.attr( "height", "100%" )
-					.attr( "width", "100%" )
-					.style( "fill", color );
-
-				for( var i = 0; i < maze.length; i++ ) {
-					for( var j = 0; j < maze[ 0 ].length; j++ ) {
-						svg.append( "rect" )
-							.attr( "x", unit * ( 2 * j + 1 ) )
-							.attr( "y", unit * ( 2 * i + 1 ) )
-							.attr( "width", unit ).attr( "height", unit )
-							.style( "fill", "#000000ff" );
-						var p = maze[ i ][ j ].p;
-						if( p ) {
-							svg.append( "rect" )
-								.attr( "x", unit + 2 * unit * ( j + p.x ) / 2 )
-								.attr( "y", unit + 2 * unit * ( i + p.y ) / 2 )
-								.attr( "width", unit ).attr( "height", unit )
-								.style( "fill", "#444444ff" );
-						}
-					}
-				}
-			}
-
-
-
-
-
-			class traverser {
+			class wallTraverser {
 				constructor( maze, unit ) {
 					this.maze = maze;
 					this.unit = unit;
 					this.pos = maze[ 0 ][ 0 ];
-					this.dirs = [ "-down", "right", "-up", "left" ];
 					this.vPos = [
 						{ x:unit, y:unit }, { x:unit, y:0 }, { x:0, y:0 }, { x:0, y:unit }
 					];
@@ -225,8 +252,99 @@
 
 
 
+			class pathTraverser {
+				constructor( maze, unit ) {
+					this.maze = maze;
+					this.count = this.maze.length * this.maze[ 0 ].length;
+					this.unit = unit;
+					this.pos = maze[ 0 ][ 0 ];
+					this.dir = 2;
+					this.path = [ { x:unit / 2, y:unit / 2 } ];
+				}
+				
+				traverse( ) {
+					do {
+						if( this.pos.c[ this.toTheRight( ) ] ) {
+							this.dir = this.toTheRight( );
+							this.goForward( );
+							this.placeVert( );
+						} else if( this.pos.c[ this.dir ] ) {	
+							this.goForward( );
+							this.placeVert( );
+						} else {
+							this.dir = this.toTheLeft( );
+						}
+					} while( this.count );
+				}
 
-			function lineFill( maze, traveler, color ) {
+				placeVert( ) {
+					this.path.push( {
+						x:this.unit * this.pos.x + this.unit / 2,
+						y:this.unit * this.pos.y + this.unit / 2
+					} );
+					if( !this.pos.u ) {
+						this.pos.u = true;
+						this.count--;
+					}
+				}
+
+				goForward( ) {
+					this.pos = this.pos.c[ this.dir ];
+				}
+
+				toTheRight( ) {
+					if( this.dir + 1 >= 4 ) {
+						return( this.dir - 3 );
+					}
+					return( this.dir + 1 );
+				}
+
+				toTheLeft( ) {
+					if( this.dir - 1 < 0 ) {
+						return( this.dir + 3 );
+					}
+					return( this.dir - 1 );
+				}
+			}
+
+
+
+
+
+			function squareMaze( maze, unit, color ) {
+				var svg = d3.select( "body" ).append( "svg" )
+					.attr( "height", unit * ( 2 * maze.length + 1 ) )
+					.attr( "width", unit * ( 2 * maze[ 0 ].length + 1 ) )
+					.style( "border", "1px solid black" );
+				svg.append( "rect" )
+					.attr( "height", "100%" )
+					.attr( "width", "100%" )
+					.style( "fill", color );
+
+				for( var i = 0; i < maze.length; i++ ) {
+					for( var j = 0; j < maze[ 0 ].length; j++ ) {
+						svg.append( "rect" )
+							.attr( "x", unit * ( 2 * j + 1 ) )
+							.attr( "y", unit * ( 2 * i + 1 ) )
+							.attr( "width", unit ).attr( "height", unit )
+							.style( "fill", "#000000ff" );
+						var p = maze[ i ][ j ].p;
+						if( p ) {
+							svg.append( "rect" )
+								.attr( "x", unit + 2 * unit * ( j + p.x ) / 2 )
+								.attr( "y", unit + 2 * unit * ( i + p.y ) / 2 )
+								.attr( "width", unit ).attr( "height", unit )
+								.style( "fill", "#444444ff" );
+						}
+					}
+				}
+			}
+
+
+
+
+
+			function lineMaze( maze, traveler, color ) {
 				var svg = d3.select( "body" ).append( "svg" )
 					.attr( "height", unit * ( maze.length + 2 ) )
 					.attr( "width", unit * ( maze[ 0 ].length + 2 ) )
@@ -258,16 +376,28 @@
 			var unit = 5;
 
 			var maze = genDFSMaze( 25, 25 );
-			picMaze( maze, unit, "#ff0000" );
-			var traveler = new traverser( maze, unit );
-			traveler.traverse( );
-			lineFill( maze, traveler, "#ff0000" );
+			squareMaze( maze, unit, "#ff0000" );
+
+			var traveler11 = new wallTraverser( maze, unit );
+			traveler11.traverse( );
+			lineMaze( maze, traveler11, "#ff0000" );
+
+			var traveler12 = new pathTraverser( maze, unit );
+			traveler12.traverse( );
+			lineMaze( maze, traveler12, "#ff0000" );
+
+
 
 			var maze2 = genPrimMaze( 25, 25 );
-			picMaze( maze2, unit, "#00ff00" );
-			var traveler2 = new traverser( maze2, unit );
-			traveler2.traverse( );
-			lineFill( maze2, traveler2, "#00ff00" );
+			squareMaze( maze2, unit, "#00ff00" );
+
+			var traveler21 = new wallTraverser( maze2, unit );
+			traveler21.traverse( );
+			lineMaze( maze2, traveler21, "#00ff00" );
+
+			var traveler22 = new pathTraverser( maze2, unit );
+			traveler22.traverse( );
+			lineMaze( maze2, traveler22, "#00ff00" );
 
 
 
