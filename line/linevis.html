@@ -1,0 +1,105 @@
+<!doctype html>
+
+<head>
+    <!--<script src="https://d3js.org/d3.v5.min.js"></script>-->
+    <script src="../js/d3.min.js"></script>
+
+</head>
+<body>
+    <svg id="anim0" width=750px height=750px style="border:1px solid black;">
+
+        <svg viewBox="0 0 100 100" id="backGround" >
+            <line x1=20 y1=35 x2=80 y2=35 style="stroke:#000000;stroke-width:.25"></line>
+            <line x1=20 y1=33 x2=20 y2=37 style="stroke:#000000;stroke-width:.25"></line>
+            <line x1=80 y1=33 x2=80 y2=37 style="stroke:#000000;stroke-width:.25"></line>
+            <line x1=50 y1=33 x2=50 y2=37 style="stroke:#000000;stroke-width:.25"></line>
+            <text x=80 y=30 id="exittext" style="font-size:2.5; text-anchor:middle"></text>
+            <text x=20 y=30 id="negativetext" style="font-size:2.5; text-anchor:middle;"></text>
+            <text x=80 y=30 id="positivetext" style="font-size:2.5; text-anchor:middle"></text>
+
+            <circle cx=50 cy=85 r=1 style="stroke:#000000; fill:#ffffff; stroke-width:0.25"></circle>
+
+        </svg>
+        <svg viewBox="0 0 100 100"  id="lines" ></svg>
+
+        <svg viewBox="0 0 100 100" id="bots" ></svg>
+        <svg viewBox="0 0 100 100" id="overLay" ></svg>
+    </svg>
+    <script src="linemodules.js"></script>
+    <script src="tourist1d.js"></script>
+    <script>
+    function main() {
+        icll = [
+            [
+                ["#ff0000"],
+                ["Go", {distance:1, direction:1}],
+                ["Go", {distance:3, direction:-1}],
+                ["Go", {distance:7, direction:1}],
+                ["Go", {distance:15, direction:-1}],
+                ["Go", {distance:31, direction:1}],
+                ["Go", {distance:32, direction:-1}],
+                ["wait", [null]],
+                ["GoToExit", [null]]
+            ],
+            [
+                ["#00ff00"],
+                ["Go", {distance:1, direction:-1}],
+                ["Go", {distance:3, direction:1}],
+                ["Go", {distance:7, direction:-1}],
+                ["Go", {distance:15, direction:1}],
+                ["Go", {distance:31, direction:-1}],
+                ["Go", {distance:32, direction:1}],
+                ["wait", [null]],
+                ["GoToExit", [null]]
+            ],
+            [
+                ["#befae9"],
+                ["Go", {distance:2, direction:-1}],
+                ["Go", {distance:2, direction: 1}],
+                ["Go", {distance:2, direction:-1}],
+                ["wait", [null]],
+                ["GoToExit", [null]]
+            ]
+        ];
+        var field = d3.select("#anim0");
+
+        window.i = new iclData(0, icll, "Name", 6, true, {x:50, y:35});
+        i.tourists.push(new Tourist(i, 50, 35, 0, icll[0], false));
+        i.tourists.push(new Tourist(i, 50, 35, 1, icll[1], false));
+        i.tourists.push(new Tourist(i, 50, 35, 2, icll[2], false));
+
+        i.mods.push(new exitFindMod(i, field))
+
+        i.createHistory();
+        v = new iclVisual(i, field);
+
+        i.motor = setInterval(iclVisual.reEnact.bind(v), 1000/i.fps);
+
+        /* in place of icl visual
+        var bot = d3.select("#anim0").select("#bots").append("circle")
+            .attr("cx", 50)
+            .attr("cy", 35)
+            .attr("r", 1.5)
+            .attr("id", "testbot")
+            .style("stroke", "#000000")
+            .style("fill", "#ff0000")
+            .style("stroke-width", 0.25);
+
+        var line = d3.select("#anim0").select("#backGround").append("line")
+            .attr("x1", 50)
+            .attr("y1", 85)
+            .attr("x2", d3.select("#testbot").attr("cx"))
+            .attr("y2", d3.select("#testbot").attr("cy"))
+            .attr("id", "testline")
+            .style("fill", "none")
+            .style("stroke", "#000000")
+            .style("stroke-width", "0.1");
+            */
+
+    }
+    main();
+
+
+
+    </script>
+</body>

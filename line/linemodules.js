@@ -184,7 +184,7 @@ class utils {
  *
  */
 class iclData {
-    constructor(id, instruBinder, algorithmName, angle, wireless, path, start) {
+    constructor(id, instruBinder, algorithmName, exit, wireless, start) {
         /** Someone learned where the exit is. */
         this.exitAlert = false;
         /** How far into a frame the exit was found. */
@@ -200,23 +200,38 @@ class iclData {
         /** Frames per second. Too high (> 100) == bad performance. */
         this.fps = 144;
         /** The maximum time before we stop the simulation for good. */
-        this.timeMax = 10 * this.fps;
+        this.timeMax = 3 * this.fps;
         /** Points of the equilateral shape to search. Ex. 3 = Triangle, 4 = square, 360 = circle */
-        this.degrees = path.length - 1;
+        this.degrees = 2;
+        // 60 pixel path length for now.
+        this.pathLength = 60;
+
+        this.path = [{x:20, y:35}, {x:80, y:35}];
         /** 1 unit == 1 Radius. How many pixels per unit. */
-        this.unit2Px = 25;
+        this.unit2Px = this.pathLength / Math.abs(exit *2);
+
+        this.step = this.unit2Px/(this.fps / 6);
+        this.points = Math.abs(exit * 2);
         /** Center of the current shape in {float}[x,y]. */
         this.center = {
-            x: this.unit2Px * 2,
-            y: this.unit2Px * 2
+            x:50,
+            y:35
         };
+        this.origin = {x:this.center.x, y:85}
         /** tourist start location */
         this.start = start;
 
-        /** Angle of the exit to use for the sim. */
-        this.exitAngle = angle;
+        this.exit = exit;
+
+        if (this.exit < 0){
+            this.exitLoc = {x:20, y:35}
+        }
+        else {
+            this.exitLoc = {x:80, y:35}
+        }
+
         /** Exit to use for the sim in {float}[x,y]. */
-        this.fieldExit = utils.wallAtAngle(path, this.center, angle);
+        this.fieldExit = {x:exit};
         /** How many tourists this data structure is in control of. */
         this.touristNum = 0;
         /** Array of valid trajectories for robots. Length is how many tourists are being used. */
@@ -229,9 +244,7 @@ class iclData {
         /** Interval for this iclData instance. Typically set to 1000/fps. Initialized to just a number.*/
         this.motor = this.id;
 
-        this.path = path;
-
-        this.pPath = this.genPath();
+        this.pPath = this.genLine(20, 35, 80, 35);
 
         this.history = null;
 
@@ -242,32 +255,15 @@ class iclData {
         //this.Start();
     }
 
-    genPath() {
-        if (this.path[0].x != this.path[this.path.length - 1].x ||
-            this.path[0].y != this.path[this.path.length - 1].y
-        ) {
-            console.log("%cERROR: Must be a closed path", "color:#ff0000ff");
-            return null;
-        }
+    genLine(x1, y1, x2, y2) {
         var pPath = [];
-        var curPt = null;
-        for (var i = 0; i < this.path.length; i++) {
-            var nextPt = this.path[i];
-            if (curPt) {
-                var distance = Math.hypot(nextPt.y - curPt.y, nextPt.x - curPt.x);
-                var totalSteps = Math.floor(this.fps * distance / this.unit2Px) + 1;
-                for (var j = 0; j < totalSteps; j++) {
-                    var pt = {
-                        x: curPt.x + (j / totalSteps) * (nextPt.x - curPt.x),
-                        y: curPt.y + (j / totalSteps) * (nextPt.y - curPt.y)
-                    };
-                    pPath.push(pt);
-                }
-            }
-            curPt = nextPt;
+        for (var i = 0; i <=  this.points * this.fps; i++) {
+            pPath.push({x:x1 + (this.step * i)})
         }
-        return (pPath);
+        console.log(pPath);
+        return pPath;
     }
+
 
     Init() {
         this.time = 0; //Reset time
@@ -287,22 +283,33 @@ class iclData {
     }
 
     createHistory() {
-        this.Init();
+        //this.Init();
+        /*
+        d3.select("#anim0").select("#bots").append("circle")
+            .attr("cx", this.tourists[0].x)
+            .attr("cy", this.tourists[0].y)
+            .attr("r", 2)
+            .attr("id", "testbot")
+            .style("fill", "#ff0000")
+            .style("stroke", "#000000")
+            .style("stroke-width", "0.25");
+        */
         this.history = []; //Reset History
         for (var i = 0; i < this.instruBinder.length; i++) {
             this.history.push([]);
         }
-        while (this.time < this.timeMax) {
+        for (var k = 0; k < Math.abs(this.exit) * Math.abs(this.exit) * this.fps + (this.pPath.length * 2); k++) {
             for (var i = 0; i < this.instruBinder.length; i++) {
                 var who = this.tourists[i];
                 this.history[i].push({
                     x: who.x,
                     y: who.y
                 });
-                who.allowance = who.velocity * this.unit2Px / this.fps;
-                while (who.allowance > 0) {
+                //d3.select("#testbot").attr("cx", who.x).attr("cy", who.y);
+                //who.allowance = this.step;
+                //while (who.allowance > 0) {
                     who[who.icl[who.on][0]](who.icl[who.on][1]);
-                }
+                //}
             }
             for (var j = 0; j < this.mods.length; j++) {
                 if (this.mods[j].Update) {
@@ -311,6 +318,7 @@ class iclData {
             }
             this.time++;
         }
+        this.timeMax = this.history[0].length;
     }
 
 }
@@ -327,21 +335,21 @@ class iclData {
 
 */
 class exitFindMod {
-    constructor(iclData, exit, field, graph) {
+    constructor(iclData, exit, field) {
         /**Reference to iclData this module is enabled in.*/
         this.iclData = iclData;
         /**One step size.*/
-        this.step = this.iclData.unit2Px / this.iclData.fps;
+        this.step = this.iclData.step;
         /**Pre-history AKA before exit was placed anywhere.*/
         this.premo = null;
         /**Exit location {x,y}*/
-        this.exit = exit;
+        //this.exit = exit;
         /**Array of termination times for each exit placement. Only gets points searched, otherwise they will be 0.*/
         this.exitDistances = [];
         /**D3 reference to the field.*/
         this.fieldSVG = field;
         /**D3 reference to the graph*/
-        this.graphSVG = graph;
+        //this.graphSVG = graph;
         /**Array of graphlines showing distance from exit for each tourist.*/
         this.graphLines = [];
         /**Array of lines showing where tourist has travelled on field.*/
@@ -349,60 +357,60 @@ class exitFindMod {
     }
 
     Init() {
+        /*
         if (this.iclData.history) {
             this.premo = this.iclData.history;
         }
+        */
         for (var i = 0; i < this.iclData.tourists.length; i++) {
             this.exitDistances.push([]); // Add each array for tourists.
         }
     }
 
     Update() {
-        if (this.premo) {
-            var loc = this.iclData.history,
-                j = 0;
-            for (var i = 0; i < this.iclData.tourists.length; i++) {
+        var loc = this.iclData.history;
+        var j = 0;
+        for (var i = 0; i < this.iclData.tourists.length; i++) {
 
-                var distance = Math.hypot(
-                    this.exit.y - loc[i][loc[i].length - 1].y,
-                    this.exit.x - loc[i][loc[i].length - 1].x
-                );
-                this.exitDistances[i].push(distance);
-                if (distance <= this.step / 2) {
-                    // If tourist is priority and at exit end alg by time = timeMax
-                    if (this.iclData.tourists[i].priority) {
-                        this.iclData.allExitedLine = 1;
-                        this.iclData.timeMax = this.iclData.time;
-                    }
-                    if (!this.iclData.tourists[i].knows) {
-                        this.iclData.tourists[i].on = this.iclData.tourists[i].icl.length - 1;
-                        this.iclData.tourists[i].knows = true;
-                        this.iclData.tourists[i].target = null;
-                        j++;
-                    }
-                    // Send out exit alert
-                    if (this.iclData.wireless) {
-                        for (var m = 0; m < this.iclData.tourists.length; m++) {
-                            this.iclData.tourists[m].on = this.iclData.tourists[m].icl.length - 1;
-                            this.iclData.tourists[m].knows = true;
-                        }
+            var distance = Math.abs(this.iclData.exitLoc.x - this.iclData.tourists[i].x);
+            console.log("Distance " + this.iclData.tourists[i].number + ": " + distance);
+            //this.exitDistances[i].push(distance);
+            if (distance <= this.step) {
+                // If tourist is priority and at exit end alg by time = timeMax
+                if (this.iclData.tourists[i].priority) {
+                    this.iclData.allExitedLine = 1;
+                    this.iclData.timeMax = this.iclData.time;
+                }
+                if (!this.iclData.tourists[i].knows) {
+                    this.iclData.tourists[i].on = this.iclData.tourists[i].icl.length - 1;
+                    this.iclData.tourists[i].knows = true;
+                    this.iclData.tourists[i].target = null;
+                    //this.iclData.tourists[i].x = this.iclData.exitLoc.x;
+                    j++;
+                }
+                // Send out exit alert
+                if (this.iclData.wireless) {
+                    for (var m = 0; m < this.iclData.tourists.length; m++) {
+                        this.iclData.tourists[m].on = this.iclData.tourists[m].icl.length - 1;
+                        this.iclData.tourists[m].knows = true;
                     }
                 }
+            }
 
-            }
-            var allKnowing = false;
-            for (var t = 0; t < this.iclData.tourists.length; t ++ ) {
-                allKnowing = utils.cmpXYPairs(this.iclData.tourists[t], this.iclData.fieldExit);
-                if (!allKnowing){
-                    break;
-                }
-            }
-            if (allKnowing) {
-                console.log("AllKnowing")
-                this.iclData.timeMax = this.iclData.time;
+        }
+        var allKnowing = false;
+        for (var t = 0; t < this.iclData.tourists.length; t ++ ) {
+            allKnowing = utils.cmpXYPairs(this.iclData.tourists[t], this.iclData.exitLoc);
+            if (!allKnowing){
+                break;
             }
         }
+        if (allKnowing) {
+            console.log("AllKnowing")
+            this.iclData.timeMax = this.iclData.time;
+        }
     }
+    /*
 
     VReset() {
         this.graphSVG.select("#backGround").html(null);
@@ -413,8 +421,10 @@ class exitFindMod {
         this.fieldSVG.select("#lines").html(null);
         this.fieldSVG.select("#overLay").html(null);
     }
+    */
 
-    VInit() { // draw initial graph.
+
+    UVInit() { // draw initial graph.
         this.VReset();
         for (var i = 0; i < this.iclData.tourists.length; i++) {
             this.graphLines.push([]);
@@ -519,7 +529,7 @@ class exitFindMod {
             }
     }
 
-    VUpdate() {
+    UVUpdate() {
         var formatvalue = d3.format(",.3f");
 
         var hold = '';
@@ -756,14 +766,12 @@ Module to graph the upper bound of exit times based on algorithm.
  */
 
 class iclVisual {
-    constructor(iclData, field, graph) {
+    constructor(iclData, field) {
         /** An instance of iclData to use to update visuals */
         this.iclData = iclData;
         /** A D3 reference to the Field. Contains 4 Layers - 1: BackGround, 2: Lines, 3: Bots, 4: OverLay */
         this.fieldSVG = field;
         //this.fieldSVG = d3.select("#anim" + this.iclData.id);
-        /** A D3 reference to the Graph. Contains 4 Layers - 1: BackGround, 2: Lines, 3: Bots, 4: OverLay */
-        this.graphSVG = graph;
         /** A D3 reference to the movable time slider that appears at the end of a normal sim. */
         this.timeSlider;
         /** A D3 reference to the text which shows the current time in the sim (seconds). */
@@ -777,11 +785,10 @@ class iclVisual {
             return (d.y);
         });
         this.visuals = [];
+        this.connections = [];
         this.done = false;
         this.tourlines = [null, null];
         this.Init();
-        // Initialize.
-        //this.Start();
     }
 
     /**
@@ -827,6 +834,7 @@ class iclVisual {
 
     Init() {
         this.iclData.time = 0;
+        /*
         var hold = '';
         for (var i = 0; i < this.iclData.path.length; i++) {
             var pt = this.iclData.path[i];
@@ -835,16 +843,25 @@ class iclVisual {
         this.fieldSVG.select("#lines").append("path")
             .attr("d", hold).attr("stroke-width", 0.25)
             .style("stroke", "000000").style("fill", "none");
-
-        //var colors = ["#ff0000", "00ff00", "0000ff"];
+        */
 
         for (var i = 0; i < this.iclData.history.length; i++) {
             this.visuals.push(this.fieldSVG.select("#bots").append("circle")
-                .attr("r", this.iclData.unit2Px/16)
+                .attr("r", 1.5)
                 .attr("cx", this.iclData.start.x)
                 .attr("cy", this.iclData.start.y)
                 .attr("stroke-width", 0.25)
-                .style("fill", this.iclData.tourists[i].icl[0][0] ).style("stroke", "none")
+                .style("fill", this.iclData.tourists[i].icl[0][0] )
+                .style("stroke", "none")
+            );
+            this.connections.push(this.fieldSVG.select("#lines").append("line")
+                .attr("x1", this.iclData.origin.x)
+                .attr("y1", this.iclData.origin.y)
+                .attr("x2", this.visuals[i].attr("cx"))
+                .attr("y2", this.visuals[i].attr("cy"))
+                .style("stroke-width", 0.25)
+                .style("stroke", this.iclData.tourists[i].icl[0][0] )
+                .style("fill", "none")
             );
         }
         for (var i = 0; i < this.iclData.mods.length; i++) {
@@ -852,10 +869,19 @@ class iclVisual {
                 this.iclData.mods[i].VInit();
             }
         }
+        var negativetext = this.fieldSVG.select("#negativetext")
+            .text((this.iclData.exit < 0) ? this.iclData.exit : -this.iclData.exit);
 
-        console.log(d3.select("#Desc0"));
-        d3.select("#Desc0").text(this.iclData.algorithmName + ((this.iclData.wireless) ? (" Wireless") : ( " Face-to-Face")));
+        var positivetext = this.fieldSVG.select("#positivetext")
+            .text((this.iclData.exit > 0) ? this.iclData.exit : -this.iclData.exit);
+        var exitText = this.fieldSVG.select("#exittext")
+            .attr("x", this.iclData.exitLoc.x)
+            .attr("y", this.iclData.exitLoc.y - 8)
+            .style("font-size", 2.5)
+            .style("text-anchor", "middle")
+            .text("Exit Location: " + this.iclData.exit + " units.");
 
+        /*
         this.timeSlider = this.graphSVG.select("#overLay").append("rect").attr("width", this.iclData.unit2Px / 15).attr("height", this.iclData.unit2Px * 2)
             .attr("y", this.iclData.unit2Px * 1.55).attr("x", this.iclData.unit2Px * (10 / 25))
             .style("fill", "#888888").style("fill-opacity", .5)
@@ -864,7 +890,8 @@ class iclVisual {
                     self.MSlide();
                 }
             })(this)).on("end", this.ESlide)).attr("class", "timeSlide" + this.iclData.id);
-
+        */
+        /*
         this.timeText = this.graphSVG.select("#overLay").append("text").attr("x", this.iclData.unit2Px * (1 / 25)).attr("y", this.iclData.unit2Px * .15)
             .style("font-size", this.iclData.unit2Px * (4 / 25)).style("text-anchor", "start").text("Time: 0").attr("class", "timeText");
         this.frameText = this.graphSVG.select("#overLay").append("text").attr("x", this.iclData.unit2Px * (1 / 25)).attr("y", this.iclData.unit2Px * .35)
@@ -887,15 +914,19 @@ class iclVisual {
             .attr('class', 'reveal play').on('click', () => {
                 this.iclData.timeDirect--;
             });
+        */
 
     }
 
     static reEnact() {
 
-        if (!this.done && this.iclData.time <= this.iclData.timeMax) {
+        if (!this.done && this.iclData.time < this.iclData.timeMax) {
             for (var i = 0; i < this.iclData.history.length; i++) {
                 this.visuals[i].attr("cx", this.iclData.history[i][this.iclData.time].x)
                     .attr("cy", this.iclData.history[i][this.iclData.time].y);
+                this.connections[i]
+                .attr("x2", this.iclData.history[i][this.iclData.time].x)
+                .attr("cy", this.iclData.history[i][this.iclData.time].y);
             }
             for (var i = 0; i < this.iclData.mods.length; i++) {
                 if (this.iclData.mods[i].VUpdate) {
@@ -903,13 +934,15 @@ class iclVisual {
                 }
             }
 
-
+            /*
             this.timeText.text("Time: " + Math.floor((1000 * this.iclData.time) / this.iclData.fps) / 1000);
             this.frameText.text("Frame: " + this.iclData.time);
             this.timeSlider.attr("x", (0.45 * this.iclData.unit2Px) + (3 * this.iclData.unit2Px * (this.iclData.time / this.iclData.timeMax)));
+            */
             this.iclData.time += this.iclData.timeDirect;
             return;
         }
+        /*
         else {
             if (!this.done){
                 this.iclData.time = this.iclData.timeMax;
@@ -937,6 +970,7 @@ class iclVisual {
                 this.iclData.time += this.iclData.timeDirect;
             }
         }
+        */
     }
 
 

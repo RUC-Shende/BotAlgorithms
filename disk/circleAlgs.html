@@ -444,8 +444,9 @@
                     <line x1=50 y1=25 x2=50 y2=75 style="stroke:#000000;stroke-width:.25"></line>
                     <line x1=25 y1=50 x2=75 y2=50 style="stroke:#000000;stroke-width:.25"></line>
                     <circle id="center" cx=50 cy=50 r=.8 style="fill:#ffffff;stroke:#000000;stroke-width:.1"></circle>
+                    <circle id="exit" cx=0 cy=0 r=0.8 style="stroke:#000000; fill:#ffffff; stroke-width:0.1; z-index:10;"></circle>
+
                 </svg>
-                <circle id="exit" cx=0 cy=0 r=0.8 style="stroke:#000000; fill:#ffffff; stroke-width:0.1;"></circle>
                 <svg border:"1px solid black" viewBox="0 0 100 100"  id="lines" ></svg>
 
                 <svg border:"1px solid black" viewBox="0 0 100 100" id="bots" ></svg>
@@ -765,7 +766,10 @@
                     ];
 */
                     /* 3.52-53? */
-                        var a = 3.78774602;
+                        var a = 3.753785;
+                        var c = 0.7771851;
+                        var h = 0.890682864;
+                        /*
                         var b = 2.52258854;
                         var c = 0.835157481;
                         var d = 2.1174310622;
@@ -774,6 +778,7 @@
                         var g = 0.43;
                         var h = 0.85669485566;
                         var x = 0.09;
+                        */
 
 /* in theory 3.509
                         var a=3.7741094819920002
@@ -1113,6 +1118,7 @@
                         .style("fill", infoPacket.icll[i][0][0] ).style("stroke", "none");
                 }
                 d3.select("#Desc0").text(infoPacket.algName + ((infoPacket.wireless) ? (" Wireless") : ( " Face-to-Face")));
+                exitPreview();
             }
             reset_predraw();
 
