@@ -3,7 +3,7 @@
 <html>
 	<head>
 		<!--<script src = "https://d3js.org/d3.v5.min.js"></script>-->
-		<script src="../../d3/d3.min.js"></script>
+		<script src="../js/d3.min.js"></script>
 	</head>
 	<body>
 		<script>
@@ -39,7 +39,7 @@
 					var cc = open[ next ];			//Pick a random unexplored point
 					cc.n = pathNum;
 
-					while( cc.n == pathNum ) {	
+					while( cc.n == pathNum ) {
 						var opts = [ ];
 						if( cc.y + 1 < h ) {		//Check options around point
 							opts.push( { n:0, b:maze[ cc.y + 1 ][ cc.x ] } );
@@ -215,7 +215,7 @@
 					this.dir = 2;				//Traverser direction
 					this.path = [ { x:0, y:0 } ];		//Path so far
 				}
-				
+
 				traverse( ) {
 					do {					//Forward open
 						if( this.pos.c[ this.dir ] ) {
@@ -281,7 +281,7 @@
 					this.dir = 2;
 					this.path = [ { x:unit / 2, y:unit / 2 } ];
 				}
-				
+
 				traverse( ) {
 					do {
 										//Check right, since no advanced checks needed
@@ -290,7 +290,7 @@
 							this.goForward( );
 							this.placeVert( );
 										//Check forward
-						} else if( this.pos.c[ this.dir ] ) {	
+						} else if( this.pos.c[ this.dir ] ) {
 							this.goForward( );
 							this.placeVert( );
 										//Turn left otherwise
@@ -410,7 +410,7 @@
 
 			var unit = 5;
 
-			
+
 			//Long corridors
 			var maze = genDFSMaze( 25, 25 );
 			squareMaze( maze, unit, "#ffff00" );
@@ -435,7 +435,7 @@
 			var traveler22 = new pathTraverser( maze2, unit );
 			traveler22.traverse( );
 			lineMaze( maze2, traveler22, "#00ff00" );
-			
+
 
 			//Mix of previous two
 			var maze3 = genWilsonMaze( 25, 25 );
@@ -453,19 +453,3 @@
 		</script>
 	</body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

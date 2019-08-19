@@ -210,7 +210,7 @@ class iclData {
         /** 1 unit == 1 Radius. How many pixels per unit. */
         this.unit2Px = this.pathLength / Math.abs(exit *2);
 
-        this.step = this.unit2Px/(this.fps / 6);
+        this.step = this.unit2Px/(this.fps);
         this.points = Math.abs(exit * 2);
         /** Center of the current shape in {float}[x,y]. */
         this.center = {
@@ -241,6 +241,9 @@ class iclData {
         /** Array of {Tourist}s */
         this.tourists = [];
 
+        this.maxSearched = [this.center.x];
+        this.minSearched = [this.center.x];
+
         /** Interval for this iclData instance. Typically set to 1000/fps. Initialized to just a number.*/
         this.motor = this.id;
 
@@ -252,6 +255,8 @@ class iclData {
 
         this.timeDirect = 1;
 
+        this.allKnowing = false;
+
         //this.Start();
     }
 
@@ -260,7 +265,7 @@ class iclData {
         for (var i = 0; i <=  this.points * this.fps; i++) {
             pPath.push({x:x1 + (this.step * i)})
         }
-        console.log(pPath);
+        //console.log(pPath);
         return pPath;
     }
 
@@ -299,18 +304,56 @@ class iclData {
             this.history.push([]);
         }
         for (var k = 0; k < Math.abs(this.exit) * Math.abs(this.exit) * this.fps + (this.pPath.length * 2); k++) {
+            if (this.allKnowing) {
+                break;
+            }
+            var maxAdded = false;
+            var minAdded = false;
             for (var i = 0; i < this.instruBinder.length; i++) {
                 var who = this.tourists[i];
                 this.history[i].push({
                     x: who.x,
                     y: who.y
                 });
+                if (who.x > this.maxSearched[this.time - 1]) {
+                    if (!maxAdded) {
+                        this.maxSearched.push(who.x);
+                        maxAdded = true;
+
+                    }
+                    else {
+                        this.maxSearched[this.maxSearched.length-1] = who.x;
+
+                    }
+                }
+
+
+                if (who.x < this.minSearched[this.time - 1]) {
+                    if (!minAdded) {
+                        this.minSearched.push(who.x);
+                        minAdded = true;
+                    }
+                    else {
+                        this.minSearched[this.minSearched.length-1] = who.x;
+                    }
+                }
+
                 //d3.select("#testbot").attr("cx", who.x).attr("cy", who.y);
                 //who.allowance = this.step;
                 //while (who.allowance > 0) {
                     who[who.icl[who.on][0]](who.icl[who.on][1]);
                 //}
+
+
             }
+            if (!minAdded) {
+                this.minSearched.push(this.minSearched[this.time]);
+            }
+            if (!maxAdded) {
+                this.maxSearched.push(this.maxSearched[this.time]);
+            }
+            minAdded = false;
+            maxAdded = false;
             for (var j = 0; j < this.mods.length; j++) {
                 if (this.mods[j].Update) {
                     this.mods[j].Update();
@@ -373,7 +416,7 @@ class exitFindMod {
         for (var i = 0; i < this.iclData.tourists.length; i++) {
 
             var distance = Math.abs(this.iclData.exitLoc.x - this.iclData.tourists[i].x);
-            console.log("Distance " + this.iclData.tourists[i].number + ": " + distance);
+            //console.log("Distance " + this.iclData.tourists[i].number + ": " + distance);
             //this.exitDistances[i].push(distance);
             if (distance <= this.step) {
                 // If tourist is priority and at exit end alg by time = timeMax
@@ -406,7 +449,8 @@ class exitFindMod {
             }
         }
         if (allKnowing) {
-            console.log("AllKnowing")
+            //console.log("AllKnowing")
+            this.iclData.allKnowing = true;
             this.iclData.timeMax = this.iclData.time;
         }
     }
@@ -786,6 +830,8 @@ class iclVisual {
         });
         this.visuals = [];
         this.connections = [];
+        this.maxSearchedLine = null;
+        this.minSearchedLine = null;
         this.done = false;
         this.tourlines = [null, null];
         this.Init();
@@ -815,7 +861,7 @@ class iclVisual {
             mousePos = this.iclData.unit2Px * 3.45;
         }
         d3.select(".timeSlide" + this.iclData.id).attr("x", mousePos);
-        console.log(this.iclData.timeMax)
+        //console.log(this.iclData.timeMax)
         this.iclData.time = Math.round(((mousePos - (this.iclData.unit2Px * 0.45)) / (3 * this.iclData.unit2Px) * this.iclData.timeMax));
         this.timeText.text("Time: " + Math.floor((1000 * this.iclData.time) / this.iclData.fps) / 1000);
         this.frameText.text("Frame: " + Math.floor(this.iclData.time));
@@ -861,6 +907,24 @@ class iclVisual {
                 .attr("y2", this.visuals[i].attr("cy"))
                 .style("stroke-width", 0.25)
                 .style("stroke", this.iclData.tourists[i].icl[0][0] )
+                .style("fill", "none")
+            );
+            this.minSearchedLine = (this.fieldSVG.select("#lines").append("line")
+                .attr("x1", this.iclData.origin.x)
+                .attr("y1", this.iclData.origin.y)
+                .attr("x2", this.iclData.minSearched[this.iclData.time])
+                .attr("y2", 35)
+                .style("stroke-width", 0.25)
+                .style("stroke", "black" )
+                .style("fill", "none")
+            );
+            this.maxSearchedLine = (this.fieldSVG.select("#lines").append("line")
+                .attr("x1", this.iclData.origin.x)
+                .attr("y1", this.iclData.origin.y)
+                .attr("x2", this.iclData.maxSearched[this.iclData.time])
+                .attr("y2", 35)
+                .style("stroke-width", 0.25)
+                .style("stroke", "black" )
                 .style("fill", "none")
             );
         }
@@ -926,7 +990,11 @@ class iclVisual {
                     .attr("cy", this.iclData.history[i][this.iclData.time].y);
                 this.connections[i]
                 .attr("x2", this.iclData.history[i][this.iclData.time].x)
-                .attr("cy", this.iclData.history[i][this.iclData.time].y);
+                .attr("y2", this.iclData.history[i][this.iclData.time].y);
+                this.minSearchedLine
+                .attr("x2", this.iclData.minSearched[this.iclData.time]);
+                this.maxSearchedLine
+                .attr("x2", this.iclData.maxSearched[this.iclData.time]);
             }
             for (var i = 0; i < this.iclData.mods.length; i++) {
                 if (this.iclData.mods[i].VUpdate) {
