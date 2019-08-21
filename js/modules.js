@@ -530,6 +530,7 @@ class exitFindMod {
                 this.graphLines[i].remove();
                 this.tourlines[i].remove();
             }
+            //TODO: inefficient and bad. i am aware. it will be fixed at a time when i'm not adding new stuff.
             for (var j = 0; j < this.iclData.time; j++) {
                 var pt = {
                     x: (0.5 * this.iclData.unit2Px) + (3 * this.iclData.unit2Px * (j / this.iclData.timeMax)),
@@ -624,9 +625,6 @@ class lineFillMod {
                     }
                 }
             }
-        }
-        if (this.count < 1) {
-            this.iclData.timeMax = this.iclData.time;
         }
     }
 

@@ -143,23 +143,51 @@
                     case "3_cStart":
                         var icll = [
                             [//Queen 1
-                                ["#ff0000"],
+                                ["#ff0000", false],
                                 ["GoToWallFromCenter", [210] ],
                                 ["GoToMidPoint", []],
                                 ["FollowWall", ["left"]],
                                 ["GoToExit", {x:25, y:50} ]
                             ],
                             [//Queen 2
-                                [ "#00ff00" ],
+                                [ "#00ff00" , false],
                                 [ "GoToWallFromCenter", [210] ],
                                 ["GoToMidPoint", []],
+                                [ "FollowWall", [ "right"] ],
+                                [ "GoToExit", {x:25, y:50} ]
+                            ]
+                        ];
+                        var degrees = s.slice(0, s.indexOf("_"));
+                        console.log("DEGREES: " + degrees);
+                        var algName = "Triangle Search 1 (Center Start)";
+                        var wireless = true;
+                        var start = center;
+                        var path = utils.genPoly(center, 25, 0, degrees)
+                        break;
+                    case "3_cStart_3r":
+                        var icll = [
+                            [
+                                ["#ff0000", false],
+                                ["GoToWallFromCenter", [0] ],
+                                ["FollowWall", ["right"]],
+                                ["GoToExit", {x:25, y:50} ]
+                            ],
+                            [
+                                [ "#00ff00" , false],
+                                [ "GoToWallFromCenter", [120] ],
+                                [ "FollowWall", [ "right"] ],
+                                [ "GoToExit", {x:25, y:50} ]
+                            ],
+                            [
+                                [ "#0000ff" , false],
+                                [ "GoToWallFromCenter", [240] ],
                                 [ "FollowWall", [ "right"] ],
                                 [ "GoToExit", {x:25, y:50} ]
                             ],
                         ];
                         var degrees = s.slice(0, s.indexOf("_"));
                         console.log("DEGREES: " + degrees);
-                        var algName = "Triangle Search 1 (Center Start)";
+                        var algName = "Triangle Search 1 (3 Robots + Center Start)";
                         var wireless = true;
                         var start = center;
                         var path = utils.genPoly(center, 25, 0, degrees)
@@ -249,6 +277,70 @@
                         var algName = "Square Search 1 (Center Start)";
                         var wireless = true;
                         var path = utils.genPoly(center, 25, 45, degrees);
+                        var start = center;
+                        break;
+                    case "4_cStart_3r":
+                        var startOnWallAtAngle = 140;
+                        var icll = [
+                            [
+                                ["#ff0000", false],
+                                ["GoToWallFromCenter", [45]],
+                                ["FollowWall", ["left"]],
+                                ["GoToExit", [null, false]]
+                            ],
+                            [
+                                ["#00ff00", false],
+                                ["GoToWallFromCenter", [165]],
+                                ["FollowWall", ["left"]],
+                                ["GoToExit", [null, false]]
+                            ],
+                            [
+                                ["#0000ff", false],
+                                ["GoToWallFromCenter", [285]],
+                                ["FollowWall", ["left"]],
+                                ["GoToExit", [null, false]]
+                            ]
+                        ];
+                        var degrees = s.slice(0, s.indexOf("_"));
+                        var path = utils.genPoly(center, 25 / Math.sqrt(2), 45, degrees);
+
+                        var algName = "Square Search 1 (Center Start)";
+                        var wireless = true;
+                        var start = center;
+                        break;
+                    case "4_cStart_4r":
+                        var startOnWallAtAngle = 140;
+                        var icll = [
+                            [
+                                ["#ff0000", false],
+                                ["GoToWallFromCenter", [45]],
+                                ["FollowWall", ["left"]],
+                                ["GoToExit", [null, false]]
+                            ],
+                            [
+                                ["#00ff00", false],
+                                ["GoToWallFromCenter", [135]],
+                                ["FollowWall", ["left"]],
+                                ["GoToExit", [null, false]]
+                            ],
+                            [
+                                ["#0000ff", false],
+                                ["GoToWallFromCenter", [225]],
+                                ["FollowWall", ["left"]],
+                                ["GoToExit", [null, false]]
+                            ],
+                            [
+                                ["#ff00ff", false],
+                                ["GoToWallFromCenter", [315]],
+                                ["FollowWall", ["left"]],
+                                ["GoToExit", [null, false]]
+                            ]
+                        ];
+                        var degrees = s.slice(0, s.indexOf("_"));
+                        var path = utils.genPoly(center, 25 / Math.sqrt(2), 45, degrees);
+
+                        var algName = "Square Search 1 (Center Start)";
+                        var wireless = true;
                         var start = center;
                         break;
                     case "4_wStart":

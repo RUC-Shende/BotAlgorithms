@@ -198,7 +198,7 @@ class iclData {
         /** Current velocity of the simulation. 1 - Forward. 0 - Stopped. -1 - Rewind. (0,1) - Slow */
         this.timeDirect = 0;
         /** Frames per second. Too high (> 100) == bad performance. */
-        this.fps = 144;
+        this.fps = 100;
         /** The maximum time before we stop the simulation for good. */
         this.timeMax = 3 * this.fps;
         /** Points of the equilateral shape to search. Ex. 3 = Triangle, 4 = square, 360 = circle */
@@ -209,15 +209,15 @@ class iclData {
         this.path = [{x:20, y:35}, {x:80, y:35}];
         /** 1 unit == 1 Radius. How many pixels per unit. */
         this.unit2Px = this.pathLength / Math.abs(exit *2);
-
-        this.step = this.unit2Px/(this.fps);
+        this.animSpeed = 2;
+        this.step = this.unit2Px/(this.fps / this.animSpeed);
         this.points = Math.abs(exit * 2);
         /** Center of the current shape in {float}[x,y]. */
         this.center = {
             x:50,
             y:35
         };
-        this.origin = {x:this.center.x, y:85}
+        this.origin = {x:this.center.x, y:35}
         /** tourist start location */
         this.start = start;
 
@@ -229,6 +229,8 @@ class iclData {
         else {
             this.exitLoc = {x:80, y:35}
         }
+
+        this.totalTime = (this.exit * 9 + 2) * this.step;
 
         /** Exit to use for the sim in {float}[x,y]. */
         this.fieldExit = {x:exit};
@@ -256,8 +258,6 @@ class iclData {
         this.timeDirect = 1;
 
         this.allKnowing = false;
-
-        //this.Start();
     }
 
     genLine(x1, y1, x2, y2) {
@@ -273,7 +273,6 @@ class iclData {
     Init() {
         this.time = 0; //Reset time
         this.tourists = []; //Reset mobiles for run
-        var p = [true, true, false]
         for (var i = 0; i < this.instruBinder.length; i++) { //Refill mobiles for run
 
             this.tourists.push(new Tourist(
@@ -288,22 +287,13 @@ class iclData {
     }
 
     createHistory() {
-        //this.Init();
-        /*
-        d3.select("#anim0").select("#bots").append("circle")
-            .attr("cx", this.tourists[0].x)
-            .attr("cy", this.tourists[0].y)
-            .attr("r", 2)
-            .attr("id", "testbot")
-            .style("fill", "#ff0000")
-            .style("stroke", "#000000")
-            .style("stroke-width", "0.25");
-        */
+        this.Init();
+
         this.history = []; //Reset History
         for (var i = 0; i < this.instruBinder.length; i++) {
             this.history.push([]);
         }
-        for (var k = 0; k < Math.abs(this.exit) * Math.abs(this.exit) * this.fps + (this.pPath.length * 2); k++) {
+        for (var k = 0; k < Math.abs(2 * this.exit) * Math.abs(2 * this.exit) * this.fps + (this.pPath.length * 2); k++) {
             if (this.allKnowing) {
                 break;
             }
@@ -339,7 +329,7 @@ class iclData {
                 }
 
                 //d3.select("#testbot").attr("cx", who.x).attr("cy", who.y);
-                //who.allowance = this.step;
+                who.allowance = this.step;
                 //while (who.allowance > 0) {
                     who[who.icl[who.on][0]](who.icl[who.on][1]);
                 //}
@@ -652,6 +642,10 @@ class lineFillMod {
         this.exitEnvelopeGraph = exitEnvelopeGraph;
         /**D3 reference to the exit envelope line drawn at the end.*/
         this.exitEnvelopeLine = null;
+        /**List of points travelled by tourists so we can draw a time graph*/
+        this.timePoints = [];
+        /**The full length of the timeline by the number of steps taken total*/
+        this.timeStep = this.iclData.pathLength / this.iclData.timeMax;
     }
 
     Init() {
@@ -660,6 +654,8 @@ class lineFillMod {
         for (var p = 0; p < this.pts.length; p++) {
             this.exitTimes.push(0);
         }
+
+
     }
 
     Update() {
@@ -834,47 +830,12 @@ class iclVisual {
         this.minSearchedLine = null;
         this.done = false;
         this.tourlines = [null, null];
+        this.timeStep = this.iclData.pathLength / this.iclData.timeMax;
+        this.origin = 35;
+        this.timeLines = [];
+        this.timeHold = [];
+        this.exitTimeText = null;
         this.Init();
-    }
-
-    /**
-     *Helper function for time slider.
-     *Initializes the slider to be moved.
-     *Removes help text for visibility.
-     *Called by anonymous function inside LoadGraph().
-     */
-    SSlide() {
-        d3.select(this).style("fill", "orange");
-        d3.select(this).classed("active", true);
-        d3.selectAll(".sliderhelp").style("visibility", "hidden");
-    }
-    /**
-     *Helper function for time slider.
-     *Makes sure the slider stays within the bounds of timeMax.
-     *Called by anonymous function inside LoadGraph().
-     */
-    MSlide() {
-        var mousePos = d3.event.x;
-        if (mousePos < this.iclData.unit2Px * 0.45) {
-            mousePos = this.iclData.unit2Px * 0.45;
-        } else if (mousePos > this.iclData.unit2Px * 3.45) {
-            mousePos = this.iclData.unit2Px * 3.45;
-        }
-        d3.select(".timeSlide" + this.iclData.id).attr("x", mousePos);
-        //console.log(this.iclData.timeMax)
-        this.iclData.time = Math.round(((mousePos - (this.iclData.unit2Px * 0.45)) / (3 * this.iclData.unit2Px) * this.iclData.timeMax));
-        this.timeText.text("Time: " + Math.floor((1000 * this.iclData.time) / this.iclData.fps) / 1000);
-        this.frameText.text("Frame: " + Math.floor(this.iclData.time));
-    }
-    /**
-     *Helper function for time slider.
-     *Disables the slider and shows help text again.
-     *Called by anonymous function inside LoadGraph().
-     */
-    ESlide() {
-        d3.select(this).style("fill", "#888888");
-        d3.select(this).classed("active", false);
-        d3.selectAll(".sliderhelp").style("visibility", "visible");
     }
 
 
@@ -927,7 +888,10 @@ class iclVisual {
                 .style("stroke", "black" )
                 .style("fill", "none")
             );
+            this.timeLines.push(null);
+            this.timeHold.push("");
         }
+
         for (var i = 0; i < this.iclData.mods.length; i++) {
             if (this.iclData.mods[i].VInit) {
                 this.iclData.mods[i].VInit();
@@ -944,6 +908,10 @@ class iclVisual {
             .style("font-size", 2.5)
             .style("text-anchor", "middle")
             .text("Exit Location: " + this.iclData.exit + " units.");
+        var speedtext = this.fieldSVG.select("#speedtext")
+            .style("font-size", 2.5)
+            .style("text-anchor", "middle")
+            .text("Speed: " + this.iclData.animSpeed + "x");
 
         /*
         this.timeSlider = this.graphSVG.select("#overLay").append("rect").attr("width", this.iclData.unit2Px / 15).attr("height", this.iclData.unit2Px * 2)
@@ -988,6 +956,24 @@ class iclVisual {
             for (var i = 0; i < this.iclData.history.length; i++) {
                 this.visuals[i].attr("cx", this.iclData.history[i][this.iclData.time].x)
                     .attr("cy", this.iclData.history[i][this.iclData.time].y);
+                if (this.iclData.time % 4 == 0) {
+                    if (this.iclData.time > 0) {
+                        this.timeLines[i].remove();
+                    }
+                    var pt = {
+                        x: this.iclData.history[i][this.iclData.time].x,
+                        y: this.iclData.origin.y + this.timeStep * this.iclData.time
+                    }
+                    this.timeHold[i] += ((this.iclData.time == 0) ? ('M') : ('L')) + pt.x + ',' + pt.y;
+                    this.timeLines[i] = this.fieldSVG.select("#lines").append("path")
+                        .attr("d", this.timeHold[i])
+                        .attr("stroke-width", 0.75)
+                        .style("stroke", this.iclData.tourists[i].icl[0][0])
+                        .style("stroke-linejoin", "round")
+                        .style("fill", "none");
+                }
+
+            /* Connections and min/maxsearched lines
                 this.connections[i]
                 .attr("x2", this.iclData.history[i][this.iclData.time].x)
                 .attr("y2", this.iclData.history[i][this.iclData.time].y);
@@ -995,7 +981,19 @@ class iclVisual {
                 .attr("x2", this.iclData.minSearched[this.iclData.time]);
                 this.maxSearchedLine
                 .attr("x2", this.iclData.maxSearched[this.iclData.time]);
+            */
+                if (this.visuals[i].attr("cx") == this.iclData.exitLoc.x && !this.exitTimeText) {
+                    this.exitTimeText = this.fieldSVG.select("#timetext")
+                        .attr("x", 90)
+                        .attr("y", this.origin)
+                        .style("font-size", 2)
+                        .style("text-anchor", "middle")
+                        .text("Exit found at " + Math.floor((1000 * this.iclData.time) / this.iclData.fps) / 1000);
+                }
             }
+            this.origin += this.timeStep;
+            this.fieldSVG.select("#origin").attr("cy", this.origin);
+
             for (var i = 0; i < this.iclData.mods.length; i++) {
                 if (this.iclData.mods[i].VUpdate) {
                     this.iclData.mods[i].VUpdate();
