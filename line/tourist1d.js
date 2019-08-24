@@ -116,18 +116,15 @@ class Tourist {
 
 
 
-    GoToExit(value) {
-        this.target = {
-            x: this.iclData.exitLoc.x
-        };
-        //console.log(this.target);
-        this.allowance = this.iclData.step;
-        //console.log("UNITS: " + Math.floor(2 * Math.abs(this.target.x - this.x) / this.iclData.unit2Px));
-        this.Go({
-            distance: Math.floor(2 * Math.abs(this.target.x - this.x) / this.iclData.unit2Px),
-            direction: (this.iclData.exit > 0) ? 1 : -1
-        });
-        //}
+    GoToExit(value) {//Go to exit no properly exhaust additional allowance.
+	if( this.iclData.exit.x != this.x || this.iclData.exit.y != this.y ) {
+     		this.DirectTo({
+      		x: this.iclData.exitLoc.x,
+     		direction: (this.iclData.exit > 0) ? 1 : -1
+      		});
+	} else {
+		this.wait( );
+	}
     }
 
 }
