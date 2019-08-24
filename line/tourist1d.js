@@ -116,14 +116,16 @@ class Tourist {
 
 
 
-    GoToExit(value) {//Go to exit no properly exhaust additional allowance.
-	if( this.iclData.exit.x != this.x || this.iclData.exit.y != this.y ) {
-     		this.DirectTo({
-      		x: this.iclData.exitLoc.x,
-     		direction: (this.iclData.exit > 0) ? 1 : -1
-      		});
+    GoToExit( value ) {//Go to exit no properly exhaust additional allowance.
+        //alert( this.iclData.exitLoc.x );
+	if( this.iclData.exitLoc.x - this.x ) {
+		//alert( "move" );
+     		this.DirectTo( {
+      			x: this.iclData.exitLoc.x,
+     			direction: ( this.iclData.exit > 0 ) ? 1 : -1
+      		} );
 	} else {
-		this.wait( );
+		this.wait( { time:null } );
 	}
     }
 
