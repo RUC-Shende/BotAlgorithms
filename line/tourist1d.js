@@ -44,89 +44,97 @@ class Tourist {
      * @param {Object} value {x,y} coordinates of the robot's next calculated location.
      *
      */
-     DirectTo(value) {
-       var dist = Math.abs(value.x- this.x);
-       if (dist < this.allowance) {
+     DirectTo( value ) {
+       var dist = Math.abs( value.x - this.x );
+       var dir = ( value.x - this.x > 0 ) ? 1 : -1;
+       if( dist < this.allowance ) {
          this.x = value.x;
          this.allowance -= dist;
        } else {
-         this.x += value.direction * this.allowance;
+         this.x += dir * this.allowance;
          this.allowance = 0;
        }
      }
 
-    /**
-     * Instruct the robot to wait for a certain time <value>, or indefinitely.
-     *
-     * @param {Array} value [time] to wait for. If not specified or value[0] is null, wait indefinitely.
-     */
-    wait(value) {
-        if (value.time) {
-            if (this.target == null) {
-                this.target = value.time * this.iclData.unit2Px;
-            }
-            if (this.target < this.allowance) {
-                this.allowance -= this.target;
-                this.on++;
-                this.target = null;
-            } else {
-                this.target -= this.allowance;
-                this.allowance = 0;
-            }
+   /**
+    * Instruct the robot to wait for a certain time <value>, or indefinitely.
+    *
+    * @param {Array} value [time] to wait for. If not specified or value[0] is null, wait indefinitely.
+    */
+    Wait( value ) {
+      if( value.time ) {
+        if( this.target == null ) {
+          this.target = value.time * this.iclData.unit2Px;
+        }
+        if( this.target < this.allowance ) {
+          this.allowance -= this.target;
+          this.on++;
+          this.target = null;
         } else {
-            this.allowance = 0;
+          this.target -= this.allowance;
+          this.allowance = 0;
         }
+      } else {
+        this.allowance = 0;
+      }
     }
 
-    Go(value) {
-        value.distance = value.distance * value.direction
-        if (!this.target) {
-            this.target = {
-                x: this.x + (value.distance * this.iclData.unit2Px)
-            };
+    Go( value ) {
+      if( value.distance ) {
+        if( !this.target ) {
+          value.distance = value.distance * value.direction;
+          this.target = {
+            x:( this.x + value.distance * this.iclData.unit2Px )
+          };
         }
-        this.DirectTo({
-            x: this.target.x,
-            direction:value.direction
-        });
-        if (!Math.abs(this.x - this.target.x)){
+        this.DirectTo( this.target );
+        if( !( this.x - this.target.x ) ) {
             this.on++;
-            this.target=null;
+            this.target = null;
         }
+      } else {
+        this.DirectTo( { x:( this.x + value.direction ) } );
+      }
     }
 
-    Amplify(value) {
-        if (!this.target) {
-            this.target = {
-                level:1,
-                x:this.x + (value.direction * this.iclData.unit2Px),
-                direction:value.direction
-            }
+    Amplify( value ) {
+      if( !this.target ) {
+        this.target = {
+          amt:value.direction,
+          x:( this.x + value.direction * this.iclData.unit2Px ),
         }
-        this.DirectTo(this.target);
-        if (!Math.abs(this.x - this.target.x)) {
-            this.target.level *= value.scale;
-            this.target.direction *= -1;
-            this.target.x = this.x + (this.target.direction * this.iclData.unit2Px
-                      * this.target.level) + ((this.target.direction * this.iclData.unit2Px
-                                * this.target.level / value.scale));
-            console.log(this.target);
-        }
+      }
+      this.DirectTo( this.target );
+      if( !( this.x - this.target.x ) ) {
+        var prev = -this.target.amt;
+        this.target.amt *= -( value.scale )
+        this.target.x = this.x + ( prev + this.target.amt ) * this.iclData.unit2Px;
+      }
     }
 
-
-
-    GoToExit( value ) {//Go to exit no properly exhaust additional allowance.
-        //alert( this.iclData.exitLoc.x );
-	if( this.iclData.exitLoc.x - this.x ) {
-		//alert( "move" );
-     		this.DirectTo( {
-      			x: this.iclData.exitLoc.x,
-     			direction: ( this.iclData.exit > 0 ) ? 1 : -1
-      		} );
-	} else {
-		this.wait( { time:null } );
-	}
+    GoToExit( value ) {
+      if( this.iclData.exitLoc.x - this.x ) {
+        this.DirectTo( this.iclData.exitLoc );
+      } else {
+        this.allowance = 0;
+      }
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
