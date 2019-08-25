@@ -951,8 +951,6 @@ class iclVisual {
     }
 
     static reEnact() {
-	console.log( this.iclData.time, this.iclData.timeMax );
-
         if (!this.done && this.iclData.time < this.iclData.timeMax) {
             for (var i = 0; i < this.iclData.history.length; i++) {
                 this.visuals[i].attr("cx", this.iclData.history[i][this.iclData.time].x)
