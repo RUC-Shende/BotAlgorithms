@@ -101,14 +101,31 @@ class Tourist {
       if( !this.target ) {
         this.target = {
           amt:value.direction,
-          x:( this.x + value.direction * this.iclData.unit2Px ),
+          x:( this.x + value.direction * this.iclData.unit2Px )
         }
       }
       this.DirectTo( this.target );
       if( !( this.x - this.target.x ) ) {
         var prev = -this.target.amt;
-        this.target.amt *= -( value.scale )
+        this.target.amt *= -( value.scale );
         this.target.x = this.x + ( prev + this.target.amt ) * this.iclData.unit2Px;
+      }
+    }
+
+    Increment( value ) {
+      if( !this.target ) {
+        this.target = {
+          dir:value.direction,
+          amt:value.scale,
+          x:( this.x + value.scale * value.direction * this.iclData.unit2Px )
+        }
+      }
+      this.DirectTo( this.target );
+      if( !( this.x - this.target.x ) ) {
+        this.target.dir *= -1;
+        this.target.amt += value.scale;
+        this.target.x = this.x + ( 2 * this.target.amt - value.scale ) * this.target.dir * this.iclData.unit2Px;
+        console.log( this.d );
       }
     }
 
