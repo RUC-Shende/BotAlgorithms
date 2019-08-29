@@ -272,10 +272,15 @@ class Tourist {
   *@param {Array} value null
   */
   GoToExit(value) {
-    if ((this.x == this.knows.x) && (this.y == this.knows.y)) {
-      this.wait([]);
+    if( this.knows ) {
+      if ((this.x == this.knows.x) && (this.y == this.knows.y)) {
+        this.wait([]);
+      } else {
+        this.DirectTo(this.knows);
+      }
     } else {
-      this.DirectTo(this.knows);
+      console.log( "ERROR: doesn't know exit location" );
+      this.wait([]);
     }
   }
 
@@ -291,18 +296,15 @@ class Tourist {
   Intercept(value) {
 
     if ((this.target == null) && (!this.iclData.wireless)) {
-      var holdTime = 0;
       var closest = Infinity;
       outer:
       for (var i = 0; i < this.iclData.instruBinder.length; i++) {
-          console.log(i);
         if ((!this.iclData.tourists[i].knows)) {
           inner:
           for (var j = 0; j < 8 * this.iclData.unit2Px; j++) {
             if (this.iclData.time + j < this.iclData.timeMax) {
-              var intercept = this.iclData.hiscopy[i][this.iclData.time + j - 2];
-              var bVec = [intercept.x - this.x, intercept.y - this.y];
-              var botDist = Math.sqrt(Math.pow(bVec[1], 2) + Math.pow(bVec[0], 2));
+              var intercept = this.iclData.hiscopy[i][this.iclData.time + j];
+              var botDist = Math.hypot(intercept.y - this.y, intercept.x - this.x);
               if ((Math.abs(j * this.iclData.unit2Px / this.iclData.fps - botDist) <= this.velocity * this.iclData.unit2Px / (2 * this.iclData.fps)) && (botDist < closest)) {
                 this.target = [i, intercept];
                 if (value && value[0] == i){
@@ -316,21 +318,16 @@ class Tourist {
       }
     }
 
-    if (this.priority || this.target == null) {
+    if (this.priority || !this.target) {
       this.GoToExit(this.knows);
     } else {
       var pointDist = Math.hypot(this.target[1].y - this.y, this.target[1].x - this.x);
+      this.DirectTo( this.target[1] );
       if (pointDist <= this.velocity * this.iclData.unit2Px / (this.iclData.fps)) {
         this.iclData.tourists[this.target[0]].knows = this.knows;
-        this.iclData.exitFoundFrame = this.iclData.time;
-      }
-      this.DirectTo({x:this.target[1].x, y:this.target[1].y});
-      if (this.iclData.tourists[this.target[0]].knows) {
-          console.log(this.target[0])
         this.iclData.tourists[this.target[0]].on = this.iclData.tourists[this.target[0]].icl.length - 1;
         this.iclData.tourists[this.target[0]].target = null;
         this.target = null;
-        this.GoToExit(this.knows);
       }
     }
   }
