@@ -10,17 +10,15 @@
 class Tourist {
 
   constructor (iclData, x, y, num, icl, p) {
-    /** Reference to a visual DOM element */
-    this.visual = null;
     /** This holds all of what used to be global variables!  */
     this.iclData = iclData;
     /** The tourist's ID as an integer. */
     this.number = num;
     /** The tourist has learned of the exit on this frame. */
+
     this.knows = false;
     /** The tourist has known of the exit for more than one frame. */
-    this.knew = false;
-    /** Tourist's current goal according to its command. Can be a point on the shape or another tourist. */
+
     this.target = null;
     /** The tourist that is currently pursuing this one. */
     this.hunted = null;
@@ -38,8 +36,6 @@ class Tourist {
     this.y = y;
     /** Whether or not the robot is a Priority Agent. */
     this.priority = p;
-    /** Whether or not the robot is at the exit. */
-    this.atExit = false;
     /** Instruction checklist. Index 0 is info such as priority and color. */
     this.icl = icl;
   }
@@ -276,10 +272,10 @@ class Tourist {
   *@param {Array} value null
   */
   GoToExit(value) {
-    if ((this.x == this.iclData.fieldExit.x) && (this.y == this.iclData.fieldExit.y)) {
+    if ((this.x == this.knows.x) && (this.y == this.knows.y)) {
       this.wait([]);
     } else {
-      this.DirectTo(this.iclData.fieldExit);
+      this.DirectTo(this.knows);
     }
   }
 
@@ -304,14 +300,12 @@ class Tourist {
           inner:
           for (var j = 0; j < 8 * this.iclData.unit2Px; j++) {
             if (this.iclData.time + j < this.iclData.timeMax) {
-              var intercept = this.iclData.mods[0].premo[i][this.iclData.time + j - 2];
+              var intercept = this.iclData.hiscopy[i][this.iclData.time + j - 2];
               var bVec = [intercept.x - this.x, intercept.y - this.y];
               var botDist = Math.sqrt(Math.pow(bVec[1], 2) + Math.pow(bVec[0], 2));
               if ((Math.abs(j * this.iclData.unit2Px / this.iclData.fps - botDist) <= this.velocity * this.iclData.unit2Px / (2 * this.iclData.fps)) && (botDist < closest)) {
                 this.target = [i, intercept];
-                console.log(this.target);
                 if (value && value[0] == i){
-                    console.log("DEBUG: Found Priority");
                     break outer;
                 }
                 closest = botDist;
@@ -323,17 +317,12 @@ class Tourist {
     }
 
     if (this.priority || this.target == null) {
-      this.GoToExit(this.iclData.fieldExit);
+      this.GoToExit(this.knows);
     } else {
-      //this.target[0].hunted = this.number;
-      console.log(this.target);
-      var pVec = [this.target[1].x - this.x, this.target[1].y - this.y];
-      var pointDist = Math.sqrt(Math.pow(pVec[1], 2) + Math.pow(pVec[0], 2));
-      //var pointDist = Math.hypot(this.target[1].y - this.y, this.target[1].x - this.x);
+      var pointDist = Math.hypot(this.target[1].y - this.y, this.target[1].x - this.x);
       if (pointDist <= this.velocity * this.iclData.unit2Px / (this.iclData.fps)) {
-        this.iclData.exitAlert = this.iclData.tourists[this.target[0]].knows = true;
+        this.iclData.tourists[this.target[0]].knows = this.knows;
         this.iclData.exitFoundFrame = this.iclData.time;
-        this.iclData.exitAllow = pointDist;
       }
       this.DirectTo({x:this.target[1].x, y:this.target[1].y});
       if (this.iclData.tourists[this.target[0]].knows) {
@@ -341,7 +330,7 @@ class Tourist {
         this.iclData.tourists[this.target[0]].on = this.iclData.tourists[this.target[0]].icl.length - 1;
         this.iclData.tourists[this.target[0]].target = null;
         this.target = null;
-        this.GoToExit(this.iclData.fieldExit);
+        this.GoToExit(this.knows);
       }
     }
   }
