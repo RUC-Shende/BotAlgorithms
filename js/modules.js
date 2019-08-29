@@ -198,7 +198,7 @@ class iclData {
         /** Current velocity of the simulation. 1 - Forward. 0 - Stopped. -1 - Rewind. (0,1) - Slow */
         this.timeDirect = 0;
         /** Frames per second. Too high (> 100) == bad performance. */
-        this.fps = 144;
+        this.fps = 100;
         /** The maximum time before we stop the simulation for good. */
         this.timeMax = 10 * this.fps;
         /** Points of the equilateral shape to search. Ex. 3 = Triangle, 4 = square, 360 = circle */
@@ -234,6 +234,8 @@ class iclData {
         this.pPath = this.genPath();
 
         this.history = null;
+
+        this.hiscopy = null;
 
         this.mods = [];
 
@@ -292,16 +294,20 @@ class iclData {
         for (var i = 0; i < this.instruBinder.length; i++) {
             this.history.push([]);
         }
-        while (this.time < this.timeMax) {
+        while (this.time <= this.timeMax) {
             for (var i = 0; i < this.instruBinder.length; i++) {
                 var who = this.tourists[i];
                 this.history[i].push({
                     x: who.x,
-                    y: who.y
+                    y: who.y,
+                    a: who.a,
+                    on: who.on
                 });
-                who.allowance = who.velocity * this.unit2Px / this.fps;
-                while (who.allowance > 0) {
-                    who[who.icl[who.on][0]](who.icl[who.on][1]);
+                if( !this.hiscopy ) {
+                    who.allowance = who.velocity * this.unit2Px / this.fps;
+                    while (who.allowance > 0) {
+                        who[who.icl[who.on][0]](who.icl[who.on][1]);
+                    }
                 }
             }
             for (var j = 0; j < this.mods.length; j++) {
@@ -311,8 +317,10 @@ class iclData {
             }
             this.time++;
         }
+        if( !this.hiscopy ) {
+            this.hiscopy = this.history.slice( );
+        }
     }
-
 }
 
 /**
@@ -332,8 +340,6 @@ class exitFindMod {
         this.iclData = iclData;
         /**One step size.*/
         this.step = this.iclData.unit2Px / this.iclData.fps;
-        /**Pre-history AKA before exit was placed anywhere.*/
-        this.premo = null;
         /**Exit location {x,y}*/
         this.exit = exit;
         /**Array of termination times for each exit placement. Only gets points searched, otherwise they will be 0.*/
@@ -346,63 +352,96 @@ class exitFindMod {
         this.graphLines = [];
         /**Array of lines showing where tourist has travelled on field.*/
         this.tourlines = [null,  null];
+
+        this.exitTime = Infinity;
+        this.exitETA = null;
+        this.knows = [ ];
     }
 
     Init() {
-        if (this.iclData.history) {
-            this.premo = this.iclData.history;
-        }
+        this.exitDistances = [];
         for (var i = 0; i < this.iclData.tourists.length; i++) {
             this.exitDistances.push([]); // Add each array for tourists.
+            this.knows.push( null );
         }
     }
 
-    Update() {
-        if (this.premo) {
-            var loc = this.iclData.history,
-                j = 0;
-            for (var i = 0; i < this.iclData.tourists.length; i++) {
+    Update( ) {;
+        var loc = this.iclData.history;
+        if( this.iclData.hiscopy ) {
+          //console.log( this.iclData.time + ", " + this.exitETA );
+          var allow = 0;
+          if( this.exitETA > 1 ) {                    //Take some time ( 1 frame -> 1 step )
+            allow = this.step;
+            this.exitETA -= 1;
+          } else if( this.exitETA > 0 ) {             //Take remaining time
+            allow = this.exitETA * this.step;
+            this.exitETA = 0;
+          } else {                                    //Back to normal
+            allow = this.step;
+          }
 
-                var distance = Math.hypot(
-                    this.exit.y - loc[i][loc[i].length - 1].y,
-                    this.exit.x - loc[i][loc[i].length - 1].x
-                );
-                this.exitDistances[i].push(distance);
-                if (distance <= this.step / 2) {
-                    // If tourist is priority and at exit end alg by time = timeMax
-                    if (this.iclData.tourists[i].priority) {
-                        this.iclData.allExitedLine = 1;
-                        this.iclData.timeMax = this.iclData.time;
-                    }
-                    if (!this.iclData.tourists[i].knows) {
-                        this.iclData.tourists[i].on = this.iclData.tourists[i].icl.length - 1;
-                        this.iclData.tourists[i].knows = true;
-                        this.iclData.tourists[i].target = null;
-                        j++;
-                    }
-                    // Send out exit alert
-                    if (this.iclData.wireless) {
-                        for (var m = 0; m < this.iclData.tourists.length; m++) {
-                            this.iclData.tourists[m].on = this.iclData.tourists[m].icl.length - 1;
-                            this.iclData.tourists[m].knows = true;
-                        }
-                    }
-                }
+          var count = 0;
+          for( var i = 0; i < this.iclData.tourists.length; i++ ) {
+            var distance = Math.hypot(
+              this.exit.y - loc[ i ][ loc[ i ].length - 1 ].y,
+              this.exit.x - loc[ i ][ loc[ i ].length - 1 ].x
+            );
+            this.exitDistances[ i ].push( distance );
 
+            var who = this.iclData.tourists[ i ];
+
+            if( !distance ) {//If at exit, add to check
+              if( who.priority ) {
+                count += this.iclData.tourists.length;
+              } else {
+                count++;
+              }
             }
-            var allKnowing = false;
-            for (var t = 0; t < this.iclData.tourists.length; t ++ ) {
-                allKnowing = utils.cmpXYPairs(this.iclData.tourists[t], this.iclData.fieldExit);
-                if (!allKnowing){
-                    break;
+
+            who.allowance = allow * who.velocity;
+            while( who.allowance > 0 ) {
+              who[ who.icl[ who.on ][ 0 ] ]( who.icl[ who.on ][ 1 ] );
+            }
+          }
+
+          if( count >= this.iclData.tourists.length ) {//If all at exit, done
+            this.iclData.timeMax = this.iclData.time;
+          }
+
+          if( !this.exitETA ) {
+            this.exitETA = -1;
+            for( var j = 0; j < this.knows.length; j++ ) {
+              if( this.knows[ j ] ) {
+                this.iclData.tourists[ this.knows[ j ].number ].on = this.iclData.tourists[ this.knows[ j ].number ].icl.length - 1;
+                this.iclData.tourists[ this.knows[ j ].number ].knows = true;
+                this.iclData.tourists[ this.knows[ j ].number ].target = null;
+              }
+            }
+          }
+        } else {
+          for( var i = 0; i < this.iclData.tourists.length; i++ ) {
+            var dis = Math.hypot(
+              this.exit.y - loc[ i ][ loc[ i ].length - 1 ].y,
+              this.exit.x - loc[ i ][ loc[ i ].length - 1 ].x
+            );
+            if( !this.knows[ i ] && dis <= this.step / 2 ) {    //Get the time at which the exit is first found
+              if( this.iclData.time + dis <= this.exitTime ) {
+                this.exitTime = this.iclData.time + dis;
+                this.exitETA = this.exitTime;
+                if( this.iclData.wireless ) {
+                  this.knows = this.iclData.tourists.slice( );    //somehow after the function, reference becomes copy of class
+                } else {
+                  this.knows[ i ] = this.iclData.tourists[ i ];
                 }
+              }
             }
-            if (allKnowing) {
-                console.log("AllKnowing")
-                this.iclData.timeMax = this.iclData.time;
-            }
+          }
         }
     }
+
+
+
 
     VReset() {
         this.graphSVG.select("#backGround").html(null);
