@@ -185,10 +185,6 @@ class utils {
  */
 class iclData {
     constructor(id, instruBinder, algorithmName, angle, wireless, path, start) {
-        /** Someone learned where the exit is. */
-        this.exitAlert = false;
-        /** How far into a frame the exit was found. */
-        this.exitAllow = 0;
         /** Whether or not the simulation is using the wireless model. */
         this.wireless = wireless;
         /** Global identifier to this data structure. */
@@ -196,13 +192,11 @@ class iclData {
         /** Current time of the simulation (frames). */
         this.time = 0;
         /** Current velocity of the simulation. 1 - Forward. 0 - Stopped. -1 - Rewind. (0,1) - Slow */
-        this.timeDirect = 0;
+        this.timeDirect = 1;
         /** Frames per second. Too high (> 100) == bad performance. */
         this.fps = 100;
         /** The maximum time before we stop the simulation for good. */
         this.timeMax = 10 * this.fps;
-        /** Points of the equilateral shape to search. Ex. 3 = Triangle, 4 = square, 360 = circle */
-        this.degrees = path.length - 1;
         /** 1 unit == 1 Radius. How many pixels per unit. */
         this.unit2Px = 25;
         /** Center of the current shape in {float}[x,y]. */
@@ -213,10 +207,6 @@ class iclData {
         /** tourist start location */
         this.start = start;
 
-        /** Angle of the exit to use for the sim. */
-        this.exitAngle = angle;
-        /** Exit to use for the sim in {float}[x,y]. */
-        this.fieldExit = utils.wallAtAngle(path, this.center, angle);
         /** How many tourists this data structure is in control of. */
         this.touristNum = 0;
         /** Array of valid trajectories for robots. Length is how many tourists are being used. */
@@ -238,10 +228,6 @@ class iclData {
         this.hiscopy = null;
 
         this.mods = [];
-
-        this.timeDirect = 1;
-
-        //this.Start();
     }
 
     genPath() {
@@ -414,7 +400,7 @@ class exitFindMod {
             for( var j = 0; j < this.knows.length; j++ ) {
               if( this.knows[ j ] ) {
                 this.iclData.tourists[ this.knows[ j ].number ].on = this.iclData.tourists[ this.knows[ j ].number ].icl.length - 1;
-                this.iclData.tourists[ this.knows[ j ].number ].knows = true;
+                this.iclData.tourists[ this.knows[ j ].number ].knows = this.exit;
                 this.iclData.tourists[ this.knows[ j ].number ].target = null;
               }
             }
@@ -459,8 +445,8 @@ class exitFindMod {
             this.graphLines.push([]);
         }
         this.fieldSVG.select("#lines").append("circle")
-            .attr("cx", this.iclData.fieldExit.x)
-            .attr("cy", this.iclData.fieldExit.y)
+            .attr("cx", this.exit.x)
+            .attr("cy", this.exit.y)
             .attr("r",  1)
             .attr("id", "exit")
             .style("fill", "#ffffff")
