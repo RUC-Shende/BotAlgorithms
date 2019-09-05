@@ -36,6 +36,9 @@ class Tourist {
         this.atExit = false;
         /** Instruction checklist. Index 0 is info such as priority and color. */
         this.icl = icl;
+
+        this.faulty = (this.icl[0][2] == 1) ? true : false;
+        this.byzantine = (this.icl[0][2] == 2) ? true : false;
     }
 
     /**
@@ -138,20 +141,3 @@ class Tourist {
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

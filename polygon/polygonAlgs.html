@@ -212,7 +212,7 @@
                         var degrees = s.slice(0, s.indexOf("_"));
                         var algName = "Triangle Search 1 (Wall Start)";
                         var wireless = true;
-                        var path = utils.genPoly(center, 25, 0, degrees);
+                        var path = utils.genPoly(center, 25 / Math.sqrt(3), 0, degrees);
                         var start = utils.wallAtAngle(path, center, 220);
                         break;
                     case "3_iStart":
