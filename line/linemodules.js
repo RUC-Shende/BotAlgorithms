@@ -184,7 +184,7 @@ class utils {
  *
  */
 class iclData {
-    constructor(id, instruBinder, algorithmName, exit, wireless, start) {
+    constructor(id, instruBinder, algorithmName, exit, wireless, start, lineLength) {
         /** Someone learned where the exit is. */
         this.exitAlert = false;
         /** How far into a frame the exit was found. */
@@ -205,13 +205,14 @@ class iclData {
         this.degrees = 2;
         // 60 pixel path length for now.
         this.pathLength = 60;
-
+        this.maxPx = 80;
+        this.minPx = 20;
         this.path = [{x:20, y:35}, {x:80, y:35}];
         /** 1 unit == 1 Radius. How many pixels per unit. */
-        this.unit2Px = this.pathLength / Math.abs(exit *2);
+        this.points = (lineLength < Math.abs(exit * 2)) ? Math.abs(exit * 2) : lineLength;
+        this.unit2Px = this.pathLength / Math.abs(this.points);
         this.animSpeed = 2;
         this.step = this.unit2Px/(this.fps / this.animSpeed);
-        this.points = Math.abs(exit * 2);
         /** Center of the current shape in {float}[x,y]. */
         this.center = {
             x:50,
@@ -224,11 +225,12 @@ class iclData {
         this.exit = exit;
 
         if (this.exit < 0){
-            this.exitLoc = {x:20, y:35}
+            this.exitLoc = {x:this.center.x + (exit * this.unit2Px), y:this.center.y}
         }
         else {
-            this.exitLoc = {x:80, y:35}
+            this.exitLoc = {x:this.center.x + (exit * this.unit2Px), y:this.center.y}
         }
+
 
         this.totalTime = (this.exit * 9 + 2) * this.step;
 
@@ -408,12 +410,23 @@ class exitFindMod {
             var distance = Math.abs(this.iclData.exitLoc.x - this.iclData.tourists[i].x);
             //console.log("Distance " + this.iclData.tourists[i].number + ": " + distance);
             //this.exitDistances[i].push(distance);
+            if (this.iclData.tourists[i].faulty) { // Faulty robot has 1% chance to break down
+                if (Math.floor((Math.random() * 10000) + 1) > 9990) {
+                    this.iclData.tourists[i].on = this.iclData.tourists[i].icl.length - 2;
+                    console.log("broke down");
+                    this.iclData.tourists[i].knows = true;
+                    this.iclData.tourists[i].icl[0][0] = "#ffa500";
+
+                }
+
+            }
             if (distance <= this.step) {
                 // If tourist is priority and at exit end alg by time = timeMax
                 if (this.iclData.tourists[i].priority) {
                     this.iclData.allExitedLine = 1;
                     this.iclData.timeMax = this.iclData.time;
                 }
+
                 if (!this.iclData.tourists[i].knows) {
                     this.iclData.tourists[i].on = this.iclData.tourists[i].icl.length - 1;
                     this.iclData.tourists[i].knows = true;
@@ -422,7 +435,7 @@ class exitFindMod {
                     j++;
                 }
                 // Send out exit alert
-                if (this.iclData.wireless) {
+                if (this.iclData.wireless && ! this.iclData.tourists[i].faulty) {
                     for (var m = 0; m < this.iclData.tourists.length; m++) {
                         this.iclData.tourists[m].on = this.iclData.tourists[m].icl.length - 1;
                         this.iclData.tourists[m].knows = true;
@@ -433,7 +446,9 @@ class exitFindMod {
         }
         var allKnowing = false;
         for (var t = 0; t < this.iclData.tourists.length; t ++ ) {
-            allKnowing = utils.cmpXYPairs(this.iclData.tourists[t], this.iclData.exitLoc);
+            if (!this.iclData.tourists[t].faulty){
+                allKnowing = utils.cmpXYPairs(this.iclData.tourists[t], this.iclData.exitLoc);
+            }
             if (!allKnowing){
                 break;
             }
@@ -898,19 +913,63 @@ class iclVisual {
             }
         }
         var negativetext = this.fieldSVG.select("#negativetext")
-            .text((this.iclData.exit < 0) ? this.iclData.exit : -this.iclData.exit);
+            .text(this.iclData.points / -2);
 
         var positivetext = this.fieldSVG.select("#positivetext")
-            .text((this.iclData.exit > 0) ? this.iclData.exit : -this.iclData.exit);
+            .text(this.iclData.points / 2);
         var exitText = this.fieldSVG.select("#exittext")
             .attr("x", this.iclData.exitLoc.x)
-            .attr("y", this.iclData.exitLoc.y - 8)
-            .style("font-size", 2.5)
+            .attr("y", this.iclData.exitLoc.y - 3)
+            .style("font-size", 2)
             .style("text-anchor", "middle")
-            .text("Exit Location: " + this.iclData.exit + " units.");
+            .text("Exit: " + this.iclData.exit + " units");
+        var exitTick = this.fieldSVG.select("#backGround").append("line")
+            .attr("x1", this.iclData.exitLoc.x)
+            .attr("y1", this.iclData.origin.y - 1)
+            .attr("x2", this.iclData.exitLoc.x)
+            .attr("y2", this.iclData.origin.y + 1)
+            .style("stroke", "black")
+            .style("stroke-width", 0.25)
+            .style("fill", "none");
+        var miniTicks = [];
+        for (var t = 0; t < this.iclData.points / 2; t += this.iclData.points / 8){
+            miniTicks.push(this.fieldSVG.select("#backGround").append("line")
+                .attr("x1", this.iclData.center.x + (this.iclData.unit2Px * t))
+                .attr("y1", this.iclData.center.y - 1)
+                .attr("x2", this.iclData.center.x + (this.iclData.unit2Px * t))
+                .attr("y2", this.iclData.center.y)
+                .style("stroke", "grey")
+                .style("stroke-width", 0.1)
+                .style("fill", "none")
+            )
+            this.fieldSVG.select("#backGround").append("text")
+                .attr("x", this.iclData.center.x + this.iclData.unit2Px * t)
+                .attr("y", this.iclData.center.y - 2)
+                .style("fill", "grey")
+                .style("font-size", 1)
+                .style("text-anchor", "middle")
+                .text(Math.round( t * 10 ) / 10);
+        }
+        for (var t = 0; t > -this.iclData.points/2; t -= this.iclData.points / 8){
+            miniTicks.push(this.fieldSVG.select("#backGround").append("line")
+                .attr("x1", this.iclData.center.x + (this.iclData.unit2Px * t))
+                .attr("y1", this.iclData.center.y - 1)
+                .attr("x2", this.iclData.center.x + (this.iclData.unit2Px * t))
+                .attr("y2", this.iclData.center.y)
+                .style("stroke", "grey")
+                .style("stroke-width", 0.1)
+                .style("fill", "none")
+            )
+            this.fieldSVG.select("#backGround").append("text")
+                .attr("x", this.iclData.center.x + this.iclData.unit2Px * t)
+                .attr("y", this.iclData.center.y - 2)
+                .style("fill", "grey")
+                .style("font-size", 1)
+                .style("text-anchor", "middle")
+                .text(Math.round( t * 10 ) / 10);
+        }
         var speedtext = this.fieldSVG.select("#speedtext")
             .style("font-size", 2.5)
-            .style("text-anchor", "middle")
             .text("Speed: " + this.iclData.animSpeed + "x");
 
         /*
@@ -953,8 +1012,37 @@ class iclVisual {
     static reEnact() {
         if (!this.done && this.iclData.time < this.iclData.timeMax) {
             for (var i = 0; i < this.iclData.history.length; i++) {
-                this.visuals[i].attr("cx", this.iclData.history[i][this.iclData.time].x)
-                    .attr("cy", this.iclData.history[i][this.iclData.time].y);
+                if (this.iclData.history[i][this.iclData.time].x > this.iclData.maxPx) {
+                    this.visuals[i].attr("cx", this.iclData.maxPx);
+                    d3.select("#overflow" + i).remove();
+                    this.fieldSVG.select("#bots").append("text")
+                        .attr("x", this.visuals[i].attr("cx"))
+                        .attr("y", this.iclData.origin.y + (4 * (i+1)))
+                        .attr("id", "overflow" + i)
+                        .style("fill", this.iclData.tourists[i].icl[0][0])
+                        .style("font-size", 1.5)
+                        .style("text-anchor", "middle")
+                        .text( "+ " + Math.floor((this.iclData.history[i][this.iclData.time].x - this.iclData.maxPx) * 10) / 10);
+                }
+                else if (this.iclData.history[i][this.iclData.time].x < this.iclData.minPx) {
+                    d3.select("#overflow" + i).remove();
+                    this.visuals[i].attr("cx", this.iclData.minPx);
+                    console.log(this.iclData.center.y)
+                    this.fieldSVG.select("#bots").append("text")
+                        .attr("x", this.visuals[i].attr("cx"))
+                        .attr("y", this.iclData.center.y + (4 * (i+1)))
+                        .attr("id", "overflow" + i)
+                        .style("fill", this.iclData.tourists[i].icl[0][0])
+                        .style("font-size", 1.5)
+                        .style("text-anchor", "middle")
+                        .text( Math.floor((this.iclData.history[i][this.iclData.time].x - this.iclData.minPx) * 10) / 10);
+                }
+                else {
+                    d3.select("#overflow" + i).remove();
+                    this.visuals[i].attr("cx", this.iclData.history[i][this.iclData.time].x)
+                        .attr("cy", this.iclData.history[i][this.iclData.time].y);
+                }
+
                 if (this.iclData.time % 4 == 0) {
                     if (this.iclData.time > 0) {
                         this.timeLines[i].remove();
@@ -962,6 +1050,12 @@ class iclVisual {
                     var pt = {
                         x: this.iclData.history[i][this.iclData.time].x,
                         y: this.iclData.origin.y + this.timeStep * this.iclData.time
+                    }
+                    if (pt.x > this.iclData.maxPx) {
+                        pt.x = this.iclData.maxPx;
+                    }
+                    else if (pt.x < this.iclData.minPx) {
+                        pt.x = this.iclData.minPx;
                     }
                     this.timeHold[i] += ((this.iclData.time == 0) ? ('M') : ('L')) + pt.x + ',' + pt.y;
                     this.timeLines[i] = this.fieldSVG.select("#lines").append("path")
@@ -987,11 +1081,16 @@ class iclVisual {
                         .attr("y", this.origin)
                         .style("font-size", 2)
                         .style("text-anchor", "middle")
-                        .text("Exit found at " + Math.floor((1000 * this.iclData.time) / this.iclData.fps) / 1000);
+                        .text("Exit found at " + Math.floor((1000 * this.iclData.time ) / this.iclData.fps) / 1000);
                 }
+
+
             }
+            this.fieldSVG.select("#totaltime")
+                .text("Time: " + Math.floor((1000 * this.iclData.time* this.iclData.animSpeed) / this.iclData.fps) / 1000);
             this.origin += this.timeStep;
             this.fieldSVG.select("#origin").attr("cy", this.origin);
+
 
             for (var i = 0; i < this.iclData.mods.length; i++) {
                 if (this.iclData.mods[i].VUpdate) {
