@@ -968,6 +968,48 @@ class iclVisual {
                 .style("text-anchor", "middle")
                 .text(Math.round( t * 10 ) / 10);
         }
+        var timeTicks = [];
+
+        // 0 time tick.
+        timeTicks.push(this.fieldSVG.select("#backGround").append("line")
+            .attr("x1", 15)
+            .attr("y1", this.iclData.center.y)
+            .attr("x2", 13)
+            .attr("y2", this.iclData.center.y)
+            .style("stroke", "black")
+            .style("stroke-width", 0.25)
+            .style("fill", "none")
+        )
+        this.fieldSVG.select("#backGround").append("text")
+            .attr("x", 11)
+            .attr("y", this.iclData.center.y)
+            .style("font-size", 1)
+            .style("text-anchor", "middle")
+            .text(0);
+
+        // Make markers every 10 seconds on the graph.
+        var TICKSPACE = 10;
+
+        for (var i = 1; i <= Math.floor(this.iclData.timeMax * this.iclData.animSpeed / this.iclData.fps) / TICKSPACE ; i++) {
+            console.log(i);
+            timeTicks.push(this.fieldSVG.select("#backGround").append("line")
+            .attr("x1", 15)
+            .attr("y1", this.iclData.center.y + this.timeStep * this.iclData.fps * i * (TICKSPACE / this.iclData.animSpeed))
+            .attr("x2", 13)
+            .attr("y2", this.iclData.center.y + this.timeStep * this.iclData.fps * i  * (TICKSPACE / this.iclData.animSpeed))
+            .style("stroke", "black")
+            .style("stroke-width", 0.25)
+            .style("fill", "none")
+            )
+            this.fieldSVG.select("#backGround").append("text")
+                .attr("x", 11)
+                .attr("y", this.iclData.center.y + this.timeStep * this.iclData.fps * i * (TICKSPACE / this.iclData.animSpeed))
+                .style("font-size", 1)
+                .style("text-anchor", "middle")
+                .text(i * TICKSPACE);
+        }
+
+
         var speedtext = this.fieldSVG.select("#speedtext")
             .style("font-size", 2.5)
             .text("Speed: " + this.iclData.animSpeed + "x");
