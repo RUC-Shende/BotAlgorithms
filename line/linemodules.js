@@ -1101,7 +1101,7 @@ class iclVisual {
                         .attr("y", this.origin)
                         .style("font-size", 2)
                         .style("text-anchor", "middle")
-                        .text("Exit found at " + Math.floor((1000 * this.iclData.time ) / this.iclData.fps) / 1000);
+                        .text("Exit found at " + Math.floor((1000 * this.iclData.time * this.iclData.animSpeed ) / this.iclData.fps) / 1000);
                 }
 
 
@@ -1126,8 +1126,18 @@ class iclVisual {
             this.iclData.time += this.iclData.timeDirect;
             return;
         }
-        /*
+
         else {
+            if (!this.done) {
+                this.done = true;
+                this.fieldSVG.select("#terminationtext")
+                    .attr("x", 50)
+                    .attr("y", this.origin + 4)
+                    .style("font-size", 2)
+                    .style("text-anchor", "middle")
+                    .text("Algorithm terminates at " + Math.floor((1000 * (this.iclData.time - 1) * this.iclData.animSpeed ) / this.iclData.fps) / 1000);
+            }
+            /*
             if (!this.done){
                 this.iclData.time = this.iclData.timeMax;
                 this.iclData.timeDirect = 0;
@@ -1153,8 +1163,8 @@ class iclVisual {
             else{
                 this.iclData.time += this.iclData.timeDirect;
             }
+            */
         }
-        */
     }
 
 
