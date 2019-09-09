@@ -99,11 +99,9 @@
                     path,
                     start
                 );
-                // Initialize history no exit, add mods, init history with exit.
-                worldo.createHistory();
                 worldo.mods.push( new exitFindMod(worldo, utils.wallAtAngle(path, center, angle), field, graph));//light	~5ms
+                worldo.createHistory();
                 worldo.mods.push(new lineFillMod(worldo, exitEnvelope)); //medium			~65ms
-                //worldo.mods.push( new exitFindMod(worldo, utils.wallAtAngle(path, center, angle), field, graph));//light	~5ms
                 worldo.createHistory();
                 // Optional Add visuals. If you would like a data sim only dont add this.
                 // Result, no VInit or VUpdate will happen.
