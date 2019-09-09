@@ -1042,7 +1042,26 @@ class iclVisual {
                     this.visuals[i].attr("cx", this.iclData.history[i][this.iclData.time].x)
                         .attr("cy", this.iclData.history[i][this.iclData.time].y);
                 }
+                if (this.iclData.time > 0) {
+                    this.timeLines[i].remove();
+                    this.timeHold[i].remove();
+                }
+                this.timeLines[i] = this.fieldSVG.select("#lines").append("line")
+                    .attr("x1", this.iclData.history[i][this.iclData.time].x)
+                    .attr("y1", this.iclData.tourists[i].y)
+                    .attr("x2", this.iclData.history[i][this.iclData.time].x)
+                    .attr("y2", this.iclData.origin.y + this.timeStep * this.iclData.time)
+                    .style("stroke-width", 0.75)
+                    .style("stroke", this.iclData.tourists[i].icl[0][0])
+                    .style("fill", "none");
+                this.timeHold[i] = this.fieldSVG.select("#lines").append("circle")
+                    .attr("cx", this.iclData.history[i][this.iclData.time].x)
+                    .attr("cy", this.iclData.origin.y + this.timeStep * this.iclData.time)
+                    .attr("r",  0.75)
+                    .style("fill", this.iclData.tourists[i].icl[0][0])
+                    .style("stroke", "none");
 
+/*
                 if (this.iclData.time % 4 == 0) {
                     if (this.iclData.time > 0) {
                         this.timeLines[i].remove();
@@ -1065,6 +1084,7 @@ class iclVisual {
                         .style("stroke-linejoin", "round")
                         .style("fill", "none");
                 }
+*/
 
             /* Connections and min/maxsearched lines
                 this.connections[i]
