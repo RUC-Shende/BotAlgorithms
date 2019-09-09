@@ -227,6 +227,10 @@ class iclData {
 
         this.hiscopy = null;
 
+        //do not remove, it is useful for displaying information.
+        /**Value of angle in degrees relative to the center. */
+        this.exitAngle = angle;
+
         this.mods = [];
     }
 
@@ -260,7 +264,6 @@ class iclData {
     Init() {
         this.time = 0; //Reset time
         this.tourists = []; //Reset mobiles for run
-        var p = [true, true, false]
         for (var i = 0; i < this.instruBinder.length; i++) { //Refill mobiles for run
 
             this.tourists.push(new Tourist(
