@@ -641,7 +641,7 @@
                                 ["FollowWall", ["right", 120 * (Math.PI/180)]],
                                 ["GoToPoint", {x:center.x + 8, y:center.y + 5}],
                                 ["GoToPoint", {x:center.x, y:center.y + 5}],
-                                ["GoToWallFromCenter", [330 * (Math.PI/180)]],
+                                ["GoToWallFromCenter", [330]],
                                 ["FollowWall", ["right"]],
                                 ["Intercept", [null, false]]
                             ],
@@ -652,7 +652,7 @@
                                 ["FollowWall", ["left", 120 * (Math.PI/180)]],
                                 ["GoToPoint", {x:center.x - 8, y:center.y + 5}],
                                 ["GoToPoint", {x:center.x, y:center.y + 5}],
-                                ["GoToWallFromCenter", [210 * (Math.PI/180)]],
+                                ["GoToWallFromCenter", [210]],
                                 ["FollowWall", ["left"]],
                                 ["Intercept", [null, false]]
                             ]
@@ -668,7 +668,7 @@
                                 ["FollowWall", ["right", 120 * (Math.PI/180)]],
                                 ["GoToPoint", {x:center.x + 8, y:center.y + 5}],
                                 ["GoToPoint", {x:center.x, y:center.y + 5}],
-                                ["GoToWallFromCenter", [330 * (Math.PI/180)]],
+                                ["GoToWallFromCenter", [330]],
                                 ["FollowWall", ["right"]],
                                 ["GoToExit", []]
                             ],
@@ -679,7 +679,7 @@
                                 ["FollowWall", ["left", 120 * (Math.PI/180)]],
                                 ["GoToPoint", {x:center.x - 8, y:center.y + 5}],
                                 ["GoToPoint", {x:center.x, y:center.y + 5}],
-                                ["GoToWallFromCenter", [210 * (Math.PI/180)]],
+                                ["GoToWallFromCenter", [210]],
                                 ["FollowWall", ["left"]],
                                 ["GoToExit", []]
                             ]
@@ -924,7 +924,7 @@
                             ],
                             [
                                 ["#0000ff", false],
-                                ["GoToWallFromCenter", 180],
+                                ["GoToWallFromCenter", [180]],
                                 ["FollowWall", ["left"]],
                                 ["wait", [null, false]]
                             ]
