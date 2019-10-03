@@ -1056,7 +1056,13 @@
                 d3.selectAll(".w3-display-container").style("display", "none");
                 switch (s) {
                     case "steps":
-                        document.getElementById(infoPacket.algShortName).style.display = "block";
+                        if (infoPacket.algShortName.match(/[ABC]/i)) {
+                            document.getElementById(infoPacket.algShortName.substring(0,1)).style.display = "block";
+                        }
+                        else {
+                            document.getElementById(infoPacket.algShortName).style.display = "block";
+                        }
+                        //document.getElementById(infoPacket.algShortName).style.display = "block";
                         break;
                     default:
                         document.getElementById(s).style.display = "block";
