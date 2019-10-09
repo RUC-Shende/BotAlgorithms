@@ -331,10 +331,7 @@ class iclData {
                 }
 
                 //d3.select("#testbot").attr("cx", who.x).attr("cy", who.y);
-                who.allowance = this.step;
-                while (who.allowance > 0) {
-                    who[who.icl[who.on][0]](who.icl[who.on][1]);
-                }
+                who.work();
 
 
             }

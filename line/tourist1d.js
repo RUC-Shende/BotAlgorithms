@@ -41,6 +41,14 @@ class Tourist {
         this.byzantine = (this.icl[0][2] == 2) ? true : false;
     }
 
+    work() {
+
+        this.allowance = this.iclData.step;
+        while (this.allowance > 0) {
+            this[this.icl[this.on][0]](this.icl[this.on][1]);
+        }
+
+    }
     /**
      *Send the robot to its next location (next frame) based on its current instruction or allowance.
      *
