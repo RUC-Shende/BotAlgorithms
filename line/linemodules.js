@@ -260,6 +260,12 @@ class iclData {
         this.timeDirect = 1;
 
         this.allKnowing = false;
+
+        /** ID:boolean object of faulty robots. */
+        this.publicFaultyBots = {};
+        /** ID:boolean object of byzantine robots. */
+        this.publicByzantineBots = {};
+        
     }
 
     genLine(x1, y1, x2, y2) {
