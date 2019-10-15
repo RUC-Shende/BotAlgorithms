@@ -9,7 +9,7 @@
  */
 class Tourist {
 
-    constructor(iclData, x, y, num, icl, p) {
+    constructor(iclData, x, y, num, icl) {
         /** This holds all of what used to be global variables!  */
         this.iclData = iclData;
         /** The tourist's ID as an integer. */
@@ -37,8 +37,8 @@ class Tourist {
         /** Instruction checklist. Index 0 is info such as priority and color. */
         this.icl = icl;
 
-        this.faulty = (this.icl[0][2] == 1) ? true : false;
-        this.byzantine = (this.icl[0][2] == 2) ? true : false;
+        this.faulty = false;
+        this.byzantine = false;
     }
 
     work() {
@@ -148,4 +148,47 @@ class Tourist {
       }
     }
 
+    Vote (claimLocation) {
+        /* Reliable tourists always vote for the proper location,
+        *  and identify faulty or byzantine if they are
+        *  given a wrong claim.
+        */
+        return;
+    }
+
+}
+
+class ByzantineTourist extends Tourist{
+    constructor(iclData, x, y, num, icl, faultID) {
+        this.byz = (faultID == 2) ? true : false;
+        super(iclData, x,y,num, icl);
+
+    }
+/*
+    work() {
+        return;
+    }
+*/
+
+    Amplify (value) {
+        /* Need to recreate amplify so that arguments
+        * about where to stop or annouce false exits can be passed in.
+        * added a value.stopat value, for the robot to stop and declare
+        * an exit at.
+        */
+
+        return;
+    }
+
+    Vote (claimLocation) {
+        return;
+    }
+
+    GoToExit( value ) {
+        if( this.iclData.exitLoc.x - this.x ) {
+            this.DirectTo( this.iclData.exitLoc );
+        } else {
+            this.allowance = 0;
+        }
+    }
 }
