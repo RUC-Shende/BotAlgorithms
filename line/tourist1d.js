@@ -36,7 +36,7 @@ class Tourist {
         this.atExit = false;
         /** Instruction checklist. Index 0 is info such as priority and color. */
         this.icl = icl;
-
+        this.byz = (this.icl[0][2] == 2) ? true : false;
         this.faulty = false;
         this.byzantine = false;
     }
@@ -148,12 +148,29 @@ class Tourist {
       }
     }
 
-    Vote (claimLocation) {
-        /* Reliable tourists always vote for the proper location,
-        *  and identify faulty or byzantine if they are
-        *  given a wrong claim.
-        */
-        return;
+
+    Vote () {
+      /* Reliable tourists always vote for the proper location,
+      *  and identify faulty or byzantine if they are
+      *  given a wrong claim.
+      */
+      if (this.byz){
+        if (!(this.atExit)){
+          this.iclData.claimList[this.number] = 1
+          this.iclData.temp1.push([this.number])
+        } else if ((this.atExit)){
+          this.iclData.claimList[this.number] = 0
+          this.iclData.temp2.push([this.number])
+        }
+      }else{
+        if (!(this.atExit)){
+          this.iclData.claimList[this.number] = 0
+          this.iclData.temp2.push([this.number])
+        }else if ((this.atExit)){
+          this.iclData.claimList[this.number] = 1
+          this.iclData.temp1.push([this.number])
+        }
+      }
     }
 
 }
