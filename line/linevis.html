@@ -43,30 +43,34 @@
                 ["#ff0000", false, 2],
                 ["Amplify", {scale:2, direction:-1}],
                 ["Wait", {time:null}],
+                ["ResolveClaim", [null]],
+                ["Split", [null]],
                 ["GoToExit", [null]]
             ],
             [
                 ["#00ff00", false, 0],
                 ["Amplify", {scale:2, direction:-1}],
                 ["Wait", {time:null}],
+                ["ResolveClaim", [null]],
+                ["Split", [null]],
                 ["GoToExit", [null]]
             ],
             [
                 ["#0000ff", false, 0],
                 ["Amplify", {scale:2, direction:1}],
                 ["Wait", {time:null}],
+                ["ResolveClaim", [null]],
+                ["Split", [null]],
                 ["GoToExit", [null]]
             ]
 
         ];
         var field = d3.select("#anim0");
 
-        window.i = new iclData(0, icll, "Name", 9, true, {x:50, y:35}, 40);
+        window.i = new iclData(0, icll, "Name", 20, true, {x:50, y:35}, 40);
 
         i.mods.push(new exitFindMod(i, field))
         i.mods.push(new voteSystem(i))
-        i.mods.push(new byzantine(i))
-        i.mods.push(new covered(i))
 
         i.createHistory();
         v = new iclVisual(i, field);

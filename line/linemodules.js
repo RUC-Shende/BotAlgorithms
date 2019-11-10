@@ -265,18 +265,18 @@ class iclData {
         this.publicFaultyBots = {};
         /** ID:boolean object of byzantine robots. */
         this.publicByzantineBots = [];
+        this.availableClaim = false
+        this.claimLocation = {}
+        this.vote = []
+        this.voted0 = 0
+        this.voted1 = 0
+        this.temp0 = []
+        this.temp1 = []
+        this.reliable = []
+        this.attendance = 0
+        this.activated = true
 
-        //VotingSystem variables
-        this.openClaim = false;
-        this.openClaimList = [];
-        this.claimLocationList = [];
-        this.totalCover = [];
-        this.claimList = [];
-        this.temp1 = [];
-        this.temp2 = [];
-        this.voteSequence = [];
-        this.votingCommence = 0;
-        this.votingFinished = false;
+
         
     }
 
@@ -294,9 +294,14 @@ class iclData {
         this.time = 0; //Reset time
         this.tourists = []; //Reset mobiles for run
         for (var i = 0; i < this.instruBinder.length; i++) { //Refill mobiles for run
+            if (this.instruBinder[i][0][2] == 2){
+                this.tourists.push(new ByzantineTourist(
+                    this, this.start.x, this.start.y, i, this.instruBinder[i]))
+            }else{
+                this.tourists.push(new ReliableTourist(
+                    this, this.start.x, this.start.y, i, this.instruBinder[i]));
+            }
 
-            this.tourists.push(new Tourist(
-                this, this.start.x, this.start.y, i, this.instruBinder[i], this.instruBinder[i][0][1]));
         }
         for (var j = 0; j < this.mods.length; j++) { //Reset modules
             if (this.mods[j].Init) {
@@ -374,56 +379,76 @@ class iclData {
 }
 
 class voteSystem{
-    //Voting System for byzantine bot algorithms.
     constructor(iclData){
         this.iclData = iclData
+        //VotingSystem variables
+        // this.openClaim = false;
+        // this.claimLocationList = [];
+        // this.totalCover = [];
+        // this.claimList = [];
+        // this.temp1 = [];
+        // this.temp2 = [];
+        // this.voteSequence = [];
+        // this.votingCommence = 0;
+        // this.votingFinished = false;
     }
 
-    Init() {
+    Init(){
         for (var i = 0; i < this.iclData.tourists.length; i++) {
-            this.iclData.claimList.push(0); // Create claim list with all claims starting out as 0 for tourists.
-            this.iclData.voteSequence.push(0); // Create vote sequence initiator.
+            this.iclData.vote.push(0)
         }
     }
+}
+// class voteSystem{
+//     //Voting System for byzantine bot algorithms.
+//     constructor(iclData){
+//         this.iclData = iclData
+//     }
 
-    Update(){
-        if (this.iclData.openClaimList[0] === 0 || this.iclData.openClaimList[0]){
-            this.currentClaim = this.iclData.openClaimList[0];
-            this.currentClaimLocation = this.iclData.claimLocationList[0];
-            if(this.iclData.openClaim){
-                this.iclData.tourists[this.currentClaim].on = 2;
-                for (var i = 0; i < this.iclData.tourists.length; i++){
-                    if (i!=this.currentClaim){
-                        this.iclData.tourists[i].target = {x:this.currentClaimLocation[0], y:this.currentClaimLocation[1]} //({x:this.iclData.tourists[this.currentClaim].x, y:this.iclData.tourists[this.currentClaim].y})
-                    }
-                    if (this.iclData.tourists[i].x == this.iclData.tourists[this.currentClaim].x){
-                        this.iclData.voteSequence[i]=1;
-                        for (var k = 0; k < this.iclData.voteSequence.length; k++){
-                            this.iclData.votingCommence += this.iclData.voteSequence[k];
-                        }
-                        if (this.iclData.votingCommence == this.iclData.tourists.length){
-                            for (var p = 0; p < this.iclData.tourists.length; p++){
-                                this.iclData.tourists[p].Vote();
-                            }
-                            if (this.iclData.openClaimList.length ==1){
-                                this.iclData.openClaimList[0] = null
-                            }else{
-                                this.iclData.openClaimList = this.iclData.openClaimList.splice(0, 1)
-                                this.iclData.claimLocationList = this.iclData.claimLocationList.splice(0, 1)
-                            }
-                            this.iclData.openClaimList = this.iclData.openClaimList.splice(0, 1)
-                            this.iclData.claimLocationList = this.iclData.claimLocationList.splice(0, 1)
+//     Init() {
+//         for (var i = 0; i < this.iclData.tourists.length; i++) {
+//             this.iclData.claimList.push(0); // Create claim list with all claims starting out as 0 for tourists.
+//             this.iclData.voteSequence.push(0); // Create vote sequence initiator.
+//         }
+//     }
 
-                                // this.iclData.votingFinished = true
-                        }
-                    }
-                }
-                this.iclData.votingCommence = 0
-            }
-            
+//     Update(){
+//         if (this.iclData.openClaimList[0] === 0 || this.iclData.openClaimList[0]){
+//             this.currentClaim = this.iclData.openClaimList[0];
+//             this.currentClaimLocation = this.iclData.claimLocationList[0];
+//             if(this.iclData.openClaim){
+//                 this.iclData.tourists[this.currentClaim].on = 2;
+//                 for (var i = 0; i < this.iclData.tourists.length; i++){
+//                     if (i!=this.currentClaim){
+//                         this.iclData.tourists[i].target = {x:this.currentClaimLocation[0], y:this.currentClaimLocation[1]} //({x:this.iclData.tourists[this.currentClaim].x, y:this.iclData.tourists[this.currentClaim].y})
+//                     }
+//                     if (this.iclData.tourists[i].x == this.iclData.tourists[this.currentClaim].x){
+//                         this.iclData.voteSequence[i]=1;
+//                         this.iclData.tourists[i].on = 2
+//                         for (var k = 0; k < this.iclData.voteSequence.length; k++){
+//                             this.iclData.votingCommence += this.iclData.voteSequence[k];
+//                         }
+//                         if (this.iclData.votingCommence == this.iclData.tourists.length){
+//                             for (var p = 0; p < this.iclData.tourists.length; p++){
+//                                 this.iclData.tourists[p].Vote();
+//                             }
+//                             if (this.iclData.openClaimList.length ==1){
+//                                 this.iclData.openClaimList[0] = null
+//                             }else{
+//                                 this.iclData.openClaimList = this.iclData.openClaimList.splice(0, 1)
+//                                 this.iclData.claimLocationList = this.iclData.claimLocationList.splice(0, 1)
+//                             }
+//                             this.iclData.openClaimList = this.iclData.openClaimList.splice(0, 1)
+//                             this.iclData.claimLocationList = this.iclData.claimLocationList.splice(0, 1)
 
-        }
-    }
+//                                 // this.iclData.votingFinished = true
+//                         }
+//                     }
+//                 }
+//                 this.iclData.votingCommence = 0
+//             }
+//         }
+//     }
 
     /*Update(){
         // Starts voting system when claim is open
@@ -466,49 +491,49 @@ class voteSystem{
             //}
         }
     }*/
-}
+// }
 
-class byzantine{
-    constructor(iclData){
-        this.iclData = iclData
-    }
-    Update(){
-        for (var i = 0; i < this.iclData.tourists.length; i++){
-            if (Math.floor((Math.random() * 10000) + 1) > 9990 && this.iclData.tourists[i].byz){
-                if (this.iclData.totalCover[i][0] >= this.iclData.tourists[i].x || this.iclData.totalCover[i][1] <= this.iclData.tourists[i].x){
-                    this.iclData.openClaim = true
-                    if (!(i in this.iclData.openClaimList)){
-                        this.iclData.openClaimList.push(i)
-                        this.iclData.claimLocationList.push([this.iclData.tourists[i].x, this.iclData.tourists[i].y])
-                    }
-                }
-            }
-        }
-    }
-}
+// class byzantine{
+//     constructor(iclData){
+//         this.iclData = iclData
+//     }
+//     Update(){
+//         for (var i = 0; i < this.iclData.tourists.length; i++){
+//             if (Math.floor((Math.random() * 10000) + 1) > 9990 && this.iclData.tourists[i].byz){
+//                 if (this.iclData.totalCover[i][0] >= this.iclData.tourists[i].x || this.iclData.totalCover[i][1] <= this.iclData.tourists[i].x){
+//                     this.iclData.openClaim = true
+//                     if (!(i in this.iclData.openClaimList)){
+//                         this.iclData.openClaimList.push(i)
+//                         this.iclData.claimLocationList.push([this.iclData.tourists[i].x, this.iclData.tourists[i].y])
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }
 
-class covered{
-    constructor(iclData){
-        this.iclData = iclData
-    }
+// class covered{
+//     constructor(iclData){
+//         this.iclData = iclData
+//     }
 
-    Init(){
-        for (var i = 0; i < this.iclData.tourists.length; i++){
-            this.iclData.totalCover.push([50,50])
-        }
-    }
+//     Init(){
+//         for (var i = 0; i < this.iclData.tourists.length; i++){
+//             this.iclData.totalCover.push([50,50])
+//         }
+//     }
     
-    Update(){
-        for (var i = 0; i < this.iclData.tourists.length; i++){
-            if (this.iclData.totalCover[i][0] > this.iclData.tourists[i].x){
-                this.iclData.totalCover[i][0] = this.iclData.tourists[i].x
-            }
-            if (this.iclData.totalCover[i][1] < this.iclData.tourists[i].x){
-                this.iclData.totalCover[i][1] = this.iclData.tourists[i].x
-            }
-        }
-    }
-}
+//     Update(){
+//         for (var i = 0; i < this.iclData.tourists.length; i++){
+//             if (this.iclData.totalCover[i][0] > this.iclData.tourists[i].x){
+//                 this.iclData.totalCover[i][0] = this.iclData.tourists[i].x
+//             }
+//             if (this.iclData.totalCover[i][1] < this.iclData.tourists[i].x){
+//                 this.iclData.totalCover[i][1] = this.iclData.tourists[i].x
+//             }
+//         }
+//     }
+// }
 
 /**
 *A module for keep track of the number of points searched along a shapes path.
