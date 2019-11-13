@@ -211,7 +211,7 @@ class iclData {
         /** 1 unit == 1 Radius. How many pixels per unit. */
         this.points = (lineLength < Math.abs(exit * 2)) ? Math.abs(exit * 2) : lineLength;
         this.unit2Px = this.pathLength / Math.abs(this.points);
-        this.animSpeed = 2;
+        this.animSpeed = 4;
         this.step = this.unit2Px/(this.fps / this.animSpeed);
         /** Center of the current shape in {float}[x,y]. */
         this.center = {
@@ -277,7 +277,7 @@ class iclData {
         this.activated = true
 
 
-        
+
     }
 
     genLine(x1, y1, x2, y2) {
@@ -1023,7 +1023,6 @@ class iclVisual {
         var TICKSPACE = 10;
 
         for (var i = 1; i <= Math.floor(this.iclData.timeMax * this.iclData.animSpeed / this.iclData.fps) / TICKSPACE ; i++) {
-            console.log(i);
             timeTicks.push(this.fieldSVG.select("#backGround").append("line")
             .attr("x1", 15)
             .attr("y1", this.iclData.center.y + this.timeStep * this.iclData.fps * i * (TICKSPACE / this.iclData.animSpeed))
