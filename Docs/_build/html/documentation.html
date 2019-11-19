@@ -1,44 +1,167 @@
-
 <!DOCTYPE html>
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html >
   <head>
-    <meta charset="utf-8" />
-    <title>Search-and-Exit Tourist and Superclass Method Documentation &#8212; Search and Exit Algorithms 3.2.0 (351) documentation</title>
-    <link rel="stylesheet" href="_static/style.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+      <title>Search-and-Exit Tourist and Superclass Method Documentation</title>
     
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="References and Bibliography" href="references.html" />
-    <link rel="prev" title="Search and Exit Tourist API" href="api.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="references.html" title="References and Bibliography"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="api.html" title="Search and Exit Tourist API"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 3.2.0 (351) documentation</a> &#187;</li> 
-      </ul>
-    </div>  
+      <link rel="stylesheet" href="_static/pygments.css">
+      <link rel="stylesheet" href="_static/theme.css">
+      <link rel="stylesheet" href="_static/sphinx_press_theme.css">
+      
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+      <!-- sphinx script_files -->
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+
+      
+      <script src="_static/theme-vendors.js"></script>
+      <script src="_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="genindex.html" />
+  <link rel="search" title="Search" href="search.html" />
+  <link rel="next" title="References and Bibliography" href="references.html" />
+  <link rel="prev" title="Search and Exit Tourist API" href="api.html" /> 
+  </head>
+
+  <body>
+    <div id="app" class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="index.html" class="home-link">
+    
+      <span class="site-name">Search and Exit Algorithms</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="index.html#welcome-to-search-and-exit-algorithms-documentation">Contents:</a></span>
+      </p>
+      <ul class="current">
+        
+          <li class="toctree-l1 "><a href="api.html" class="reference internal ">Search and Exit Tourist API</a>
+
+            
+          </li>
+
+        
+          <li class="toctree-l1 current"><a href="#" class="reference internal current">Search-and-Exit Tourist and Superclass Method Documentation</a>
+
+            
+              <ul>
+                
+                  <li class="toctree-l2"><a href="#search-and-exit-tourist-and-superclass-method-documentation" class="reference internal">Search-and-Exit Tourist and Superclass Method Documentation</a></li>
+                
+                  <li class="toctree-l2"><a href="#the-tourist" class="reference internal">The Tourist</a></li>
+                
+                  <li class="toctree-l2"><a href="#icldata" class="reference internal">ICLData</a></li>
+                
+                  <li class="toctree-l2"><a href="#iclvisual" class="reference internal">ICLVisual</a></li>
+                
+                  <li class="toctree-l2"><a href="#modules" class="reference internal">Modules</a></li>
+                
+                  <li class="toctree-l2"><a href="#other-useful-functions" class="reference internal">Other Useful Functions</a></li>
+                
+              </ul>
+            
+          </li>
+
+        
+          <li class="toctree-l1 "><a href="references.html" class="reference internal ">References and Bibliography</a>
+
+            
+          </li>
+
+        
+          <li class="toctree-l1 "><a href="detailed-changelog.html" class="reference internal ">Project History</a>
+
+            
+          </li>
+
+        
+          <li class="toctree-l1 "><a href="project-summary.html" class="reference internal ">Project Summary and Notes:</a>
+
+            
+          </li>
+
+        
+          <li class="toctree-l1 "><a href="guide-js.html" class="reference internal ">Beginner’s Guide to Javascript</a>
+
+            
+          </li>
+
+        
+          <li class="toctree-l1 "><a href="guide-ddd.html" class="reference internal ">Guide to Using D3 V5</a>
+
+            
+          </li>
+
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+    
+    <li>Search-and-Exit Tourist and Superclass Method Documentation</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+  <li class="prev">
+    <a href="api.html"
+       title="previous chapter">← Search and Exit Tourist API</a>
+  </li>
+  <li class="next">
+    <a href="references.html"
+       title="next chapter">References and Bibliography →</a>
+  </li>
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main">
             
   <div class="section" id="search-and-exit-tourist-and-superclass-method-documentation">
 <h1>Search-and-Exit Tourist and Superclass Method Documentation<a class="headerlink" href="#search-and-exit-tourist-and-superclass-method-documentation" title="Permalink to this headline">¶</a></h1>
@@ -949,80 +1072,26 @@ points 3,4 are the second line segment.</p>
 
 
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Search-and-Exit Tourist and Superclass Method Documentation</a></li>
-<li><a class="reference internal" href="#the-tourist">The Tourist</a><ul>
-<li><a class="reference internal" href="#reliable-and-byzantine-tourist-extensions">Reliable and Byzantine Tourist Extensions</a></li>
-<li><a class="reference internal" href="#modified-r-b-tourist-class">Modified R&amp;B Tourist class</a></li>
-<li><a class="reference internal" href="#reliable-tourist">Reliable Tourist</a></li>
-<li><a class="reference internal" href="#byzantine-tourist">Byzantine Tourist</a></li>
-<li><a class="reference internal" href="#vote-system">Vote System</a></li>
-<li><a class="reference internal" href="#direct-tourist-to-its-next-destination">Direct Tourist to its Next Destination</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#icldata">ICLData</a></li>
-<li><a class="reference internal" href="#iclvisual">ICLVisual</a></li>
-<li><a class="reference internal" href="#modules">Modules</a><ul>
-<li><a class="reference internal" href="#creating-a-module-arguments">Creating a module: Arguments</a></li>
-<li><a class="reference internal" href="#creating-a-module-init-and-update">Creating a module: Init and Update</a></li>
-<li><a class="reference internal" href="#creating-a-module-vinit-vupdate-and-vreset">Creating a module: VInit, VUpdate, and VReset</a></li>
-<li><a class="reference internal" href="#exitfindmod">ExitFindMod</a></li>
-<li><a class="reference internal" href="#linefillmod">LineFillMod</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#other-useful-functions">Other Useful Functions</a></li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="api.html"
-                        title="previous chapter">Search and Exit Tourist API</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="references.html"
-                        title="next chapter">References and Bibliography</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/documentation.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+  <li class="prev">
+    <a href="api.html"
+       title="previous chapter">← Search and Exit Tourist API</a>
+  </li>
+  <li class="next">
+    <a href="references.html"
+       title="next chapter">References and Bibliography →</a>
+  </li>
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2019, Chris Till, David Bushta, Jesse Thomas.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.1 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a>.
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
+            </div>
+          </div>
+      </page>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="references.html" title="References and Bibliography"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="api.html" title="Search and Exit Tourist API"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 3.2.0 (351) documentation</a> &#187;</li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2019, Chris Till, David Bushta, Jesse Thomas.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.1.
-    </div>
+    
+    
   </body>
 </html>

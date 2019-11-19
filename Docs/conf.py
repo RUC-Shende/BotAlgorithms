@@ -26,7 +26,7 @@ author = 'Chris Till, David Bushta, Jesse Thomas'
 # The short X.Y version
 version = '3.2'
 # The full version, including alpha/beta/rc tags
-release = '3.2.0 (351)'
+release = '3.2.0 (252)'
 # Version [major].[minor].[release] (build)
 
 # -- General configuration ---------------------------------------------------
@@ -81,8 +81,8 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'theme'
-html_theme_path = ['.']
+html_theme = 'press'
+#html_theme_path = ['.']
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
