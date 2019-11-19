@@ -271,7 +271,7 @@ function on a ``d3.select``ed element will let us define an anonymous function t
 Notably different than ``each`` however, the reference of ``this`` is not a reference to any element during this fucntion call.
 A reference to an element may be passed in like so:
 
-..code-block:: javascript
+.. code-block:: javascript
     :emphasize-lines: 1
 
     bodySVG.append("circle").call( function (d) { // d becomes the reference to the newly appended object.

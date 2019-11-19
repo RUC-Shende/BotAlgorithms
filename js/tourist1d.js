@@ -50,6 +50,13 @@ class Tourist {
         this.faulty = false;
     }
 
+    /**
+    * Tourist main driver function,
+    * uses the Tourist1D.on and Tourist1D.allowance vars to
+    * determine both where the tourist is in its ICL,
+    * and how long it will be doing that action for.
+    * Typically only 1 step.
+    */
     work() {
 
         this.allowance = this.iclData.step;
@@ -99,6 +106,15 @@ class Tourist {
         }
     }
 
+    /**
+    * Instruct the Tourist to cover either:
+    * a) the amount of distance specified (in units)
+    * b) an infinite amount of distance (acceptable as a termination function
+    * before exit protocol)
+    * Direction (1 | -1) is multiplied by distance to allow for negative traversing.
+    *
+    * @param {Object} value [distance: [null|numUnits], direction:[1|-1]]
+    */
     Go(value) {
         if (value.distance) {
             if (!this.target) {
@@ -119,6 +135,15 @@ class Tourist {
         }
     }
 
+    /**
+    * Repetitive function to allow tourists to follow the zig-zag search
+    * pattern without the need for an infinitely long ICL.
+    * Acceptable as a termination function before exit protocol.
+    * Scale: the amount of units to search by each iteration - (2) -> 1(+2),3(+4),7(+8),15
+    * Direction: (1|-1) starting direction.
+    *
+    * @param {Object} value [scale:Integer, direction:[1|-1]]
+    */
     Amplify(value) {
         if (!this.target) {
             this.target = {
@@ -134,6 +159,9 @@ class Tourist {
         }
     }
 
+    /**
+    * Similar to Amplify. Deprecated.
+    */
     Increment(value) {
         if (!this.target) {
             this.target = {
@@ -151,6 +179,12 @@ class Tourist {
         }
     }
 
+    /**
+    * Shorthand function for use in exit protocol.
+    * Go to exit if not there, otherwise wait there.
+    *
+    *@param null
+    */
     GoToExit(value) {
         if (this.iclData.exitLoc.x - this.x) {
             this.DirectTo(this.iclData.exitLoc);
@@ -168,7 +202,11 @@ class ReliableTourist extends Tourist {
         super(iclData, x, y, num, icl);
     }
 
-    /** Modified amplify function. Reacts when a new claim is opened, moving instruction set to wait.  */
+    /**
+    * Modified amplify function.
+    * Reacts when a new claim is opened,
+    * moving instruction set to wait.
+    */
     Amplify(value) {
         if (this.OpenClaim() && this.activated) {
             this.on = 2
@@ -199,7 +237,9 @@ class ReliableTourist extends Tourist {
         this.Covered()
     }
 
-    /** Keeps track of the part of the line that the tourist has already covered.  */
+    /**
+    * Keeps track of the part of the line that the tourist has already covered.
+    */
     Covered() {
         if (this.x < this.groundCovered[0]) {
             this.groundCovered[0] = this.x
@@ -207,12 +247,18 @@ class ReliableTourist extends Tourist {
             this.groundCovered[1] = this.x
         }
     }
-    /** Used to open claim when an exit is found. Currently only returns false so only byzantine bots can open claims  */
+    /**
+    * Used to open claim when an exit is found.
+    * Currently only returns false so only byzantine bots can open claims
+    */
     OpenClaim() {
         return false
     }
 
-    /** Tourists votes at the open claim locations on whether or not a claim locations is an exit. */
+    /**
+    * Tourists votes at the open claim locations on
+    * whether or not a claim locations is an exit.
+    */
     Vote() {
         if (Math.round(this.x * 100) != Math.round(this.iclData.exitLoc.x * 100) && !(this.voted)) {
             this.iclData.vote[this.number] = 0
@@ -227,7 +273,9 @@ class ReliableTourist extends Tourist {
         }
     }
 
-    /** Initiates the resolution of open claims. */
+    /**
+    * Initiates the resolution of open claims.
+    */
     ResolveClaim(value) {
         console.log(this.iclData.attendance);
         if (this.iclData.attendance == this.iclData.tourists.length) {
@@ -268,7 +316,9 @@ class ReliableTourist extends Tourist {
 
     }
 
-    /** Decides who is byzantine and who is reliable. */
+    /**
+    * Decides who is byzantine and who is reliable.
+    */
     Decide() {
         if (Math.ceil(this.iclData.vote.length / 2) == this.iclData.voted0) {
             this.iclData.publicByzantineBots = this.iclData.temp1
@@ -288,7 +338,11 @@ class ByzantineTourist extends ReliableTourist {
         super(iclData, x, y, num, icl);
     }
 
-    /** Tourists votes at the open claim locations on whether or not a claim locations is an exit. Currently Byzantine bots votes the opposite. Example: If they aren't at the exit, the vote that they are. */
+    /**
+    * Tourists votes at the open claim locations on whether or not a claim
+    * locations is an exit. Currently Byzantine bots votes the opposite.
+    * Example: If they aren't at the exit, the vote that they are.
+    */
     Vote() {
         if (Math.round(this.x * 100) != Math.round(this.iclData.exitLoc.x * 100) && !(this.voted)) {
             this.iclData.vote[this.number] = 1
@@ -303,7 +357,10 @@ class ByzantineTourist extends ReliableTourist {
         }
     }
 
-    /** Used to open claim when an exit is found. Currently only returns false so only byzantine bots can open claims  */
+    /**
+    * Used to open claim when an exit is found.
+    * Currently only returns false so only byzantine bots can open claims
+    */
     OpenClaim() {
         if (this.byz && (this.x >= this.groundCovered[1] || this.x <= this.groundCovered[0])) {
             if (Math.floor((Math.random() * 10000) + 1) > 9990) {

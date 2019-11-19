@@ -1,6 +1,28 @@
 Project History
 ===============
 
+11/18/19: Byzantine and Reliable Tourists, Almost Complete v3.2
+---------------------------------------------------------------
+
+Since the last update, we have had good results using the module subsystem.
+This module subsystem has made it easy and reliable to add and subtract little
+pieces of the simulation as we need them.
+We have created a module to handle Tourist votes in the event of a false
+exit claim by a Byzantine robots, and so far it is almost complete. The last piece
+of the puzzle is simply getting the Tourists to move on from their current instruction
+to their final instruction after deciding that the claim was false. How should
+reliable Tourists split themselves up in the event that they need to keep searching?
+We will use a simple alternation pattern such that the first Tourist who is reliable always
+travels in the positive direction, and the next the negative direction, and so on. Once
+they are in this state of being on their final 'GO' command, we can have them GoToExit
+properly as normal. So in terms of a Byzantine simulation, we are looking only at the case
+of (3,1) and (5,2) which is shorthand for '3 Tourists total, 1 Byz.' and '5 Tourists total, 2 byz.'
+Any more than this and the problem becomes trivial, as shown in the papers.
+
+Once we can successfully make the Tourists move on to their next instruction and successfully complete
+a byzatine simulation, it's off to amoebots on a triangular grid system. We've also
+updated the look of the docs, and soon will update the look of the simulation site as well.
+
 08/13/19: Module system released, Version 3.0
 ---------------------------------------------
 

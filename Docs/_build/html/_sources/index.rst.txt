@@ -111,8 +111,10 @@ Triangle
 --------
 `Wireless, 2 Robots, starting at Center.
 </BotAlgorithms/polygon/polygonAlgs.html#3_cStart>`_.
+
 `Wireless, 2 Robots, starting on Wall.
 </BotAlgorithms/polygon/polygonAlgs.html#3_wStart>`_.
+
 `Wireless, 2 Robots, starting in Interior with start selection.
 </BotAlgorithms/polygon/polygonAlgs.html#3_iStart>`_.
 
@@ -120,7 +122,9 @@ Square
 ------
 `Wireless, 2 Robots, starting at Center.
 </BotAlgorithms/polygon/polygonAlgs.html#4_cStart>`_.
+
 `Wireless, 2 Robots, starting on Wall.
 </BotAlgorithms/polygon/polygonAlgs.html#4_wStart>`_.
+
 `Wireless, 2 Robots, starting in Interior with start selection.
 </BotAlgorithms/polygon/polygonAlgs.html#4_iStart>`_.

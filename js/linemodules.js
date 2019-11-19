@@ -195,7 +195,6 @@ class iclData {
         this.id = id;
         /** Current time of the simulation (frames). */
         this.time = 0;
-        /** Current velocity of the simulation. 1 - Forward. 0 - Stopped. -1 - Rewind. (0,1) - Slow */
         this.timeDirect = 0;
         /** Frames per second. Too high (> 100) == bad performance. */
         this.fps = 100;
@@ -221,7 +220,7 @@ class iclData {
         this.origin = {x:this.center.x, y:35}
         /** tourist start location */
         this.start = start;
-
+        /** World Exit location as specified by user.*/
         this.exit = exit;
 
         if (this.exit < 0){
@@ -231,9 +230,8 @@ class iclData {
             this.exitLoc = {x:this.center.x + (exit * this.unit2Px), y:this.center.y}
         }
 
-
+        /**Time to continue algorithm before stopping. Based on worst upper bound.*/
         this.totalTime = (this.exit * 9 + 2) * this.step;
-
         /** Exit to use for the sim in {float}[x,y]. */
         this.fieldExit = {x:exit};
         /** How many tourists this data structure is in control of. */
@@ -244,42 +242,52 @@ class iclData {
         this.algorithmName = algorithmName;
         /** Array of {Tourist}s */
         this.tourists = [];
-
+        /**Max positive distance searched.*/
         this.maxSearched = [this.center.x];
+        /**Min negative distance searched.*/
         this.minSearched = [this.center.x];
-
         /** Interval for this iclData instance. Typically set to 1000/fps. Initialized to just a number.*/
         this.motor = this.id;
-
+        /**World line generated on x=[20,80], y=35*/
         this.pPath = this.genLine(20, 35, 80, 35);
-
+        /**Save buffer of the actions performed during this simulation.*/
         this.history = null;
-
+        /**Modules loaded into this instance of ICLData.*/
         this.mods = [];
-
+        /**Frame increment. Can be 2,4 for frameskip.*/
         this.timeDirect = 1;
-
+        /**Every tourist's knowledge of the exitlocation, ANDed together.*/
         this.allKnowing = false;
-
         /** ID:boolean object of faulty robots. */
         this.publicFaultyBots = {};
         /** ID:boolean object of byzantine robots. */
         this.publicByzantineBots = [];
+        /**Claim made by a robot of an exit location.*/
         this.availableClaim = false
+        /**Exit claim location broadcast.*/
         this.claimLocation = {}
+        /**List of votes for current available claim.*/
         this.vote = []
+        /**Those who have voted that this claim is NOT an exit.*/
         this.voted0 = 0
+        /**Those who have voted this claim IS an exit.*/
         this.voted1 = 0
+        /**List of ID's of those who have voted this claim IS NOT an exit.*/
         this.temp0 = []
+        /**List of ID's of those who have voted this claim IS an exit location*/
         this.temp1 = []
+        /**List of reliable Tourists, as made available to the Tourists after a vote.*/
         this.reliable = []
+        /**Number of Tourists currently at a claim or exit location.*/
         this.attendance = 0
+        /**Claim is activated.*/
         this.activated = true
 
 
 
     }
 
+    /**Generates the path element for the world line.*/
     genLine(x1, y1, x2, y2) {
         var pPath = [];
         for (var i = 0; i <=  this.points * this.fps; i++) {
@@ -289,7 +297,7 @@ class iclData {
         return pPath;
     }
 
-
+    /**Sets up variables and Tourists for the sim. Add requested mods.*/
     Init() {
         this.time = 0; //Reset time
         this.tourists = []; //Reset mobiles for run
@@ -311,9 +319,12 @@ class iclData {
 
     }
 
+    /**
+    * Create list of actions that occur during the simulation and save to
+    * ICLData.history and ICLData.hiscopy.
+    */
     createHistory() {
         this.Init();
-
         this.history = []; //Reset History
         for (var i = 0; i < this.instruBinder.length; i++) {
             this.history.push([]);
@@ -509,7 +520,8 @@ class exitFindMod {
     }
     */
 
-
+    // This renamed function will not be run by ICLData as it is misnamed.
+    // To use this in simulation, simply remove the U.
     UVInit() { // draw initial graph.
         this.VReset();
         for (var i = 0; i < this.iclData.tourists.length; i++) {
@@ -615,6 +627,8 @@ class exitFindMod {
             }
     }
 
+    // This renamed function will not be run by ICLData as it is misnamed.
+    // To use this in simulation, simply remove the U.
     UVUpdate() {
         var formatvalue = d3.format(",.3f");
 

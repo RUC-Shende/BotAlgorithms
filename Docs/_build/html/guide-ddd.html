@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Guide to Using D3 V5 &#8212; Search and Exit Algorithms 3.1.1 (214) documentation</title>
+    <title>Guide to Using D3 V5 &#8212; Search and Exit Algorithms 3.2.0 (351) documentation</title>
     <link rel="stylesheet" href="_static/style.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="guide-js.html" title="Beginner’s Guide to Javascript"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 3.1.1 (214) documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 3.2.0 (351) documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -271,20 +271,13 @@ us do that as well. Using the <a class="reference external" href="https://github
 function on a <code class="docutils literal notranslate"><span class="pre">d3.select``ed</span> <span class="pre">element</span> <span class="pre">will</span> <span class="pre">let</span> <span class="pre">us</span> <span class="pre">define</span> <span class="pre">an</span> <span class="pre">anonymous</span> <span class="pre">function</span> <span class="pre">to</span> <span class="pre">be</span> <span class="pre">called.</span>
 <span class="pre">Notably</span> <span class="pre">different</span> <span class="pre">than</span> <span class="pre">``each</span></code> however, the reference of <code class="docutils literal notranslate"><span class="pre">this</span></code> is not a reference to any element during this fucntion call.
 A reference to an element may be passed in like so:</p>
-<dl>
-<dt>..code-block:: javascript</dt><dd><dl class="field-list simple">
-<dt class="field-odd">emphasize-lines</dt>
-<dd class="field-odd"><p>1</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>bodySVG.append(“circle”).call( function (d) { // d becomes the reference to the newly appended object.</dt><dd><p>console.log(d);
-d3.select(d).style(“fill”, “green”); // So, if we want to utilize d, we must again select it before use.</p>
-</dd>
-</dl>
-<p>});</p>
-</dd>
-</dl>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="nx">bodySVG</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;circle&quot;</span><span class="p">).</span><span class="nx">call</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// d becomes the reference to the newly appended object.</span>
+</span>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">d</span><span class="p">);</span>
+    <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="nx">d</span><span class="p">).</span><span class="nx">style</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="s2">&quot;green&quot;</span><span class="p">);</span> <span class="c1">// So, if we want to utilize d, we must again select it before use.</span>
+
+<span class="p">});</span>
+</pre></div>
+</div>
 </div>
 </div>
 
@@ -337,12 +330,12 @@ d3.select(d).style(“fill”, “green”); // So, if we want to utilize d, we 
         <li class="right" >
           <a href="guide-js.html" title="Beginner’s Guide to Javascript"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 3.1.1 (214) documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 3.2.0 (351) documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Chris Till, David Bushta, Jesse Thomas.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.1.
     </div>
   </body>
 </html>

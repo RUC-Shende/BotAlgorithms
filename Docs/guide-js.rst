@@ -612,7 +612,7 @@ That's great, but once we initialize it, how can we add, remove or change values
 Arrays use different methods from Objects and as such can act as queues, stacks, and other
 helpful data structures.
 
-..code-block:: javascript
+.. code-block:: javascript
     :emphasize-lines: 1
 
     arrays.js
