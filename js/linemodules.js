@@ -263,19 +263,18 @@ class iclData {
 
         /** ID:boolean object of faulty robots. */
         this.publicFaultyBots = {};
-        /** List of Byzantine bots by ID. */
+        /** ID:boolean object of byzantine robots. */
         this.publicByzantineBots = [];
-        this.availableClaim = false;
-        this.claimLocation = {};
-        this.vote = [];
-        this.voted0 = 0;
-        this.voted1 = 0;
-        this.temp0 = [];
-        this.temp1 = [];
-        this.reliable = [];
-        /** Attendance for voting protocol. Counts how many bots are at an open claim location. */
-        this.attendance = 0;
-        this.activated = true;
+        this.availableClaim = false
+        this.claimLocation = {}
+        this.vote = []
+        this.voted0 = 0
+        this.voted1 = 0
+        this.temp0 = []
+        this.temp1 = []
+        this.reliable = []
+        this.attendance = 0
+        this.activated = true
 
 
 
@@ -379,6 +378,11 @@ class iclData {
 
 }
 
+/**
+*Initializes voting indices for n number of bots to 0.
+*
+*@param {iclData} iclData A reference to iclData that this module is enabled in.
+*/
 class voteSystem{
     constructor(iclData){
         this.iclData = iclData

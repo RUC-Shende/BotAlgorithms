@@ -15,6 +15,33 @@ just a name we've had for the little circles in the sim since the beginning.
 .. js:autoclass:: touristmodule.Tourist(iclData, x, y, num, icl, p)
     :members:
 
+Reliable and Byzantine Tourist Extensions
+-----------------------------------------
+These class extensions add the concept of reliablity to the tourist class along with a voting
+system to assist tourists to pin-point byzantine bots.
+
+Modified R&B Tourist class
+--------------------------
+Everything is included from original tourist class. The following are added variables.
+
+.. js:autoclass:: tourist1d.Tourist
+    :members: groundCovered, byz, attendance, voted, claimInput
+
+Reliable Tourist
+----------------
+.. js:autoclass:: tourist1d.ReliableTourist(iclData, x, y, num, icl)
+    :members:
+
+Byzantine Tourist
+-----------------
+.. js:autoclass:: tourist1d.ByzantineTourist(iclData, x, y, num, icl)
+    :members:
+
+Vote System
+-----------
+.. js:autoclass:: linemodules.voteSystem
+    :members: Init
+
 Other API methods are defined in `the API section of these docs <api.html>`_, so this
 will just be going over the methods behind the API.
 
@@ -120,10 +147,10 @@ Other Useful Functions
 Defined by the ``utils`` class, these are a set of static functions designed to be
 accessed from anywhere and used to calculate common things.
 
-.. js:autofunction:: utils.wallAtAngle
-.. js:autofunction:: utils.genPoly
-.. js:autofunction:: utils.distance
-.. js:autofunction:: utils.midpoint
-.. js:autofunction:: utils.cmpXYPairs
-.. js:autofunction:: utils.AddAround
-.. js:autofunction:: utils.WhereLineSegsCross
+.. js:autofunction:: modules.utils.wallAtAngle
+.. js:autofunction:: modules.utils.genPoly
+.. js:autofunction:: modules.utils.distance
+.. js:autofunction:: modules.utils.midpoint
+.. js:autofunction:: modules.utils.cmpXYPairs
+.. js:autofunction:: modules.utils.AddAround
+.. js:autofunction:: modules.utils.WhereLineSegsCross

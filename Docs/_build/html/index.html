@@ -1,12 +1,10 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Welcome to Search and Exit Algorithms documentation! &#8212; Search and Exit Algorithms 3.0.3 (208) documentation</title>
+    <meta charset="utf-8" />
+    <title>Welcome to Search and Exit Algorithms documentation! &#8212; Search and Exit Algorithms 3.1.1 (214) documentation</title>
     <link rel="stylesheet" href="_static/style.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -29,7 +27,7 @@
         <li class="right" >
           <a href="api.html" title="Search and Exit Tourist API"
              accesskey="N">next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">Search and Exit Algorithms 3.0.3 (208) documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="#">Search and Exit Algorithms 3.1.1 (214) documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -56,6 +54,11 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="documentation.html">Search-and-Exit Tourist and Superclass Method Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documentation.html#the-tourist">The Tourist</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#reliable-and-byzantine-tourist-extensions">Reliable and Byzantine Tourist Extensions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#modified-r-b-tourist-class">Modified R&amp;B Tourist class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#reliable-tourist">Reliable Tourist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#byzantine-tourist">Byzantine Tourist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#vote-system">Vote System</a></li>
 <li class="toctree-l2"><a class="reference internal" href="documentation.html#direct-tourist-to-its-next-destination">Direct Tourist to its Next Destination</a></li>
 </ul>
 </li>
@@ -136,7 +139,7 @@ robots, and try to decrease the lower bound of how long it takes for different n
 <div class="section" id="getting-started">
 <h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
 <p>To see the app in action, simply get the project from <a class="reference external" href="https://github.com/dbushta/BotAlgorithms/">Github</a>.</p>
-<p>In version 3.0 of the app, there are a few types of simulations available for showing wireless and face-to-face communication model algorithms.
+<p>In version 3.1 of the app, there are a few types of simulations available for showing wireless and face-to-face communication model algorithms.
 See the <a class="reference external" href="detailed-changelog.html">changelog</a> for a more detailed explanation.</p>
 </div>
 <div class="section" id="types-of-algorithms">
@@ -144,9 +147,9 @@ See the <a class="reference external" href="detailed-changelog.html">changelog</
 <p>These algorithms differ significantly depending upon the number of available robots, the type of communication they utilize,
 and the shape of the area the robots are searching. We assume, in these algorithms, that the robots</p>
 <ol class="loweralpha simple">
-<li>know the algorithms and trajectory of the others at any given time.</li>
-<li>all move at the same speed, being their maximum speed. (since version 1.0)</li>
-<li>know how to move about the area and recognize the exit no matter what.</li>
+<li><p>know the algorithms and trajectory of the others at any given time.</p></li>
+<li><p>all move at the same speed, being their maximum speed. (since version 1.0)</p></li>
+<li><p>know how to move about the area and recognize the exit no matter what.</p></li>
 </ol>
 <p>In our app, we provide multiple examples of algorithms <a class="reference external" href="references.html">previously stated in other papers</a>.</p>
 <div class="section" id="number-of-robots">
@@ -235,13 +238,11 @@ that the shapes are generally convex, and not concave.</p>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -259,12 +260,12 @@ that the shapes are generally convex, and not concave.</p>
         <li class="right" >
           <a href="api.html" title="Search and Exit Tourist API"
              >next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">Search and Exit Algorithms 3.0.3 (208) documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="#">Search and Exit Algorithms 3.1.1 (214) documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2019, Chris Till, David Bushta.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
+        &#169; Copyright 2019, Chris Till, David Bushta, Jesse Thomas.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
     </div>
   </body>
 </html>

@@ -20,8 +20,8 @@
 # -- Project information -----------------------------------------------------
 
 project = 'Search and Exit Algorithms'
-copyright = '2019, Chris Till, David Bushta'
-author = 'Chris Till, David Bushta'
+copyright = '2019, Chris Till, David Bushta, Jesse Thomas'
+author = 'Chris Till, David Bushta, Jesse Thomas'
 
 # The short X.Y version
 version = '3.1'

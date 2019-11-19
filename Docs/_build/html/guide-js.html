@@ -1,12 +1,10 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Beginner’s Guide to Javascript &#8212; Search and Exit Algorithms 3.0.3 (208) documentation</title>
+    <meta charset="utf-8" />
+    <title>Beginner’s Guide to Javascript &#8212; Search and Exit Algorithms 3.1.1 (214) documentation</title>
     <link rel="stylesheet" href="_static/style.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -33,7 +31,7 @@
         <li class="right" >
           <a href="project-summary.html" title="Project Summary and Notes:"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 3.0.3 (208) documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 3.1.1 (214) documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -97,9 +95,9 @@ into <code class="docutils literal notranslate"><span class="pre">index.rst</spa
 <div class="section" id="comments">
 <h2>Comments<a class="headerlink" href="#comments" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>HTML comments between &lt;!– and –&gt;</li>
-<li>// before javascript comments</li>
-<li>JS multi-line comments between /* and */</li>
+<li><p>HTML comments between &lt;!– and –&gt;</p></li>
+<li><p>// before javascript comments</p></li>
+<li><p>JS multi-line comments between /* and */</p></li>
 </ul>
 </div>
 <div class="section" id="how-to-load-a-javascript-file-into-html">
@@ -218,12 +216,12 @@ helpful, but most of the time it’s a nice feature.</p>
 This value is falsy.</p>
 <p>For example:</p>
 <ul class="simple">
-<li>Infinity * 0 == NaN</li>
-<li>Infinity - Infinity == NaN</li>
-<li>Infinity / Infinity == NaN</li>
-<li>(Any number) / Infinity == 0</li>
-<li>(Any nonzero number) / 0 == Infinity</li>
-<li>0 / 0 == NaN</li>
+<li><p>Infinity * 0 == NaN</p></li>
+<li><p>Infinity - Infinity == NaN</p></li>
+<li><p>Infinity / Infinity == NaN</p></li>
+<li><p>(Any number) / Infinity == 0</p></li>
+<li><p>(Any nonzero number) / 0 == Infinity</p></li>
+<li><p>0 / 0 == NaN</p></li>
 </ul>
 </div>
 <div class="section" id="reference-variables">
@@ -583,20 +581,15 @@ A JSON string is generally formatted as a valid JS Object and can be used as suc
 <p>That’s great, but once we initialize it, how can we add, remove or change values in it?
 Arrays use different methods from Objects and as such can act as queues, stacks, and other
 helpful data structures.</p>
-<dl class="docutils">
-<dt>..code-block:: javascript</dt>
-<dd><table class="first docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name" colspan="2">emphasize-lines:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body">1</td>
-</tr>
-</tbody>
-</table>
+<dl>
+<dt>..code-block:: javascript</dt><dd><dl class="field-list simple">
+<dt class="field-odd">emphasize-lines</dt>
+<dd class="field-odd"><p>1</p>
+</dd>
+</dl>
 <p>arrays.js</p>
 <p>var a = [1,2,3,4];</p>
-<p class="last">a.push(5);   // [1,2,3,4,5]
+<p>a.push(5);   // [1,2,3,4,5]
 a.pop();     // [1,2,3,4]
 a.shift();   // [2,3,4]
 a.splice(1); // [2,4] This one is be a way to remove data from a certain index,
@@ -724,13 +717,11 @@ contain D3 elements and data that we modify to create visuals.</p>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -751,12 +742,12 @@ contain D3 elements and data that we modify to create visuals.</p>
         <li class="right" >
           <a href="project-summary.html" title="Project Summary and Notes:"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 3.0.3 (208) documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">Search and Exit Algorithms 3.1.1 (214) documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2019, Chris Till, David Bushta.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.3.
+        &#169; Copyright 2019, Chris Till, David Bushta, Jesse Thomas.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
     </div>
   </body>
 </html>

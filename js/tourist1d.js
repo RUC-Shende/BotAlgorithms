@@ -9,7 +9,7 @@
  */
 class Tourist {
 
-    constructor(iclData, x, y, num, icl) {
+    constructor(iclData, x, y, num, icl, p) {
         /** This holds all of what used to be global variables!  */
         this.iclData = iclData;
         /** The tourist's ID as an integer. */
@@ -161,7 +161,8 @@ class Tourist {
 }
 
 /**
- * Extended Tourist class. Adds ablility to open claims and vote on claims to tourise class. Reliable Tourist don't falsely open claims */
+ * Extends the Tourist class. Reliable Tourist don't falsely open claims.
+ */
 class ReliableTourist extends Tourist {
     constructor(iclData, x, y, num, icl) {
         super(iclData, x, y, num, icl);
@@ -198,7 +199,7 @@ class ReliableTourist extends Tourist {
         this.Covered()
     }
 
-    /** Keeps track of how  */
+    /** Keeps track of the part of the line that the tourist has already covered.  */
     Covered() {
         if (this.x < this.groundCovered[0]) {
             this.groundCovered[0] = this.x
@@ -206,11 +207,12 @@ class ReliableTourist extends Tourist {
             this.groundCovered[1] = this.x
         }
     }
-    /** This is my example for maki for the openClaim function */
+    /** Used to open claim when an exit is found. Currently only returns false so only byzantine bots can open claims  */
     OpenClaim() {
         return false
     }
 
+    /** Tourists votes at the open claim locations on whether or not a claim locations is an exit. */
     Vote() {
         if (Math.round(this.x * 100) != Math.round(this.iclData.exitLoc.x * 100) && !(this.voted)) {
             this.iclData.vote[this.number] = 0
@@ -225,6 +227,7 @@ class ReliableTourist extends Tourist {
         }
     }
 
+    /** Initiates the resolution of open claims. */
     ResolveClaim(value) {
         console.log(this.iclData.attendance);
         if (this.iclData.attendance == this.iclData.tourists.length) {
@@ -240,7 +243,7 @@ class ReliableTourist extends Tourist {
                 //this.DirectTo({x:50, y:35})
             }
             //}
-        } else if ((Math.round(this.x * 100) == Math.round(this.iclData.claimLocation.x * 100)) && !this.claimInput) {
+        } else if ((Math.round(this.x * 100) == Math.round(this.iclData.claimLocation.x * 100)) && !this.claimInput) { // Would like to add && !(this.claimInput) and the rest of the commented out code but, page doesn't load when I do.
             this.Wait({
                 time: null
             });
@@ -265,6 +268,7 @@ class ReliableTourist extends Tourist {
 
     }
 
+    /** Decides who is byzantine and who is reliable. */
     Decide() {
         if (Math.ceil(this.iclData.vote.length / 2) == this.iclData.voted0) {
             this.iclData.publicByzantineBots = this.iclData.temp1
@@ -276,12 +280,15 @@ class ReliableTourist extends Tourist {
     }
 }
 
-
+/**
+ * Extends the ReliableTourist class. Byzantine Tourist falsely open claims.
+*/
 class ByzantineTourist extends ReliableTourist {
     constructor(iclData, x, y, num, icl) {
         super(iclData, x, y, num, icl);
     }
 
+    /** Tourists votes at the open claim locations on whether or not a claim locations is an exit. Currently Byzantine bots votes the opposite. Example: If they aren't at the exit, the vote that they are. */
     Vote() {
         if (Math.round(this.x * 100) != Math.round(this.iclData.exitLoc.x * 100) && !(this.voted)) {
             this.iclData.vote[this.number] = 1
@@ -296,6 +303,7 @@ class ByzantineTourist extends ReliableTourist {
         }
     }
 
+    /** Used to open claim when an exit is found. Currently only returns false so only byzantine bots can open claims  */
     OpenClaim() {
         if (this.byz && (this.x >= this.groundCovered[1] || this.x <= this.groundCovered[0])) {
             if (Math.floor((Math.random() * 10000) + 1) > 9990) {
