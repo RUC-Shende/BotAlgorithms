@@ -281,8 +281,9 @@ class iclData {
         /**Number of Tourists currently at a claim or exit location.*/
         this.attendance = 0
         /**Claim is activated.*/
-        this.activated = true
-
+        this.activated = true;
+        /**Direction to start split search for Toruists.*/
+        this.splitDir = 1;
 
 
     }
@@ -1104,36 +1105,6 @@ class iclVisual {
     static reEnact() {
         if (!this.done && this.iclData.time < this.iclData.timeMax) {
             for (var i = 0; i < this.iclData.history.length; i++) {
-                if (this.iclData.history[i][this.iclData.time].x > this.iclData.maxPx) {
-                    this.visuals[i].attr("cx", this.iclData.maxPx);
-                    d3.select("#overflow" + i).remove();
-                    this.fieldSVG.select("#bots").append("text")
-                        .attr("x", this.visuals[i].attr("cx"))
-                        .attr("y", this.iclData.origin.y + (4 * (i+1)))
-                        .attr("id", "overflow" + i)
-                        .style("fill", this.iclData.tourists[i].icl[0][0])
-                        .style("font-size", 1.5)
-                        .style("text-anchor", "middle")
-                        .text( "+ " + Math.floor((this.iclData.history[i][this.iclData.time].x - this.iclData.maxPx) * 10) / 10);
-                }
-                else if (this.iclData.history[i][this.iclData.time].x < this.iclData.minPx) {
-                    d3.select("#overflow" + i).remove();
-                    this.visuals[i].attr("cx", this.iclData.minPx);
-                    console.log(this.iclData.center.y)
-                    this.fieldSVG.select("#bots").append("text")
-                        .attr("x", this.visuals[i].attr("cx"))
-                        .attr("y", this.iclData.center.y + (4 * (i+1)))
-                        .attr("id", "overflow" + i)
-                        .style("fill", this.iclData.tourists[i].icl[0][0])
-                        .style("font-size", 1.5)
-                        .style("text-anchor", "middle")
-                        .text( Math.floor((this.iclData.history[i][this.iclData.time].x - this.iclData.minPx) * 10) / 10);
-                }
-                else {
-                    d3.select("#overflow" + i).remove();
-                    this.visuals[i].attr("cx", this.iclData.history[i][this.iclData.time].x)
-                        .attr("cy", this.iclData.history[i][this.iclData.time].y);
-                }
                 if (this.iclData.time > 0) {
                     this.timeLines[i].remove();
                     this.timeHold[i].remove();
@@ -1152,7 +1123,51 @@ class iclVisual {
                     .attr("r",  0.75)
                     .style("fill", this.iclData.tourists[i].icl[0][0])
                     .style("stroke", "none");
-
+                if (this.timeLines[i].attr('x1') > this.iclData.maxPx) {
+                    this.timeLines[i]
+                        .attr('x1', this.iclData.maxPx)
+                        .attr('x2', this.iclData.maxPx);
+                    this.timeHold[i]
+                        .attr('cx', this.iclData.maxPx);
+                }
+                if (this.timeLines[i].attr('x1') < this.iclData.minPx) {
+                    this.timeLines[i]
+                        .attr('x1', this.iclData.minPx)
+                        .attr('x2', this.iclData.minPx);
+                    this.timeHold[i]
+                        .attr('cx', this.iclData.minPx);
+                }
+                if (this.iclData.history[i][this.iclData.time].x > this.iclData.maxPx) {
+                    this.visuals[i].attr("cx", this.iclData.maxPx);
+                    d3.select("#overflow" + i).remove();
+                    this.fieldSVG.select("#bots").append("text")
+                        .attr("x", this.visuals[i].attr("cx") + 7)
+                        .attr("y", this.iclData.origin.y + (4 * (i+1)))
+                        .attr("id", "overflow" + i)
+                        .style("fill", this.iclData.tourists[i].icl[0][0])
+                        .style("font-size", 1.5)
+                        .style("text-anchor", "middle")
+                        .style('background-color', 'white')
+                        .text( "+ " + Math.floor((this.iclData.history[i][this.iclData.time].x - this.iclData.maxPx) * 10) / 10);
+                }
+                else if (this.iclData.history[i][this.iclData.time].x < this.iclData.minPx) {
+                    d3.select("#overflow" + i).remove();
+                    this.visuals[i].attr("cx", this.iclData.minPx);
+                    console.log(this.iclData.center.y)
+                    this.fieldSVG.select("#bots").append("text")
+                        .attr("x", this.visuals[i].attr("cx") - 7)
+                        .attr("y", this.iclData.center.y + (4 * (i+1)))
+                        .attr("id", "overflow" + i)
+                        .style("fill", this.iclData.tourists[i].icl[0][0])
+                        .style("font-size", 1.5)
+                        .style("text-anchor", "middle")
+                        .text( Math.floor((this.iclData.history[i][this.iclData.time].x - this.iclData.minPx) * 10) / 10);
+                }
+                else {
+                    d3.select("#overflow" + i).remove();
+                    this.visuals[i].attr("cx", this.iclData.history[i][this.iclData.time].x)
+                        .attr("cy", this.iclData.history[i][this.iclData.time].y);
+                }
 /*
                 if (this.iclData.time % 4 == 0) {
                     if (this.iclData.time > 0) {

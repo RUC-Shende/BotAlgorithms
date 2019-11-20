@@ -48,6 +48,7 @@ class Tourist {
         this.claimInput = false;
 
         this.faulty = false;
+
     }
 
     /**
@@ -200,6 +201,8 @@ class Tourist {
 class ReliableTourist extends Tourist {
     constructor(iclData, x, y, num, icl) {
         super(iclData, x, y, num, icl);
+        this.splitDirection = 0;
+        this.activated = false;
     }
 
     /**
@@ -208,7 +211,7 @@ class ReliableTourist extends Tourist {
     * moving instruction set to wait.
     */
     Amplify(value) {
-        if (this.OpenClaim() && this.activated) {
+        if (this.byz && this.OpenClaim(value.claimLoc)) {
             this.on = 2
             this.iclData.availableClaim = true
             this.iclData.claimLocation = {
@@ -251,7 +254,7 @@ class ReliableTourist extends Tourist {
     * Used to open claim when an exit is found.
     * Currently only returns false so only byzantine bots can open claims
     */
-    OpenClaim() {
+    OpenClaim(value) {
         return false
     }
 
@@ -328,6 +331,17 @@ class ReliableTourist extends Tourist {
             this.iclData.reliable = this.iclData.temp1
         }
     }
+
+    Split(value) {
+        if (this.splitDirection == 0 && !this.byz) {
+            this.splitDirection = this.iclData.splitDir;
+            this.iclData.splitDir *= -1;
+            //this.Go({distance:this.step, direction:this.splitDirection})
+        }
+        this.DirectTo({x:this.x+this.splitDirection});
+        this.allowance = 0;
+
+    }
 }
 
 /**
@@ -361,13 +375,15 @@ class ByzantineTourist extends ReliableTourist {
     * Used to open claim when an exit is found.
     * Currently only returns false so only byzantine bots can open claims
     */
-    OpenClaim() {
-        if (this.byz && (this.x >= this.groundCovered[1] || this.x <= this.groundCovered[0])) {
-            if (Math.floor((Math.random() * 10000) + 1) > 9990) {
-                this.activated = true
-                return true
-            }
-        }
-        return false
+    OpenClaim(xValue) {
+        return (Math.round(this.x * 100) == Math.round((this.iclData.center.x + (xValue * this.iclData.unit2Px)) * 100));
+
+        //if (this.byz && (this.x >= this.groundCovered[1] || this.x <= this.groundCovered[0])) {
+        //    if (Math.floor((Math.random() * 10000) + 1) > 9990) {
+        //        this.activated = true
+        //        return true
+        //    }
+        //}
+        //return false
     }
 }
