@@ -80,51 +80,206 @@ Currently, the project showcases these algorithms:
 Disk
 ----
 
+Algorithm A: Face-to-Face, 2 Robots.
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For this algorithm, the robots start by moving towards the perimeter at the same angle. Once the robots reach the perimeter, they go in opposite directions of each other, eg. 
+if robot 1 goes clockwise, then robot 2 goes counter-clockwise. The robots continue to move along the perimeter until one of them finds the exit. Once the exit is found, the robot that 
+found the exit will move to intercept the other's path. When the robots meet at the interception point, they travel directly back to the exit location.
+
+.. figure:: ../resources/intercept.png
+    :scale: 50 %
+    :align: center
+
 `Face-to-Face, 2 Robots. Algorithm A.
 </BotAlgorithms/disk/circleAlgs.html#A>`_.
+
+Algorithm referenced in:
+
+* Jurek Czyzowicz et al. (2014). Evacuating Robots via Unknown Exit in a Disk. Proceedings of DISC 2014, LNCS 8784, pp. 122–136, 2014 
+* Jurek Czyzowicz et al. (2015). Evacuating Robots From a Disk Using Face-To-Face Communication. Proceedings of CIAC, 2015 p. 140-152, 2015.
+
+Algorithm B: Face-to-Face, 2 Robots.
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For this algorithm, it takes two arguments, B(X, Φ).
+
+* X represents the arc length before taking a detour.
+* Φ represents the angle to take the detour.
+
+The robots will follow the same steps as algorithm A for a certain distance X. If the robots have traveled the distance X without being notified of the exit, both robots initiate 
+the detour phase at angle Φ relative to the tangent of the circle at that point. If, after the detour phase the exit has not been found, the robots move straight back to the point where 
+the detour was initiated and resume algorithm A. 
+
+.. figure:: ../resources/detour.png
+    :scale: 50 %
+    :align: center
+
+The advantage of this method is that the detour phase provides a slightly faster evacuation time if the exit is found quickly, allowing the robot who finds the exit 
+to travel less distance to intercept the other if the other is currently in its detour phase. If the exit location is beyond the detour phase point, then the advantages of this algorithm 
+no longer exist.
 
 `Face-to-Face, 2 Robots. Algorithm B.
 </BotAlgorithms/disk/circleAlgs.html#B>`_.
 
+Algorithm referenced in:
+
+* Jurek Czyzowicz et al. (2014). Evacuating Robots via Unknown Exit in a Disk. Proceedings of DISC 2014, LNCS 8784, pp. 122–136, 2014 
+* Jurek Czyzowicz et al. (2015). Evacuating Robots From a Disk Using Face-To-Face Communication. Proceedings of CIAC, 2015 p. 140-152, 2015.
+
+Algorithm C: Face-to-Face, 2 Robots.
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For this algorithm, it takes three arguments, C(X, Φ, λ).
+
+* X represents the arc length before taking a detour.
+* Φ represents the angle to take the detour.
+* λ represents the time the robot is following the detour path at angle Φ, in which afterward the robots head directly for the center.
+
+Initially, the algorithm mimics algorithm A for a set X arch length. If the robots have traveled the distance X without being notified of the exit, both robots initiate the triangular detour 
+phase and move at angle Φ relative to the tangent of the circle at that point for time λ. After time λ, the robot heads for the centerline of the circle and then moves back to the beginning 
+of the triangular detour phase. If, after the triangular detour phase, the exit has not been found, the robots resume algorithm A.
+
+.. figure:: ../resources/tri-detour.png
+    :scale: 75 %
+    :align: center
+
+If the exit is found quickly, then the triangular detour phase provides a slightly faster evacuation time. In this event, the robot that finds the exit will have to travel less distance to 
+intercept the other if the other is currently in its detour phase. The only time this advantage no longer exists is if the exit position is after the detour phase.
+
 `Face-to-Face, 2 Robots. Algorithm C.
 </BotAlgorithms/disk/circleAlgs.html#C>`_.
+
+Algorithm referenced in: 
+
+* Jurek Czyzowicz et al. (2014). Evacuating Robots via Unknown Exit in a Disk. Proceedings of DISC 2014, LNCS 8784, pp. 122–136, 2014 
+* Jurek Czyzowicz et al. (2015). Evacuating Robots From a Disk Using Face-To-Face Communication. Proceedings of CIAC, 2015 p. 140-152, 2015.
+
+Wireless - Algorithm A, 2 Robots.
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For this algorithm, the robots follow the same steps of "Algorithm A: Face-to-Face, 2 Robots" until an exit is found. Once the exit is found by one of the robots, that robot broadcasts its 
+location to the other robot who, when the location is received, heads directly to the exit.
 
 `Wireless, 2 Robots. Algorithm A.
 </BotAlgorithms/disk/circleAlgs.html#Awl>`_.
 
+Wireless - Algorithm B, 2 Robots.
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For this algorithm, the robots follow the same steps of "Algorithm B: Face-to-Face, 2 Robots" until an exit is found. Once the exit is found by one of the robots, that robot broadcasts its location to the other robot who, when the location is received, heads directly to the exit.
+
 `Wireless, 2 Robots. Algorithm B.
 </BotAlgorithms/disk/circleAlgs.html#Bwl>`_.
+
+Wireless - Algorithm C, 2 Robots.
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For this algorithm, the robots follow the same steps of "Algorithm C: Face-to-Face, 2 Robots" until an exit is found. Once the exit is found by one of the robots, that robot broadcasts its location to the other robot who, when the location is received, heads directly to the exit.
 
 `Wireless, 2 Robots. Algorithm C.
 </BotAlgorithms/disk/circleAlgs.html#Cwl>`_.
 
+
+Wireless - Priority Robot + 1 additional robot
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For this algorithm, two arguments are expected to be given, Q(α, β).
+
+* α represents the arc length the priority robot takes before breaking from it's path for a detour.
+* β represents the angle (α + β) on the unit disk that the priority robot travels to create a chord. Once that point is reached, the priority robot will travel in the opposite direction it was going before detour, going back to the original point of its detour.
+
+The robots start by moving to the perimeter of the disk at the same angle. Once there the helper bot will travel clockwise around the circle until it finds the exit and notifies the priority bot of its location. The priority bot on the other hand travels counter clockwise for time α, at which point it will take a detour and travel to angle (α + β). Once there it will travel clockwise back to where it originaly made it's detour.
+
+If the exit still was not found the priority bot goes back to traveling counter clockwise.
+
+
 `Wireless, 1 Robot + Priority Robot.
 </BotAlgorithms/disk/circleAlgs.html#Q1>`_.
 
+Wireless - Priority Robot + 2 additional robots
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Algorithm description coming soon
+
 `Wireless, 2 Robots + Priority Robot.
 </BotAlgorithms/disk/circleAlgs.html#Q2>`_.
+
+Wireless -  Priority Robot + 4 additional robots
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Algorithm description coming soon
+
+`Wireless, 4 Robots + Priority Robot.
+</BotAlgorithms/disk/circleAlgs.html#Q1S4>`_.
+
+Wireless - Priority Robot + 8 additional robots
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Algorithm description coming soon
+
+`Wireless, 8 Robots + Priority Robot.
+</BotAlgorithms/disk/circleAlgs.html#Q1S8>`_.
+
+
+Wireless - 2 Priority Robots + 1 additional robot
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Algorithm description coming soon
 
 `Wireless, 1 Robot + 2 Priority.
 </BotAlgorithms/disk/circleAlgs.html#Q2S1>`_.
 
 Triangle
 --------
+
+Wireless - 2 Robots, starting at Center
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Algorithm description coming soon
+
 `Wireless, 2 Robots, starting at Center.
 </BotAlgorithms/polygon/polygonAlgs.html#3_cStart>`_.
 
+Wireless - 2 Robots, starting on Wall
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Algorithm description coming soon
+
 `Wireless, 2 Robots, starting on Wall.
 </BotAlgorithms/polygon/polygonAlgs.html#3_wStart>`_.
+
+Wireless - 2 Robots, starting in Interior with start selection
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Algorithm description coming soon
 
 `Wireless, 2 Robots, starting in Interior with start selection.
 </BotAlgorithms/polygon/polygonAlgs.html#3_iStart>`_.
 
 Square
 ------
+
+Wireless - 2 Robots, starting at Center
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Algorithm description coming soon
+
 `Wireless, 2 Robots, starting at Center.
 </BotAlgorithms/polygon/polygonAlgs.html#4_cStart>`_.
 
+Wireless - 2 Robots, starting on Wall
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Algorithm description coming soon
+
 `Wireless, 2 Robots, starting on Wall.
 </BotAlgorithms/polygon/polygonAlgs.html#4_wStart>`_.
+
+Wireless - 2 Robots, starting in Interior with start selection
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Algorithm description coming soon
 
 `Wireless, 2 Robots, starting in Interior with start selection.
 </BotAlgorithms/polygon/polygonAlgs.html#4_iStart>`_.
