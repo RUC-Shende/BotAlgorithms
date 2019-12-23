@@ -83,9 +83,7 @@ Disk
 Algorithm A: Face-to-Face, 2 Robots.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For this algorithm, the robots start by moving towards the perimeter at the same angle. Once the robots reach the perimeter, they go in opposite directions of each other, eg. 
-if robot 1 goes clockwise, then robot 2 goes counter-clockwise. The robots continue to move along the perimeter until one of them finds the exit. Once the exit is found, the robot that 
-found the exit will move to intercept the other's path. When the robots meet at the interception point, they travel directly back to the exit location.
+For this algorithm, the robots start by moving towards the perimeter at the same angle. Once the robots reach the perimeter, they go in opposite directions of each other, eg. if robot 1 goes clockwise, then robot 2 goes counter-clockwise. The robots continue to move along the perimeter until one of them finds the exit. Once the exit is found, the robot that found the exit will move to intercept the other's path. When the robots meet at the interception point, they travel directly back to the exit location.
 
 .. figure:: ../resources/intercept.png
     :scale: 50 %
@@ -107,17 +105,13 @@ For this algorithm, it takes two arguments, B(X, Φ).
 * X represents the arc length before taking a detour.
 * Φ represents the angle to take the detour.
 
-The robots will follow the same steps as algorithm A for a certain distance X. If the robots have traveled the distance X without being notified of the exit, both robots initiate 
-the detour phase at angle Φ relative to the tangent of the circle at that point. If, after the detour phase the exit has not been found, the robots move straight back to the point where 
-the detour was initiated and resume algorithm A. 
+The robots will follow the same steps as algorithm A for a certain distance X. If the robots have traveled the distance X without being notified of the exit, both robots initiate the detour phase at angle Φ relative to the tangent of the circle at that point. If, after the detour phase the exit has not been found, the robots move straight back to the point where the detour was initiated and resume algorithm A. 
 
 .. figure:: ../resources/detour.png
     :scale: 50 %
     :align: center
 
-The advantage of this method is that the detour phase provides a slightly faster evacuation time if the exit is found quickly, allowing the robot who finds the exit 
-to travel less distance to intercept the other if the other is currently in its detour phase. If the exit location is beyond the detour phase point, then the advantages of this algorithm 
-no longer exist.
+The advantage of this method is that the detour phase provides a slightly faster evacuation time if the exit is found quickly, allowing the robot who finds the exit to travel less distance to intercept the other if the other is currently in its detour phase. If the exit location is beyond the detour phase point, then the advantages of this algorithm no longer exist.
 
 `Face-to-Face, 2 Robots. Algorithm B.
 </BotAlgorithms/disk/circleAlgs.html#B>`_.
@@ -136,16 +130,13 @@ For this algorithm, it takes three arguments, C(X, Φ, λ).
 * Φ represents the angle to take the detour.
 * λ represents the time the robot is following the detour path at angle Φ, in which afterward the robots head directly for the center.
 
-Initially, the algorithm mimics algorithm A for a set X arch length. If the robots have traveled the distance X without being notified of the exit, both robots initiate the triangular detour 
-phase and move at angle Φ relative to the tangent of the circle at that point for time λ. After time λ, the robot heads for the centerline of the circle and then moves back to the beginning 
-of the triangular detour phase. If, after the triangular detour phase, the exit has not been found, the robots resume algorithm A.
+Initially, the algorithm mimics algorithm A for a set X arch length. If the robots have traveled the distance X without being notified of the exit, both robots initiate the triangular detour phase and move at angle Φ relative to the tangent of the circle at that point for time λ. After time λ, the robot heads for the centerline of the circle and then moves back to the beginning of the triangular detour phase. If, after the triangular detour phase, the exit has not been found, the robots resume algorithm A.
 
 .. figure:: ../resources/tri-detour.png
     :scale: 75 %
     :align: center
 
-If the exit is found quickly, then the triangular detour phase provides a slightly faster evacuation time. In this event, the robot that finds the exit will have to travel less distance to 
-intercept the other if the other is currently in its detour phase. The only time this advantage no longer exists is if the exit position is after the detour phase.
+If the exit is found quickly, then the triangular detour phase provides a slightly faster evacuation time. In this event, the robot that finds the exit will have to travel less distance to intercept the other if the other is currently in its detour phase. The only time this advantage no longer exists is if the exit position is after the detour phase.
 
 `Face-to-Face, 2 Robots. Algorithm C.
 </BotAlgorithms/disk/circleAlgs.html#C>`_.
@@ -186,12 +177,12 @@ Wireless - Priority Robot + 1 additional robot
 
 For this algorithm, two arguments are expected to be given, Q(α, β).
 
-* α represents the arc length the priority robot takes before breaking from it's path for a detour.
+* α represents the arc length the priority robot takes before breaking from its path for a detour.
 * β represents the angle (α + β) on the unit disk that the priority robot travels to create a chord. Once that point is reached, the priority robot will travel in the opposite direction it was going before detour, going back to the original point of its detour.
 
-The robots start by moving to the perimeter of the disk at the same angle. Once there the helper bot will travel clockwise around the circle until it finds the exit and notifies the priority bot of its location. The priority bot on the other hand travels counter clockwise for time α, at which point it will take a detour and travel to angle (α + β). Once there it will travel clockwise back to where it originaly made it's detour.
+The robots start by moving to the perimeter of the disk at the same angle. Once there the helper bot will travel clockwise around the circle until it finds the exit and notifies the priority bot of its location. The priority bot, on the other hand, travels counter-clockwise for time α, at which point it will take a detour and travel to angle (α + β). Once there it will travel clockwise back to where it originally made its detour.
 
-If the exit still was not found the priority bot goes back to traveling counter clockwise.
+If the exit still was not found the priority bot goes back to traveling counter-clockwise.
 
 
 `Wireless, 1 Robot + Priority Robot.
@@ -200,7 +191,17 @@ If the exit still was not found the priority bot goes back to traveling counter 
 Wireless - Priority Robot + 2 additional robots
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Algorithm description coming soon
+For this algorithm, two arguments are expected to be given, Q(α, p).
+
+* α represents the arc length the priority robot will travel before moving directly across the disk to point p
+* p represents the y-value of the point K(α/2, p). 
+* K(α/2, p) is the point where the priority bot will diverge and travel toward the angle -α/2 on the disk. 
+
+We will denote the helpers in this algorithm as S1 and S2, and the priority as P.
+
+Initially, S1 and P will go out to the perimeter at angle (π - α), while S2 will go out to the perimeter at angle π. Once the robots get to the perimeter, S1 will travel clockwise until it finds the exit, while S2 will travel counter-clockwise until it finds the exit.
+
+The priority P will travel counter-clockwise for arc length α, at which point it will take its detour. The priority robot will travel to the point K(α/2, p) on the interior of the disk. P will then travel to angle (2π - α/2) on the perimeter and wait until the exit is found.
 
 `Wireless, 2 Robots + Priority Robot.
 </BotAlgorithms/disk/circleAlgs.html#Q2>`_.
