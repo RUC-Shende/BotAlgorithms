@@ -221,7 +221,15 @@ The priority robot will wait at the center (0, 0) for 1 + pi/2 time. Afterward, 
 Wireless - Priority Robot + 8 additional robots
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Algorithm description coming soon
+For this algorithm, two helpers will travel to the perimeter at angle zero. They will each travel pi/3 radians around the perimeter in opposite directions towards angle pi, searching until they've reached the starting point of the next helper.
+
+The next two helpers will travel to the perimeter at pi/3 radians and 5pi/3 radians respectively. Once they've reached the perimeter though begin to travel in opposite directions towards angle pi, searching until the exit is found.
+
+The next two helpers will travel to the perimeter at pi/2 radians and 3pi/2 radians respectively. Once they've reached the perimeter though begin to travel in opposite directions towards angle pi, searching until the exit is found.
+
+The last two helpers will travel to the perimeter at 2pi/3 radians and 4pi/3 radians respectively. Once they've reached the perimeter though begin to travel in opposite directions towards angle pi, searching until the exit is found.
+
+The priority robot will wait at the center (0, 0) for 1 + pi/2 time. Afterward, the priority robot will travel to perimeter pi. It then waits at the point (-pi, 0) until the exit is found.
 
 `Wireless, 8 Robots + Priority Robot.
 </BotAlgorithms/disk/circleAlgs.html#Q1S8>`_.
