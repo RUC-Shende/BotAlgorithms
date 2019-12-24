@@ -209,7 +209,11 @@ The priority P will travel counter-clockwise for arc length α, at which point i
 Wireless -  Priority Robot + 4 additional robots
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Algorithm description coming soon
+For this algorithm, two helpers will travel to the perimeter at angle 0. They will 1.309 radians around the perimeter in opposite directions towards angle pi, searching until they've reached the starting point of the next helper.
+
+The two remaining helpers will travel to the perimeter at 1.309 radians and 4.974 radians respectively. Once they've reached the perimeter they'll begin to travel in opposite directions toward angle pi, searching until an exit is found.
+
+The priority robot will wait at the center (0, 0) for 1 + pi/2 time. Afterward, the priority will travel to the perimeter at angle pi. It then waits at that point (-pi, 0) until the exit is found.
 
 `Wireless, 4 Robots + Priority Robot.
 </BotAlgorithms/disk/circleAlgs.html#Q1S4>`_.
