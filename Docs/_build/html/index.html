@@ -428,12 +428,11 @@ location to the other robot who, when the location is received, heads directly t
 <h3>Wireless - 2 Robots, starting in Interior with start selection<a class="headerlink" href="#wireless-2-robots-starting-in-interior-with-start-selection" title="Permalink to this headline">¶</a></h3>
 <p>For this algorithm, two arguments are expected Q(α, β).</p>
 <ul class="simple">
-<li><p>α represents the angle in which the robots will move to the perimeter if β is not a point on the perimeter.</p></li>
-<li><p>β represents the point where the robots start initially.</p></li>
+<li><p>α represents the angle in which the robots will move to the perimeter.</p></li>
+<li><p>β represents the point where the robots start initially inside the triangle.</p></li>
 </ul>
-<p>Initially, depending on point β given, if the robot’s starting point is not on the perimeter, they will approach the perimeter at angle α.</p>
+<p>Initially, depending on point β given, they will approach the perimeter at angle α.</p>
 <p>Once both robots have arrived at the perimeter, they will split in opposite directions along the perimeter until an exit is found.</p>
-<p>However, if the robot’s starting point is on the perimeter, they will simply split in opposite directions along the perimeter until an exit is found.</p>
 <p><a class="reference external" href="/BotAlgorithms/polygon/polygonAlgs.html#3_iStart">Wireless, 2 Robots, starting in Interior with start selection.</a>.</p>
 </div>
 </div>
@@ -441,23 +440,31 @@ location to the other robot who, when the location is received, heads directly t
 <h2>Square<a class="headerlink" href="#square" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id4">
 <h3>Wireless - 2 Robots, starting at Center<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>For this algorithm, one argument is expected Q(α).</p>
 <ul class="simple">
-<li><p>Algorithm description coming soon</p></li>
+<li><p>α represents the angle in which the robots will move to the perimeter.</p></li>
 </ul>
+<p>Initially, both robots will approach the perimeter at angle α. Once they’ve reached the perimeter, they will traverse the square in opposite directions until an exit is found.</p>
 <p><a class="reference external" href="/BotAlgorithms/polygon/polygonAlgs.html#4_cStart">Wireless, 2 Robots, starting at Center.</a>.</p>
 </div>
 <div class="section" id="id6">
 <h3>Wireless - 2 Robots, starting on Wall<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<p>For this algorithm, one argument is expected Q(α).</p>
 <ul class="simple">
-<li><p>Algorithm description coming soon</p></li>
+<li><p>α represents the angle in which the robots will begin on the perimeter.</p></li>
 </ul>
+<p>Initially, both robots will begin on the perimeter at angle α. They will split in opposite directions along the perimeter until an exit is found.</p>
 <p><a class="reference external" href="/BotAlgorithms/polygon/polygonAlgs.html#4_wStart">Wireless, 2 Robots, starting on Wall.</a>.</p>
 </div>
 <div class="section" id="id8">
 <h3>Wireless - 2 Robots, starting in Interior with start selection<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<p>For this algorithm, two arguments are expected Q(α, β).</p>
 <ul class="simple">
-<li><p>Algorithm description coming soon</p></li>
+<li><p>α represents the angle in which the robots will move to the perimeter.</p></li>
+<li><p>β represents the point where the robots start initially inside the square.</p></li>
 </ul>
+<p>Initially, depending on point β given, they will approach the perimeter at angle α.</p>
+<p>Once both robots have arrived at the perimeter, they will split in opposite directions along the perimeter until an exit is found.</p>
 <p><a class="reference external" href="/BotAlgorithms/polygon/polygonAlgs.html#4_iStart">Wireless, 2 Robots, starting in Interior with start selection.</a>.</p>
 </div>
 </div>
