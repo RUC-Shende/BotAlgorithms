@@ -254,11 +254,12 @@ Triangle
 
 Wireless - 2 Robots, starting at Center
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 For this algorithm, one argument is expected Q(α). 
 
 * α represents the angle in which the robots will move to the perimeter. 
 
-Initially, both robots will approach the perimeter at angle α. Once they've reached the perimeter, they will traverse the triangle in opposite directions. 
+Initially, both robots will approach the perimeter at angle α. Once they've reached the perimeter, they will traverse the triangle in opposite directions until an exit is found.  
 
 `Wireless, 2 Robots, starting at Center.
 </BotAlgorithms/polygon/polygonAlgs.html#3_cStart>`_.
@@ -266,7 +267,11 @@ Initially, both robots will approach the perimeter at angle α. Once they've rea
 Wireless - 2 Robots, starting on Wall
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Algorithm description coming soon
+For this algorithm, one argument is expected Q(α). 
+
+* α represents the angle in which the robots will begin on the perimeter.
+
+Initially, both robots will begin on the perimeter at angle α. They will split in opposite directions along the perimeter until an exit is found. 
 
 `Wireless, 2 Robots, starting on Wall.
 </BotAlgorithms/polygon/polygonAlgs.html#3_wStart>`_.
