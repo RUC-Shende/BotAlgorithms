@@ -238,7 +238,13 @@ The priority robot will wait at the center (0, 0) for 1 + pi/2 time. Afterward, 
 Wireless - 2 Priority Robots + 1 additional robot
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Algorithm description coming soon
+For this algorithm, we designate two of the robots as priority robots and only one as a helper. The algorithm terminates when at least one of the priority robots find the exit. The algorithm takes one argument, Q(α).
+
+* α represents the angle at which one helper and one priority robot will travel toward the perimeter. We will denote the helper as S, and the two priority robots as P1 and P2.
+
+The robots S and P1 will travel to the perimeter at angle α, while P2 travels to the perimeter at angle zero. Once S and P1 reached the perimeter P1 travels counterclockwise until it finds the exit. P2 will also travel counterclockwise until it finds the exit while S travels clockwise.
+
+This algorithm has an upper bound of 3.55 time units for angle α = 14π/9 - 2√3/3. The two worst cases for the exit location in this algorithm are 2π - θ for some very small θ, or π - ((6√3 - 2)/9).
 
 `Wireless, 1 Robot + 2 Priority.
 </BotAlgorithms/disk/circleAlgs.html#Q2S1>`_.
