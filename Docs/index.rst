@@ -279,7 +279,16 @@ Initially, both robots will begin on the perimeter at angle α. They will split 
 Wireless - 2 Robots, starting in Interior with start selection
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Algorithm description coming soon
+For this algorithm, two arguments are expected Q(α, β).
+
+* α represents the angle in which the robots will move to the perimeter if β is not a point on the perimeter. 
+* β represents the point where the robots start initially.
+
+Initially, depending on point β given, if the robot's starting point is not on the perimeter, they will approach the perimeter at angle α.
+
+Once both robots have arrived at the perimeter, they will split in opposite directions along the perimeter until an exit is found. 
+
+However, if the robot's starting point is on the perimeter, they will simply split in opposite directions along the perimeter until an exit is found.
 
 `Wireless, 2 Robots, starting in Interior with start selection.
 </BotAlgorithms/polygon/polygonAlgs.html#3_iStart>`_.

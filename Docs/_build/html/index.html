@@ -426,9 +426,14 @@ location to the other robot who, when the location is received, heads directly t
 </div>
 <div class="section" id="wireless-2-robots-starting-in-interior-with-start-selection">
 <h3>Wireless - 2 Robots, starting in Interior with start selection<a class="headerlink" href="#wireless-2-robots-starting-in-interior-with-start-selection" title="Permalink to this headline">¶</a></h3>
+<p>For this algorithm, two arguments are expected Q(α, β).</p>
 <ul class="simple">
-<li><p>Algorithm description coming soon</p></li>
+<li><p>α represents the angle in which the robots will move to the perimeter if β is not a point on the perimeter.</p></li>
+<li><p>β represents the point where the robots start initially.</p></li>
 </ul>
+<p>Initially, depending on point β given, if the robot’s starting point is not on the perimeter, they will approach the perimeter at angle α.</p>
+<p>Once both robots have arrived at the perimeter, they will split in opposite directions along the perimeter until an exit is found.</p>
+<p>However, if the robot’s starting point is on the perimeter, they will simply split in opposite directions along the perimeter until an exit is found.</p>
 <p><a class="reference external" href="/BotAlgorithms/polygon/polygonAlgs.html#3_iStart">Wireless, 2 Robots, starting in Interior with start selection.</a>.</p>
 </div>
 </div>
